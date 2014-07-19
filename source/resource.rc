@@ -1,0 +1,30 @@
+#include <windows.h> // include for version info constants
+
+A ICON MOVEABLE PURE LOADONCALL DISCARDABLE "../res/kiaro.ico"
+
+1 VERSIONINFO
+FILEVERSION 2,1,1,1
+PRODUCTVERSION 2,1,1,1
+FILETYPE VFT_APP
+FILETYPE VFT_APP
+{
+  BLOCK "StringFileInfo"
+	 {
+		 BLOCK "040904E4"
+		 {
+			 VALUE "CompanyName", "Draconic Entertainment"
+			 VALUE "FileVersion", "0.1.0"
+			 VALUE "FileDescription", "Kiaro Game Engine Base Application"
+			 VALUE "InternalName", "Ragora"
+			 VALUE "LegalCopyright", "Copyright (c) 2014 Draconic Entertainment."
+			 VALUE "LegalTrademarks", " "
+			 VALUE "OriginalFilename", "kiaro.exe"
+			 VALUE "ProductName", "Kiaro Game Engine"
+			 VALUE "ProductVersion", "0.1.0"
+		 }
+	 }
+  BLOCK "VarFileInfo"
+	 {
+		 VALUE "Translation", 0x0409, 1252
+	 }
+}

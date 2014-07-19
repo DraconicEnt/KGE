@@ -1,0 +1,43 @@
+The Draconic Free License Version 1
+Copyright (c) 2014 Robert MacGregor
+
+Definitions:
+  * Device - A platform that a Binary can be executed on, whether it be physical or virtual.
+  * Binary, Binaries or Executable(s) - A representation of the Source Code in terms that the target device can use.
+  * Source Code or Codebase(s) - The patterned arrangement of letters, numbers, and various other symbols that produce 
+  a usable Binary when used as input for a compiler.
+  * Fork, Forked or Forks - A Codebase or Codebases that derives from another Codebase or the act of deriving a Codebase 
+  from another Codebase.
+  * Black Box or Black Boxed - A term that is used to describe a Codebase that is not openly accessible.
+  * Library or Libraries - An external Codebase that is linked against statically, dynamically or is otherwise inlined.
+  * May - A term that is used to describe an action that is optional.
+  * Must - A term that is used to describe an action that is not optional.
+  
+I. Your rights and Responsibilities:
+  A. A copy of this license text Must be provided with any distributions of the Codebase and its resulting Binaries in 
+  the form of a text file. This copy may not be modified except to note any reinstated clauses in a plainly visible 
+  section of this license.
+  B. The Codebase and any resulting Binaries Must not be used to produce an income unless it is to cover the actual costs 
+  of redistribution.
+  C. The names of the license issuer or license issuers and their corresponding intellectual property Must not be referenced in 
+  any form unless it is to provide credit where required by clause I.F.
+  D. Forked Codebases Must not be licensed under any other license aside from the Draconic Free License.
+  E. Forked Codebases Must retain all licensing clauses of the parent Codebase except for those waivered by the license issuer 
+  or license issuers.
+  F. Credit Must be provided for the parent Codebase or Codebases and Binaries in a readme file and in a location in the 
+  running application that is plainly visible to the end user.
+  G. The Source Code and any Binaries produced from said Source Code May be redistributed via any medium.
+  H. The Codebase and any Forks May utilize any Libraries that are licensed differently provided that their licensing 
+  conditions are compatible with the Draconic Free License.
+  I. Forked Codebases May reinstate any clauses that have been waivered by their parent Codebase.
+  J. Any Forked Codebases May reserve the right to keep their Codebase Black Boxed.
+  
+II. The license issuer's or license issuers' rights and responsibilities:
+  A. Any clause May be waivered at the consent of the license issuer or license issuers for any given third party or otherwise 
+  for everyone. If a clause  has been waivered for everyone, the waivered clause Must then be noted in a plainly visible 
+  section of this license. If a clause has been waivered for a specific third party, a hand written waiver Must then be 
+  provided for proof in the court of law and this waiver does not extend to other third parties utilizing the Codebase or 
+  any Binaries.
+  B. The license issuer or license issuers of this license maintains no warranty, express or implied and is otherwise not responsible for 
+  any damages, be it direct or indirect that might result from the usage of this Codebase and its Binaries in accordance to 
+  the Draconic Free License.
