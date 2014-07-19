@@ -1,0 +1,6 @@
+lib/
+obj/
+bin/KGE
+*.dll
+*.lib
+*.a
