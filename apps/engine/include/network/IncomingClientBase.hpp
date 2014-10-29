@@ -2,13 +2,11 @@
  *  @file IncomingClient.h
  *  @brief Main include file defining "global" scope functions and including sub files.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.1.0
- *  @date 12/23/2014
- *  @copyright (c) 2013 Draconic Entertainment
+ *  @copyright (c) 2014 Draconic Entertainment
  */
 
 #ifndef _INCLUDE_NETWORK_INCOMINGCLIENTBASE_HPP_

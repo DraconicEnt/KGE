@@ -1,7 +1,7 @@
 /**
  *  @file easydelegate.hpp
  *  @version 1.1
- *  @date 9/25/2014
+ *  @date 10/2/2014
  *  @author <a href="https://github.com/Ragora">Robert MacGregor</a>
  *  @brief Portable delegate system that should work on any C++11 compliant compiler.
  *  @details EasyDelegate is a library that exposes an easy and flexible delegate system with
@@ -20,8 +20,8 @@
  *  where sizeof(size_t) is equivalent to sizeof(largest integer type), which has been true for GCC
  *  and MSVS on Linux and Windows systems.
  *
- *  @copyright This software is licensed under the Lesser General Public License version 3.
- *  Please refer to GPL.txt and LGPL.txt for more information.
+ *  @copyright This software is licensed under the MIT license. Please refer to LICENSE.txt for more
+ *	information.
  *  @example ex_delegateset.cpp
  */
 

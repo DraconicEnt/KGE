@@ -6,8 +6,6 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.0.0.0
- *  @date 3/19/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 

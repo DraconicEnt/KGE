@@ -2,12 +2,10 @@
  *  @file BitStream.cpp
  *  @brief Source file defining the functions for manipulating a BitStream.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.0.0.19
- *  @date 3/19/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
@@ -134,7 +132,7 @@ namespace Kiaro
         Kiaro::Common::C8 *BitStream::readString(const size_t &outStringLength, const bool &shouldMemcpy)
         {
         	// If the Length if zero, try to figure out where we should stop, then
-        	// FIXME (Robert MacGregor#9): Go out until maximum arb string length
+        	// FIXME: Go out until maximum arb string length
         	for (size_t iteration = mDataPointer; iteration < mDataLength; iteration++)
 				if (mData[iteration] == 0x00) // Check for NULL termination
                     return (Kiaro::Common::C8*)read(iteration - mDataLength, shouldMemcpy);

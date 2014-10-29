@@ -2,12 +2,10 @@
  *  @file IncomingClientBase.cpp
  *  @brief Source code file defining logic for the Kiaro::Network::OutgoingClient class.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.1.0
- *  @date 3/5/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 

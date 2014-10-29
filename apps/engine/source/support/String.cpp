@@ -2,12 +2,12 @@
  *  @file String.cpp
  *  @brief Source code file defining the logic for the Kiaro::Support::String class.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @todo Remove this completely.
  *
  *  @author Draconic Entertainment
- *  @version 0.0.0.19
- *  @date 3/19/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
@@ -80,7 +80,7 @@ namespace Kiaro
 
         Kiaro::Common::S32 String::Compare(const String &other) const
         {
-            // TODO (Robert MacGregor#9): Make sure this is correct functionality.
+            // TODO: Make sure this is correct functionality.
             if (this->stored == 0x00 || other.stored == 0x00)
                 return 1;
 
@@ -125,7 +125,7 @@ namespace Kiaro
                     this->length--;
                     total_removed++;
 
-                    // TODO (Robert MacGregor#5): Eventually allow for reallocating the string?
+                    // TODO: Eventually allow for reallocating the string?
                 }
 
             return total_removed;

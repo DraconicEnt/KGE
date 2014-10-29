@@ -29,10 +29,10 @@ namespace Kiaro
 
         Kiaro::Common::U32 Initialize(void)
         {
-            // TOOD (Robert MacGregor#9): Figure out why this isn't properly clearing out the log.
+            // TOOD: Figure out why this isn't properly clearing out the log.
             PHYSFS_File *file = PHYSFS_openWrite("LOG.txt");
 
-            // NOTE (Robert MacGregor#1): Hopefully clear up the old file on Linux
+            // Hopefully clear up the old file on Linux
             PHYSFS_write(file, " ", 1, 1);
 
             PHYSFS_close(file);

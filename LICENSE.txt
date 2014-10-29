@@ -1,5 +1,5 @@
 The Draconic Free License Version 1
-Copyright (c) 2014 Robert MacGregor
+Copyright (c) 2014 Draconic Entertainment
 
 Definitions:
   * Device - A platform that a Binary can be executed on, whether it be physical or virtual.

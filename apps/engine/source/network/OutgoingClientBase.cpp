@@ -2,12 +2,10 @@
  *  @file OutgoingClient.cpp
  *  @brief Source code file defining logic for the Kiaro::Network::OutgoingClient class.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.1.0
- *  @date 3/5/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
@@ -16,16 +14,15 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <boost/regex.hpp>
-
 #include <enet/enet.h>
+
+#include <boost/regex.hpp>
 
 #include <support/BitStream.hpp>
 
-#include <engine/Logging.hpp>
-#include <network/OutgoingClientBase.hpp>
-
 #include <game/packets/packets.hpp>
+
+#include <network/OutgoingClientBase.hpp>
 
 namespace Kiaro
 {
@@ -67,7 +64,7 @@ namespace Kiaro
 
         void OutgoingClientBase::connect(const std::string &targetAddress, const Kiaro::Common::U16 &targetPort, const Kiaro::Common::U32 &wait)
         {
-			// TODO (Robert MacGregor#9): Report Error
+			// TODO: Report Error
 			if (mInternalPeer || mInternalHost)
 				return;
 
@@ -123,7 +120,7 @@ namespace Kiaro
             enet_peer_disconnect(mInternalPeer, 0);
 
             ENetEvent event;
-			// TODO(Robert MacGregor#5): Wait for disconnect event that doesn't come immediately?
+			// TODO: Wait for disconnect event that doesn't come immediately?
             while (enet_host_service(mInternalHost, &event, wait) > 0)
                 switch (event.type)
                 {

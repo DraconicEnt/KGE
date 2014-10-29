@@ -6,8 +6,6 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.0.0.0
- *  @date 3/19/2014file:///home/ragora/Documents/Self%20Source%20Code/KGE/apps/engine/include/easydelegate.hpp
  *  @ref http://stackoverflow.com/questions/7858817/unpacking-a-tuple-to-call-a-matching-function-pointer
  *
  *  @copyright (c) 2014 Draconic Entertainment

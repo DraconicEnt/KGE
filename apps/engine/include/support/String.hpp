@@ -2,12 +2,10 @@
  *  @file String.h
  *  @brief Include file that defines the Kiaro::Support::String class.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.0.0.19
- *  @date 3/19/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
@@ -78,7 +76,7 @@ namespace Kiaro
             void operator +=(const String &other);
 
             private:
-            // TODO (Robert MacGregor#9): Figure out why is_const is necessary for the strings to operate correctly and if it has issues elsewhere.
+            // TODO: Figure out why is_const is necessary for the strings to operate correctly and if it has issues elsewhere.
             bool is_const;
 
             Common::C8 *stored;
