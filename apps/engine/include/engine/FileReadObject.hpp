@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @copyright (c) 2013 Draconic Entertainment
+ *  @copyright (c) 2014 Draconic Entertainment
  */
 
 #ifndef _INCLUDE_KIARO_ENGINE_FILEREADOBJECT_HPP_

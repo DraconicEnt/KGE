@@ -2,12 +2,10 @@
  *  @file InstanceSingleton.cpp
  *  @brief Source code associated with the Kiaro::EngineInstance singleton class.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @version 0.0.0.19
- *  @date 3/19/2014
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
@@ -84,7 +82,7 @@ namespace Kiaro
         {
             mRunning = true;
 
-            std::cout << "EngineInstance: Running game '" << mGameName << "'" << std::endl;
+            std::cout << "CoreSingleton: Running game '" << mGameName << "'" << std::endl;
 
             // Handle Execution Flag
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
@@ -94,7 +92,7 @@ namespace Kiaro
 
             // Print the linked E-Net version
             ENetVersion enetVersion = enet_linked_version();
-            std::cout << "E-Net Version: " << ENET_VERSION_GET_MAJOR(enetVersion) << "." << ENET_VERSION_GET_MINOR(enetVersion) <<
+            std::cout << "CoreSingleton: E-Net Version is " << ENET_VERSION_GET_MAJOR(enetVersion) << "." << ENET_VERSION_GET_MINOR(enetVersion) <<
             "." << ENET_VERSION_GET_PATCH(enetVersion) << std::endl;
 
             switch (mEngineMode)
@@ -234,7 +232,7 @@ namespace Kiaro
             if (!mRunning)
                 return;
 
-            std::cout << "EngineInstance: Killed via Kill()" << std::endl;
+            std::cout << "CoreSingleton: Killed via Kill()" << std::endl;
 
             mRunning = false;
         }
@@ -247,7 +245,7 @@ namespace Kiaro
 
         CoreSingleton::~CoreSingleton(void)
         {
-            std::cout << "EngineInstance: Deinitializing ..." << std::endl;
+            std::cout << "CoreSingleton: Deinitializing ..." << std::endl;
 
             // TODO: Check the destroy order
             if (mClient)

@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @copyright (c) 2013 Draconic Entertainment
+ *  @copyright (c) 2014 Draconic Entertainment
  */
 
 #ifndef _INCLUDE_KIARO_ENGINE_INPUTLISTENERSINGLETON_HPP_
@@ -28,7 +28,7 @@ namespace Kiaro
                 static InputListenerSingleton *getPointer(void);
                 static void destroy(void);
 
-                bool OnEvent(const irr::SEvent& event);
+                bool OnEvent(const irr::SEvent &event);
 
             // Private Methods
             private:

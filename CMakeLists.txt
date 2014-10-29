@@ -20,17 +20,6 @@ OPTION(BUILD_UNITTESTS "Build unit tests in all of the software. (It requires GT
 # Options to build specific parts of the engine
 OPTION(BUILD_ENGINE "Build the core game engine." ON)
 
-# Configure for GNU Compiler
-IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
-	SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c++11")
-	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
-
-	IF (${DEBUG})
-		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-		SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
-	ENDIF (${DEBUG})
-ENDIF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
-
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 # Check our dependencies
@@ -59,5 +48,6 @@ ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 
 # Handle our build options
 IF (BUILD_ENGINE)
-	ADD_SUBDIRECTORY("apps/engine")				
+	ADD_SUBDIRECTORY("apps/lua")
+	ADD_SUBDIRECTORY("apps/engine")
 ENDIF (BUILD_ENGINE)

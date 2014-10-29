@@ -34,16 +34,17 @@ namespace Kiaro
 
         void IncomingClientBase::send(Kiaro::Network::PacketBase *packet, const bool &reliable)
         {
-            Kiaro::Common::U32 packet_flag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
+            Kiaro::Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
+
             if (reliable)
-                packet_flag = ENET_PACKET_FLAG_RELIABLE;
+                packetFlag = ENET_PACKET_FLAG_RELIABLE;
 
-                // TODO: Packet Size Query
-                Kiaro::Support::BitStream outStream(NULL, 0, 0);
-                packet->packData(outStream);
+            // TODO: Packet Size Query
+            Kiaro::Support::BitStream outStream(NULL, 0, 0);
+            packet->packData(outStream);
 
-                ENetPacket *enetPacket = enet_packet_create(outStream.raw(), outStream.length(), packet_flag);
-                enet_peer_send(mInternalClient, 0, enetPacket);
+            ENetPacket *enetPacket = enet_packet_create(outStream.raw(), outStream.length(), packetFlag);
+            enet_peer_send(mInternalClient, 0, enetPacket);
         }
 
         bool IncomingClientBase::getIsOppositeEndian(void) { return mIsOppositeEndian; }
