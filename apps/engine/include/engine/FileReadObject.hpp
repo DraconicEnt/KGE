@@ -12,10 +12,11 @@
 #ifndef _INCLUDE_KIARO_ENGINE_FILEREADOBJECT_HPP_
 #define _INCLUDE_KIARO_ENGINE_FILEREADOBJECT_HPP_
 
-#include <engine/Common.hpp>
 #include <irrlicht.h>
 
 #include <physfs.h>
+
+#include <engine/Common.hpp>
 
 namespace Kiaro
 {
@@ -38,6 +39,7 @@ namespace Kiaro
                 long getPos() const;
 
                 const irr::io::path& getFileName() const;
+
             // Private Members
             private:
                 const std::string mFileName;

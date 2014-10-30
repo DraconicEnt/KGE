@@ -48,7 +48,7 @@ namespace Kiaro
             return PHYSFS_tell(mFileHandle);
         }
 
-        const irr::io::path& FileReadObject::getFileName() const
+        const irr::io::path &FileReadObject::getFileName() const
         {
             return mFileName.c_str();
         }

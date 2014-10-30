@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
 #define _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
 
+#include <lua.hpp>
 #include <irrlicht/irrlicht.h>
 
 #include <engine/Common.hpp>
@@ -77,6 +78,8 @@ namespace Kiaro
                 Kiaro::Common::U16 mTargetServerPort;
                 Kiaro::Network::OutgoingClientBase *mClient;
                 Kiaro::Network::ServerBase *mServer;
+
+                lua_State *mLuaState;
 
                 std::string mGameName;
         };

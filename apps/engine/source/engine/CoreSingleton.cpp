@@ -31,6 +31,7 @@
 #include <game/OutgoingClientSingleton.hpp>
 #include <game/ServerSingleton.hpp>
 
+#include <lua.hpp>
 
 namespace Kiaro
 {
@@ -83,6 +84,9 @@ namespace Kiaro
             mRunning = true;
 
             std::cout << "CoreSingleton: Running game '" << mGameName << "'" << std::endl;
+
+            // Add the game search path
+            PHYSFS_mount(mGameName.c_str(), NULL, 1);
 
             // Handle Execution Flag
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
@@ -159,6 +163,26 @@ namespace Kiaro
                 guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
                 guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
             }
+
+            mLuaState = luaL_newstate();
+            luaL_checkversion(mLuaState);
+            lua_gc(mLuaState, LUA_GCSTOP, 0);
+            luaL_openlibs(mLuaState);
+            lua_gc(mLuaState, LUA_GCRESTART, 0);
+
+            // Load up the main file
+            std::string mainFilePath = PHYSFS_getRealDir("main.lua");
+            mainFilePath += "/main.lua";
+
+            std::cout << mainFilePath << std::endl;
+
+            luaL_dofile(mLuaState, mainFilePath.c_str());
+
+            // Call the main() method
+            lua_getglobal(mLuaState, "main");
+            lua_call(mLuaState, 0, 0);
+
+            std::cout << "CoreSingleton: Initialized Lua " << std::endl;
 
             irr::core::dimension2d<irr::u32> lastDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
 
@@ -246,6 +270,8 @@ namespace Kiaro
         CoreSingleton::~CoreSingleton(void)
         {
             std::cout << "CoreSingleton: Deinitializing ..." << std::endl;
+
+            lua_close(mLuaState);
 
             // TODO: Check the destroy order
             if (mClient)
