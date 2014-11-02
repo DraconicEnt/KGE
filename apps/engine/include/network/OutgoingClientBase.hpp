@@ -67,7 +67,7 @@ namespace Kiaro
                 //! Callback function that is called upon receiving a packet from the remote server.
                 virtual void onReceivePacket(Kiaro::Support::BitStream &incomingStream) = 0;
 
-                bool isConnected(void);
+                bool getIsConnected(void);
 
                 /**
                  *  @brief Constructor accepting an incoming client connection.

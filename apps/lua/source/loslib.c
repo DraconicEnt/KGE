@@ -75,29 +75,34 @@
 
 #endif
 
+// We use PhysFS instead of straight OS functions
+#include <physfs.h>
 
-
+/*
+// We don't want os_execute
 static int os_execute (lua_State *L) {
   const char *cmd = luaL_optstring(L, 1, NULL);
   int stat = system(cmd);
   if (cmd != NULL)
     return luaL_execresult(L, stat);
   else {
-    lua_pushboolean(L, stat);  /* true if there is a shell */
+    lua_pushboolean(L, stat);  // true if there is a shell
     return 1;
   }
-}
+} */
 
 
 static int os_remove (lua_State *L) {
   const char *filename = luaL_checkstring(L, 1);
-  return luaL_fileresult(L, remove(filename) == 0, filename);
+  return luaL_fileresult(L, PHYSFS_delete(filename) != 0, filename);
 }
 
 
 static int os_rename (lua_State *L) {
   const char *fromname = luaL_checkstring(L, 1);
   const char *toname = luaL_checkstring(L, 2);
+
+  // TODO (Robert MacGregor#9): Implement file renaming
   return luaL_fileresult(L, rename(fromname, toname) == 0, NULL);
 }
 
@@ -301,7 +306,6 @@ static const luaL_Reg syslib[] = {
   {"clock",     os_clock},
   {"date",      os_date},
   {"difftime",  os_difftime},
-  {"execute",   os_execute},
   {"exit",      os_exit},
   {"getenv",    os_getenv},
   {"remove",    os_remove},

@@ -56,6 +56,8 @@ namespace Kiaro
                 Kiaro::Common::U32 run(Kiaro::Common::S32 argc, Kiaro::Common::C8 *argv[]);
                 void kill(void);
 
+                bool isDedicated(void);
+
             // Public Members
             Kiaro::Common::ColorRGBA mClearColor;
 

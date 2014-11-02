@@ -148,6 +148,9 @@ namespace Kiaro
 
         void OutgoingClientBase::update(void)
         {
+            if (!mIsConnected)
+                return;
+
             ENetEvent event;
             while (enet_host_service(mInternalHost, &event, 0) > 0)
             {
@@ -176,7 +179,7 @@ namespace Kiaro
             }
         }
 
-        bool OutgoingClientBase::isConnected(void) { return mIsConnected; }
+        bool OutgoingClientBase::getIsConnected(void) { return mIsConnected; }
 
         void OutgoingClientBase::dispatch(void) { if (mInternalHost) enet_host_flush(mInternalHost); }
     } // End Namespace Network

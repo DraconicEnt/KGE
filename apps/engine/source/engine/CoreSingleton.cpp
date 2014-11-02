@@ -74,6 +74,11 @@ namespace Kiaro
             mGameName = gameName;
         }
 
+        bool CoreSingleton::isDedicated(void)
+        {
+            return mEngineMode & Kiaro::ENGINE_DEDICATED;
+        }
+
         irr::IrrlichtDevice *CoreSingleton::getIrrlichtDevice(void)
         {
             return mIrrlichtDevice;
@@ -111,7 +116,7 @@ namespace Kiaro
                     mClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
                     mClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
 
-                    if (!mClient->isConnected())
+                    if (!mClient->getIsConnected())
                     {
                         std::cerr << "EngineInstance: Failed to connect to remote host with server flag" << std::endl;
 
@@ -144,6 +149,7 @@ namespace Kiaro
                 CEGUI::IrrlichtRenderer::bootstrapSystem(*mIrrlichtDevice);
 
                 // Setup our resource directories
+                // TODO (Robert MacGregor#9): Build a resource provider for CEGUI that implements PhysFS
                 CEGUI::DefaultResourceProvider* resourceProvider = static_cast<CEGUI::DefaultResourceProvider*>( CEGUI::System::getSingleton().getResourceProvider());
 
                 std::string basePath = "./";
@@ -164,6 +170,7 @@ namespace Kiaro
                 guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
             }
 
+            // Initialize Lua
             mLuaState = luaL_newstate();
             luaL_checkversion(mLuaState);
             lua_gc(mLuaState, LUA_GCSTOP, 0);
@@ -171,12 +178,11 @@ namespace Kiaro
             lua_gc(mLuaState, LUA_GCRESTART, 0);
 
             // Load up the main file
-            std::string mainFilePath = PHYSFS_getRealDir("main.lua");
-            mainFilePath += "/main.lua";
+            // TODO: Implement PhysFS in Lua
+            std::string mainLuaFile = PHYSFS_getRealDir("main.lua");
+            mainLuaFile += "/main.lua";
 
-            std::cout << mainFilePath << std::endl;
-
-            luaL_dofile(mLuaState, mainFilePath.c_str());
+            luaL_dofile(mLuaState, mainLuaFile.c_str());
 
             // Call the main() method
             lua_getglobal(mLuaState, "main");

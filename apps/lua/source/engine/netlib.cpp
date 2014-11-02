@@ -2,6 +2,7 @@
 #define LUA_LIB
 
 #include <engine/CoreSingleton.hpp>
+#include <game/OutgoingClientSingleton.hpp>
 
 extern "C"
 {
@@ -12,31 +13,47 @@ extern "C"
     #include "lauxlib.h"
     #include "lualib.h"
 
-    /*
-    static int math_log (lua_State *L) {
-      lua_Number x = luaL_checknumber(L, 1);
-      lua_Number res;
-      if (lua_isnoneornil(L, 2))
-        res = l_mathop(log)(x);
-      else {
-        lua_Number base = luaL_checknumber(L, 2);
-        if (base == (lua_Number)10.0) res = l_mathop(log10)(x);
-        else res = l_mathop(log)(x)/l_mathop(log)(base);
-      }
-      lua_pushnumber(L, res);
-      return 1;
-    }
-    */
-
     static int net_connect(lua_State *L)
     {
         Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
+
+        // The OutgoingClientSingleton isn't even initialized for a dedicated server
+        if (engineCore->isDedicated())
+            return luaL_error(L, "Method 'net.connect' is not available for dedicated servers!");
+        else if (lua_gettop(L) == 0)
+            return luaL_error(L, "No IP address specified for method 'net.connect'.");
+        else if (!lua_isstring(L, -1))
+            return luaL_error(L, "IP parameter for method 'net.connect' is not a string!");
+
+        Kiaro::Network::OutgoingClientBase *outClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
+
+        outClient->disconnect();
+        outClient->connect(lua_tostring(L, -1), 11595, 3000);
+
+        return 1;
+    }
+
+    static int net_disconnect(lua_State *L)
+    {
+        Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
+
+        if (engineCore->isDedicated())
+            return luaL_error(L, "Method 'net.disconnect' is not available for dedicated servers!");
+
+        Kiaro::Network::OutgoingClientBase *outClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
+
+        if (!outClient->getIsConnected())
+            return luaL_error(L, "Method 'net.disconnect' called without an active connection to a server!");
+
+        outClient->disconnect();
+
         return 1;
     }
 
     static const luaL_Reg netlib[] =
     {
       {"connect", net_connect},
+      {"disconnect", net_disconnect},
       {NULL, NULL}
     };
 
