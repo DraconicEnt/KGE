@@ -9,6 +9,8 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+#include <regex> // std::regex, std::regex_match
+
 #include <support/CommandLineParser.hpp>
 
 namespace Kiaro
@@ -19,13 +21,13 @@ namespace Kiaro
         {
             mArgv = argv;
 
-            static const boost::regex flagRegex("-.+", boost::regex::extended);
+            static const std::regex flagRegex("-.+");
 
            	size_t currentFlagHash = 0;
 			const Kiaro::Common::C8 *currentFlagName = NULL;
 
             for (size_t iteration = 1; iteration < argc; iteration++)
-				if (boost::regex_match(argv[iteration], flagRegex))
+				if (std::regex_match(argv[iteration], flagRegex))
 				{
 					currentFlagName = argv[iteration];
 					currentFlagHash = Kiaro::Common::string_hash(currentFlagName);
@@ -100,7 +102,7 @@ namespace Kiaro
         {
             bool executedFlagHandler = false;
 
-            for (boost::unordered_map<size_t, std::vector<std::string>>::iterator it = mFlags.begin(); it != mFlags.end(); it++)
+            for (std::unordered_map<size_t, std::vector<std::string>>::iterator it = mFlags.begin(); it != mFlags.end(); it++)
                 try
                 {
                     size_t currentFlagHash = (*it).first;

@@ -20,9 +20,7 @@
 #include <engine/Config.hpp>
 #include "String.hpp"
 
-#include <boost/array.hpp>
-#include <boost/unordered_map.hpp>
-#include <boost/regex.hpp>
+#include <unordered_map> // std::unordered_map
 
 namespace Kiaro
 {
@@ -74,8 +72,8 @@ namespace Kiaro
                 void displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags);
             private:
                 Kiaro::Common::C8 **mArgv;
-                boost::unordered_map<size_t, std::vector<std::string>> mFlags;
-                boost::unordered_map<size_t, FlagEntry *> mFlagResponders;
+                std::unordered_map<size_t, std::vector<std::string>> mFlags;
+                std::unordered_map<size_t, FlagEntry *> mFlagResponders;
 
                 std::vector<FlagEntry *> mFlagEntries;
 
