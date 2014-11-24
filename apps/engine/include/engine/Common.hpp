@@ -9,12 +9,14 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_COMMON_
-#define _INCLUDE_KIARO_COMMON_
+#ifndef _INCLUDE_KIARO_ENGINE_COMMON_
+#define _INCLUDE_KIARO_ENGINE_COMMON_
 
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+
+#include <functional> // std::hash
 
 #include <irrlicht.h>
 #include <boost/unordered_map.hpp>
@@ -37,6 +39,12 @@ namespace Kiaro
     namespace Common
     {
         #define _ENGINE_USE_IRRLICHT_TYPES_ 1
+
+        #if defined(_MSC_VER) || (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)
+            #define NOTHROW __declspec(nothrow)
+        #else
+            #define NOTHROW __attribute__((nothrow))
+        #endif
 
         #ifndef _ENGINE_USE_IRRLICHT_TYPES_
             #if defined(_MSC_VER) || (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)
@@ -81,8 +89,7 @@ namespace Kiaro
         #endif
 
         //! A global hasher.
-        static boost::hash<std::string> string_hash;
+        static std::hash<std::string> string_hash;
     } // End NameSpace Common
 } // End NameSpace Kiaro
-
-#endif // _INCLUDE_KIARO_COMMON_
+#endif // _INCLUDE_KIARO_ENGINE_COMMON_

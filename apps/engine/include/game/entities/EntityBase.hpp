@@ -63,6 +63,7 @@ namespace Kiaro
                 protected:
                     const Kiaro::Common::U32 mTypeMask;
                     Kiaro::Common::U32 mNetID;
+                    Kiaro::Common::Vector3DF mPosition;
                     irr::scene::ISceneNode *mSceneNode;
             };
         } // End Namespace Entities

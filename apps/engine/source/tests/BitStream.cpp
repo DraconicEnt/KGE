@@ -17,6 +17,7 @@
 
         #include <gtest/gtest.h>
 
+        #include <engine/Common.hpp>
         #include <support/BitStream.hpp>
 
         static Kiaro::Common::F32 float_list[] =
@@ -30,7 +31,7 @@
         inline void PackFloats(Kiaro::Support::BitStream &destination)
         {
             for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
-                destination.writeF32(float_list[iteration]);
+                destination.write<Kiaro::Common::F32>(float_list[iteration]);
         }
 
         TEST(BitStreamTest, Floats)
@@ -45,7 +46,19 @@
 
             // Now make sure we can unpack the data correctly
             for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
-                EXPECT_EQ(float_list[(floatCount - 1) - iteration], floatStream.readF32());
+                EXPECT_EQ(float_list[(floatCount - 1) - iteration], floatStream.read<Kiaro::Common::F32>());
+
+            // Reset and read using memcpy
+            floatStream.mDataPointer = floatStream.length();
+
+            for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
+            {
+                Kiaro::Common::F32 &currentValue = floatStream.read<Kiaro::Common::F32>(true);
+                EXPECT_EQ(float_list[(floatCount - 1) - iteration], currentValue);
+
+                // Deallocate without dying now?
+                delete &currentValue;
+            }
         }
 
         TEST(BitStreamTest, BadStartFloats)
@@ -60,7 +73,26 @@
 
             // Now make sure we can unpack the data correctly
             for (Kiaro::Common::S32 iteration = floatCount - 1; iteration > -1; iteration--)
-                EXPECT_EQ(float_list[iteration], floatStream.readF32());
+                EXPECT_EQ(float_list[iteration], floatStream.read<Kiaro::Common::F32>());
+        }
+
+        TEST(BitStreamTest, Vector)
+        {
+            Kiaro::Common::U32 expectedStreamSize = floatCount * sizeof(Kiaro::Common::F32);
+
+            Kiaro::Common::Vector3DF testVector(1.0f, 2.0f, 3.0f);
+            Kiaro::Support::BitStream vectorStream(expectedStreamSize);
+            vectorStream.write<Kiaro::Common::Vector3DF>(testVector);
+
+            Kiaro::Common::Vector3DF &readVector = vectorStream.read<Kiaro::Common::Vector3DF>();
+
+            // Are the components correct?
+            EXPECT_EQ(1.0f, readVector.X);
+            EXPECT_EQ(2.0f, readVector.Y);
+            EXPECT_EQ(3.0f, readVector.Z);
+
+            // Kill it
+            delete &readVector;
         }
     #endif // _INCLUDE_KIARO_TESTS_H_
 #endif // ENGINE_TESTS

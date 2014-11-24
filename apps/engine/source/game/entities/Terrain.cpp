@@ -56,10 +56,10 @@ namespace Kiaro
             {
                 const Kiaro::Common::Vector3DF &position = mSceneNode->getPosition();
 
-                out.writeF32(position.X);
-                out.writeF32(position.Y);
-                out.writeF32(position.Z);
-                out.writeString(mTerrainFile);
+                out.write<Kiaro::Common::F32>(position.X);
+                out.write<Kiaro::Common::F32>(position.Y);
+                out.write<Kiaro::Common::F32>(position.Z);
+                out.write(mTerrainFile);
             }
 
             void Terrain::unpackInitialization(Kiaro::Support::BitStream &in)
@@ -71,9 +71,9 @@ namespace Kiaro
                 if (mSceneNode)
                 {
                     Kiaro::Common::Vector3DF position;
-                    position.Z = in.readF32();
-                    position.Y = in.readF32();
-                    position.X = in.readF32();
+                    position.Z = in.read<Kiaro::Common::F32>();
+                    position.Y = in.read<Kiaro::Common::F32>();
+                    position.X = in.read<Kiaro::Common::F32>();
 
                     mSceneNode->setPosition(position);
                 }

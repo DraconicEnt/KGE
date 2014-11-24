@@ -39,10 +39,10 @@ namespace Kiaro
 
                     void packData(Kiaro::Support::BitStream &out)
                     {
-                        out.writeU8(mVersionMajor);
-                        out.writeU8(mVersionMinor);
-                        out.writeU8(mVersionRevision);
-                        out.writeU32(mVersionBuild);
+                        out.write(mVersionMajor);
+                        out.write(mVersionMinor);
+                        out.write(mVersionRevision);
+                        out.write(mVersionBuild);
 
                         Kiaro::Network::PacketBase::packData(out);
                     }
@@ -52,10 +52,10 @@ namespace Kiaro
                         if (in.length() <= getMinimumPacketPayloadLength())
                             throw std::runtime_error("Unable to unpack HandShake packet; too small of a payload!");
 
-                        mVersionBuild = in.readU32();
-                        mVersionRevision = in.readU8();
-                        mVersionMinor = in.readU8();
-                        mVersionMajor = in.readU8();
+                        mVersionBuild = in.read<Kiaro::Common::U32>();
+                        mVersionRevision = in.read<Kiaro::Common::U8>();
+                        mVersionMinor = in.read<Kiaro::Common::U8>();
+                        mVersionMajor = in.read<Kiaro::Common::U8>();
                     }
 
                     Kiaro::Common::U32 getMinimumPacketPayloadLength(void)

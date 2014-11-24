@@ -19,7 +19,10 @@ namespace Kiaro
     {
         namespace Entities
         {
-            EntityBase::EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask) : mTypeMask(typeMask), mNetID(0), mSceneNode(NULL) { }
+            EntityBase::EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask) : mTypeMask(typeMask), mNetID(0), mSceneNode(NULL)
+            {
+                addNetworkedProperty("position", mPosition);
+            }
 
             EntityBase::~EntityBase(void)
             {

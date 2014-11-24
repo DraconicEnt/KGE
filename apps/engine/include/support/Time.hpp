@@ -27,11 +27,11 @@ namespace Kiaro
             timer startTimer(void);
             Kiaro::Common::F32 stopTimer(timer id);
 
-            Kiaro::Common::U64 getCurrentTimeMicroseconds(void);
-            Kiaro::Common::U64 getTimerResolutionMicroseconds(void);
+            Kiaro::Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
+            Kiaro::Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
 
-            Kiaro::Common::U64 getSimTimeMicroseconds(void);
-            Kiaro::Common::U64 getSimTimeMilliseconds(void);
+            Kiaro::Common::U64 getSimTimeMicroseconds(void) NOTHROW;
+            Kiaro::Common::U64 getSimTimeMilliseconds(void) NOTHROW;
         } // End NameSpace Time
     } // End NameSpace Support
 } // End NameSpace Kiaro

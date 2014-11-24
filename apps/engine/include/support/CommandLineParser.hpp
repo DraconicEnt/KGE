@@ -12,15 +12,15 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_COMMANDLINEPARSER_H_
 #define _INCLUDE_KIARO_SUPPORT_COMMANDLINEPARSER_H_
 
-#include <string>
+#include <string>        // std::string
+#include <vector>        // std::vector
+#include <unordered_map> // std::unordered_map
 
 #include <easydelegate.hpp>
 
 #include <engine/Common.hpp>
 #include <engine/Config.hpp>
 #include "String.hpp"
-
-#include <unordered_map> // std::unordered_map
 
 namespace Kiaro
 {
@@ -35,6 +35,7 @@ namespace Kiaro
          */
         class CommandLineParser
         {
+            // Public Methods
             public:
                 typedef EasyDelegate::DelegateBase<void, CommandLineParser *, Kiaro::Common::C8 **, const std::vector<std::string>&, bool> FlagResponder;
 
@@ -70,6 +71,8 @@ namespace Kiaro
                 void invokeFlagResponders(void);
 
                 void displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags);
+
+            // Private Members
             private:
                 Kiaro::Common::C8 **mArgv;
                 std::unordered_map<size_t, std::vector<std::string>> mFlags;

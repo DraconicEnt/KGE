@@ -43,8 +43,8 @@ namespace Kiaro
                 {
                     static Kiaro::Common::U32 sLastPacketID = 0;
 
-                    out.writeU32(mType);
-                    out.writeU32(sLastPacketID);
+                    out.write(mType);
+                    out.write(sLastPacketID);
                     mID = sLastPacketID;
 
                     sLastPacketID++;
@@ -52,8 +52,8 @@ namespace Kiaro
 
                 virtual void unpackData(Kiaro::Support::BitStream &in)
                 {
-                    mID = in.readU32();
-                    mType = in.readU32();
+                    mID = in.read<Kiaro::Common::U32>();
+                    mType = in.read<Kiaro::Common::U32>();
                 }
 
                 Kiaro::Common::U32 getType(void) { return mType; }

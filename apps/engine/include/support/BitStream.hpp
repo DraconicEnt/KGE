@@ -12,10 +12,15 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_BITSTREAM_H_
 #define _INCLUDE_KIARO_SUPPORT_BITSTREAM_H_
 
+#include <type_traits>  // std::is_pointer
+#include <exception>
+
 #include <boost/iostreams/stream_buffer.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include <engine/Common.hpp>
+
+#include <irrlicht.h>
 
 namespace Kiaro
 {
@@ -24,6 +29,7 @@ namespace Kiaro
         //! BitStreams are serialized chunks of data that allow for easy read/write operations.
         class BitStream
         {
+            // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an initial array and length.
@@ -66,42 +72,56 @@ namespace Kiaro
                  *  @param in_data A pointer to the data to be copied into the bitstream.
                  *  @param in_data_length The size in bytes that our in data is.
                  */
-                void write(const void *inData, const size_t &inDataLength);
+                //void write(const void *inData, const size_t &inDataLength);
 
-                /**
-                 *  @brief Writes an Kiaro::f32 to the BitStream.
-                 *  @param in_data An Kiaro::f32 to write to the BitStream.
-                 *  @see BitStream::Write
-                 */
-                void writeF32(const Kiaro::Common::F32 &inData);
+                template <typename typeName>
+                void write(const typeName &inData, size_t inDataLength = 0)
+                {
+                    if (inDataLength == 0)
+                        inDataLength = sizeof(typeName);
+                    else if (!std::is_pointer<typeName>::value)
+                        throw std::logic_error("BitStream: Attempted to use non-sizeof data length with a non-pointer!");
 
-                /**
-                 *  @brief Writes a bool to the BitStream.
-                 *  @param in_data A bool to write to the BitStream.
-                 *  @see BitStream::Write
-                 */
-                void writeBool(const bool &inData);
+                    // Check to see if we have enough room to write this data
+                    if (mDataLength < mDataPointer + inDataLength)
+                    {
+                        // Technically should be zero ...
+                        const Kiaro::Common::U32 dataLengthOffset = mDataLength - mDataPointer;
 
-                /**
-                 *  @brief Writes a Kiaro::u8 to the BitStream.
-                 *  @param in_data A Kiaro::u8 to write to the BitStream.
-                 *  @see BitStream::Write
-                 */
-                 void writeU8(const Kiaro::Common::U8 &inData);
+                        Kiaro::Common::U32 newDataLength = (mDataLength - dataLengthOffset) + inDataLength;
+                        Kiaro::Common::U8 *newMemory = new Kiaro::Common::U8[newDataLength];
 
-                /**
-                 *  @brief Writes a Kiaro::u32 to the BitStream.
-                 *  @param in_data A Kiaro::u32 to write to the BitStream.
-                 *  @see BitStream::Write
-                 */
-                 void writeU32(const Kiaro::Common::U32 &inData);
+                        memcpy(newMemory, mData, mDataLength);
+                        mDataLength = newDataLength;
 
-                /**
-                 *  @brief Writes a NULL terminated Kiaro::c8 string to the BitStream.
-                 *  @param in_string A NULL terminated Kiaro::c8 string to write to the BitStream.
-                 *  @see BitStream::Write
-                 */
-                void writeString(const std::string &inString);
+                        if (mData && mIsManagingMemory)
+                            delete mData;
+
+                        mData = newMemory;
+                        mIsManagingMemory = true;
+                    }
+
+                    memcpy(&mData[mDataPointer], &inData, inDataLength);
+                    mDataPointer += inDataLength; // NOTE (Robert MacGregor#9): Preserves the offset
+                }
+
+                template <bool>
+                void write(const bool &in)
+                {
+                    write<Kiaro::Common::U8>(in);
+                }
+
+                void write(const Kiaro::Common::Vector3DF &inVector)
+                {
+                    write<Kiaro::Common::F32>(inVector.X);
+                    write<Kiaro::Common::F32>(inVector.Y);
+                    write<Kiaro::Common::F32>(inVector.Z);
+                }
+
+                void write(const std::string &inData)
+                {
+                    write(inData.c_str(), inData.length() + 1);
+                }
 
                 /**
                  *  @brief Reads arbitrary data from the BitStream.
@@ -113,39 +133,25 @@ namespace Kiaro
                  *  @warning If should_memcpy is true, the data returned must be manually deallocated.
                  *  @throws std::out_of_range Thrown when a read operation goes out of bounds.
                  */
-                void *read(const size_t &outDataLength, const bool &shouldMemcpy = false);
+                template <class returnType>
+                returnType &read(const bool &shouldMemcpy = false)
+                {
+                    const size_t outDataLength = sizeof(returnType);
 
-                /**
-                 *  @brief Reads a Kiaro::f32 from the BitStream.
-                 *  @param should_memcpy A boolean representing whether or not the data should be copied.
-                 *  @return The next Kiaro::f32 in the BitStream.
-                 *  @see BitStream::Read
-                 */
-                Kiaro::Common::F32 readF32(const bool &shouldMemcpy = false);
+                    if (outDataLength > mDataPointer)
+                        throw std::out_of_range("BitStream attempted to read out of range!");
+                    else
+                        mDataPointer -= outDataLength;
 
-                /**
-                 *  @brief Reads a bool from the BitStream.
-                 *  @param should_memcpy A boolean representing whether or not the data should be copied.
-                 *  @return The next bool in the BitStream.
-                 *  @see BitStream::Read
-                 */
-                bool readBool(const bool &shouldMemcpy = false);
+                    if (shouldMemcpy)
+                    {
+                        void *memory = (void*)new Kiaro::Common::U8[outDataLength];
+                        memcpy(memory, &mData[mDataPointer], outDataLength);
+                        return *((returnType*)memory);
+                    }
 
-                /**
-                 *  @brief Reads a Kiaro::u8 from the BitStream.
-                 *  @param should_memcpy A boolean representing whether or not the data should be copied.
-                 *  @return The next Kiaro::u8 in the BitStream.
-                 *  @see BitStream::Read
-                 */
-                Kiaro::Common::U8 readU8(const bool &shouldMemcpy = false);
-
-                /**
-                 *  @brief Reads a Kiaro::u32 from the BitStream.
-                 *  @param should_memcpy A boolean representing whether or not the data should be copied.
-                 *  @return The next Kiaro::u8 in the BitStream.
-                 *  @see BitStream::Read
-                 */
-                Kiaro::Common::U32 readU32(const bool &shouldMemcpy = false);
+                    return *((returnType*)&mData[mDataPointer]);
+                }
 
                 /**
                  *  @brief Reads a Kiaro::c8 string from the BitStream.
@@ -156,20 +162,26 @@ namespace Kiaro
                  */
                 Kiaro::Common::C8 *readString(const size_t &outStringLength = 0, const bool &shouldMemcpy = false);
 
+                void *getBasePointer(void) NOTHROW;
+
                 /**
                  *  @brief Returns the void pointer representation of the BitStream's contents.
                  *  @return A void pointer to the start of the BitStream's contents.
                  */
                 void *raw(const bool &shouldMemcpy = false);
 
-                size_t length(void);
+                size_t length(void) NOTHROW;
 
+            // Public Members
+            public:
+                //! Keeps track of where we are currently in the BitStream during read and write operations.
+                size_t mDataPointer;
+
+            // Private Members
             private:
                 //! The array where all BitStream data is read/written from.
                 Kiaro::Common::U8 *mData;
 
-                //! Keeps track of where we are currently in the BitStream during read and write operations.
-                size_t mDataPointer;
                 //! The current size of the BitStream in bytes.
                 size_t mDataLength;
 

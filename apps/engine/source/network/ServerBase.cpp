@@ -34,7 +34,6 @@ namespace Kiaro
                 mIsRunning = false;
 
                 throw std::runtime_error("ServerBase: Failed to create ENet host!");
-                   return;
             }
         }
 
