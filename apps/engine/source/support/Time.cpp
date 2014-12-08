@@ -1,6 +1,6 @@
 /**
- *  @file MapDivision.h
- *  @brief Header file defining the Kiaro::Support::MapDivision class.
+ *  @file Time.cpp
+ *  @brief Source file implementing timing operations.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -21,36 +21,36 @@ namespace Kiaro
     {
         namespace Time
         {
-            static std::vector<Kiaro::Common::U64> timerStack;
-            static Kiaro::Common::U32 currentSimTime = 0;
+            static std::vector<Kiaro::Common::U64> sTimerStack;
+            static Kiaro::Common::U32 sCurrentSimTime = 0;
 
             Kiaro::Support::Time::timer startTimer(void)
             {
-                timerStack.push_back(Kiaro::Support::Time::getCurrentTimeMicroseconds());
-                return timerStack.size();
+                sTimerStack.push_back(Kiaro::Support::Time::getCurrentTimeMicroseconds());
+                return sTimerStack.size();
             }
 
-            Kiaro::Common::F32 stopTimer(Kiaro::Support::Time::timer id)
+            Kiaro::Common::F32 stopTimer(const Kiaro::Support::Time::timer &timerIdentifier)
             {
-                if (timerStack.size() == 0)
-                    throw std::logic_error("No timers to stop!");
-                else if (id != timerStack.size())
-                    throw std::logic_error("Mismatched timer identifier!");
+                if (sTimerStack.size() == 0)
+                    throw std::logic_error("Time: No timers to stop!");
+                else if (timerIdentifier != sTimerStack.size())
+                    throw std::logic_error("Time: Mismatched timer identifier!");
 
-                Kiaro::Common::U64 currentTimeMicroseconds = Kiaro::Support::Time::getCurrentTimeMicroseconds();
-                Kiaro::Common::U64 lastTimeMicroseconds = timerStack.back();
+                const Kiaro::Common::U64 lastTimeMicroseconds = sTimerStack.back();
+                const Kiaro::Common::U64 currentTimeMicroseconds = Kiaro::Support::Time::getCurrentTimeMicroseconds();
 
                 // NOTE (Robert MacGregor#1): Prevents the conversion calculation below from potentially being unrepresentable
                 Kiaro::Common::U64 deltaTimeMicroseconds = currentTimeMicroseconds - lastTimeMicroseconds;
 
                 // Only add deltas if we're the upper most timer
-                if(id == 1)
-                    currentSimTime += deltaTimeMicroseconds;
+                if(timerIdentifier == 1)
+                    sCurrentSimTime += deltaTimeMicroseconds;
 
-                deltaTimeMicroseconds = std::max(static_cast<Kiaro::Common::U64>(100), deltaTimeMicroseconds);
+                deltaTimeMicroseconds = std::max(100ULL, deltaTimeMicroseconds);
 
                 Kiaro::Common::F32 result = (Kiaro::Common::F32)(deltaTimeMicroseconds) / 1000000.f;
-                timerStack.pop_back();
+                sTimerStack.pop_back();
 
                 return result;
             }
@@ -73,12 +73,12 @@ namespace Kiaro
 
             Kiaro::Common::U64 getSimTimeMicroseconds(void)
             {
-                return currentSimTime;
+                return sCurrentSimTime;
             }
 
             Kiaro::Common::U64 getSimTimeMilliseconds(void)
             {
-                return currentSimTime / 1000ULL;
+                return sCurrentSimTime / 1000ULL;
             }
         } // End NameSpace Time
     } // End NameSpace Support

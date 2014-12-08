@@ -1,6 +1,6 @@
 /**
  *  @file SchedulerSingleton.cpp
- *  @brief Include file defining endian conversion functionality.
+ *  @brief Source file implementing the scheduler system.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -45,7 +45,7 @@ namespace Kiaro
 
         void SchedulerSingleton::update(void)
         {
-            const Kiaro::Common::U64 &currentSimTimeMS = Kiaro::Support::Time::getSimTimeMilliseconds();
+            const Kiaro::Common::U64 currentSimTimeMS = Kiaro::Support::Time::getSimTimeMilliseconds();
 
             for (std::set<ScheduledEvent*>::iterator iterator = mScheduledEventSet.begin(); iterator != mScheduledEventSet.end(); iterator++)
             {
