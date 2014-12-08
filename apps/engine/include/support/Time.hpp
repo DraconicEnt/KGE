@@ -1,6 +1,6 @@
 /**
  *  @file Time.hpp
- *  @brief Include file for time functionality.
+ *  @brief Include file defining timing functionality.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -25,7 +25,7 @@ namespace Kiaro
             typedef Kiaro::Common::U8 timer;
 
             timer startTimer(void);
-            Kiaro::Common::F32 stopTimer(timer id);
+            Kiaro::Common::F32 stopTimer(const timer &timerIdentifier);
 
             Kiaro::Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
             Kiaro::Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
