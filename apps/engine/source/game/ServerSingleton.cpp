@@ -9,6 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+#include <support/EventManagerSingleton.hpp>
 #include <game/packets/packets.hpp>
 #include <game/ServerSingleton.hpp>
 
@@ -39,6 +40,8 @@ namespace Kiaro
         {
             // Create the map division
             Kiaro::Support::MapDivision::Get(12);
+
+            // Create an init a gamemode
         }
 
         ServerSingleton::~ServerSingleton(void)
@@ -48,11 +51,13 @@ namespace Kiaro
 
         void ServerSingleton::onClientConnected(Kiaro::Network::IncomingClientBase *client)
         {
+            Kiaro::Support::EventManagerSingleton::get()->mOnClientConnectedEvent.invoke(client);
             std::cout << "Server: Received remote connection from x.x.x.x:" << client->getPort() << std::endl;
         }
 
         void ServerSingleton::onClientDisconnected(Kiaro::Network::IncomingClientBase *client)
         {
+            Kiaro::Support::EventManagerSingleton::get()->mOnClientDisconnectedEvent.invoke(client);
             std::cout << "Server: Received disconnection from x.x.x.x:" << client->getPort() << std::endl;
         }
 

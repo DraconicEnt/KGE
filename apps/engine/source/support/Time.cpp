@@ -47,7 +47,7 @@ namespace Kiaro
                 if(timerIdentifier == 1)
                     sCurrentSimTime += deltaTimeMicroseconds;
 
-                deltaTimeMicroseconds = std::max(100ULL, deltaTimeMicroseconds);
+                deltaTimeMicroseconds = std::max(static_cast<Kiaro::Common::U64>(100), deltaTimeMicroseconds);
 
                 Kiaro::Common::F32 result = (Kiaro::Common::F32)(deltaTimeMicroseconds) / 1000000.f;
                 sTimerStack.pop_back();

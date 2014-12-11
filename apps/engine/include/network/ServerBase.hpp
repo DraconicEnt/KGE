@@ -24,6 +24,11 @@
 
 namespace Kiaro
 {
+    namespace Game
+    {
+        class GamemodeBase;
+    } // End NameSpace Game
+
     namespace Support
     {
         class BitStream;
@@ -76,6 +81,8 @@ namespace Kiaro
              */
             void dispatch(void) { if (mIsRunning) enet_host_flush(mInternalHost); }
 
+            void setGamemode(Kiaro::Game::GamemodeBase *game);
+
             //! Callback function that is called upon the server's underlaying network subsystem accepting a remote host connection.
             virtual void onClientConnected(Kiaro::Network::IncomingClientBase *client) = 0;
             //! Callback function that is called upon the disconnection of a remote host.
@@ -87,6 +94,8 @@ namespace Kiaro
 
             // Protected Members
 			protected:
+                Kiaro::Game::GamemodeBase *mCurrentGamemode;
+
                 bool mIsRunning;
 
                 ENetHost *mInternalHost;

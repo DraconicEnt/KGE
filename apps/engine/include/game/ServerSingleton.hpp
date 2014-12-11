@@ -22,6 +22,8 @@ namespace Kiaro
 {
     namespace Game
     {
+        class GamemodeBase;
+
         namespace Entities
         {
             class EntityBase;
@@ -35,9 +37,7 @@ namespace Kiaro
                 static ServerSingleton *getPointer(const std::string &listenAddress = "0.0.0.0", const Kiaro::Common::U16 &listenPort = 11595, const Kiaro::Common::U32 &maximumClientCount = 32);
                 static void destroy(void);
 
-                /**
-                 *  @brief Signals the server to stop running.
-                 */
+                //! Signals the server to stop running.
                 void stop(void);
 
                 /**
@@ -46,18 +46,37 @@ namespace Kiaro
                  */
                 bool isRunning(void);
 
+                //! Performs an update time pulse on the server.
                 void update(void);
 
-                /**
-                 *  @brief Causes the server to handle all queued network events immediately.
-                 */
+                //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
 
-                //! Callback function that is called upon the server's underlaying network subsystem accepting a remote host connection.
+
+                /**
+                 *  @brief Callback function that is called upon the server's underlaying
+                 *  network subsystem accepting a remote host connection.
+                 *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
+                 *  the incoming connection.
+                 */
                 void onClientConnected(Kiaro::Network::IncomingClientBase *client);
-                //! Callback function that is called upon the disconnection of a remote host.
+
+                /**
+                 *  @brief Callback function that is called upon the server's underlaying
+                 *  network subsystem disconnecting a remote host connection.
+                 *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
+                 *  the disconnected client.
+                 */
                 void onClientDisconnected(Kiaro::Network::IncomingClientBase *client);
 
+                /**
+                 *  @brief Callback function that is called upon the server's underlaying
+                 *  network subsystem receiving a packet.
+                 *  @param incomingStream A reference to the Kiaro::Support::BitStream that can be
+                 *  used to unpack the packet payload.
+                 *  @param sender A pointer to a Kiaro::Network::IncomingClientBase representing
+                 *  the sender of the packet.
+                 */
                 void onReceivePacket(Kiaro::Support::BitStream &incomingStream, Kiaro::Network::IncomingClientBase *sender);
 
                 Kiaro::Network::IncomingClientBase *getLastPacketSender(void);

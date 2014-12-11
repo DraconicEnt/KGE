@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <iostream>
 
+#include <game/GamemodeBase.hpp>
+
 #include <network/ServerBase.hpp>
 #include <network/IncomingClientBase.hpp>
 
@@ -22,7 +24,7 @@ namespace Kiaro
     namespace Network
     {
         ServerBase::ServerBase(const std::string &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount) : mIsRunning(true), mInternalHost(NULL),
-        mListenPort(listenPort), mListenAddress(listenAddress)
+        mListenPort(listenPort), mCurrentGamemode(NULL), mListenAddress(listenAddress)
         {
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
@@ -124,6 +126,16 @@ namespace Kiaro
         Kiaro::Network::IncomingClientBase *ServerBase::getLastPacketSender(void)
         {
             return NULL;
+        }
+
+        void ServerBase::setGamemode(Kiaro::Game::GamemodeBase *game)
+        {
+            if (mCurrentGamemode)
+                mCurrentGamemode->tearDown();
+
+            delete mCurrentGamemode;
+            mCurrentGamemode = game;
+            mCurrentGamemode->setup();
         }
     } // End Namespace Network
 } // End Namespace Kiaro

@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_GAMEMODEBASE_HPP_
 #define _INCLUDE_KIARO_GAMEMODEBASE_HPP_
 
-#include "EngineCommon.hpp"
+#include "engine/Common.hpp"
 
 #include <easydelegate.hpp>
 
@@ -24,8 +24,8 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                virtual void Setup(void) { std::cerr << "GamemodeBase: Gamemode setup not implemented!" << std::endl; }
-                virtual void Teardown(void) { std::cerr << "GamemodeBase: Gamemode teardown not implemented!" << std::endl; }
+                virtual void setup(void) { std::cerr << "GamemodeBase: Gamemode setup not implemented!" << std::endl; }
+                virtual void tearDown(void) { std::cerr << "GamemodeBase: Gamemode teardown not implemented!" << std::endl; }
 
                 virtual void OnPlayerKilled(void) { }
         };

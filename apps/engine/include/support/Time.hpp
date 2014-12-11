@@ -25,6 +25,12 @@ namespace Kiaro
             typedef Kiaro::Common::U8 timer;
 
             timer startTimer(void);
+
+            /**
+             *  @throw std::logic_error When the given timerIdentifier is not equal
+             *  to that of the current top level timer identifier.
+             *  @throw std::logic_error When there are no running timers to stop.
+             */
             Kiaro::Common::F32 stopTimer(const timer &timerIdentifier);
 
             Kiaro::Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;

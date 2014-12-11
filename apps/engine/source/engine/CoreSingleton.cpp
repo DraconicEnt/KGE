@@ -118,7 +118,7 @@ namespace Kiaro
 
                     if (!mClient->getIsConnected())
                     {
-                        std::cerr << "EngineInstance: Failed to connect to remote host with server flag" << std::endl;
+                        std::cerr << "CoreSingleton: Failed to connect to remote host with server flag" << std::endl;
 
                         return 1;
                     }
@@ -179,7 +179,14 @@ namespace Kiaro
 
             // Load up the main file
             // TODO: Implement PhysFS in Lua
-            std::string mainLuaFile = PHYSFS_getRealDir("main.lua");
+            const char *mainFileBase = PHYSFS_getRealDir("main.lua");
+            if (!mainFileBase)
+            {
+                std::cerr << "CoreSingleton: Failed to locate main.lua file!" << std::endl;
+                return 1;
+            }
+
+            std::string mainLuaFile = mainFileBase;
             mainLuaFile += "/main.lua";
 
             luaL_dofile(mLuaState, mainLuaFile.c_str());
