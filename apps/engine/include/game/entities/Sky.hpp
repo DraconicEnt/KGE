@@ -1,5 +1,5 @@
 /**
- *  @file Terrain.hpp
+ *  @file Sky.hpp
  *  @brief Include file defining the Server and related functions.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -9,8 +9,8 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_GAME_ENTITIES_TERRAIN_HPP_
-#define _INCLUDE_KIARO_GAME_ENTITIES_TERRAIN_HPP_
+#ifndef _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_
+#define _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_
 
 #include "engine/Common.hpp"
 
@@ -29,22 +29,14 @@ namespace Kiaro
     {
         namespace Entities
         {
-            enum TERRAIN_PROPERTY
-            {
-                TERRAIN_NULL = 0,
-                TERRAIN_POSITION = 1,
-                TERRAIN_SCALE = 2,
-                TERRAIN_TERRAINFILE = 3,
-            };
-
-            class Terrain : public Kiaro::Game::Entities::EntityBase
+            class Sky : public Kiaro::Game::Entities::EntityBase
             {
                 // Public Methods
                 public:
-                    Terrain(const std::string &terrainFile);
-                    Terrain(Kiaro::Support::BitStream &in);
+                    Sky();
+                    Sky(Kiaro::Support::BitStream &in);
 
-                    ~Terrain(void);
+                    ~Sky(void);
 
                     virtual void packUpdate(Kiaro::Support::BitStream &out);
                     virtual void unpackUpdate(Kiaro::Support::BitStream &in);
@@ -55,13 +47,9 @@ namespace Kiaro
 
                 // Private Members
                 private:
-                    irr::scene::ITerrainSceneNode *mSceneNode;
-
-                    std::string mTerrainFile;
-
-                    static std::map<std::string, size_t> sNetworkedProperties;
+                    Kiaro::Common::ColorRGBA mColor;
             };
         } // End Namespace Entities
     } // End Namespace Game
 } // End Namespace Kiaro
-#endif // _INCLUDE_KIARO_GAME_ENTITIES_TERRAIN_HPP_
+#endif // _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_

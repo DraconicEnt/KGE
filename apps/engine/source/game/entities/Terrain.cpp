@@ -43,7 +43,7 @@ namespace Kiaro
 
             void Terrain::packUpdate(Kiaro::Support::BitStream &out)
             {
-                const Kiaro::Common::Vector3DF &position = mSceneNode->getPosition();
+
 
             }
 

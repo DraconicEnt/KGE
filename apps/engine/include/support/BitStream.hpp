@@ -118,6 +118,14 @@ namespace Kiaro
                     write<Kiaro::Common::F32>(inVector.Z);
                 }
 
+                void write(const Kiaro::Common::ColorRGBA &inColor)
+                {
+                    write<Kiaro::Common::U32>(inColor.getRed());
+                    write<Kiaro::Common::U32>(inColor.getGreen());
+                    write<Kiaro::Common::U32>(inColor.getBlue());
+                    write<Kiaro::Common::U32>(inColor.getAlpha());
+                }
+
                 void write(const std::string &inData)
                 {
                     write(inData.c_str(), inData.length() + 1);

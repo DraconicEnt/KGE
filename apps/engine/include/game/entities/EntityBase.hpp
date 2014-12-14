@@ -27,6 +27,19 @@ namespace Kiaro
         namespace Entities
         {
             typedef Kiaro::Common::U32 TypeMask;
+            typedef Kiaro::Common::U32 EntityHintMask;
+
+            /**
+             *  @brief Enumerations representing
+             */
+            enum ENTITYHINT_NAME
+            {
+                ENTITYHINT_NULL = 0,
+                //! A hint that tells the engine that this object does not need automated net updating. It may be pushing updates on its own.
+                ENTITYHINT_STATIC = 1,
+                //! A hint that tells the engine that this object does not need update pulses.
+                ENTITYHINT_NONTHINKING = 2,
+            };
 
             class EntityBase : public Kiaro::Engine::SerializableObjectBase
             {
@@ -42,8 +55,6 @@ namespace Kiaro
                     //! Standard destructor.
                     ~EntityBase(void);
 
-                    void setShapeFile(const std::string &filename);
-
                     /**
                      *  @brief Gets the type mask of this object.
                      *  @return A Kiaro::Common::U32 representing the typemask.
@@ -56,15 +67,13 @@ namespace Kiaro
                     virtual void unpackUpdate(Kiaro::Support::BitStream &in);
                     virtual void packInitialization(Kiaro::Support::BitStream &out);
                     virtual void unpackInitialization(Kiaro::Support::BitStream &in);
-                    virtual void instantiate(void) = 0;
+                    virtual void instantiate(void);
                     virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds) = 0;
 
                 // Protected Members
                 protected:
                     const Kiaro::Common::U32 mTypeMask;
                     Kiaro::Common::U32 mNetID;
-                    Kiaro::Common::Vector3DF mPosition;
-                    irr::scene::ISceneNode *mSceneNode;
             };
         } // End Namespace Entities
     } // End Namespace Game

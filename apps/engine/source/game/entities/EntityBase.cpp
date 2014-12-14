@@ -19,37 +19,14 @@ namespace Kiaro
     {
         namespace Entities
         {
-            EntityBase::EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask) : mTypeMask(typeMask), mNetID(0), mSceneNode(NULL)
+            EntityBase::EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask) : mTypeMask(typeMask), mNetID(0)
             {
-                addNetworkedProperty("position", mPosition);
+
             }
 
             EntityBase::~EntityBase(void)
             {
-                if (mSceneNode)
-                    mSceneNode->drop();
-            }
 
-            void EntityBase::setShapeFile(const std::string &filename)
-            {
-                irr::IrrlichtDevice *irrlichtDevice = Kiaro::Engine::CoreSingleton::getPointer()->getIrrlichtDevice();
-                irr::scene::ISceneManager *sceneManager = irrlichtDevice->getSceneManager();
-
-                // Create the Fileread object and give it to Irrlicht
-                Kiaro::Engine::FileReadObject fileHandle(filename);
-
-                irr::scene::IMesh *shapeFileMesh = sceneManager->getMesh(&fileHandle);
-
-                if (!shapeFileMesh)
-                {
-                    std::cerr << "EntityBase: Cannot load shapefile '" << filename << "'" << std::endl;
-                    return;
-                }
-
-                if (mSceneNode)
-                    mSceneNode->drop();
-
-                mSceneNode = sceneManager->addMeshSceneNode(shapeFileMesh);
             }
 
             Kiaro::Common::U32 EntityBase::getTypeMask(void) const { return mTypeMask; }
@@ -72,6 +49,11 @@ namespace Kiaro
             }
 
             void EntityBase::unpackInitialization(Kiaro::Support::BitStream &in)
+            {
+
+            }
+
+            void EntityBase::instantiate(void)
             {
 
             }

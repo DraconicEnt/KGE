@@ -21,8 +21,9 @@ namespace Kiaro
             enum ENTITY_TYPE
             {
                 ENTITY_NULL = 0,
-                ENTITY_RIGIDPROP = (1 << 0),
-                ENTITY_TERRAIN = (2 << 0),
+                ENTITY_RIGIDPROP = (1 << 1),
+                ENTITY_TERRAIN = (2 << 1),
+                ENTITY_SKY = (3 << 1),
             };
         } // End Namespace Entities
     } // End Namespace Game
