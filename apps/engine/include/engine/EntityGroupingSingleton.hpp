@@ -9,8 +9,8 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
-#define _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
+#ifndef _INCLUDE_KIARO_ENGINE_ENTITYGROUPINGSINGLETON_HPP_
+#define _INCLUDE_KIARO_ENGINE_ENTITYGROUPINGSINGLETON_HPP_
 
 #include <set>  // std::set
 
@@ -23,6 +23,7 @@ namespace Kiaro
         namespace Entities
         {
             class EntityBase;
+            class Sky;
         }
     }
 
@@ -35,6 +36,15 @@ namespace Kiaro
                 static EntityGroupingSingleton *getPointer(void);
                 static void destroy(void);
 
+                bool addEntity(Kiaro::Game::Entities::EntityBase *entity);
+
+                const std::set<Kiaro::Game::Entities::EntityBase *> &getEntities(void);
+                const std::set<Kiaro::Game::Entities::EntityBase *> &getUpdatedEntities(void);
+                const std::set<Kiaro::Game::Entities::EntityBase *> &getNetworkedEntities(void);
+
+                void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+                const Kiaro::Game::Entities::Sky *getSky(void);
+
             // Private Methods
             private:
                 //! Standard constructor
@@ -42,13 +52,14 @@ namespace Kiaro
                 //! Standard destructor
                 ~EntityGroupingSingleton(void);
 
-                bool addEntity(Kiaro::Game::Entities::EntityBase *entity);
-
             // Private Members
             private:
                 std::set<Kiaro::Game::Entities::EntityBase *> mEntities;
+                std::set<Kiaro::Game::Entities::EntityBase *> mUpdatedEntities;
                 std::set<Kiaro::Game::Entities::EntityBase *> mNetworkedEntities;
+
+                Kiaro::Game::Entities::Sky *mSky;
         };
     } // End Namespace Engine
 } // End Namespace Kiaro
-#endif // _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
+#endif // _INCLUDE_KIARO_ENGINE_ENTITYGROUPINGSINGLETON_HPP_

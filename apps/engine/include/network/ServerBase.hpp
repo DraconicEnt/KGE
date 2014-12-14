@@ -74,7 +74,7 @@ namespace Kiaro
 
             void globalSend(Kiaro::Network::PacketBase *packet, const bool &reliable);
 
-            void update(void);
+            virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
 
             /**
              *  @brief Causes the server to handle all queued network events immediately.

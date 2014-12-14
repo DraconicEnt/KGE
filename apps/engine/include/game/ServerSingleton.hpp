@@ -20,6 +20,11 @@
 
 namespace Kiaro
 {
+    namespace Engine
+    {
+        class EntityGroupingSingleton;
+    }
+
     namespace Game
     {
         class GamemodeBase;
@@ -47,7 +52,7 @@ namespace Kiaro
                 bool isRunning(void);
 
                 //! Performs an update time pulse on the server.
-                void update(void);
+                virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
@@ -85,15 +90,13 @@ namespace Kiaro
 
                // Kiaro::Network::IncomingClientBase *GetLastPacketSender(void);
 
-                void addStaticEntity(Kiaro::Game::Entities::EntityBase *entity);
-
             // Private Methods
             private:
                 /**
                  *  @brief Constructor that initializes a server instance with the given information.
                  *  @param listen_address An array of c8 representing the IP address to listen on.
-                 *  @param listen_port A u16 representing the port number to listen on.
-                 *  @param clients A u32 representing the maximum number of clients to accept.
+                 *  @param listen_port A Kiaro::Common::U16 representing the port number to listen on.
+                 *  @param clients A Kiaro::Common::U32 representing the maximum number of clients to accept.
                  */
                 ServerSingleton(const std::string &listenAddress, const Common::U16 &listenPort, const Common::U32 &maximumClientCount);
 
@@ -108,8 +111,7 @@ namespace Kiaro
             private:
                 Kiaro::Network::IncomingClientBase *mLastPacketSender;
 
-                std::set<Kiaro::Game::Entities::EntityBase *> mStaticEntitySet;
-                std::set<Kiaro::Game::Entities::EntityBase *> mDynamicEntitySet;
+                Kiaro::Engine::EntityGroupingSingleton *mEntityGroup;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

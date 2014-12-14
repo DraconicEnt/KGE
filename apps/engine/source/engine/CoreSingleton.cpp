@@ -235,7 +235,7 @@ namespace Kiaro
                     }
 
                     if (mServer)
-                        mServer->update();
+                        mServer->update(deltaTimeSeconds);
 
                     // Make sure that it takes at least 32ms to complete a single tick to help make sync easier, but only
                     // if we're actually running a sim. If we're not, we shouldn't have to enforce the tickrate

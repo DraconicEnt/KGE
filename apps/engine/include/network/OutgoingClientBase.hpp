@@ -19,6 +19,11 @@
 
 namespace Kiaro
 {
+    namespace Engine
+    {
+        class EntityGroupingSingleton;
+    }
+
 	namespace Network
 	{
         //! Class representing outgoing connections.
@@ -85,6 +90,8 @@ namespace Kiaro
                 bool mIsConnected;
                 Kiaro::Common::U16 mPort;
                 Kiaro::Common::U8 mCurrentStage;
+
+                Kiaro::Engine::EntityGroupingSingleton *mEntityGroup;
 
                 ENetPeer *mInternalPeer;
                 ENetHost *mInternalHost;

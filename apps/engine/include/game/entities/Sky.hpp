@@ -40,10 +40,14 @@ namespace Kiaro
 
                     virtual void packUpdate(Kiaro::Support::BitStream &out);
                     virtual void unpackUpdate(Kiaro::Support::BitStream &in);
+                    virtual void packData(Kiaro::Support::BitStream &out);
+                    virtual void unpackData(Kiaro::Support::BitStream &in);
                     virtual void packInitialization(Kiaro::Support::BitStream &out);
                     virtual void unpackInitialization(Kiaro::Support::BitStream &in);
                     virtual void instantiate(void);
                     virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+
+                    const Kiaro::Common::ColorRGBA &getColor(void);
 
                 // Private Members
                 private:

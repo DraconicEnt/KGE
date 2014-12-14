@@ -12,6 +12,7 @@
  */
 
 #include <game/entities/EntityBase.hpp>
+#include <engine/EntityGroupingSingleton.hpp>
 
 namespace Kiaro
 {
@@ -19,7 +20,8 @@ namespace Kiaro
     {
         namespace Entities
         {
-            EntityBase::EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask) : mTypeMask(typeMask), mNetID(0)
+            EntityBase::EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask, const Kiaro::Game::Entities::EntityHintMask &hintMask) : mTypeMask(typeMask),
+            mHintMask(hintMask), mNetID(0)
             {
 
             }
@@ -32,6 +34,8 @@ namespace Kiaro
             Kiaro::Common::U32 EntityBase::getTypeMask(void) const { return mTypeMask; }
 
             Kiaro::Common::U32 EntityBase::getNetID(void) const { return mNetID; }
+
+            Kiaro::Common::U32 EntityBase::getHintMask(void) const { return mHintMask; }
 
             void EntityBase::packUpdate(Kiaro::Support::BitStream &out)
             {
@@ -55,7 +59,7 @@ namespace Kiaro
 
             void EntityBase::instantiate(void)
             {
-
+                Kiaro::Engine::EntityGroupingSingleton::getPointer()->addEntity(this);
             }
         } // End Namespace Entities
     } // End Namespace Game

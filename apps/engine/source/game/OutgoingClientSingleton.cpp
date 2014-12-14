@@ -17,6 +17,7 @@
 #include <enet/enet.h>
 #include <boost/regex.hpp>
 
+#include <engine/EntityGroupingSingleton.hpp>
 #include <engine/CoreSingleton.hpp>
 
 #include <game/packets/packets.hpp>
@@ -34,7 +35,7 @@ namespace Kiaro
 
         OutgoingClientSingleton::OutgoingClientSingleton(ENetPeer *incoming, Kiaro::Network::ServerBase *server)
         {
-
+            mEntityGroup = Kiaro::Engine::EntityGroupingSingleton::getPointer();
         }
 
         OutgoingClientSingleton::~OutgoingClientSingleton(void)
@@ -50,6 +51,8 @@ namespace Kiaro
                 enet_host_destroy(mInternalHost);
                 mInternalHost = NULL;
             }
+
+            Kiaro::Engine::EntityGroupingSingleton::destroy();
         }
 
         void OutgoingClientSingleton::onReceivePacket(Kiaro::Support::BitStream &incomingStream)

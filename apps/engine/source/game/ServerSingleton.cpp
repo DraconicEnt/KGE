@@ -9,9 +9,13 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+#include <engine/EntityGroupingSingleton.hpp>
+
 #include <support/EventManagerSingleton.hpp>
 #include <game/packets/packets.hpp>
 #include <game/ServerSingleton.hpp>
+
+#include <game/entities/Sky.hpp>
 
 namespace Kiaro
 {
@@ -41,24 +45,36 @@ namespace Kiaro
             // Create the map division
             Kiaro::Support::MapDivision::Get(12);
 
+            mEntityGroup = Kiaro::Engine::EntityGroupingSingleton::getPointer();
+
+            // All entities register themselves with the Entity grouping singleton
+            new Kiaro::Game::Entities::Sky();
+
             // Create an init a gamemode
         }
 
         ServerSingleton::~ServerSingleton(void)
         {
+            Kiaro::Engine::EntityGroupingSingleton::destroy();
+        }
 
+        void ServerSingleton::update(const Kiaro::Common::F32 &deltaTimeSeconds)
+        {
+            Kiaro::Network::ServerBase::update(deltaTimeSeconds);
+
+            mEntityGroup->update(deltaTimeSeconds);
         }
 
         void ServerSingleton::onClientConnected(Kiaro::Network::IncomingClientBase *client)
         {
             Kiaro::Support::EventManagerSingleton::get()->mOnClientConnectedEvent.invoke(client);
-            std::cout << "Server: Received remote connection from x.x.x.x:" << client->getPort() << std::endl;
+            std::cout << "ServerSingleton: Received remote connection from x.x.x.x:" << client->getPort() << std::endl;
         }
 
         void ServerSingleton::onClientDisconnected(Kiaro::Network::IncomingClientBase *client)
         {
             Kiaro::Support::EventManagerSingleton::get()->mOnClientDisconnectedEvent.invoke(client);
-            std::cout << "Server: Received disconnection from x.x.x.x:" << client->getPort() << std::endl;
+            std::cout << "ServerSingleton: Received disconnection from x.x.x.x:" << client->getPort() << std::endl;
         }
 
         void ServerSingleton::onReceivePacket(Kiaro::Support::BitStream &incomingStream, Kiaro::Network::IncomingClientBase *sender)
@@ -75,7 +91,7 @@ namespace Kiaro
                     Kiaro::Game::Packets::HandShake receivedHandshake;
                     receivedHandshake.unpackData(incomingStream);
 
-                    std::cout << "Server: Client Version is " << (Kiaro::Common::U32)receivedHandshake.mVersionMajor << "."
+                    std::cout << "ServerSingleton: Client Version is " << (Kiaro::Common::U32)receivedHandshake.mVersionMajor << "."
                     << (Kiaro::Common::U32)receivedHandshake.mVersionMinor << "." << (Kiaro::Common::U32)receivedHandshake.mVersionRevision << "."
                     << (Kiaro::Common::U32)receivedHandshake.mVersionBuild << std::endl;
 
@@ -98,11 +114,6 @@ namespace Kiaro
             mLastPacketSender = NULL;
 
             return result;
-        }
-
-        void ServerSingleton::addStaticEntity(Kiaro::Game::Entities::EntityBase *entity)
-        {
-            mStaticEntitySet.insert(entity);
         }
     } // End Namespace Game
 } // End Namespace Kiaro

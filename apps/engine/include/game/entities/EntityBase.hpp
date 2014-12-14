@@ -34,11 +34,14 @@ namespace Kiaro
              */
             enum ENTITYHINT_NAME
             {
+                //! NULL hint.
                 ENTITYHINT_NULL = 0,
                 //! A hint that tells the engine that this object does not need automated net updating. It may be pushing updates on its own.
-                ENTITYHINT_STATIC = 1,
+                ENTITYHINT_NONUPDATING = 1,
                 //! A hint that tells the engine that this object does not need update pulses.
                 ENTITYHINT_NONTHINKING = 2,
+                //! A hint that tells the engine that this object very rarely updates within any context.
+                ENTITYHINT_STATIC = 4,
             };
 
             class EntityBase : public Kiaro::Engine::SerializableObjectBase
@@ -50,7 +53,7 @@ namespace Kiaro
                      *  @param typeMask A Kiaro::Common::U32 representing the type of this
                      *  object.
                      */
-                    EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask);
+                    EntityBase(const Kiaro::Game::Entities::TypeMask &typeMask, const Kiaro::Game::Entities::EntityHintMask &hintMask = 0);
 
                     //! Standard destructor.
                     ~EntityBase(void);
@@ -63,6 +66,8 @@ namespace Kiaro
 
                     Kiaro::Common::U32 getNetID(void) const;
 
+                    Kiaro::Common::U32 getHintMask(void) const;
+
                     virtual void packUpdate(Kiaro::Support::BitStream &out);
                     virtual void unpackUpdate(Kiaro::Support::BitStream &in);
                     virtual void packInitialization(Kiaro::Support::BitStream &out);
@@ -73,6 +78,7 @@ namespace Kiaro
                 // Protected Members
                 protected:
                     const Kiaro::Common::U32 mTypeMask;
+                    Kiaro::Common::U32 mHintMask;
                     Kiaro::Common::U32 mNetID;
             };
         } // End Namespace Entities

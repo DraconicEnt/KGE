@@ -25,7 +25,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            Sky::Sky() : Kiaro::Game::Entities::EntityBase(Kiaro::Game::Entities::ENTITY_SKY), mColor(0, 0, 0, 0)
+            Sky::Sky() : Kiaro::Game::Entities::EntityBase(Kiaro::Game::Entities::ENTITY_SKY, Kiaro::Game::Entities::ENTITYHINT_NONTHINKING), mColor(0, 0, 0, 0)
             {
                 instantiate();
 
@@ -63,6 +63,16 @@ namespace Kiaro
 
             }
 
+            void Sky::packData(Kiaro::Support::BitStream &out)
+            {
+
+            }
+
+            void Sky::unpackData(Kiaro::Support::BitStream &in)
+            {
+
+            }
+
             void Sky::instantiate(void)
             {
                 Kiaro::Game::Entities::EntityBase::instantiate();
@@ -71,6 +81,11 @@ namespace Kiaro
             void Sky::update(const Kiaro::Common::F32 &deltaTimeSeconds)
             {
 
+            }
+
+            const Kiaro::Common::ColorRGBA &Sky::getColor(void)
+            {
+                return mColor;
             }
         } // End Namespace Entities
     } // End Namespace Game

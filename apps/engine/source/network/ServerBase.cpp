@@ -68,7 +68,7 @@ namespace Kiaro
             }
         }
 
-        void ServerBase::update(void)
+        void ServerBase::update(const Kiaro::Common::F32 &deltaTimeSeconds)
         {
             if (!mIsRunning)
                 return;
