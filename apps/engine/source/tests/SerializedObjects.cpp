@@ -46,15 +46,11 @@
         TEST(SerializedObjectTest, SettingProperties)
         {
             TestSerializedObject test = TestSerializedObject();
-            EXPECT_EQ(false, test.mDirtyPropertyFlags[0]);
 
             test.setNetworkedPropertyValue("networkeduint", 15u);
 
             EXPECT_EQ(15u, test.mNetworkedUInt);
             EXPECT_EQ(1, test.mDirtyNetworkedProperties.size());
-
-            // Then see if our bits changed accordingly
-            EXPECT_EQ(true, test.mDirtyPropertyFlags[0]);
         }
 
         TEST(SerializedObjectTest, SettingInvalidProperties)
@@ -92,14 +88,14 @@
 
             // Invalid type
             bool raisedException = false;
-            try { test.getNetworkedPropertyValue<float>("networkeduint"); }
+            try { test.getNetworkedPropertyValue<Kiaro::Common::F32>("networkeduint"); }
             catch (std::logic_error &exception) { raisedException = true; }
 
             EXPECT_EQ(true, raisedException);
 
             // Invalid key
             raisedException = false;
-            try { test.getNetworkedPropertyValue<float>("someunknownproperty"); }
+            try { test.getNetworkedPropertyValue<Kiaro::Common::F32>("someunknownproperty"); }
             catch (std::logic_error &exception) { raisedException = true; }
 
             EXPECT_EQ(true, raisedException);

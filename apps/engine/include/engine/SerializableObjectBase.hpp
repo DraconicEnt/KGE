@@ -12,8 +12,8 @@
 #ifndef _INCLUDE_KIARO_ENGINE_SERIALIZABLEOBJECTBASE_HPP_
 #define _INCLUDE_KIARO_ENGINE_SERIALIZABLEOBJECTBASE_HPP_
 
-#include <map>       // std::map
-#include <bitset>    // std::bitset
+#include <unordered_map>       // std::unordered_map
+#include <unordered_set>       // std::unordered_set
 #include <typeinfo>
 #include <type_traits> // std::is_pointer
 #include <tuple>   // std::tuple
@@ -45,6 +45,7 @@ namespace Kiaro
                 //! Standard Constructor
                 SerializableObjectBase(void) : mFinalizedNetworkedProperties(false) { }
 
+                /**
                 void finalizeNetworkedProperties(void)
                 {
                     // New map with our bit indexes
@@ -62,6 +63,7 @@ namespace Kiaro
                     mFinalizedNetworkedProperties = true;
                     mNetworkedProperties = replacementMap;
                 }
+                */
 
                 template <typename propertyType>
                 void addNetworkedProperty(const std::string &name, propertyType &propertyValue)
@@ -78,7 +80,8 @@ namespace Kiaro
                 {
                     static_assert(!std::is_pointer<propertyType>::value, "SerializableObjectBase: Cannot network pointer values!");
 
-                    std::tuple<void*, size_t, size_t> networkedPropertyInfo = mNetworkedProperties[Kiaro::Common::string_hash(name)];
+                    size_t mapIndex = Kiaro::Common::string_hash(name);
+                    std::tuple<void*, size_t, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
 
                     // Is it the same type?
                     if (std::get<1>(networkedPropertyInfo) != typeid(newPropertyValue).hash_code())
@@ -89,13 +92,8 @@ namespace Kiaro
                     oldPropertyValue = newPropertyValue;
 
                     // Add to the dirty properties
-                    if (mDirtyNetworkedProperties.count(networkedPropertyInfo) == 0)
-                    {
-                        mDirtyNetworkedProperties.insert(mDirtyNetworkedProperties.end(), networkedPropertyInfo);
-
-                        // Update the flags
-                        mDirtyPropertyFlags[std::get<2>(networkedPropertyInfo)] = true;
-                    }
+                    if (mDirtyNetworkedProperties.count(mapIndex) == 0)
+                        mDirtyNetworkedProperties.insert(mDirtyNetworkedProperties.end(), mapIndex);
                 }
 
                 template <typename propertyType>
@@ -116,16 +114,14 @@ namespace Kiaro
             // Public Members
             public:
                 //! A set of all modified network properties
-                std::set<std::tuple<void*, size_t, size_t> > mDirtyNetworkedProperties;
-
-                std::bitset<64> mDirtyPropertyFlags;
+                std::unordered_set<size_t> mDirtyNetworkedProperties;
 
             // Private Members
             private:
                 bool mFinalizedNetworkedProperties;
 
                 //! A map of string hashes (networked property names) to an std::pair representing the location & typeid hash
-                std::map<size_t, std::tuple<void*, size_t, size_t> > mNetworkedProperties;
+                std::unordered_map<size_t, std::tuple<void*, size_t, size_t> > mNetworkedProperties;
        };
     } // End Namespace Engine
 } // End Namespace Kiaro

@@ -30,7 +30,6 @@ namespace Kiaro
                 instantiate();
 
                 addNetworkedProperty("color", mColor);
-                finalizeNetworkedProperties();
             }
 
             Sky::Sky(Kiaro::Support::BitStream &in) : Kiaro::Game::Entities::EntityBase(Kiaro::Game::Entities::ENTITY_SKY), mColor(0, 0, 0, 0)
