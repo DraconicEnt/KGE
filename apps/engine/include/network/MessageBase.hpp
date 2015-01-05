@@ -1,5 +1,5 @@
 /**
- *  @file PacketBase.hpp
+ *  @file MessageBase.hpp
  *  @brief Include file defining the Packet class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -9,13 +9,12 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_NETWORK_PACKET_H_
-#define _INCLUDE_KIARO_NETWORK_PACKET_H_
+#ifndef _INCLUDE_KIARO_NETWORK_MESSAGEBASE_HPP_
+#define _INCLUDE_KIARO_NETWORK_MESSAGEBASE_HPP_
 
 #include "engine/Common.hpp"
 
 #include <support/BitStream.hpp>
-#include <engine/SerializableObjectBase.hpp>
 
 namespace Kiaro
 {
@@ -24,7 +23,7 @@ namespace Kiaro
         class IncomingClientBase;
 
         //! Class representing a packet that has or is ready to traverse across the network to a remote host.
-        class PacketBase : public Kiaro::Engine::SerializableObjectBase
+        class MessageBase : public Kiaro::Support::SerializableObjectBase
         {
             // Public Methods
             public:
@@ -32,7 +31,7 @@ namespace Kiaro
                  *  @brief Constructor that accepts a received netpacket from the underlaying networking subsystem.
                  *  @param received A packet from the internal networking subsystem to construct the class from.
                  */
-                PacketBase(const Kiaro::Common::U32 &packetType = 0, Kiaro::Support::BitStream *received = NULL, IncomingClientBase *sender = NULL) : mID(0),
+                MessageBase(const Kiaro::Common::U32 &packetType = 0, Kiaro::Support::BitStream *received = NULL, IncomingClientBase *sender = NULL) : mID(0),
                 mType(packetType), mSender(sender)
                 {
                     //if (received)

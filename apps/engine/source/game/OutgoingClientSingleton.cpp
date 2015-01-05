@@ -20,7 +20,7 @@
 #include <engine/EntityGroupingSingleton.hpp>
 #include <engine/CoreSingleton.hpp>
 
-#include <game/packets/packets.hpp>
+#include <game/messages/messages.hpp>
 #include <game/OutgoingClientSingleton.hpp>
 
 #include <support/BitStream.hpp>
@@ -58,7 +58,7 @@ namespace Kiaro
         void OutgoingClientSingleton::onReceivePacket(Kiaro::Support::BitStream &incomingStream)
         {
             // We need to know what type of packet it is first
-            Kiaro::Network::PacketBase basePacket;
+            Kiaro::Network::MessageBase basePacket;
             basePacket.unpackData(incomingStream);
 
             switch (basePacket.getType())

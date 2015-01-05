@@ -18,7 +18,7 @@
 
 #include <engine/CoreSingleton.hpp>
 #include <engine/FileReadObject.hpp>
-#include <engine/SerializableObjectBase.hpp>
+#include <engine/NetworkPersistableBase.hpp>
 
 namespace Kiaro
 {
@@ -44,7 +44,7 @@ namespace Kiaro
                 ENTITYHINT_STATIC = 4,
             };
 
-            class EntityBase : public Kiaro::Engine::SerializableObjectBase
+            class EntityBase : public Kiaro::Engine::NetworkPersistableBase
             {
                 // Public Methods
                 public:

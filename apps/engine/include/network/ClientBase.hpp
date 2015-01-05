@@ -14,7 +14,7 @@
 
 #include <enet/enet.h>
 
-#include "PacketBase.hpp"
+#include "MessageBase.hpp"
 
 namespace Kiaro
 {
@@ -41,7 +41,7 @@ namespace Kiaro
              */
             virtual void onReceivePacket(Kiaro::Support::BitStream &incomingStream) = 0;
 
-            virtual void send(Kiaro::Network::PacketBase *packet, const bool &reliable) = 0;
+            virtual void send(Kiaro::Network::MessageBase *packet, const bool &reliable) = 0;
 
             //bool GetIsOppositeEndian(void) { return mIsOppositeEndian; }
 

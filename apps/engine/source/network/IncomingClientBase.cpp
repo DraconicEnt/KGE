@@ -32,7 +32,7 @@ namespace Kiaro
 
         void IncomingClientBase::onReceivePacket(Kiaro::Support::BitStream &incomingStream) { }
 
-        void IncomingClientBase::send(Kiaro::Network::PacketBase *packet, const bool &reliable)
+        void IncomingClientBase::send(Kiaro::Network::MessageBase *packet, const bool &reliable)
         {
             Kiaro::Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 

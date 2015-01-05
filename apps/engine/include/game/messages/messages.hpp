@@ -26,6 +26,6 @@ namespace Kiaro
     } // End Namespace Game
 } // End NameSpace Kiaro
 
-#include <game/packets/HandShake.hpp>
+#include <game/messages/HandShake.hpp>
 
 #endif // _INCLUDE_KIARO_GAME_PACKETS_HANDSHAKE_HPP_

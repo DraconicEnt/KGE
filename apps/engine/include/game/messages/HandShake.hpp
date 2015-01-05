@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 
-#include <network/PacketBase.hpp>
+#include <network/MessageBase.hpp>
 
 namespace Kiaro
 {
@@ -28,11 +28,11 @@ namespace Kiaro
     {
         namespace Packets
         {
-            class HandShake : public Kiaro::Network::PacketBase
+            class HandShake : public Kiaro::Network::MessageBase
             {
                 // Public Methods
                 public:
-                    HandShake(Kiaro::Support::BitStream *in = NULL, Kiaro::Network::IncomingClientBase *sender = NULL) : Network::PacketBase(PACKET_HANDSHAKE, in, sender)
+                    HandShake(Kiaro::Support::BitStream *in = NULL, Kiaro::Network::IncomingClientBase *sender = NULL) : Network::MessageBase(PACKET_HANDSHAKE, in, sender)
                     {
 
                     }
@@ -44,7 +44,7 @@ namespace Kiaro
                         out.write(mVersionRevision);
                         out.write(mVersionBuild);
 
-                        Kiaro::Network::PacketBase::packData(out);
+                        Kiaro::Network::MessageBase::packData(out);
                     }
 
                     void unpackData(Kiaro::Support::BitStream &in)

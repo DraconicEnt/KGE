@@ -72,7 +72,7 @@ namespace Kiaro
 
             Kiaro::Common::U32 getClientCount(void);
 
-            void globalSend(Kiaro::Network::PacketBase *packet, const bool &reliable);
+            void globalSend(Kiaro::Network::MessageBase *packet, const bool &reliable);
 
             virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
 

@@ -59,7 +59,7 @@ namespace Kiaro
             return mConnectedClientSet.size();
         }
 
-        void ServerBase::globalSend(Kiaro::Network::PacketBase *packet, const bool &reliable)
+        void ServerBase::globalSend(Kiaro::Network::MessageBase *packet, const bool &reliable)
         {
             for (std::set<size_t>::iterator it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
             {

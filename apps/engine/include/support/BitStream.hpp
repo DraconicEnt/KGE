@@ -26,6 +26,17 @@ namespace Kiaro
 {
     namespace Support
     {
+        class BitStream;
+
+        class SerializableObjectBase
+        {
+            // Public Methods
+            public:
+
+                virtual void packData(Kiaro::Support::BitStream &out) = 0;
+                virtual void unpackData(Kiaro::Support::BitStream &in) = 0;
+        };
+
         //! BitStreams are serialized chunks of data that allow for easy read/write operations.
         class BitStream
         {

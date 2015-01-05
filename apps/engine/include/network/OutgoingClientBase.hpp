@@ -9,13 +9,13 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_NETWORK_CLIENT_H_
-#define _INCLUDE_KIARO_NETWORK_CLIENT_H_
+#ifndef _INCLUDE_KIARO_NETWORK_OUTGOINGCLIENTSINGLETON_H_
+#define _INCLUDE_KIARO_NETWORK_OUTGOINGCLIENTSINGLETON_H_
 
 #include <enet/enet.h>
 
 #include <engine/Common.hpp>
-#include "PacketBase.hpp"
+#include "MessageBase.hpp"
 
 namespace Kiaro
 {
@@ -37,7 +37,7 @@ namespace Kiaro
                  *  @param data An arbitrary pointer to the data to be sending.
                  *  @param reliable A boolean representing whether or not this packet should be reliable. A reliable packet is slower than an unreliable packet.
                  */
-                void send(Kiaro::Network::PacketBase *packet, const bool &reliable);
+                void send(Kiaro::Network::MessageBase *packet, const bool &reliable);
 
                 /**
                  *	@brief If the client is not already connected somewhere, this tells them to connect to some server.
@@ -99,4 +99,4 @@ namespace Kiaro
 	} // End Namespace Network
 } // End Namespace Kiaro
 
-#endif // _INCLUDE_KIARO_NETWORK_CLIENT_H_
+#endif // _INCLUDE_KIARO_NETWORK_OUTGOINGCLIENTSINGLETON_H_

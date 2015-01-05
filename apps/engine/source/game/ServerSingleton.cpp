@@ -12,7 +12,7 @@
 #include <engine/EntityGroupingSingleton.hpp>
 
 #include <support/EventManagerSingleton.hpp>
-#include <game/packets/packets.hpp>
+#include <game/messages/messages.hpp>
 #include <game/ServerSingleton.hpp>
 
 #include <game/entities/Sky.hpp>
@@ -81,7 +81,7 @@ namespace Kiaro
         {
             mLastPacketSender = sender;
 
-            Kiaro::Network::PacketBase basePacket;
+            Kiaro::Network::MessageBase basePacket;
             basePacket.unpackData(incomingStream);
 
             switch (basePacket.getType())

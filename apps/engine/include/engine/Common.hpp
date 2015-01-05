@@ -88,6 +88,8 @@ namespace Kiaro
             typedef irr::video::SColor ColorRGBA;
         #endif
 
+        typedef std::string String;
+
         //! A global hasher.
         static std::hash<std::string> string_hash;
     } // End NameSpace Common

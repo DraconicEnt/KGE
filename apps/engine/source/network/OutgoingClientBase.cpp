@@ -20,7 +20,7 @@
 
 #include <support/BitStream.hpp>
 
-#include <game/packets/packets.hpp>
+#include <game/messages/messages.hpp>
 
 #include <network/OutgoingClientBase.hpp>
 
@@ -48,7 +48,7 @@ namespace Kiaro
             }
         }
 
-        void OutgoingClientBase::send(Kiaro::Network::PacketBase *packet, const bool &reliable)
+        void OutgoingClientBase::send(Kiaro::Network::MessageBase *packet, const bool &reliable)
         {
             Kiaro::Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
             if (reliable)

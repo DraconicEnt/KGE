@@ -15,7 +15,7 @@
 #include <enet/enet.h>
 
 #include <network/OutgoingClientBase.hpp>
-#include <network/PacketBase.hpp>
+#include <network/MessageBase.hpp>
 
 namespace Kiaro
 {
