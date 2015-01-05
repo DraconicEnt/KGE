@@ -199,17 +199,5 @@ namespace Kiaro
 
             free(copy_from);
         }
-
-        /**
-         *  @brief Assigns the absolute value of the input to the address of the input.
-         *  @param in Any integer type supporting xor and increment operations to calculate the
-         *  absolute value of.
-         */
-        template <typename type>
-        static inline void S32Absolute(type &in)
-        {
-            in ^= -1; // Ditch the negative bit, but also kills the 1 bit in the process
-            in++; // Handle -1 offset induced by the xor against -1
-        }
     }
 }

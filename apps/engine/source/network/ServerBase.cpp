@@ -23,7 +23,7 @@ namespace Kiaro
 {
     namespace Network
     {
-        ServerBase::ServerBase(const std::string &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount) : mIsRunning(true), mInternalHost(NULL),
+        ServerBase::ServerBase(const Kiaro::Common::String &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount) : mIsRunning(true), mInternalHost(NULL),
         mListenPort(listenPort), mCurrentGamemode(NULL), mListenAddress(listenAddress)
         {
             ENetAddress enetAddress;

@@ -75,7 +75,7 @@ namespace Kiaro
          *
          * @note This function assumes that input is a NULL terminated string.
          */
-        Kiaro::Common::U32 Write(std::string input, LEVEL_NAME log_level = LEVEL_INFO, Kiaro::Common::U32 arg_count = 0, ...);
+        Kiaro::Common::U32 Write(const Kiaro::Common::String &input, LEVEL_NAME log_level = LEVEL_INFO, Kiaro::Common::U32 arg_count = 0, ...);
     } // End NameSpace Logging
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_ENGINE_LOGGING_HPP_

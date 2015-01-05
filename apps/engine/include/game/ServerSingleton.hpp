@@ -39,7 +39,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                static ServerSingleton *getPointer(const std::string &listenAddress = "0.0.0.0", const Kiaro::Common::U16 &listenPort = 11595, const Kiaro::Common::U32 &maximumClientCount = 32);
+                static ServerSingleton *getPointer(const Kiaro::Common::String &listenAddress = "0.0.0.0", const Kiaro::Common::U16 &listenPort = 11595, const Kiaro::Common::U32 &maximumClientCount = 32);
                 static void destroy(void);
 
                 //! Signals the server to stop running.
@@ -98,7 +98,7 @@ namespace Kiaro
                  *  @param listen_port A Kiaro::Common::U16 representing the port number to listen on.
                  *  @param clients A Kiaro::Common::U32 representing the maximum number of clients to accept.
                  */
-                ServerSingleton(const std::string &listenAddress, const Common::U16 &listenPort, const Common::U32 &maximumClientCount);
+                ServerSingleton(const Kiaro::Common::String &listenAddress, const Common::U16 &listenPort, const Common::U32 &maximumClientCount);
 
                 /**
                  *  @brief Standard virtual destructor.

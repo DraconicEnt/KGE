@@ -49,7 +49,7 @@ namespace Kiaro
 
                 void setMode(const ENGINE_MODE mode);
                 void setTargetServer(Kiaro::Common::C8 *address, Kiaro::Common::U16 port);
-                void setGame(const std::string &gameName);
+                void setGame(const Kiaro::Common::String &gameName);
 
                 irr::IrrlichtDevice *getIrrlichtDevice(void);
 
@@ -83,7 +83,7 @@ namespace Kiaro
 
                 lua_State *mLuaState;
 
-                std::string mGameName;
+                Kiaro::Common::String mGameName;
         };
     } // End Namespace Engine
 } // End Namespace Kiaro

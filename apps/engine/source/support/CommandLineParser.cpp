@@ -32,7 +32,7 @@ namespace Kiaro
 					currentFlagName = argv[iteration];
 					currentFlagHash = Kiaro::Common::string_hash(currentFlagName);
 
-					mFlags.insert(std::make_pair(currentFlagHash, std::vector<std::string>()));
+					mFlags.insert(std::make_pair(currentFlagHash, std::vector<Kiaro::Common::String>()));
 				}
 				else if (currentFlagName != NULL)
                     mFlags[currentFlagHash].push_back(argv[iteration]);
@@ -65,14 +65,14 @@ namespace Kiaro
 			return false;
         }
 
-        std::string CommandLineParser::getFlagArgument(const Kiaro::Common::C8 *targetFlag, Kiaro::Common::U8 argumentIdentifier)
+        Kiaro::Common::String CommandLineParser::getFlagArgument(const Kiaro::Common::C8 *targetFlag, Kiaro::Common::U8 argumentIdentifier)
         {
             if (!hasFlag(targetFlag))
                 return "";
 
             size_t flagHash = Kiaro::Common::string_hash(targetFlag);
 
-            std::vector<std::string> &requestedFlagVector = mFlags[flagHash];
+            std::vector<Kiaro::Common::String> &requestedFlagVector = mFlags[flagHash];
             if (argumentIdentifier >= requestedFlagVector.size())
                 return "";
 
@@ -102,7 +102,7 @@ namespace Kiaro
         {
             bool executedFlagHandler = false;
 
-            for (std::unordered_map<size_t, std::vector<std::string>>::iterator it = mFlags.begin(); it != mFlags.end(); it++)
+            for (std::unordered_map<size_t, std::vector<Kiaro::Common::String>>::iterator it = mFlags.begin(); it != mFlags.end(); it++)
                 try
                 {
                     size_t currentFlagHash = (*it).first;
@@ -126,7 +126,7 @@ namespace Kiaro
             }
         }
 
-        void CommandLineParser::displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
+        void CommandLineParser::displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags)
         {
             std::cout << "You may run " << argv[0] << " with:" << std::endl;
 

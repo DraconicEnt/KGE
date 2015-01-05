@@ -37,7 +37,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, Kiaro::Common::C8 **, const std::vector<std::string>&, bool> FlagResponder;
+                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, Kiaro::Common::C8 **, const std::vector<Kiaro::Common::String>&, bool> FlagResponder;
 
                 typedef struct
                 {
@@ -63,19 +63,19 @@ namespace Kiaro
                  */
                 bool hasFlag(const Kiaro::Common::C8 *flagName);
 
-                std::string getFlagArgument(const Kiaro::Common::C8 *targetFlag, Kiaro::Common::U8 argumentIdentifier);
+                Kiaro::Common::String getFlagArgument(const Kiaro::Common::C8 *targetFlag, Kiaro::Common::U8 argumentIdentifier);
 
                 size_t getFlagArgumentCount(const Kiaro::Common::C8 *targetFlag);
 
                 void setFlagResponder(FlagEntry *entry);
                 void invokeFlagResponders(void);
 
-                void displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags);
+                void displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags);
 
             // Private Members
             private:
                 Kiaro::Common::C8 **mArgv;
-                std::unordered_map<size_t, std::vector<std::string>> mFlags;
+                std::unordered_map<size_t, std::vector<Kiaro::Common::String>> mFlags;
                 std::unordered_map<size_t, FlagEntry *> mFlagResponders;
 
                 std::vector<FlagEntry *> mFlagEntries;

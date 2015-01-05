@@ -62,7 +62,7 @@ namespace Kiaro
             enet_peer_send(mInternalPeer, 0, enetPacket);
         }
 
-        void OutgoingClientBase::connect(const std::string &targetAddress, const Kiaro::Common::U16 &targetPort, const Kiaro::Common::U32 &wait)
+        void OutgoingClientBase::connect(const Kiaro::Common::String &targetAddress, const Kiaro::Common::U16 &targetPort, const Kiaro::Common::U32 &wait)
         {
 			// TODO: Report Error
 			if (mInternalPeer || mInternalHost)

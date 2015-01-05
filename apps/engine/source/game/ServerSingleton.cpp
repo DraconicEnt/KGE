@@ -23,7 +23,7 @@ namespace Kiaro
     {
         ServerSingleton *ServerSingleton_Instance = NULL;
 
-        ServerSingleton *ServerSingleton::getPointer(const std::string &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount)
+        ServerSingleton *ServerSingleton::getPointer(const Kiaro::Common::String &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount)
         {
             if (!ServerSingleton_Instance)
                 ServerSingleton_Instance = new ServerSingleton(listenAddress, listenPort, maximumClientCount);
@@ -39,7 +39,7 @@ namespace Kiaro
             ServerSingleton_Instance = NULL;
         }
 
-        ServerSingleton::ServerSingleton(const std::string &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount) : ServerBase(listenAddress, listenPort, maximumClientCount),
+        ServerSingleton::ServerSingleton(const Kiaro::Common::String &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount) : ServerBase(listenAddress, listenPort, maximumClientCount),
         mLastPacketSender(NULL)
         {
             // Create the map division

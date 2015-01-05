@@ -26,7 +26,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                FileReadObject(const std::string &filename);
+                FileReadObject(const Kiaro::Common::String &filename);
 
                 ~FileReadObject(void);
 
@@ -42,7 +42,7 @@ namespace Kiaro
 
             // Private Members
             private:
-                const std::string mFileName;
+                const Kiaro::Common::String mFileName;
                 PHYSFS_File *mFileHandle;
         };
     } // End Namespace Game

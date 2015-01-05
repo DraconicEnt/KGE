@@ -50,7 +50,7 @@ namespace Kiaro
              *  @param listen_port A u16 representing the port number to listen on.
              *  @param clients A u32 representing the maximum number of clients to accept.
              */
-            ServerBase(const std::string &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount);
+            ServerBase(const Kiaro::Common::String &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount);
 
             /**
 			 *  @brief Standard virtual destructor.
@@ -103,7 +103,7 @@ namespace Kiaro
                 //! The Port number that we're listening on.
                 const Kiaro::Common::U16 mListenPort;
                 //! The Address that we're listening on.
-                const std::string mListenAddress;
+                const Kiaro::Common::String mListenAddress;
 
                 std::set<size_t> mConnectedClientSet;
         };

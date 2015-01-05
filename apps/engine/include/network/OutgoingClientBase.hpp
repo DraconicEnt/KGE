@@ -46,7 +46,7 @@ namespace Kiaro
                  *  @param wait A u32 representing the time in milliseconds to wait for. This is a blocking operation.
                  *  @note This is a blocking call, the amount of time it blocks depends on the wait variable which can be 0 for no wait.
                  */
-                void connect(const std::string &targetAddress, const Kiaro::Common::U16 &targetPort, const Kiaro::Common::U32 &wait = 5000);
+                void connect(const Kiaro::Common::String &targetAddress, const Kiaro::Common::U16 &targetPort, const Kiaro::Common::U32 &wait = 5000);
 
                 /**
                  *  @brief Causes a network client to disconnect from its server.

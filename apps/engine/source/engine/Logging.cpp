@@ -38,7 +38,7 @@ namespace Kiaro
             return 0;
         }
 
-        Kiaro::Common::U32 Write(std::string input, LEVEL_NAME log_level, Kiaro::Common::U32 arg_count, ...)
+        Kiaro::Common::U32 Write(const Kiaro::Common::String &input, LEVEL_NAME log_level, Kiaro::Common::U32 arg_count, ...)
         {
             PHYSFS_File *file = PHYSFS_openAppend("LOG.txt");
 

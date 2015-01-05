@@ -17,10 +17,10 @@
 
         #include <gtest/gtest.h>
 
-        #include <engine/SerializableObjectBase.hpp>
+        #include <engine/NetworkPersistableBase.hpp>
 
         // The Test class
-        class TestSerializedObject : public Kiaro::Engine::SerializableObjectBase
+        class TestSerializedObject : public Kiaro::Engine::NetworkPersistableBase
         {
             // Public Methods
             public:

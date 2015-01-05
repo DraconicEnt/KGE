@@ -137,7 +137,7 @@ namespace Kiaro
                     write<Kiaro::Common::U32>(inColor.getAlpha());
                 }
 
-                void write(const std::string &inData)
+                void write(const Kiaro::Common::String &inData)
                 {
                     write(inData.c_str(), inData.length() + 1);
                 }
