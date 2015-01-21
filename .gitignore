@@ -3,11 +3,14 @@ CMakeFiles
 CMakeCache.txt
 *cmake_install.cmake
 *Makefile
+doc/
 lib/
 obj/
-bin/KGE
+bin/
 *.dll
 *.lib
 *.a
+*.obj
 *.*~
 *.cbp
+*.layout
