@@ -1,6 +1,13 @@
+apps/bin
+CMakeFiles
+CMakeCache.txt
+*cmake_install.cmake
+*Makefile
 lib/
 obj/
 bin/KGE
 *.dll
 *.lib
 *.a
+*.*~
+*.cbp
