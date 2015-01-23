@@ -43,7 +43,7 @@ namespace Kiaro
             Kiaro::Support::BitStream outStream(NULL, 0, 0);
             packet->packData(outStream);
 
-            ENetPacket *enetPacket = enet_packet_create(outStream.raw(), outStream.length(), packetFlag);
+            ENetPacket *enetPacket = enet_packet_create(outStream.raw(), outStream.getSize(), packetFlag);
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
 

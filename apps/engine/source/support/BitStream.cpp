@@ -16,7 +16,7 @@ namespace Kiaro
     namespace Support
     {
         BitStream::BitStream(Kiaro::Common::U8 *initialData, size_t initialDataLength, size_t initialDataIndex) :
-                             mIsManagingMemory(true), mDataPointer(initialDataIndex)
+                             mIsManagingMemory(true), mDataPointer(initialDataIndex), mCurrentBit(0), mBooleanMode(false)
         {
             if (initialData == NULL)
                 mDataLength = 0;
@@ -67,19 +67,84 @@ namespace Kiaro
             return NULL;
         }
 
-        size_t BitStream::length(void)
-        {
-            return mDataLength;
-        }
+        // BitStream GTest Code
+        #if ENGINE_TESTS>0
+            #include <gtest/gtest.h>
 
-        template <>
-        Kiaro::Common::Vector3DF &BitStream::read<Kiaro::Common::Vector3DF>(const bool &shouldMemcpy)
-        {
-            Kiaro::Common::Vector3DF *result = new Kiaro::Common::Vector3DF;
-            result->Z = read<Kiaro::Common::F32>();
-            result->Y = read<Kiaro::Common::F32>();
-            result->X = read<Kiaro::Common::F32>();
-            return *result;
-        }
+            static Kiaro::Common::F32 float_list[] =
+            {
+                3.14159,
+                1337.125,
+            };
+
+            static Kiaro::Common::U32 floatCount = sizeof(float_list) / sizeof(Kiaro::Common::F32);
+
+            inline void PackFloats(Kiaro::Support::BitStream &destination)
+            {
+                for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
+                    destination.write<Kiaro::Common::F32>(float_list[iteration]);
+            }
+
+            TEST(BitStreamTest, Floats)
+            {
+                Kiaro::Common::U32 expectedStreamSize = floatCount * sizeof(Kiaro::Common::F32);
+
+                Kiaro::Support::BitStream floatStream(expectedStreamSize);
+                PackFloats(floatStream);
+
+                // Check if our BitStream size is correct
+                EXPECT_EQ(expectedStreamSize, floatStream.length());
+
+                // Now make sure we can unpack the data correctly
+                for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
+                    EXPECT_EQ(float_list[(floatCount - 1) - iteration], floatStream.read<Kiaro::Common::F32>());
+
+                // Reset and read using memcpy
+                floatStream.mDataPointer = floatStream.length();
+
+                for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
+                {
+                    Kiaro::Common::F32 &currentValue = floatStream.read<Kiaro::Common::F32>(true);
+                    EXPECT_EQ(float_list[(floatCount - 1) - iteration], currentValue);
+
+                    // Deallocate without dying now?
+                    delete &currentValue;
+                }
+            }
+
+            TEST(BitStreamTest, BadStartFloats)
+            {
+                Kiaro::Common::U32 expectedStreamSize = floatCount * sizeof(Kiaro::Common::F32);
+
+                Kiaro::Support::BitStream floatStream(expectedStreamSize - 3);
+                PackFloats(floatStream);
+
+                // Check if our BitStream size is correct
+                EXPECT_EQ(expectedStreamSize, floatStream.length());
+
+                // Now make sure we can unpack the data correctly
+                for (Kiaro::Common::S32 iteration = floatCount - 1; iteration > -1; iteration--)
+                    EXPECT_EQ(float_list[iteration], floatStream.read<Kiaro::Common::F32>());
+            }
+
+            TEST(BitStreamTest, Vector)
+            {
+                Kiaro::Common::U32 expectedStreamSize = floatCount * sizeof(Kiaro::Common::F32);
+
+                Kiaro::Common::Vector3DF testVector(1.0f, 2.0f, 3.0f);
+                Kiaro::Support::BitStream vectorStream(expectedStreamSize);
+                vectorStream.write<Kiaro::Common::Vector3DF>(testVector);
+
+                Kiaro::Common::Vector3DF &readVector = vectorStream.read<Kiaro::Common::Vector3DF>();
+
+                // Are the components correct?
+                EXPECT_EQ(1.0f, readVector.X);
+                EXPECT_EQ(2.0f, readVector.Y);
+                EXPECT_EQ(3.0f, readVector.Z);
+
+                // Kill it
+                delete &readVector;
+            }
+        #endif // _INCLUDE_KIARO_TESTS_H_
     } // End Namespace Support
 } // End namespace Kiaro

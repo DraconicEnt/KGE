@@ -106,7 +106,7 @@ namespace Kiaro
                         mDataLength = newDataLength;
 
                         if (mData && mIsManagingMemory)
-                            delete mData;
+                            delete[] mData;
 
                         mData = newMemory;
                         mIsManagingMemory = true;
@@ -120,6 +120,11 @@ namespace Kiaro
                 void write(const bool &in)
                 {
                     write<Kiaro::Common::U8>(in);
+                }
+
+                void write(SerializableObjectBase *in)
+                {
+                    in->packData(*this);
                 }
 
                 void write(const Kiaro::Common::Vector3DF &inVector)
@@ -152,8 +157,8 @@ namespace Kiaro
                  *  @warning If should_memcpy is true, the data returned must be manually deallocated.
                  *  @throws std::out_of_range Thrown when a read operation goes out of bounds.
                  */
-                template <class returnType>
-                returnType &read(const bool &shouldMemcpy = false)
+                template <typename returnType>
+                returnType &read(void)
                 {
                     const size_t outDataLength = sizeof(returnType);
 
@@ -162,14 +167,38 @@ namespace Kiaro
                     else
                         mDataPointer -= outDataLength;
 
-                    if (shouldMemcpy)
+                    return *((returnType*)&mData[mDataPointer]);
+                }
+
+                template <void*>
+                void *read(void *copyTo = NULL, const Kiaro::Common::U32 &outLength = 0)
+                {
+                    if (copyTo)
                     {
-                        void *memory = (void*)new Kiaro::Common::U8[outDataLength];
-                        memcpy(memory, &mData[mDataPointer], outDataLength);
-                        return *((returnType*)memory);
+                        memcpy(copyTo, &mData[mDataPointer], outLength);
+                        return copyTo;
                     }
 
-                    return *((returnType*)&mData[mDataPointer]);
+                    throw std::invalid_argument("BitStream: Cannot copy to a NULL location.");
+                    return NULL; // Shouldn't happen but some compilers might trip otherwise
+                }
+
+                template <typename indexType = Kiaro::Common::C8>
+                const indexType &operator[](const Kiaro::Common::U32 &index)
+                {
+                    return *((indexType*)&mData[index]);
+                }
+
+                void read(SerializableObjectBase *copyTo)
+                {
+                    copyTo->unpackData(*this);
+                }
+
+                void read(Kiaro::Common::Vector3DF &out)
+                {
+                    out.Z = read<Kiaro::Common::F32>();
+                    out.Y = read<Kiaro::Common::F32>();
+                    out.X = read<Kiaro::Common::F32>();
                 }
 
                 /**
@@ -189,7 +218,12 @@ namespace Kiaro
                  */
                 void *raw(const bool &shouldMemcpy = false);
 
-                size_t length(void) NOTHROW;
+                template <typename indexType = Kiaro::Common::C8>
+                size_t getSize(void) { return mDataLength / sizeof(indexType); }
+
+                const size_t &getDataPointer(void) { return mDataPointer; }
+
+
 
             // Public Members
             public:
@@ -207,8 +241,11 @@ namespace Kiaro
                 //! A boolean representing whether or not this Kiaro::Support::BitStream is the sole manager of the associated memory.
                 bool mIsManagingMemory;
 
-                boost::filesystem::ofstream *mOutFileStream;
-                boost::filesystem::ifstream *mInFileStream;
+                // TODO (Robert MacGregor#9): Boolean group compression
+                //! Represents the current bit that the BitStream is currently on. This is only used when reading and writing multiple booleans in a row.
+                Kiaro::Common::U8 mCurrentBit;
+                //! Represents if the BitStream is currently operating with booleans.
+                bool mBooleanMode;
         };
     } // End NameSpace Support
 } // End nameSpace Kiaro

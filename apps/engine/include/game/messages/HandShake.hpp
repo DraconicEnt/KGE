@@ -49,7 +49,7 @@ namespace Kiaro
 
                     void unpackData(Kiaro::Support::BitStream &in)
                     {
-                        if (in.length() <= getMinimumPacketPayloadLength())
+                        if (in.getSize() <= getMinimumPacketPayloadLength())
                             throw std::runtime_error("Unable to unpack HandShake packet; too small of a payload!");
 
                         mVersionBuild = in.read<Kiaro::Common::U32>();

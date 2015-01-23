@@ -84,6 +84,7 @@ static void testsFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::C
 
 class DebugLog : public boost::iostreams::sink
 {
+    // Public Methods
     public:
         DebugLog(std::ostream &overwrittenStream, boost::filesystem::ofstream &logFileStream, const std::string textPrepend = "") : mOldStream(overwrittenStream),
         mTextPrepend(textPrepend), mWrotePrependText(false), mLogFileStream(logFileStream)
@@ -117,6 +118,7 @@ class DebugLog : public boost::iostreams::sink
             return size;
         }
 
+        // Private Members
         private:
             bool mWrotePrependText;
             boost::filesystem::ofstream &mLogFileStream;
