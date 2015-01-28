@@ -44,8 +44,9 @@ namespace Kiaro
             public:
                 /**
                  *  @brief Constructor accepting an initial array and length.
-                 *  @param initial_data_array A pointer to a Kiaro::u8 array that utilize as our initial memory.
-                 *  @param initial_data_length The size in bytes that our in parameter is, if specified.
+                 *  @param initialData A pointer to a Kiaro::U8 array that utilize as our initial memory.
+                 *  @param initialDataLength The size in bytes that our in parameter is, if specified.
+                 *  @param initialDataIndex The starting index in the initialData.
                  *  @warning If initial_data_array is specified, it may be deallocated if the BitStream allocates
                  *  more memory when attempting to write beyond its current bounds.
                  *  @warning When using this constructor, The Kiaro::Support::BitStream code will delete the input
@@ -54,20 +55,8 @@ namespace Kiaro
                 BitStream(Kiaro::Common::U8 *initialData = NULL, size_t initialDataLength = 0, size_t initialDataIndex = 0);
 
                 /**
-                 *  @brief Constructor accepting a constant initial array and length.
-                 *  @param initial_data_array A pointer to a Kiaro::u8 array that utilize as our initial memory.
-                 *  @param initial_data_length The size in bytes that our in parameter is, if specified.
-                 *  @warning If initial_data_array is specified, it may be deallocated if the BitStream allocates
-                 *  more memory when attempting to write beyond its current bounds.
-                 *  @note In contrary to the other constructor accepting an initial array, this puts the burden
-                 *  of making sure the memory associated with the input array upon you rather than Kiaro::Support::BitStream
-                 *  code. It will not delete the array under any circumstance.
-                 */
-                //BitStream(const Kiaro::Common::U8 *initialData = NULL, size_t initialDataLength = 0, size_t initialDataIndex = 0);
-
-                /**
                  *  @brief Constructor accepting an initial length.
-                 *  @param initial_data_length A Kiaro::Common::u32 representing the initial size that this Kiaro::Support::BitStream
+                 *  @param initial_data_length A Kiaro::Common::U32 representing the initial size that this Kiaro::Support::BitStream
                  *  should allocate its internal array to be.
                  *  @warning When using this constructor, the memory associated with the Kiaro::Support:BitStream's internal array
                  *  is destroyed when resizing and/or when the Kiaro::Support::BitStream instance itself is deleted.
@@ -154,7 +143,6 @@ namespace Kiaro
                  *  memcpy is used to create a new pointer that may be manipulated at will -- even if the source
                  *  BitStream is destroyed.
                  *  @return A void* pointer representing the data in the BitStream.
-                 *  @warning If should_memcpy is true, the data returned must be manually deallocated.
                  *  @throws std::out_of_range Thrown when a read operation goes out of bounds.
                  */
                 template <typename returnType>
@@ -202,8 +190,8 @@ namespace Kiaro
                 }
 
                 /**
-                 *  @brief Reads a Kiaro::c8 string from the BitStream.
-                 *  @param out_string_length The total number of bytes to read for the string.
+                 *  @brief Reads a Kiaro::C8 string from the BitStream.
+                 *  @param outStringLength The total number of bytes to read for the string.
                  *  @param should_memcpy A boolean representing whether or not the data should be copied.
                  *  @return The next Kiaro::c8 in the BitStream.
                  *  @see BitStream::Read
@@ -222,8 +210,6 @@ namespace Kiaro
                 size_t getSize(void) { return mDataLength / sizeof(indexType); }
 
                 const size_t &getDataPointer(void) { return mDataPointer; }
-
-
 
             // Public Members
             public:
