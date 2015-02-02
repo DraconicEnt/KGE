@@ -41,7 +41,8 @@ namespace Kiaro
         #define _ENGINE_USE_IRRLICHT_TYPES_ 1
 
         #if defined(_MSC_VER) || (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)
-            #define NOTHROW __declspec(nothrow)
+            //#define NOTHROW __declspec(nothrow)
+			#define NOTHROW 
         #else
             #define NOTHROW __attribute__((nothrow))
         #endif

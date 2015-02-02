@@ -13,7 +13,7 @@
 #define _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
 
 #include <lua.hpp>
-#include <irrlicht/irrlicht.h>
+#include <irrlicht.h>
 
 #include <engine/Common.hpp>
 

@@ -13,7 +13,10 @@
 
 #include <physfs.h>
 
+#if ENGINE_TESTS>0
 #include <gtest/gtest.h>
+#endif
+
 #include <tests/Tests.hpp>
 
 #include <boost/iostreams/stream_buffer.hpp>
