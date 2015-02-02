@@ -27,7 +27,7 @@ FIND_PACKAGE(ENet REQUIRED)
 FIND_PACKAGE(Irrlicht REQUIRED)
 FIND_PACKAGE(Bullet REQUIRED)
 FIND_PACKAGE(PhysFS REQUIRED)
-FIND_PACKAGE(Boost "1.54.0" REQUIRED "regex" "system" "thread")
+FIND_PACKAGE(Boost "1.54.0" REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
 
 # Might be useful for something later
@@ -45,6 +45,8 @@ IF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 	SET(BUILD_UNITTESTS OFF)
 	MESSAGE(WARNING "Did not find the Google Testing framework. Will build without unit tests.")
 ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
+
+# TODO: Add /TP option to command line for Lua module to build when using MSVS
 
 # Configure for GNU Compiler
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
