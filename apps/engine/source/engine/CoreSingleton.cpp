@@ -17,9 +17,6 @@
 
 #include <engine/Config.hpp>
 
-#include <boost/thread/thread.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-
 #include <support/SchedulerSingleton.hpp>
 #include <support/Time.hpp>
 
@@ -171,11 +168,14 @@ namespace Kiaro
             }
 
             // Initialize Lua
+            // FIXME (Robert MacGregor#9): Init and call our Lua main method within the try, catch
             mLuaState = luaL_newstate();
             luaL_checkversion(mLuaState);
             lua_gc(mLuaState, LUA_GCSTOP, 0);
             luaL_openlibs(mLuaState);
             lua_gc(mLuaState, LUA_GCRESTART, 0);
+
+            std::cout << "CoreSingleton: Initialized Lua " << std::endl;
 
             // Load up the main file
             // TODO: Implement PhysFS in Lua
@@ -194,8 +194,6 @@ namespace Kiaro
             // Call the main() method
             lua_getglobal(mLuaState, "main");
             lua_call(mLuaState, 0, 0);
-
-            std::cout << "CoreSingleton: Initialized Lua " << std::endl;
 
             irr::core::dimension2d<irr::u32> lastDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
 
@@ -237,10 +235,11 @@ namespace Kiaro
                     if (mServer)
                         mServer->update(deltaTimeSeconds);
 
+                    // TODO (Robert MacGregor#9): Replace this with a scheduler-based implementation that doesn't sleep the thread
                     // Make sure that it takes at least 32ms to complete a single tick to help make sync easier, but only
                     // if we're actually running a sim. If we're not, we shouldn't have to enforce the tickrate
-                    if (mServer || mClient)
-                        boost::this_thread::sleep(boost::posix_time::milliseconds(32));
+                    //if (mServer || mClient)
+                    //    boost::this_thread::sleep(boost::posix_time::milliseconds(32));
 
                     deltaTimeSeconds = Kiaro::Support::Time::stopTimer(timerID);
                 }

@@ -13,10 +13,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
+#include <regex>
 
 #include <enet/enet.h>
-
-#include <boost/regex.hpp>
 
 #include <support/BitStream.hpp>
 
@@ -68,14 +67,15 @@ namespace Kiaro
 			if (mInternalPeer || mInternalHost)
 				return;
 
-            // FIXME: IP Octets >= 256
-            // FIXME: DNS Names (host.host.net)
-            static const boost::regex ipExpression("([0-9]+.[0-9]+.[0-9]+.[0-9])|([[:alpha:]]+.([[:alpha:]]+.)*[[:alpha:]]+)", boost::regex::extended);
-            if (!boost::regex_match(targetAddress, ipExpression))
-            {
-                std::cerr << "OutgoingClientBase: Invalid remote host '" << targetAddress << "'!" << std::endl;
-                return;
-            }
+            // FIXME (Robert MacGregor#9): IP Octets >= 256
+            // FIXME (Robert MacGregor#9): DNS Names (host.host.net)
+            // TODO (Robert MacGregor#9): Update for std::regex
+            //static const std::regex ipExpression("([0-9]+.[0-9]+.[0-9]+.[0-9])|([[:alpha:]]+.([[:alpha:]]+.)*[[:alpha:]]+)");
+            //if (!std::regex_match(targetAddress, ipExpression))
+            //{
+            //    std::cerr << "OutgoingClientBase: Invalid remote host '" << targetAddress << "'!" << std::endl;
+            //    return;
+           // }
 
             std::cout << "OutgoingClientBase: Attempting connection to remote host " << targetAddress << ":" << targetPort << std::endl;
 

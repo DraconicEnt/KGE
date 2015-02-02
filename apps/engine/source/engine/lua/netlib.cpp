@@ -1,19 +1,13 @@
-#define lnetlib_cpp
-#define LUA_LIB
-
 #include <engine/CoreSingleton.hpp>
 #include <game/OutgoingClientSingleton.hpp>
 
+#include <stdlib.h>
+
+#include <lua.hpp>
+
 extern "C"
 {
-    #include <stdlib.h>
-
-    #include "lua.h"
-
-    #include "lauxlib.h"
-    #include "lualib.h"
-
-    static int net_connect(lua_State *L)
+    int lua_net_connect(lua_State *L)
     {
         Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
 
@@ -33,7 +27,7 @@ extern "C"
         return 1;
     }
 
-    static int net_disconnect(lua_State *L)
+    int lua_net_disconnect(lua_State *L)
     {
         Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
 
@@ -47,19 +41,6 @@ extern "C"
 
         outClient->disconnect();
 
-        return 1;
-    }
-
-    static const luaL_Reg netlib[] =
-    {
-      {"connect", net_connect},
-      {"disconnect", net_disconnect},
-      {NULL, NULL}
-    };
-
-    LUAMOD_API int luaopen_net(lua_State *L)
-    {
-        luaL_newlib(L, netlib);
         return 1;
     }
 }

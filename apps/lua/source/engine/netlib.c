@@ -8,8 +8,8 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-int lua_net_connect(lua_State *L);
-int lua_net_disconnect(lua_State *L);
+extern int lua_net_connect(lua_State *L);
+extern int lua_net_disconnect(lua_State *L);
 
 static const luaL_Reg netlib[] =
 {
