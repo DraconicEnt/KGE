@@ -12,6 +12,8 @@
 #ifndef _INCLUDE_KIARO_ENGINE_COMMON_
 #define _INCLUDE_KIARO_ENGINE_COMMON_
 
+#include <iostream>
+
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -42,7 +44,7 @@ namespace Kiaro
 
         #if defined(_MSC_VER) || (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)
             //#define NOTHROW __declspec(nothrow)
-			#define NOTHROW 
+			#define NOTHROW
         #else
             #define NOTHROW __attribute__((nothrow))
         #endif

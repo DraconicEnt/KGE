@@ -65,10 +65,11 @@ namespace Kiaro
 
             Kiaro::Common::U64 getTimerResolutionMicroseconds(void)
             {
-                timespec tp;
-                clock_getres(CLOCK_MONOTONIC, &tp);
+                //timespec tp;
+                //clock_getres(CLOCK_MONOTONIC, &tp);
 
-                return tp.tv_nsec;
+                //return tp.tv_nsec;
+                return 0;
             }
 
             Kiaro::Common::U64 getSimTimeMicroseconds(void)
