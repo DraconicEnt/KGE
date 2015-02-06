@@ -58,7 +58,7 @@ namespace Kiaro
                 /**
                  *  @brief Updates the state of this Kiaro::Network::Client.
                  */
-                void update(void);
+                void networkUpdate(void);
 
                 //! Causes the client to handle all queued network events immediately.
                 void dispatch(void);

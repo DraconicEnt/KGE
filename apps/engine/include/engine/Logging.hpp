@@ -15,7 +15,6 @@
 #include <physfs.h>
 
 #include <engine/Common.hpp>
-#include <support/String.hpp>
 
 namespace Kiaro
 {

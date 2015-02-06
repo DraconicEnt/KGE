@@ -20,7 +20,6 @@
 
 #include <engine/Common.hpp>
 #include <engine/Config.hpp>
-#include "String.hpp"
 
 namespace Kiaro
 {

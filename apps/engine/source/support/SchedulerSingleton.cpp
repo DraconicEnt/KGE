@@ -35,9 +35,9 @@ namespace Kiaro
             SchedulerSingleton_Instance = NULL;
         }
 
-        ScheduledEvent *SchedulerSingleton::schedule(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Kiaro::Common::U32 &waitTimeMS)
+        ScheduledEvent *SchedulerSingleton::schedule(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Kiaro::Common::U32 &waitTimeMS, const bool &recurring)
         {
-            ScheduledEvent *event = new ScheduledEvent(cachedDelegate, waitTimeMS);
+            ScheduledEvent *event = new ScheduledEvent(cachedDelegate, waitTimeMS, recurring);
             mScheduledEventSet.insert(event);
 
             return event;
@@ -55,7 +55,11 @@ namespace Kiaro
                 if (currentEvent->shouldDispatch(currentSimTimeMS))
                 {
                     currentEvent->dispatch();
-                    shouldRemoveCurrentEvent = true;
+
+                    if (currentEvent->isRecurring())
+                        currentEvent->setTriggerTimeMS(Kiaro::Support::Time::getSimTimeMilliseconds() + currentEvent->getWaitTimeMS());
+                    else
+                        shouldRemoveCurrentEvent = true;
                 }
                 else if (currentEvent->isCancelled())
                     shouldRemoveCurrentEvent = true;

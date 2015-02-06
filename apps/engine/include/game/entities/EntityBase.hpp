@@ -12,7 +12,10 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_ENTITYBASE_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_ENTITYBASE_HPP_
 
+#include <set>
 #include <stdexcept>
+
+#include <ces/ComponentBase.hpp>
 
 #include "engine/Common.hpp"
 
@@ -80,6 +83,10 @@ namespace Kiaro
                     const Kiaro::Common::U32 mTypeMask;
                     Kiaro::Common::U32 mHintMask;
                     Kiaro::Common::U32 mNetID;
+
+                    std::set<Kiaro::CES::ComponentBase*> mComponents;
+
+                    std::string mName;
             };
         } // End Namespace Entities
     } // End Namespace Game

@@ -27,14 +27,23 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                ScheduledEvent(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Kiaro::Common::U64 &waitTimeMS) : mInternalDelegate(cachedDelegate)
+                ScheduledEvent(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Kiaro::Common::U64 &waitTimeMS, const bool &recurring) : mInternalDelegate(cachedDelegate)
                 {
                     mTriggerTimeMS = Kiaro::Support::Time::getSimTimeMilliseconds() + waitTimeMS;
+
+                    mRecurring = recurring;
+                    mWaitTimeMS = waitTimeMS;
+                    mCancelled = false;
                 }
 
                 bool shouldDispatch(const Kiaro::Common::U64 &currentSimTimeMS) NOTHROW
                 {
-                    return currentSimTimeMS >= mTriggerTimeMS && !mIsCancelled;
+                    return currentSimTimeMS >= mTriggerTimeMS && !mCancelled;
+                }
+
+                void setTriggerTimeMS(const Kiaro::Common::U64 &triggerTime)
+                {
+                    mTriggerTimeMS = triggerTime;
                 }
 
                 void dispatch(void)
@@ -44,29 +53,42 @@ namespace Kiaro
 
                 void cancel(void) NOTHROW
                 {
-                    mIsCancelled = true;
+                    mCancelled = true;
                 }
 
-                bool isCancelled(void) NOTHROW
+                const bool &isCancelled(void) NOTHROW
                 {
-                    return mIsCancelled;
+                    return mCancelled;
+                }
+
+                const bool &isRecurring(void)
+                {
+                    return mRecurring;
+                }
+
+                const Kiaro::Common::U64 &getWaitTimeMS(void)
+                {
+                    return mWaitTimeMS;
                 }
 
             // Private Members
             private:
                 //! A boolean representing whether or not this scheduled event has been cancelled.
-                bool mIsCancelled;
+                bool mCancelled;
                 //! The time measured in milliseconds at which the scheduled event should be dispatched at.
                 Kiaro::Common::U64 mTriggerTimeMS;
                 //! The delegate to dispatch when the scheduled event hits its mTriggerTimeMS.
                 EasyDelegate::GenericCachedDelegate *mInternalDelegate;
+
+                bool mRecurring;
+                Kiaro::Common::U64 mWaitTimeMS;
         };
 
         class SchedulerSingleton
         {
             // Public Methods
             public:
-                ScheduledEvent *schedule(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Kiaro::Common::U32 &waitTimeMS);
+                ScheduledEvent *schedule(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Kiaro::Common::U32 &waitTimeMS, const bool &recurring = false);
 
                 void update(void);
 
@@ -80,7 +102,7 @@ namespace Kiaro
                 SchedulerSingleton(void) { }
                 //! Standard Destructor.
                 ~SchedulerSingleton(void) { }
-                
+
             // Private Members
             private:
                 std::set<ScheduledEvent*> mScheduledEventSet;

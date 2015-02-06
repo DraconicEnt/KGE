@@ -200,6 +200,11 @@ namespace Kiaro
             // Start the Loop
             Kiaro::Common::F32 deltaTimeSeconds = 0.0f;
 
+            // Setup and start the network time pulses
+            EngineTimePulseDelegate *timePulse = new EngineTimePulseDelegate(new EngineTimePulseDelegate::MemberDelegateType<CoreSingleton>(this, &CoreSingleton::networkUpdate));
+            Kiaro::Support::SchedulerSingleton::getPointer()->schedule(timePulse, ENGINE_TICKRATE, true);
+
+            // The GUI and sound systems run indepedently of our network time pulse
             while (mRunning && mIrrlichtDevice->run())
             {
                 try
@@ -209,6 +214,7 @@ namespace Kiaro
 
                     Kiaro::Support::SchedulerSingleton::getPointer()->update();
 
+                    // Send a time pulse to all the client end functionality
                     if (mClient)
                     {
                         irr::core::dimension2d<Kiaro::Common::U32> currentDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
@@ -221,7 +227,6 @@ namespace Kiaro
                         }
 
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
-                        mClient->update();
 
                         // Since we're a client, render the frame right after updating
                         mIrrlichtDevice->getVideoDriver()->beginScene(true, true, mClearColor);
@@ -231,15 +236,6 @@ namespace Kiaro
 
                         mIrrlichtDevice->getVideoDriver()->endScene();
                     }
-
-                    if (mServer)
-                        mServer->update(deltaTimeSeconds);
-
-                    // TODO (Robert MacGregor#9): Replace this with a scheduler-based implementation that doesn't sleep the thread
-                    // Make sure that it takes at least 32ms to complete a single tick to help make sync easier, but only
-                    // if we're actually running a sim. If we're not, we shouldn't have to enforce the tickrate
-                    //if (mServer || mClient)
-                    //    boost::this_thread::sleep(boost::posix_time::milliseconds(32));
 
                     deltaTimeSeconds = Kiaro::Support::Time::stopTimer(timerID);
                 }
@@ -258,9 +254,6 @@ namespace Kiaro
                     }
                 }
             }
-
-            if (mClient)
-                mClient->disconnect();
         }
 
         void CoreSingleton::kill(void)
@@ -308,6 +301,16 @@ namespace Kiaro
 
             PHYSFS_deinit();
             enet_deinitialize();
+        }
+
+        void CoreSingleton::networkUpdate(void)
+        {
+            // FIXME (Robert MacGregor#9): Pass in the time delta
+            if (mClient)
+                mClient->networkUpdate();
+
+            if (mServer)
+                mServer->networkUpdate(0.0f);
         }
     } // End Namespace Engine
 } // End Namespace Kiaro

@@ -14,6 +14,7 @@
 
 #include <lua.hpp>
 #include <irrlicht.h>
+#include <easydelegate.hpp>
 
 #include <engine/Common.hpp>
 
@@ -68,6 +69,7 @@ namespace Kiaro
                 //! Standard destructor
                 ~CoreSingleton(void);
 
+                void networkUpdate(void);
             // Private Members
             private:
                 //! A boolean representing whether or not the engine is running
@@ -84,6 +86,8 @@ namespace Kiaro
                 lua_State *mLuaState;
 
                 Kiaro::Common::String mGameName;
+
+                typedef EasyDelegate::CachedDelegate<void> EngineTimePulseDelegate;
         };
     } // End Namespace Engine
 } // End Namespace Kiaro

@@ -60,7 +60,7 @@ namespace Kiaro
 
         void ServerSingleton::update(const Kiaro::Common::F32 &deltaTimeSeconds)
         {
-            Kiaro::Network::ServerBase::update(deltaTimeSeconds);
+            Kiaro::Network::ServerBase::networkUpdate(deltaTimeSeconds);
 
             mEntityGroup->update(deltaTimeSeconds);
         }

@@ -289,6 +289,7 @@ static int os_setlocale (lua_State *L) {
 }
 
 
+/*
 static int os_exit (lua_State *L) {
   int status;
   if (lua_isboolean(L, 1))
@@ -297,16 +298,19 @@ static int os_exit (lua_State *L) {
     status = luaL_optint(L, 1, EXIT_SUCCESS);
   if (lua_toboolean(L, 2))
     lua_close(L);
-  if (L) exit(status);  /* 'if' to avoid warnings for unreachable 'return' */
+  if (L) exit(status);  // 'if' to avoid warnings for unreachable 'return'
   return 0;
 }
+*/
 
+// Replace os.exit
+int lua_engine_quit(lua_State *L);
 
 static const luaL_Reg syslib[] = {
   {"clock",     os_clock},
   {"date",      os_date},
   {"difftime",  os_difftime},
-  {"exit",      os_exit},
+  {"exit",      lua_engine_quit},
   {"getenv",    os_getenv},
   {"remove",    os_remove},
   {"rename",    os_rename},

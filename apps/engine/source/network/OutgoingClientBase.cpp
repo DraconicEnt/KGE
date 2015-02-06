@@ -146,7 +146,7 @@ namespace Kiaro
             onDisconnected();
         }
 
-        void OutgoingClientBase::update(void)
+        void OutgoingClientBase::networkUpdate(void)
         {
             if (!mIsConnected)
                 return;

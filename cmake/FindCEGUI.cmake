@@ -138,6 +138,9 @@ find_path(CEGUI_INCLUDE_DIR NAMES CEGUI.h
 set(CEGUI_INCOMPATIBLE FALSE)    
  
 if (CEGUI_INCLUDE_DIR)
+  # Go up one dir as includes for CEGUI should be done like: #include <CEGUI/...>
+  get_filename_component(CEGUI_INCLUDE_DIR ${CEGUI_INCLUDE_DIR} DIRECTORY)
+  
   # determine CEGUI version
   file(READ ${CEGUI_INCLUDE_DIR}/CEGUI/Version.h CEGUI_TEMP_VERSION_CONTENT)
   get_preprocessor_entry(CEGUI_TEMP_VERSION_CONTENT CEGUI_VERSION_MAJOR CEGUI_VERSION_MAJOR)

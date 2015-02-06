@@ -12,7 +12,9 @@
 #ifndef _INCLUDE_KIARO_CES_COMPONENTBASE_H_
 #define _INCLUDE_KIARO_CES_COMPONENTBASE_H_
 
-#include <support/String.hpp>
+#include <string>
+
+#include <engine/Common.hpp>
 
 namespace Kiaro
 {
@@ -22,17 +24,19 @@ namespace Kiaro
 
         class ComponentBase
         {
+            // Public Methods
             public:
-            ComponentBase(Entity *parent) { this->Parent = parent; }
-            ~ComponentBase(void) { this->Deinitialize(); }
+                //! Standard destructor that calls ComponentBase::deinitialize before freeing the memory.
+                ~ComponentBase(void) { this->deinitialize(); }
 
-            virtual void Initialize(void) = 0;
-            virtual void Deinitialize(void) = 0;
-            virtual void Tick(Kiaro::Common::F32 DeltaTimeSeconds) { }
+                virtual void initialize(void) = 0;
+                virtual void deinitialize(void) = 0;
+                virtual void tick(const Kiaro::Common::F32 &DeltaTimeSeconds) = 0;
 
+            // Private Members
             private:
-            //! A pointer to an Entity that this Component belongs to.
-            Entity *Parent;
+                //! A pointer to an Entity that this Component belongs to.
+                Entity *Parent;
         };
     } // End NameSpace CES
 } // End NameSpace Kiaro
