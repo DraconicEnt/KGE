@@ -40,6 +40,7 @@ static const luaL_Reg loadedlibs[] = {
   // KGE
   {LUA_NETLIBNAME, luaopen_net},
   {LUA_ENGINELIBNAME, luaopen_engine},
+  {LUA_VIDEOLIBNAME, luaopen_video},
   {NULL, NULL}
 };
 

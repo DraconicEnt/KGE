@@ -11,6 +11,7 @@
 
 
 #include <CEGUI/CEGUI.h>
+
 #include <engine/InputListenerSingleton.hpp>
 
 namespace Kiaro

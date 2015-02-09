@@ -46,15 +46,15 @@ namespace Kiaro
                  *  @brief Empty callback function for the the OnReceivePacket event.
                  *  @param packet The received packet.
                  */
-                void OnReceivePacket(Kiaro::Support::BitStream &incomingStream);
+                void onReceivePacket(Kiaro::Support::BitStream &incomingStream);
 
-                void Send(Kiaro::Network::PacketBase *packet, const bool &reliable);
+                void send(Kiaro::Network::PacketBase *packet, const bool &reliable);
 
-                bool GetIsOppositeEndian(void) { return mIsOppositeEndian; }
+                bool getIsOppositeEndian(void) { return mIsOppositeEndian; }
 
-                void Disconnect(void);
+                void disconnect(void);
 
-                Kiaro::Common::U16 GetPort(void);
+                Kiaro::Common::U16 getPort(void);
 
             private:
                 bool mIsOppositeEndian;

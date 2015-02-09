@@ -9,26 +9,23 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <engine/CoreSingleton.hpp>
-
 #include <irrlicht.h>
-#include <CEGUI/RendererModules/Irrlicht/Renderer.h>
+#include <lua.hpp>
+
 #include <CEGUI/CEGUI.h>
+#include <CEGUI/RendererModules/Irrlicht/Renderer.h>
 
 #include <engine/Config.hpp>
-
-#include <support/SchedulerSingleton.hpp>
-#include <support/Time.hpp>
-
+#include <engine/CoreSingleton.hpp>
 #include <engine/Logging.hpp>
-
 #include <engine/InputListenerSingleton.hpp>
 
 #include <game/IncomingClient.hpp>
 #include <game/OutgoingClientSingleton.hpp>
 #include <game/ServerSingleton.hpp>
 
-#include <lua.hpp>
+#include <support/Time.hpp>
+#include <support/SchedulerSingleton.hpp>
 
 namespace Kiaro
 {

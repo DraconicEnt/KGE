@@ -48,6 +48,9 @@ LUAMOD_API int (luaopen_net)(lua_State *L);
 #define LUA_ENGINELIBNAME "engine"
 LUAMOD_API int (luaopen_engine)(lua_State *L);
 
+#define LUA_VIDEOLIBNAME "video"
+LUAMOD_API int (luaopen_video)(lua_State *L);
+
 /* open all previous libraries */
 LUALIB_API void (luaL_openlibs) (lua_State *L);
 

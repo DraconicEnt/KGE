@@ -14,8 +14,8 @@
 
 #include <enet/enet.h>
 
-#include <network/OutgoingClientBase.hpp>
 #include <network/MessageBase.hpp>
+#include <network/OutgoingClientBase.hpp>
 
 namespace Kiaro
 {
@@ -28,7 +28,7 @@ namespace Kiaro
     {
         class ServerBase;
         class PacketBase;
-    }
+    } // End NameSpace Network
 
     namespace Game
     {

@@ -9,6 +9,10 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+#if ENGINE_TESTS>0
+    #include <gtest/gtest.h>
+#endif // ENGINE_TESTS
+
 #include <support/BitStream.hpp>
 
 namespace Kiaro
@@ -93,18 +97,18 @@ namespace Kiaro
                 PackFloats(floatStream);
 
                 // Check if our BitStream size is correct
-                EXPECT_EQ(expectedStreamSize, floatStream.length());
+                EXPECT_EQ(expectedStreamSize, floatStream.getSize());
 
                 // Now make sure we can unpack the data correctly
                 for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
                     EXPECT_EQ(float_list[(floatCount - 1) - iteration], floatStream.read<Kiaro::Common::F32>());
 
                 // Reset and read using memcpy
-                floatStream.mDataPointer = floatStream.length();
+                floatStream.mDataPointer = floatStream.getSize();
 
                 for (Kiaro::Common::U32 iteration = 0; iteration < floatCount; iteration++)
                 {
-                    Kiaro::Common::F32 &currentValue = floatStream.read<Kiaro::Common::F32>(true);
+                    Kiaro::Common::F32 &currentValue = floatStream.read<Kiaro::Common::F32>();
                     EXPECT_EQ(float_list[(floatCount - 1) - iteration], currentValue);
 
                     // Deallocate without dying now?
@@ -120,7 +124,7 @@ namespace Kiaro
                 PackFloats(floatStream);
 
                 // Check if our BitStream size is correct
-                EXPECT_EQ(expectedStreamSize, floatStream.length());
+                EXPECT_EQ(expectedStreamSize, floatStream.getSize());
 
                 // Now make sure we can unpack the data correctly
                 for (Kiaro::Common::S32 iteration = floatCount - 1; iteration > -1; iteration--)

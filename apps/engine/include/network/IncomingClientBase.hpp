@@ -39,6 +39,7 @@ namespace Kiaro
                  */
                 IncomingClientBase(ENetPeer *connecting, Kiaro::Network::ServerBase *server);
 
+                //! Standard destructor.
                 ~IncomingClientBase(void);
 
                 /**
@@ -51,11 +52,14 @@ namespace Kiaro
 
                 bool getIsOppositeEndian(void) NOTHROW;
 
+                //! Disconnects this client from the server.
                 void disconnect(void) NOTHROW;
 
+                //! Get the port number that this client is connecting on.
                 Kiaro::Common::U16 getPort(void) NOTHROW;
 
             private:
+                //! A boolean representing whether or not this connecting client has the opposite endianness.
                 bool mIsOppositeEndian;
                 ENetPeer *mInternalClient;
         };

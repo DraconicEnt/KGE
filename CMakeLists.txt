@@ -50,14 +50,17 @@ ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 
 # Configure for GNU Compiler
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
-    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c++11")
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+    # gnu++0x is necessary for GTest on Windows, apparently.
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=gnu++0x")
     
     # To use std::thread and friends, we must pass -lpthread and -pthread to the compiler and Linker for GCC
     IF (NOT WIN32)
         SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lpthread -pthread")
         SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -pthread")
         SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lpthread -pthread" )
+    ELSE (NOT WIN32)
+        ADD_DEFINITIONS(-DGNUWIN32=1 -DGTEST_OS_WINDOWS_MOBILE=0)
     ENDIF (NOT WIN32)
 
     IF (DEBUG)

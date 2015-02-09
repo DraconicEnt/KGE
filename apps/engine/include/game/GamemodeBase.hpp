@@ -12,9 +12,9 @@
 #ifndef _INCLUDE_KIARO_GAMEMODEBASE_HPP_
 #define _INCLUDE_KIARO_GAMEMODEBASE_HPP_
 
-#include "engine/Common.hpp"
-
 #include <easydelegate.hpp>
+
+#include "engine/Common.hpp"
 
 namespace Kiaro
 {

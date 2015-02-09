@@ -31,7 +31,7 @@ namespace Kiaro
 
                 virtual void initialize(void) = 0;
                 virtual void deinitialize(void) = 0;
-                virtual void tick(const Kiaro::Common::F32 &DeltaTimeSeconds) = 0;
+                virtual void tick(const Kiaro::Common::F32 &DeltaTimeSeconds) { }
 
             // Private Members
             private:
