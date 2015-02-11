@@ -44,8 +44,9 @@ namespace Kiaro
 
                     void unpackData(Kiaro::Support::BitStream &in)
                     {
-                        if (in.getSize() <= getMinimumPacketPayloadLength())
-                            throw std::runtime_error("Unable to unpack SimCommit packet; too small of a payload!");
+                        // FIXME (Robert MacGregor#9): Sim Commit Messages don't contain any values
+                        //if (in.getSize() <= getMinimumPacketPayloadLength())
+                        //    throw std::runtime_error("Unable to unpack SimCommit packet; too small of a payload!");
                     }
 
                     Kiaro::Common::U32 getMinimumPacketPayloadLength(void)

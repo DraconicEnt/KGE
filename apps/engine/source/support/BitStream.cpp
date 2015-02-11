@@ -67,8 +67,7 @@ namespace Kiaro
 
         void *BitStream::raw(const bool &shouldMemcpy)
         {
-            //return read(mDataPointer, shouldMemcpy);
-            return NULL;
+            return mData;
         }
 
         // BitStream GTest Code
