@@ -15,6 +15,11 @@ namespace Kiaro
 {
     namespace CES
     {
+        ComponentGravity::ComponentGravity(void)
+        {
+            mComponentTypeIdentifier = Kiaro::CES::COMPONENT_GRAVITY;
+        }
+
         void ComponentGravity::initialize(void)
         {
 

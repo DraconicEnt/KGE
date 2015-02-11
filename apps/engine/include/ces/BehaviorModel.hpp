@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_KIARO_CES_BEHAVIORMODEL_HPP_
 #define _INCLUDE_KIARO_CES_BEHAVIORMODEL_HPP_
 
+#include <set>
 #include <string>
 
 #include <engine/Common.hpp>
@@ -21,6 +22,8 @@ namespace Kiaro
 {
     namespace CES
     {
+        class ComponentBase;
+
         class BehaviorModel : public Kiaro::Support::SerializableObjectBase
         {
             // Public Methods
@@ -56,6 +59,8 @@ namespace Kiaro
             private:
                 //! The current name of this BehaviorModel.
                 std::string mName;
+                //! A set of ComponentBase derivatives attached to this BehaviorModel.
+                std::set<ComponentBase*> mComponents;
         };
     } // End NameSpace CES
 } // End NameSpace Kiaro

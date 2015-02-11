@@ -20,9 +20,10 @@
 #include <engine/Logging.hpp>
 #include <engine/InputListenerSingleton.hpp>
 
-#include <game/IncomingClient.hpp>
-#include <game/OutgoingClientSingleton.hpp>
-#include <game/ServerSingleton.hpp>
+#include <network/OutgoingClientSingleton.hpp>
+
+#include <network/IncomingClient.hpp>
+#include <network/ServerSingleton.hpp>
 
 #include <support/Time.hpp>
 #include <support/SchedulerSingleton.hpp>
@@ -102,12 +103,12 @@ namespace Kiaro
             {
                 case Kiaro::ENGINE_CLIENT:
                 {
-                    mClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
+                    mClient = Kiaro::Network::OutgoingClientSingleton::getPointer();
                     break;
                 }
                 case Kiaro::ENGINE_CLIENTCONNECT:
                 {
-                    mClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
+                    mClient = Kiaro::Network::OutgoingClientSingleton::getPointer();
                     mClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
 
                     if (!mClient->getIsConnected())
@@ -121,7 +122,7 @@ namespace Kiaro
                 case Kiaro::ENGINE_DEDICATED:
                 {
                     videoDriver = irr::video::EDT_NULL;
-                    mServer = Kiaro::Game::ServerSingleton::getPointer("0.0.0.0", 11595, 32);
+                    mServer = Kiaro::Network::ServerSingleton::getPointer("0.0.0.0", 11595, 32);
 
                     break;
                 }
@@ -212,7 +213,7 @@ namespace Kiaro
                     Kiaro::Support::SchedulerSingleton::getPointer()->update();
 
                     // Send a time pulse to all the client end functionality
-                    if (mClient)
+                    if (mEngineMode == ENGINE_CLIENT || mEngineMode == ENGINE_CLIENTCONNECT)
                     {
                         irr::core::dimension2d<Kiaro::Common::U32> currentDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
                         if (lastDisplaySize != currentDisplaySize)
@@ -238,14 +239,22 @@ namespace Kiaro
                 }
                 catch(std::exception &e)
                 {
-                    std::cerr << "An internal exception of type '" << typeid(e).name() << "' has occurred: " << e.what() << std::endl;
+                    std::cerr << "CoreSingleton: An internal exception of type '" << typeid(e).name() << "' has occurred: \"" << e.what() << "\"" << std::endl;
 
+                    // Something is probably up, we should leave.
                     if (mClient)
+                    {
                         mClient->disconnect();
+                        mClient = NULL;
 
+                        Kiaro::Network::OutgoingClientSingleton::destroy();
+                    }
+
+                    // Servers just drop off the client that it last processed
                     if (mServer)
                     {
-                        Kiaro::Network::IncomingClientBase *lastClient = mServer->getLastPacketSender();
+                        Kiaro::Network::IncomingClient *lastClient = mServer->getLastPacketSender();
+
                         if (lastClient)
                             lastClient->disconnect();
                     }
@@ -279,14 +288,14 @@ namespace Kiaro
             if (mClient)
             {
                 mClient->disconnect();
-                Kiaro::Game::OutgoingClientSingleton::destroy();
+                Kiaro::Network::OutgoingClientSingleton::destroy();
 
                 mClient = NULL;
             }
 
             if (mServer)
             {
-                Kiaro::Game::ServerSingleton::destroy();
+                Kiaro::Network::ServerSingleton::destroy();
 
                 mServer = NULL;
             }

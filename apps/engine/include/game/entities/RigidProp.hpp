@@ -14,7 +14,7 @@
 
 #include "engine/Common.hpp"
 
-#include <game/entities/EntityBase.hpp>
+#include <game/entities/RigidObjectBase.hpp>
 
 #include <irrlicht.h>
 
@@ -24,7 +24,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            class RigidProp : public Kiaro::Game::Entities::EntityBase
+            class RigidProp : public Kiaro::Game::Entities::RigidObjectBase
             {
                 // Public Methods
                 public:

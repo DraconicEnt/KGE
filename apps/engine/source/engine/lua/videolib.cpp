@@ -1,5 +1,5 @@
 #include <engine/CoreSingleton.hpp>
-#include <game/OutgoingClientSingleton.hpp>
+#include <network/OutgoingClientSingleton.hpp>
 
 #include <stdlib.h>
 
@@ -10,8 +10,6 @@ extern "C"
     int lua_video_setresolution(lua_State *L)
     {
         Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
-
-        throw std::logic_error("BLAH");
 
         if (engineCore->isDedicated())
         {

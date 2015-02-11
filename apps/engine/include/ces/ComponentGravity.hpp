@@ -28,8 +28,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                //! Standard destructor that calls ComponentBase::deinitialize before freeing the memory.
-                ~ComponentGravity(void) { this->deinitialize(); }
+                ComponentGravity(void);
 
                 virtual void initialize(void);
                 virtual void deinitialize(void);

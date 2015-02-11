@@ -14,6 +14,7 @@
 
 #include <stdexcept>
 
+#include <game/messages/messages.hpp>
 #include <network/MessageBase.hpp>
 
 namespace Kiaro
@@ -26,13 +27,13 @@ namespace Kiaro
 
     namespace Game
     {
-        namespace Packets
+        namespace Messages
         {
             class HandShake : public Kiaro::Network::MessageBase
             {
                 // Public Methods
                 public:
-                    HandShake(Kiaro::Support::BitStream *in = NULL, Kiaro::Network::IncomingClientBase *sender = NULL) : Network::MessageBase(PACKET_HANDSHAKE, in, sender)
+                    HandShake(Kiaro::Support::BitStream *in = NULL, Kiaro::Network::IncomingClientBase *sender = NULL) : Network::MessageBase(MESSAGE_HANDSHAKE, in, sender)
                     {
 
                     }

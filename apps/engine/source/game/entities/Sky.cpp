@@ -13,7 +13,7 @@
 
 #include <game/entities/Sky.hpp>
 #include <game/entities/Types.hpp>
-#include <game/ServerSingleton.hpp>
+#include <network/ServerSingleton.hpp>
 
 #include <support/BitStream.hpp>
 

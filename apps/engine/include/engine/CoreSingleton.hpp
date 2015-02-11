@@ -27,16 +27,10 @@ namespace Kiaro
         ENGINE_DEDICATED = 2,
     }; // End Enum ENGINE_MODE
 
-    namespace Game
-    {
-        class OutgoingClient;
-        class ServerSingleton;
-    }
-
     namespace Network
     {
-        class ServerBase;
-        class OutgoingClientBase;
+        class ServerSingleton;
+        class OutgoingClientSingleton;
     }
 
     namespace Engine
@@ -60,7 +54,8 @@ namespace Kiaro
                 bool isDedicated(void);
 
             // Public Members
-            Kiaro::Common::ColorRGBA mClearColor;
+            public:
+                Kiaro::Common::ColorRGBA mClearColor;
 
             // Private Methods
             private:
@@ -80,8 +75,8 @@ namespace Kiaro
 
                 Kiaro::Common::C8 *mTargetServerAddress;
                 Kiaro::Common::U16 mTargetServerPort;
-                Kiaro::Network::OutgoingClientBase *mClient;
-                Kiaro::Network::ServerBase *mServer;
+                Kiaro::Network::OutgoingClientSingleton *mClient;
+                Kiaro::Network::ServerSingleton *mServer;
 
                 lua_State *mLuaState;
 

@@ -14,13 +14,13 @@
 
 #include "EngineCommon.hpp"
 
-#include <game/EntityBase.hpp>
+#include <game/entities/RigidObjectBase.hpp>
 
 namespace Kiaro
 {
     namespace Game
     {
-        class Player : public Kiaro::Game::EntityBase
+        class Player : public Kiaro::Game::RigidObjectBase
         {
             // Public Methods
             public:

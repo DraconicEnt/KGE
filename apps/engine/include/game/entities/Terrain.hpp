@@ -14,7 +14,7 @@
 
 #include "engine/Common.hpp"
 
-#include <game/entities/EntityBase.hpp>
+#include <game/entities/RigidObjectBase.hpp>
 
 #include <irrlicht.h>
 
@@ -37,7 +37,7 @@ namespace Kiaro
                 TERRAIN_TERRAINFILE = 3,
             };
 
-            class Terrain : public Kiaro::Game::Entities::EntityBase
+            class Terrain : public Kiaro::Game::Entities::RigidObjectBase
             {
                 // Public Methods
                 public:

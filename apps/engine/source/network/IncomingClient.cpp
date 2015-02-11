@@ -1,5 +1,5 @@
 /**
- *  @file IncomingClientBase.cpp
+ *  @file IncomingClient.cpp
  *  @brief Source code file defining logic for the Kiaro::Network::OutgoingClient class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -14,25 +14,26 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <network/IncomingClientBase.hpp>
+#include <network/IncomingClient.hpp>
+
+#include <support/BitStream.hpp>
+#include <network/MessageBase.hpp>
 
 namespace Kiaro
 {
     namespace Network
     {
-        IncomingClientBase::IncomingClientBase(ENetPeer *connecting, Kiaro::Network::ServerBase *server) : mInternalClient(connecting)
+        IncomingClient::IncomingClient(ENetPeer *connecting, Kiaro::Network::ServerSingleton *server) : mInternalClient(connecting)
         {
 
         }
 
-        IncomingClientBase::~IncomingClientBase(void)
+        IncomingClient::~IncomingClient(void)
         {
 
         }
 
-        void IncomingClientBase::onReceivePacket(Kiaro::Support::BitStream &incomingStream) { }
-
-        void IncomingClientBase::send(Kiaro::Network::MessageBase *packet, const bool &reliable)
+        void IncomingClient::send(Kiaro::Network::MessageBase *packet, const bool &reliable)
         {
             Kiaro::Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
@@ -47,16 +48,32 @@ namespace Kiaro
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
 
-        bool IncomingClientBase::getIsOppositeEndian(void) { return mIsOppositeEndian; }
+        bool IncomingClient::getIsOppositeEndian(void)
+        {
+            return mIsOppositeEndian;
+        }
 
-        void IncomingClientBase::disconnect(void)
+        void IncomingClient::disconnect(void)
         {
             enet_peer_disconnect_now(mInternalClient, 0);
         }
 
-        Kiaro::Common::U16 IncomingClientBase::getPort(void)
+        const Kiaro::Common::U16 &IncomingClient::getPort(void)
         {
             return mInternalClient->address.port;
+        }
+
+        const Kiaro::Common::U32 &IncomingClient::getBinaryIPAddress(void)
+        {
+            return mInternalClient->address.host;
+        }
+
+        std::string IncomingClient::getStringIPAddress(void)
+        {
+            Kiaro::Common::C8 temporaryBuffer[32];
+
+            enet_address_get_host_ip(&mInternalClient->address, temporaryBuffer, 32);
+            return temporaryBuffer;
         }
     } // End Namespace Network
 } // End Namespace Kiaro

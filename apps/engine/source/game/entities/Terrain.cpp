@@ -13,7 +13,8 @@
 
 #include <game/entities/Terrain.hpp>
 #include <game/entities/Types.hpp>
-#include <game/ServerSingleton.hpp>
+
+#include <network/ServerSingleton.hpp>
 
 #include <support/BitStream.hpp>
 
@@ -25,13 +26,13 @@ namespace Kiaro
     {
         namespace Entities
         {
-            Terrain::Terrain(const std::string &terrainFile) : Kiaro::Game::Entities::EntityBase(Kiaro::Game::Entities::ENTITY_TERRAIN),
+            Terrain::Terrain(const std::string &terrainFile) : Kiaro::Game::Entities::RigidObjectBase(Kiaro::Game::Entities::ENTITY_TERRAIN),
             mTerrainFile(terrainFile)
             {
                 instantiate();
             }
 
-            Terrain::Terrain(Kiaro::Support::BitStream &in) : Kiaro::Game::Entities::EntityBase(Kiaro::Game::Entities::ENTITY_TERRAIN)
+            Terrain::Terrain(Kiaro::Support::BitStream &in) : Kiaro::Game::Entities::RigidObjectBase(Kiaro::Game::Entities::ENTITY_TERRAIN)
             {
                 unpackInitialization(in);
             }

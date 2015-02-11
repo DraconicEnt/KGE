@@ -1,5 +1,5 @@
 #include <engine/CoreSingleton.hpp>
-#include <game/OutgoingClientSingleton.hpp>
+#include <network/OutgoingClientSingleton.hpp>
 
 #include <stdlib.h>
 
@@ -19,7 +19,7 @@ extern "C"
         else if (!lua_isstring(L, -1))
             return luaL_error(L, "IP parameter for method 'net.connect' is not a string!");
 
-        Kiaro::Network::OutgoingClientBase *outClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
+        Kiaro::Network::OutgoingClientSingleton *outClient = Kiaro::Network::OutgoingClientSingleton::getPointer();
 
         outClient->disconnect();
         outClient->connect(lua_tostring(L, -1), 11595, 3000);
@@ -34,7 +34,7 @@ extern "C"
         if (engineCore->isDedicated())
             return luaL_error(L, "Method 'net.disconnect' is not available for dedicated servers!");
 
-        Kiaro::Network::OutgoingClientBase *outClient = Kiaro::Game::OutgoingClientSingleton::getPointer();
+        Kiaro::Network::OutgoingClientSingleton *outClient = Kiaro::Network::OutgoingClientSingleton::getPointer();
 
         if (!outClient->getIsConnected())
             return luaL_error(L, "Method 'net.disconnect' called without an active connection to a server!");

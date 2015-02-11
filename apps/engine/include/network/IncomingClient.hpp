@@ -9,13 +9,12 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_NETWORK_INCOMINGCLIENTBASE_HPP_
-#define _INCLUDE_NETWORK_INCOMINGCLIENTBASE_HPP_
+#ifndef _INCLUDE_NETWORK_INCOMINGCLIENT_HPP_
+#define _INCLUDE_NETWORK_INCOMINGCLIENT_HPP_
 
 #include <enet/enet.h>
 
-#include <network/ClientBase.hpp>
-#include "MessageBase.hpp"
+#include <engine/Common.hpp>
 
 namespace Kiaro
 {
@@ -26,27 +25,21 @@ namespace Kiaro
 
     namespace Network
     {
-        class ServerBase;
-        class PacketBase;
+        class MessageBase;
+        class ServerSingleton;
 
         //! The RemoteClient class is merely used to differentiate between a Client instance we created and a connected remote host in code.
-        class IncomingClientBase : public ClientBase
+        class IncomingClient
         {
             public:
                 /**
                  *  @brief Constructor accepting a Peer object.
                  *  @param connecting A Peer object that is connecting.
                  */
-                IncomingClientBase(ENetPeer *connecting, Kiaro::Network::ServerBase *server);
+                IncomingClient(ENetPeer *connecting, Kiaro::Network::ServerSingleton *server);
 
                 //! Standard destructor.
-                ~IncomingClientBase(void);
-
-                /**
-                 *  @brief Empty callback function for the the OnReceivePacket event.
-                 *  @param packet The received packet.
-                 */
-                void onReceivePacket(Kiaro::Support::BitStream &incomingStream) NOTHROW;
+                ~IncomingClient(void);
 
                 void send(Kiaro::Network::MessageBase *packet, const bool &reliable) NOTHROW;
 
@@ -56,7 +49,10 @@ namespace Kiaro
                 void disconnect(void) NOTHROW;
 
                 //! Get the port number that this client is connecting on.
-                Kiaro::Common::U16 getPort(void) NOTHROW;
+                const Kiaro::Common::U16 &getPort(void) NOTHROW;
+
+                const Kiaro::Common::U32 &getBinaryIPAddress(void) NOTHROW;
+                std::string getStringIPAddress(void);
 
             private:
                 //! A boolean representing whether or not this connecting client has the opposite endianness.
@@ -65,4 +61,4 @@ namespace Kiaro
         };
     } // End Namespace Network
 } // End Namespace Kiaro
-#endif // _INCLUDE_NETWORK_INCOMINGCLIENTBASE_HPP_
+#endif // _INCLUDE_NETWORK_INCOMINGCLIENT_HPP_

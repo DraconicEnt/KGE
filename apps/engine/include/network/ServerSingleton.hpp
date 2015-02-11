@@ -12,9 +12,9 @@
 #ifndef _INCLUDE_KIARO_GAME_SERVERSINGLETON_HPP_
 #define _INCLUDE_KIARO_GAME_SERVERSINGLETON_HPP_
 
-#include "engine/Common.hpp"
+#include <enet/enet.h>
 
-#include <network/ServerBase.hpp>
+#include "engine/Common.hpp"
 
 #include <game/entities/Entities.hpp>
 
@@ -25,6 +25,12 @@ namespace Kiaro
         class EntityGroupingSingleton;
     }
 
+    namespace Support
+    {
+        class BitStream;
+        class MapDivision;
+    } // End NameSpace Support
+
     namespace Game
     {
         class GamemodeBase;
@@ -33,17 +39,29 @@ namespace Kiaro
         {
             class EntityBase;
         }
+    }
+
+    namespace Network
+    {
+        class MessageBase;
+        class IncomingClient;
 
         //! Server class that remote hosts connect to.
-        class ServerSingleton : public Kiaro::Network::ServerBase
+        class ServerSingleton
         {
             // Public Methods
             public:
                 static ServerSingleton *getPointer(const Kiaro::Common::String &listenAddress = "0.0.0.0", const Kiaro::Common::U16 &listenPort = 11595, const Kiaro::Common::U32 &maximumClientCount = 32);
                 static void destroy(void);
 
-                //! Signals the server to stop running.
+                /**
+                 *  @brief Signals the server to stop running.
+                 */
                 void stop(void);
+
+                void globalSend(Kiaro::Network::MessageBase *packet, const bool &reliable);
+
+                void setGamemode(Kiaro::Game::GamemodeBase *game);
 
                 /**
                  *  @brief Returns the current running status of the server.
@@ -52,11 +70,12 @@ namespace Kiaro
                 bool isRunning(void);
 
                 //! Performs an update time pulse on the server.
-                virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+                void update(const Kiaro::Common::F32 &deltaTimeSeconds);
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
 
+                void networkUpdate(const Kiaro::Common::F32 &deltaTimeSeconds);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -64,7 +83,7 @@ namespace Kiaro
                  *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the incoming connection.
                  */
-                void onClientConnected(Kiaro::Network::IncomingClientBase *client);
+                void onClientConnected(Kiaro::Network::IncomingClient *client);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -72,7 +91,7 @@ namespace Kiaro
                  *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the disconnected client.
                  */
-                void onClientDisconnected(Kiaro::Network::IncomingClientBase *client);
+                void onClientDisconnected(Kiaro::Network::IncomingClient *client);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -82,9 +101,9 @@ namespace Kiaro
                  *  @param sender A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the sender of the packet.
                  */
-                void onReceivePacket(Kiaro::Support::BitStream &incomingStream, Kiaro::Network::IncomingClientBase *sender);
+                void onReceivePacket(Kiaro::Support::BitStream &incomingStream, Kiaro::Network::IncomingClient *sender);
 
-                Kiaro::Network::IncomingClientBase *getLastPacketSender(void);
+                Kiaro::Network::IncomingClient *getLastPacketSender(void);
 
                 Kiaro::Common::U32 getClientCount(void);
 
@@ -109,9 +128,22 @@ namespace Kiaro
 
             // Private Members
             private:
-                Kiaro::Network::IncomingClientBase *mLastPacketSender;
+                Kiaro::Network::IncomingClient *mLastPacketSender;
 
                 Kiaro::Engine::EntityGroupingSingleton *mEntityGroup;
+
+                Kiaro::Game::GamemodeBase *mCurrentGamemode;
+
+                bool mIsRunning;
+
+                ENetHost *mInternalHost;
+
+                //! The Port number that we're listening on.
+                const Kiaro::Common::U16 mListenPort;
+                //! The Address that we're listening on.
+                const Kiaro::Common::String mListenAddress;
+
+                std::set<IncomingClient*> mConnectedClientSet;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

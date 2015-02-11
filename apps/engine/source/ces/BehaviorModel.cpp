@@ -12,6 +12,7 @@
 #include <map>
 
 #include <ces/BehaviorModel.hpp>
+#include <ces/ComponentBase.hpp>
 
 namespace Kiaro
 {
@@ -39,7 +40,9 @@ namespace Kiaro
 
             void BehaviorModel::packData(Kiaro::Support::BitStream &out)
             {
-
+                // TODO (Robert MacGregor#9): Transmit the associations by component identifiers
+                //for (std::set<ComponentBase*>::iterator it = mComponents.begin(); it != mComponents.end(); it++)
+                //    (*it).packData(out);
             }
 
             void BehaviorModel::unpackData(Kiaro::Support::BitStream &in)

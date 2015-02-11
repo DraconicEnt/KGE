@@ -9,8 +9,8 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_H_
-#define _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_H_
+#ifndef _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_HPP_
+#define _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_HPP_
 
 #include <easydelegate.hpp>
 
@@ -20,7 +20,7 @@ namespace Kiaro
 {
     namespace Network
     {
-        class IncomingClientBase;
+        class IncomingClient;
     } // End NameSpace Network
 
     namespace Support
@@ -36,8 +36,8 @@ namespace Kiaro
 
             // Public Typedefs
             public:
-                typedef EasyDelegate::DelegateSet<void, Kiaro::Network::IncomingClientBase*> onClientConnectedEventType;
-                typedef EasyDelegate::DelegateSet<void, Kiaro::Network::IncomingClientBase*> onClientDisconnectedEventType;
+                typedef EasyDelegate::DelegateSet<void, Kiaro::Network::IncomingClient*> onClientConnectedEventType;
+                typedef EasyDelegate::DelegateSet<void, Kiaro::Network::IncomingClient*> onClientDisconnectedEventType;
 
             // Public Members
             public:
@@ -50,5 +50,5 @@ namespace Kiaro
                 ~EventManagerSingleton(void);
         }; // End Class EventManager
     } // End NameSpace Support
-} // End nameSpace Kiaro
-#endif // _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_H_
+} // End NameSpace Kiaro
+#endif // _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_HPP_

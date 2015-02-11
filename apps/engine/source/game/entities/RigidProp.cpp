@@ -20,7 +20,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            RigidProp::RigidProp(void) : Kiaro::Game::Entities::EntityBase(Kiaro::Game::Entities::ENTITY_RIGIDPROP)
+            RigidProp::RigidProp(void) : Kiaro::Game::Entities::RigidObjectBase(Kiaro::Game::Entities::ENTITY_RIGIDPROP)
             {
 
             }

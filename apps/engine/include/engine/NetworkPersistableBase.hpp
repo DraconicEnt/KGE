@@ -32,6 +32,17 @@ namespace Kiaro
 
     namespace Engine
     {
+        //! An enumeration containing the entity identifiers for networked objects.
+        enum NETWORKED_ENTITY_NAME
+        {
+            //! NULL Entity, shouldn't occur.
+            NETWORKED_ENTITY_NULL = 0,
+            //! Any component.
+            NETWORKED_ENTITY_COMPONENT = 1,
+            //! A BehaviorModel.
+            NETWORKED_ENTITY_BEHAVIORMODEL = 2,
+        }; // End Enum NETWORKED_ENTITY_NAME
+
         /**
          *  @brief A base class representing an object that can be serialized to
          *  and from a Kiaro::Support::BitStream.
@@ -107,6 +118,16 @@ namespace Kiaro
 
                     propertyType &returnValue = *((propertyType*)std::get<0>(networkedPropertyInfo));
                     return returnValue;
+                }
+
+                virtual void packData(Kiaro::Support::BitStream &out)
+                {
+
+                }
+
+                virtual void unpackData(Kiaro::Support::BitStream &in)
+                {
+
                 }
 
             // Public Members
