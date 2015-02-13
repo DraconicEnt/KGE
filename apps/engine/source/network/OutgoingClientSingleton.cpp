@@ -21,6 +21,7 @@
 #include <engine/CoreSingleton.hpp>
 
 #include <game/messages/messages.hpp>
+#include <game/messages/Disconnect.hpp>
 #include <game/messages/HandShake.hpp>
 #include <game/messages/SimCommit.hpp>
 
@@ -117,6 +118,15 @@ namespace Kiaro
                     break;
                 }
 
+                case Kiaro::Game::Messages::MESSAGE_DISCONNECT:
+                {
+                    Kiaro::Game::Messages::Disconnect disconnect;
+                    disconnect.unpackData(incomingStream);
+
+                    std::cout << "OutgoingClientSingleton: Received disconnect packet from remote host. Reason: \"" << disconnect.mReason << "\"" << std::endl;
+                    break;
+                }
+
                 default:
                 {
                     // FIXME (Robert MacGregor#9): Fails to print out the type identifier?
@@ -177,7 +187,7 @@ namespace Kiaro
                 packetFlag = ENET_PACKET_FLAG_RELIABLE;
 
             // TODO: Packet Size Query
-            Kiaro::Support::BitStream outStream(NULL, 0, 0);
+            Kiaro::Support::BitStream outStream;
             packet->packData(outStream);
 
             ENetPacket *enetPacket = enet_packet_create(outStream.getBasePointer(), outStream.getSize(), packetFlag);
@@ -292,7 +302,7 @@ namespace Kiaro
 
                     case ENET_EVENT_TYPE_RECEIVE:
                     {
-                        Kiaro::Support::BitStream incomingStream(event.packet->data, event.packet->dataLength, event.packet->dataLength);
+                        Kiaro::Support::BitStream incomingStream(event.packet->data, event.packet->dataLength);
                         onReceivePacket(incomingStream);
 
                         break;

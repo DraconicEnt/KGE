@@ -74,8 +74,6 @@ namespace Kiaro
                     Kiaro::Common::U8 mVersionRevision;
                     //! The build # of the engine.
                     Kiaro::Common::U32 mVersionBuild;
-
-                    static const Kiaro::Common::U8 sAcceptedStage = 1;
             };
         } // End NameSpace Packets
     } // End NameSpace Game

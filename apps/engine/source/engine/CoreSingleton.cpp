@@ -115,8 +115,9 @@ namespace Kiaro
                     {
                         std::cerr << "CoreSingleton: Failed to connect to remote host with server flag" << std::endl;
 
-                        return 1;
+                        Kiaro::Network::OutgoingClientSingleton::destroy();
                     }
+
                     break;
                 }
                 case Kiaro::ENGINE_DEDICATED:
@@ -272,8 +273,8 @@ namespace Kiaro
             mRunning = false;
         }
 
-        CoreSingleton::CoreSingleton(void) : mEngineMode(Kiaro::ENGINE_CLIENT), mIrrlichtDevice(0x00), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595), mClient(NULL), mServer(NULL),
-        mRunning(false), mClearColor(Kiaro::Common::ColorRGBA(0, 0, 0, 0))
+        CoreSingleton::CoreSingleton(void) : mEngineMode(Kiaro::ENGINE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595), mClient(NULL), mServer(NULL),
+        mRunning(false), mClearColor(Kiaro::Common::ColorRGBA(0, 0, 0, 0)), mLuaState(NULL)
         {
 
         }
@@ -282,7 +283,11 @@ namespace Kiaro
         {
             std::cout << "CoreSingleton: Deinitializing ..." << std::endl;
 
-            lua_close(mLuaState);
+            if (mLuaState)
+            {
+                lua_close(mLuaState);
+                mLuaState = NULL;
+            }
 
             // TODO: Check the destroy order
             if (mClient)
@@ -303,7 +308,11 @@ namespace Kiaro
             Kiaro::Engine::InputListenerSingleton::destroy();
             Kiaro::Support::SchedulerSingleton::destroy();
 
-            mIrrlichtDevice->drop();
+            if (mIrrlichtDevice)
+            {
+                mIrrlichtDevice->drop();
+                mIrrlichtDevice = NULL;
+            }
 
             PHYSFS_deinit();
             enet_deinitialize();

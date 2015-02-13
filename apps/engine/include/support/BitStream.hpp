@@ -52,7 +52,7 @@ namespace Kiaro
                  *  @warning When using this constructor, The Kiaro::Support::BitStream code will delete the input
                  *  array upon deletion of itself or if it needs to readjust its array length.
                  */
-                BitStream(Kiaro::Common::U8 *initialData = NULL, size_t initialDataLength = 0, size_t initialDataIndex = 0);
+                BitStream(const size_t &initialDataIndex = 0, const size_t &allocationSize = 32);
 
                 /**
                  *  @brief Constructor accepting an initial length.
@@ -61,54 +61,75 @@ namespace Kiaro
                  *  @warning When using this constructor, the memory associated with the Kiaro::Support:BitStream's internal array
                  *  is destroyed when resizing and/or when the Kiaro::Support::BitStream instance itself is deleted.
                  */
-                BitStream(size_t initialDataLength);
+                BitStream(const void *inData, const size_t &inDataLength, const size_t &allocationSize = 32);
 
                 //! Standard destructor.
                 ~BitStream(void);
 
                 /**
-                 *  @brief Writes arbitrary data to the BitStream. All written data is copied with memcpy -- the original
-                 *  source may be destroyed afterwards.
-                 *  @param in_data A pointer to the data to be copied into the bitstream.
-                 *  @param in_data_length The size in bytes that our in data is.
+                 *  @brief Writes arbitrary data to the BitStream. The data is written to the Stream
+                 *  via memcpy.
+                 *  @param inData A pointer to the data to be copied into the BitStream.
+                 *  @param inDataLength The size in bytes that our in data is.
                  */
-                //void write(const void *inData, const size_t &inDataLength);
-
-                template <typename typeName>
-                void write(const typeName &inData, size_t inDataLength = 0)
+                void writeData(const void *inData, const size_t &inDataLength)
                 {
-                    if (inDataLength == 0)
-                        inDataLength = sizeof(typeName);
-                    else if (!std::is_pointer<typeName>::value)
-                        throw std::logic_error("BitStream: Attempted to use non-sizeof data length with a non-pointer!");
-
                     // Check to see if we have enough room to write this data
-                    if (mDataLength < mDataPointer + inDataLength)
-                    {
-                        // Technically should be zero ...
-                        const Kiaro::Common::U32 dataLengthOffset = mDataLength - mDataPointer;
+                    const size_t availableMemoryLength = mAllocatedBytes - mWrittenBytes;
 
-                        Kiaro::Common::U32 newDataLength = (mDataLength - dataLengthOffset) + inDataLength;
+                    if (availableMemoryLength < inDataLength)
+                    {
+                        // We need more memory, how much more do we need?
+                        size_t necessaryMemoryLength = inDataLength - availableMemoryLength;
+
+                        // We need to perform a new allocation; if the necessary memory length is less than our
+                        // allocation size then just allocate using the allocation size.
+                        if (necessaryMemoryLength <= mAllocationSize)
+                            necessaryMemoryLength = mAllocationSize;
+                        else // Although otherwise we will allocate more if necessary
+                            necessaryMemoryLength = mAllocationSize + (necessaryMemoryLength - mAllocationSize);
+
+                        const size_t newDataLength = mAllocatedBytes + necessaryMemoryLength;
                         Kiaro::Common::U8 *newMemory = new Kiaro::Common::U8[newDataLength];
 
-                        memcpy(newMemory, mData, mDataLength);
-                        mDataLength = newDataLength;
-
-                        if (mData && mIsManagingMemory)
+                        if (mData)
+                        {
+                            memcpy(newMemory, mData, mWrittenBytes);
                             delete[] mData;
+                        }
 
                         mData = newMemory;
-                        mIsManagingMemory = true;
+                        mAllocatedBytes = newDataLength;
                     }
 
-                    memcpy(&mData[mDataPointer], &inData, inDataLength);
-                    mDataPointer += inDataLength; // NOTE (Robert MacGregor#9): Preserves the offset
+                    // Write the data
+                    memcpy(mData + mDataPointer, inData, inDataLength);
+                    mDataPointer += inDataLength - 1;
+                    mWrittenBytes += inDataLength;
                 }
 
+                /**
+                 *  @brief Helper template method that allows quick writing of values into the
+                 *  BitStream.
+                 *  @param inData The data to write to the BitStream. The data is written to the
+                 *  BitStream using the length of its type and memcpy.
+                 */
+                template <typename typeName>
+                void write(const typeName &inData)
+                {
+                    this->writeData(&inData, sizeof(typeName));
+                }
+
+                /**
+                 *  @brief Helper template method that overrides writing boolean values to the
+                 *  BitStream. This is to ascertain that booleans are always 1 byte in the BitStream
+                 *  as some compilers may use different sizes.
+                 *  @param in The boolean to write to the BitStream.
+                 */
                 template <bool>
                 void write(const bool &in)
                 {
-                    write<Kiaro::Common::U8>(in);
+                    this->write<Kiaro::Common::U8>((Kiaro::Common::U8)in);
                 }
 
                 void write(SerializableObjectBase *in)
@@ -118,22 +139,23 @@ namespace Kiaro
 
                 void write(const Kiaro::Common::Vector3DF &inVector)
                 {
-                    write<Kiaro::Common::F32>(inVector.X);
-                    write<Kiaro::Common::F32>(inVector.Y);
-                    write<Kiaro::Common::F32>(inVector.Z);
+                    this->write<Kiaro::Common::F32>(inVector.X);
+                    this->write<Kiaro::Common::F32>(inVector.Y);
+                    this->write<Kiaro::Common::F32>(inVector.Z);
                 }
 
                 void write(const Kiaro::Common::ColorRGBA &inColor)
                 {
-                    write<Kiaro::Common::U32>(inColor.getRed());
-                    write<Kiaro::Common::U32>(inColor.getGreen());
-                    write<Kiaro::Common::U32>(inColor.getBlue());
-                    write<Kiaro::Common::U32>(inColor.getAlpha());
+                    this->write<Kiaro::Common::U32>(inColor.getRed());
+                    this->write<Kiaro::Common::U32>(inColor.getGreen());
+                    this->write<Kiaro::Common::U32>(inColor.getBlue());
+                    this->write<Kiaro::Common::U32>(inColor.getAlpha());
                 }
 
-                void write(const Kiaro::Common::String &inData)
+                void writeString(const Kiaro::Common::String &inData)
                 {
-                    write(inData.c_str(), inData.length() + 1);
+                    this->writeData(inData.data(), inData.length());
+                    this->write<Kiaro::Common::U8>(0); // NULL terminator
                 }
 
                 /**
@@ -155,21 +177,21 @@ namespace Kiaro
                     else
                         mDataPointer -= outDataLength;
 
-                    return *((returnType*)&mData[mDataPointer]);
+                    return *((returnType *)(mData + mDataPointer));
                 }
 
-                template <void*>
-                void *read(void *copyTo = NULL, const Kiaro::Common::U32 &outLength = 0)
-                {
-                    if (copyTo)
-                    {
-                        memcpy(copyTo, &mData[mDataPointer], outLength);
-                        return copyTo;
-                    }
+               // template <void*>
+               // void *read(void *copyTo = NULL, const Kiaro::Common::U32 &outLength = 0)
+               // {
+                //    if (copyTo)
+               //     {
+               //         memcpy(copyTo, &mData[mDataPointer], outLength);
+               //         return copyTo;
+               //     }
 
-                    throw std::invalid_argument("BitStream: Cannot copy to a NULL location.");
-                    return NULL; // Shouldn't happen but some compilers might trip otherwise
-                }
+               //     throw std::invalid_argument("BitStream: Cannot copy to a NULL location.");
+               //     return NULL; // Shouldn't happen but some compilers might trip otherwise
+              //  }
 
                 template <typename indexType = Kiaro::Common::C8>
                 const indexType &operator[](const Kiaro::Common::U32 &index)
@@ -196,7 +218,7 @@ namespace Kiaro
                  *  @return The next Kiaro::c8 in the BitStream.
                  *  @see BitStream::Read
                  */
-                Kiaro::Common::C8 *readString(const size_t &outStringLength = 0, const bool &shouldMemcpy = false);
+                Kiaro::Common::String readString(void);
 
                 void *getBasePointer(void) NOTHROW;
 
@@ -207,7 +229,7 @@ namespace Kiaro
                 void *raw(const bool &shouldMemcpy = false);
 
                 template <typename indexType = Kiaro::Common::C8>
-                size_t getSize(void) { return mDataLength / sizeof(indexType); }
+                size_t getSize(void) { return mWrittenBytes / sizeof(indexType); }
 
                 const size_t &getDataPointer(void) { return mDataPointer; }
 
@@ -222,10 +244,9 @@ namespace Kiaro
                 Kiaro::Common::U8 *mData;
 
                 //! The current size of the BitStream in bytes.
-                size_t mDataLength;
-
-                //! A boolean representing whether or not this Kiaro::Support::BitStream is the sole manager of the associated memory.
-                bool mIsManagingMemory;
+                size_t mAllocatedBytes;
+                size_t mWrittenBytes;
+                size_t mAllocationSize;
 
                 // TODO (Robert MacGregor#9): Boolean group compression
                 //! Represents the current bit that the BitStream is currently on. This is only used when reading and writing multiple booleans in a row.

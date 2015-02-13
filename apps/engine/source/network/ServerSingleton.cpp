@@ -15,6 +15,7 @@
 
 #include <game/messages/HandShake.hpp>
 #include <game/messages/SimCommit.hpp>
+#include <game/messages/Disconnect.hpp>
 #include <network/ServerSingleton.hpp>
 
 #include <network/IncomingClient.hpp>
@@ -194,6 +195,12 @@ namespace Kiaro
                     handShake.mVersionBuild = 4;
 
                     sender->send(&handShake, true);
+
+                    // Dispatch a D/C packet
+                    Kiaro::Game::Messages::Disconnect disconnect;
+                    disconnect.mReason = "Testing";
+
+                    sender->send(&disconnect, true);
                     break;
                 }
             }
