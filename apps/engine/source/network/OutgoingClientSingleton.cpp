@@ -123,7 +123,12 @@ namespace Kiaro
                     Kiaro::Game::Messages::Disconnect disconnect;
                     disconnect.unpackData(incomingStream);
 
+                    // TODO (Robert MacGregor#9): Call an onDisconnect method in Lua
                     std::cout << "OutgoingClientSingleton: Received disconnect packet from remote host. Reason: \"" << disconnect.mReason << "\"" << std::endl;
+                    this->disconnect();
+
+                    // TODO (Robert MacGregor#9): Safe to do from within the class like this?
+                    Kiaro::Network::OutgoingClientSingleton::destroy();
                     break;
                 }
 

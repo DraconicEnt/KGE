@@ -190,10 +190,19 @@ namespace Kiaro
 
             luaL_dofile(mLuaState, mainLuaFile.c_str());
 
-            // Call the main() method
+            // Call the main(argv) method
             lua_getglobal(mLuaState, "main");
-            lua_call(mLuaState, 0, 0);
+            lua_newtable(mLuaState);
 
+            for (Kiaro::Common::S32 iteration = 0; iteration < argc; iteration++)
+            {
+                lua_pushinteger(mLuaState, iteration + 1);
+                lua_pushstring(mLuaState, argv[iteration]);
+                lua_settable(mLuaState, -3);
+            }
+            lua_call(mLuaState, 1, 0);
+
+            // What is our current display size?
             irr::core::dimension2d<irr::u32> lastDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
 
             // Start the Loop
@@ -257,7 +266,7 @@ namespace Kiaro
                         Kiaro::Network::IncomingClient *lastClient = mServer->getLastPacketSender();
 
                         if (lastClient)
-                            lastClient->disconnect();
+                            lastClient->disconnect("Internal Exception");
                     }
                 }
             }
@@ -267,6 +276,11 @@ namespace Kiaro
         {
             if (!mRunning)
                 return;
+
+            //if (mServer)
+            //{
+            //    mServer->
+           // }
 
             std::cout << "CoreSingleton: Killed via Kill()" << std::endl;
 
@@ -326,6 +340,11 @@ namespace Kiaro
 
             if (mServer)
                 mServer->networkUpdate(0.0f);
+        }
+
+        lua_State *CoreSingleton::getLuaState(void)
+        {
+            return mLuaState;
         }
     } // End Namespace Engine
 } // End Namespace Kiaro

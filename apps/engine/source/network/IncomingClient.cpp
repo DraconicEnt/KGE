@@ -17,7 +17,10 @@
 #include <network/IncomingClient.hpp>
 
 #include <support/BitStream.hpp>
+
 #include <network/MessageBase.hpp>
+
+#include <game/messages/Disconnect.hpp>
 
 namespace Kiaro
 {
@@ -53,9 +56,13 @@ namespace Kiaro
             return mIsOppositeEndian;
         }
 
-        void IncomingClient::disconnect(void)
+        void IncomingClient::disconnect(const Kiaro::Common::String &reason)
         {
-            enet_peer_disconnect_now(mInternalClient, 0);
+            Kiaro::Game::Messages::Disconnect disconnect;
+            disconnect.mReason = reason;
+
+            this->send(&disconnect, true);
+            enet_peer_disconnect_later(mInternalClient, 0);
         }
 
         const Kiaro::Common::U16 &IncomingClient::getPort(void)

@@ -20,6 +20,7 @@ namespace Kiaro
         CommandLineParser::CommandLineParser(Kiaro::Common::S32 argc, Kiaro::Common::C8 **argv) : mCurrentLongestFlagLength(0)
         {
             mArgv = argv;
+            mArgc = argc;
 
             static const std::regex flagRegex("-.+");
 
@@ -113,7 +114,7 @@ namespace Kiaro
                     if (!currentResponder)
                         continue;
 
-                    currentResponder->invoke(this, mArgv, mFlags[currentFlagHash], executedFlagHandler);
+                    currentResponder->invoke(this, mArgc, mArgv, mFlags[currentFlagHash], executedFlagHandler);
                     executedFlagHandler = true;
                 }
                 catch (std::out_of_range &e) { }
@@ -122,11 +123,11 @@ namespace Kiaro
             {
                 size_t helpHash = Kiaro::Common::string_hash("-h");
                 std::cout << "No command line arguments provided. " << std::endl << std::endl;
-                displayHelp(this, mArgv, mFlags[helpHash], false);
+                displayHelp(this, mArgc, mArgv, mFlags[helpHash], false);
             }
         }
 
-        void CommandLineParser::displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags)
+        void CommandLineParser::displayHelp(CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags)
         {
             std::cout << "You may run " << argv[0] << " with:" << std::endl;
 

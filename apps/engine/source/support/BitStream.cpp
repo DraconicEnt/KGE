@@ -27,23 +27,11 @@ namespace Kiaro
         }
 
         BitStream::BitStream(const void *inData, const size_t &inDataLength, const size_t &allocationSize) : mAllocationSize(allocationSize),
-        mAllocatedBytes(inDataLength), mDataPointer(inDataLength - 1), mCurrentBit(0), mBooleanMode(false), mWrittenBytes(inDataLength)
+        mAllocatedBytes(inDataLength), mDataPointer(inDataLength), mCurrentBit(0), mBooleanMode(false), mWrittenBytes(inDataLength)
         {
             mData = new Kiaro::Common::U8[inDataLength];
             memcpy(mData, inData, inDataLength);
         }
-
-       // BitStream::BitStream(const Kiaro::Common::U8 *initialData, size_t initialDataLength, size_t initialDataIndex)
-       // {
-        //    BitStream((Kiaro::Common::U8*)initialData);
-        //    mIsManagingMemory = false; // NOTE (Robert MacGregor#1): Gets Overwritten by the Constructor Call Above
-       // }
-
-       // BitStream::BitStream(size_t allocationSize) : mIsManagingMemory(true), mData(new Kiaro::Common::U8[initialDataLength]),
-       // mDataPointer(0), mAllocatedBytes (initialDataLength)
-       // {
-
-       // }
 
         BitStream::~BitStream(void)
         {
@@ -55,34 +43,16 @@ namespace Kiaro
 
         Kiaro::Common::String BitStream::readString(void)
         {
-            // We should be sitting on a NULL terminator already
-            if (mData[mDataPointer] != 0x00)
-                return "DERP - ONE";
+            // Unpack the length
+            const Kiaro::Common::U32 nextLength = this->read<Kiaro::Common::U32>();
 
-            mDataPointer--;
+            if (nextLength > mAllocatedBytes - mDataPointer)
+                throw std::logic_error("BitStream: Cannot unpack String; not enough data!");
 
-            // Okay, now we need to loop backwards until we hit another NULL terminator or the end
-        	for (Kiaro::Common::S32 iteration = mDataPointer; iteration > -1; iteration--)
-				if (mData[iteration] == 0x00 || iteration == 0)
-				{
-                    const size_t difference = mDataPointer - iteration;
-                    mDataPointer -= difference;
+            mDataPointer -= nextLength;
 
-                    //if (mData[iteration] == 0x00)
-                    //    mDataPointer++;
-
-                    Kiaro::Common::String result((const Kiaro::Common::C8 *)(mData + mDataPointer));
-
-                    std::cout << "GOT: " << result << std::endl;
-                    //return result;
-                }
-
-            for (Kiaro::Common::S32 iteration = mWrittenBytes - 1; iteration > -1; iteration--)
-                printf("%u: %c (0x%x)\n", iteration, mData[iteration], mData[iteration]);
-
-            //std::cout << "HUH" << std::endl;
-
-            return "DERP - TWO";
+            Kiaro::Common::String result((const Kiaro::Common::C8 *)(mData + mDataPointer), nextLength);
+            return result;
         }
 
         void *BitStream::getBasePointer(void)

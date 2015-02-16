@@ -49,6 +49,11 @@ namespace Kiaro
         //! Server class that remote hosts connect to.
         class ServerSingleton
         {
+            // Public Typedefs
+            public:
+                typedef std::set<IncomingClient *>::iterator clientIterator;
+                typedef std::set<IncomingClient *>::const_iterator clientConstIterator;
+
             // Public Methods
             public:
                 static ServerSingleton *getPointer(const Kiaro::Common::String &listenAddress = "0.0.0.0", const Kiaro::Common::U16 &listenPort = 11595, const Kiaro::Common::U32 &maximumClientCount = 32);
@@ -108,6 +113,9 @@ namespace Kiaro
                 Kiaro::Common::U32 getClientCount(void);
 
                // Kiaro::Network::IncomingClientBase *GetLastPacketSender(void);
+                clientIterator clientsBegin(void) { return mConnectedClientSet.begin(); }
+
+                clientConstIterator clientsEnd(void) { return mConnectedClientSet.end(); }
 
             // Private Methods
             private:
@@ -143,7 +151,7 @@ namespace Kiaro
                 //! The Address that we're listening on.
                 const Kiaro::Common::String mListenAddress;
 
-                std::set<IncomingClient*> mConnectedClientSet;
+                std::set<IncomingClient *> mConnectedClientSet;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

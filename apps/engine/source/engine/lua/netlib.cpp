@@ -22,7 +22,19 @@ extern "C"
         Kiaro::Network::OutgoingClientSingleton *outClient = Kiaro::Network::OutgoingClientSingleton::getPointer();
 
         outClient->disconnect();
-        outClient->connect(lua_tostring(L, -1), 11595, 3000);
+
+        Kiaro::Common::U16 port = 11595;
+        Kiaro::Common::String address = "127.0.0.1";
+
+        if (lua_gettop(L) == 1)
+            address = lua_tostring(L, -1);
+        else
+        {
+            port = lua_tointeger(L, -1);
+            address = lua_tostring(L, -2);
+        }
+
+        outClient->connect(address, port, 3000);
 
         return 1;
     }

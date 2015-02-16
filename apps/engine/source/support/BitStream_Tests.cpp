@@ -21,8 +21,6 @@ namespace Kiaro
     {
         // BitStream GTest Code
         #if ENGINE_TESTS>0
-            #include <gtest/gtest.h>
-
             const static Kiaro::Common::F32 sFloatList[] =
             {
                 3.14159,
@@ -50,7 +48,7 @@ namespace Kiaro
             {
                 Kiaro::Common::U32 expectedStreamSize = sFloatCount * sizeof(Kiaro::Common::F32);
 
-                Kiaro::Support::BitStream floatStream(expectedStreamSize);
+                Kiaro::Support::BitStream floatStream;
                 PackFloats(floatStream);
 
                 // Check if our BitStream size is correct
@@ -59,18 +57,23 @@ namespace Kiaro
                 // Now make sure we can unpack the data correctly
                 for (Kiaro::Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
                     EXPECT_EQ(sFloatList[(sFloatCount - 1) - iteration], floatStream.read<Kiaro::Common::F32>());
+            }
 
-                // Reset and read using memcpy
-                floatStream.mDataPointer = floatStream.getSize() - 1;
+            TEST(BitStream, MemoryBlock)
+            {
+                Kiaro::Common::U32 expectedStreamSize = sFloatCount * sizeof(Kiaro::Common::F32);
+
+                Kiaro::Support::BitStream floatStream;
+                PackFloats(floatStream);
+
+                // Check if our BitStream size is correct
+                EXPECT_EQ(expectedStreamSize, floatStream.getSize());
+
+                // Now make sure we can unpack the data correctly
+                Kiaro::Support::BitStream blockStream(floatStream.raw(), floatStream.getSize());
 
                 for (Kiaro::Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
-                {
-                    const Kiaro::Common::F32 &currentValue = floatStream.read<Kiaro::Common::F32>();
-                    EXPECT_EQ(sFloatList[(sFloatCount - 1) - iteration], currentValue);
-
-                    // Deallocate without dying now?
-                    //delete &currentValue;
-                }
+                    EXPECT_EQ(sFloatList[(sFloatCount - 1) - iteration], blockStream.read<Kiaro::Common::F32>());
             }
 
             TEST(BitStream, BadStartFloats)
@@ -128,13 +131,7 @@ namespace Kiaro
 
                 // Unpack
                 for (Kiaro::Common::S32 iteration = sStringCount - 1; iteration > -1; iteration--)
-                {
-                    std::string current = testStream.readString();
-
-                    std::cout << "Got: " << current << std::endl;
-                    std::cout << "Needed: " << sStringList[iteration] << std::endl;
-                    EXPECT_TRUE(current.compare(sStringList[iteration]) == 0);
-                }
+                    EXPECT_TRUE(testStream.readString().compare(sStringList[iteration]) == 0);
             }
         #endif // _INCLUDE_KIARO_TESTS_H_
     } // End Namespace Support

@@ -15,8 +15,7 @@
 #include <type_traits>  // std::is_pointer
 #include <exception>
 
-#include <boost/iostreams/stream_buffer.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <physfs.h>
 
 #include <engine/Common.hpp>
 
@@ -66,6 +65,8 @@ namespace Kiaro
                 //! Standard destructor.
                 ~BitStream(void);
 
+                // Write Methods
+
                 /**
                  *  @brief Writes arbitrary data to the BitStream. The data is written to the Stream
                  *  via memcpy.
@@ -104,7 +105,7 @@ namespace Kiaro
 
                     // Write the data
                     memcpy(mData + mDataPointer, inData, inDataLength);
-                    mDataPointer += inDataLength - 1;
+                    mDataPointer += inDataLength;
                     mWrittenBytes += inDataLength;
                 }
 
@@ -154,18 +155,20 @@ namespace Kiaro
 
                 void writeString(const Kiaro::Common::String &inData)
                 {
-                    this->writeData(inData.data(), inData.length());
-                    this->write<Kiaro::Common::U8>(0); // NULL terminator
+                    this->writeData(inData.c_str(), inData.length());
+                    this->write<Kiaro::Common::U32>(inData.length());
                 }
 
+                // Read Methods
+
                 /**
-                 *  @brief Reads arbitrary data from the BitStream.
-                 *  @param out_data_length The number in bytes to read.
-                 *  @param should_memcpy A boolean representing whether or not the data should be copied. If true,
-                 *  memcpy is used to create a new pointer that may be manipulated at will -- even if the source
-                 *  BitStream is destroyed.
-                 *  @return A void* pointer representing the data in the BitStream.
-                 *  @throws std::out_of_range Thrown when a read operation goes out of bounds.
+                 *  @brief Reads arbitrary data from the BitStream and returns a reference to it.
+                 *  @return A reference to the data that has been read.
+                 *  @note The returned value from this method is a reference to the read data
+                 *  somewhere within the block of data associated with this BitStream. Therefore
+                 *  if it is modified then these changes will be reflected in the block of memory.
+                 *  @throws std::out_of_range Thrown when a read operation requires for there to be
+                 *  more unread bytes than there is actually available.
                  */
                 template <typename returnType>
                 returnType &read(void)
@@ -173,25 +176,55 @@ namespace Kiaro
                     const size_t outDataLength = sizeof(returnType);
 
                     if (outDataLength > mDataPointer)
-                        throw std::out_of_range("BitStream attempted to read out of range!");
-                    else
-                        mDataPointer -= outDataLength;
+                        throw std::out_of_range("BitStream: Attempted to read out of range!");
 
+                    mDataPointer -= outDataLength;
                     return *((returnType *)(mData + mDataPointer));
                 }
 
-               // template <void*>
-               // void *read(void *copyTo = NULL, const Kiaro::Common::U32 &outLength = 0)
-               // {
-                //    if (copyTo)
-               //     {
-               //         memcpy(copyTo, &mData[mDataPointer], outLength);
-               //         return copyTo;
-               //     }
+                void *readData(const size_t &outDataLength)
+                {
+                    if (outDataLength > mDataPointer)
+                        throw std::out_of_range("BitStream: Attempted to read out of range!");
 
-               //     throw std::invalid_argument("BitStream: Cannot copy to a NULL location.");
-               //     return NULL; // Shouldn't happen but some compilers might trip otherwise
-              //  }
+                    mDataPointer -= outDataLength;
+                    return (void *)(mData + mDataPointer);
+                }
+
+                // Copy Methods
+
+                void copyData(void *destination, const size_t &outDataLength)
+                {
+                    if (outDataLength > mDataPointer)
+                        throw std::out_of_range("BitStream: Attempted to copy out of range!");
+                    else
+                        mDataPointer -= outDataLength;
+
+                    //if (mFileHandle)
+                    //    PHYSFS_read(mFileHandle, destination, outDataLength, 1);
+                    //else
+                        memcpy(destination, mData + mDataPointer, outDataLength);
+                }
+
+                template <typename returnType>
+                returnType copy(void)
+                {
+                   // if (mFileHandle)
+                   //{
+                    //    returnType result;
+                    //    const size_t outDataLength = sizeof(returnType);
+
+                    //    if (outDataLength > mDataPointer)
+                     //       throw std::out_of_range("BitStream: Attempted to read out of range");
+
+                     //   mDataPointer -= outDataLength;
+                      //  PHYSFS_read(mFileHandle, &result, outDataLength, 1);
+
+                      //  return result;
+                   // }
+
+                    return this->read<returnType>();
+                }
 
                 template <typename indexType = Kiaro::Common::C8>
                 const indexType &operator[](const Kiaro::Common::U32 &index)

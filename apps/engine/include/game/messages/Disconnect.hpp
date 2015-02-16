@@ -40,7 +40,7 @@ namespace Kiaro
 
                     void packData(Kiaro::Support::BitStream &out)
                     {
-                        out.write<Kiaro::Common::String>(mReason);
+                        out.writeString(mReason);
 
                         Kiaro::Network::MessageBase::packData(out);
                     }
@@ -50,7 +50,7 @@ namespace Kiaro
                         if (in.getSize() <= getMinimumPacketPayloadLength())
                             throw std::runtime_error("Unable to unpack Disconnect packet; too small of a payload!");
 
-                        mReason = in.read<Kiaro::Common::String>();
+                        mReason = in.readString();
                     }
 
                     Kiaro::Common::U32 getMinimumPacketPayloadLength(void)

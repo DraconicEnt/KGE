@@ -47,7 +47,7 @@ namespace Kiaro
         {
             const Kiaro::Common::U64 currentSimTimeMS = Kiaro::Support::Time::getSimTimeMilliseconds();
 
-            for (std::set<ScheduledEvent*>::iterator iterator = mScheduledEventSet.begin(); iterator != mScheduledEventSet.end(); iterator++)
+            for (std::set<ScheduledEvent *>::iterator iterator = mScheduledEventSet.begin(); iterator != mScheduledEventSet.end(); iterator++)
             {
                 bool shouldRemoveCurrentEvent = false;
                 ScheduledEvent *currentEvent = *iterator;

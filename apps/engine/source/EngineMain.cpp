@@ -31,7 +31,7 @@
 #include <support/MapDivision.hpp>
 #include <support/SchedulerSingleton.hpp>
 
-static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
+static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
 {
     if (otherFlags)
         return;
@@ -40,7 +40,7 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::Co
     {
         std::cerr << "No game specified." << std::endl << std::endl;
 
-        parser->displayHelp(parser, argv, arguments, otherFlags);
+        parser->displayHelp(parser, argc, argv, arguments, otherFlags);
         return;
     }
 
@@ -58,7 +58,7 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::Co
         {
             std::cerr << "No server specified with the server flag." << std::endl;
 
-            parser->displayHelp(parser, argv, arguments, otherFlags);
+            parser->displayHelp(parser, argc, argv, arguments, otherFlags);
             return;
         }
 
@@ -70,13 +70,13 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::Co
     engineInstance->setMode(engineMode);
     engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
     engineInstance->setGame(arguments[0]);
-    engineInstance->run(0, argv);
+    engineInstance->run(argc, argv);
 
     Kiaro::Engine::CoreSingleton::destroy();
 }
 
 #if ENGINE_TESTS>0
-static void testsFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
+static void testsFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
 {
     if (otherFlags)
         return;
@@ -129,7 +129,7 @@ class DebugLog : public boost::iostreams::sink
             std::ostream &mOldStream;
 };
 
-static void versionFlagHandler(Kiaro::Support::CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
+static void versionFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
 {
     std::cout << "Kiaro Game Engine version " << std::endl;
 }

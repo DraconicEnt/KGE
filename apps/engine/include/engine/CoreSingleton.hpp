@@ -53,6 +53,8 @@ namespace Kiaro
 
                 bool isDedicated(void);
 
+                lua_State *getLuaState(void);
+
             // Public Members
             public:
                 Kiaro::Common::ColorRGBA mClearColor;

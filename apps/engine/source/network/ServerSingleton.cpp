@@ -76,6 +76,10 @@ namespace Kiaro
 
         ServerSingleton::~ServerSingleton(void)
         {
+            // Disconnect everyone
+            for (Kiaro::Network::ServerSingleton::clientIterator it = this->clientsBegin(); it != this->clientsEnd(); it++)
+                (*it)->disconnect("Server shutdown");
+
             Kiaro::Engine::EntityGroupingSingleton::destroy();
 
             if (mInternalHost)
@@ -144,7 +148,7 @@ namespace Kiaro
                         }
 
                         Kiaro::Network::IncomingClient *sender = (Kiaro::Network::IncomingClient*)event.peer->data;
-                        Kiaro::Support::BitStream incomingStream(event.packet->data, event.packet->dataLength, event.packet->dataLength);
+                        Kiaro::Support::BitStream incomingStream(event.packet->data, event.packet->dataLength);
 
                         onReceivePacket(incomingStream, sender);
                         enet_packet_destroy(event.packet);
@@ -195,12 +199,6 @@ namespace Kiaro
                     handShake.mVersionBuild = 4;
 
                     sender->send(&handShake, true);
-
-                    // Dispatch a D/C packet
-                    Kiaro::Game::Messages::Disconnect disconnect;
-                    disconnect.mReason = "Testing";
-
-                    sender->send(&disconnect, true);
                     break;
                 }
             }

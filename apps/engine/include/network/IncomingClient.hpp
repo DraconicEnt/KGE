@@ -46,7 +46,7 @@ namespace Kiaro
                 bool getIsOppositeEndian(void) NOTHROW;
 
                 //! Disconnects this client from the server.
-                void disconnect(void) NOTHROW;
+                void disconnect(const Kiaro::Common::String &reason) NOTHROW;
 
                 //! Get the port number that this client is connecting on.
                 const Kiaro::Common::U16 &getPort(void) NOTHROW;

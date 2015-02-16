@@ -36,7 +36,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, Kiaro::Common::C8 **, const std::vector<Kiaro::Common::String>&, bool> FlagResponder;
+                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, const Kiaro::Common::S32 &, Kiaro::Common::C8 **, const std::vector<Kiaro::Common::String>&, bool> FlagResponder;
 
                 typedef struct
                 {
@@ -69,15 +69,19 @@ namespace Kiaro
                 void setFlagResponder(FlagEntry *entry);
                 void invokeFlagResponders(void);
 
-                void displayHelp(CommandLineParser *parser, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags);
+                void displayHelp(CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags);
 
             // Private Members
             private:
                 Kiaro::Common::C8 **mArgv;
+                Kiaro::Common::S32 mArgc;
+
                 std::unordered_map<size_t, std::vector<Kiaro::Common::String>> mFlags;
                 std::unordered_map<size_t, FlagEntry *> mFlagResponders;
 
                 std::vector<FlagEntry *> mFlagEntries;
+
+                std::string mCommandLine;
 
                 size_t mCurrentLongestFlagLength;
         };
