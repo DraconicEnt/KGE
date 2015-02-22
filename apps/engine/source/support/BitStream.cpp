@@ -46,8 +46,8 @@ namespace Kiaro
             // Unpack the length
             const Kiaro::Common::U32 nextLength = this->read<Kiaro::Common::U32>();
 
-            if (nextLength > mAllocatedBytes - mDataPointer)
-                throw std::logic_error("BitStream: Cannot unpack String; not enough data!");
+            if (nextLength > mDataPointer)
+                throw std::underflow_error("BitStream: Cannot unpack String; not enough data!");
 
             mDataPointer -= nextLength;
 

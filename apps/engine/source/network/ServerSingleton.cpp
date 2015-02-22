@@ -26,6 +26,8 @@
 
 #include <game/GamemodeBase.hpp>
 
+#include <lualibs/clientlib.hpp>
+
 namespace Kiaro
 {
     namespace Network
@@ -49,19 +51,32 @@ namespace Kiaro
         }
 
         ServerSingleton::ServerSingleton(const Kiaro::Common::String &listenAddress, const Kiaro::Common::U16 &listenPort, const Kiaro::Common::U32 &maximumClientCount) :
-        mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mCurrentGamemode(NULL), mListenAddress(listenAddress)
+        mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mCurrentGamemode(NULL), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
             enet_address_set_host(&enetAddress, listenAddress.c_str());
 
-            mInternalHost = enet_host_create(&enetAddress, maximumClientCount, 2, 0, 0);
+            // FIXME (Robert MacGregor#9): Reliable dispatch of server full messages?
+            mInternalHost = enet_host_create(&enetAddress, maximumClientCount + 1, 2, 0, 0);
             if (!mInternalHost)
             {
                 mIsRunning = false;
 
                 throw std::runtime_error("ServerSingleton: Failed to create ENet host!");
             }
+
+            // Setup some more of the Lua implements
+            lua_State *luaState = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+
+            lua_getglobal(luaState, "GameServer");
+            lua_pushstring(luaState, "listenPort");
+            lua_pushnumber(luaState, listenPort);
+            lua_settable(luaState, -3);
+
+            lua_pushstring(luaState, "listenAddress");
+            lua_pushstring(luaState, listenAddress.c_str());
+            lua_settable(luaState, -3);
 
             // Create the map division
             Kiaro::Support::MapDivision::Get(12);
@@ -76,14 +91,22 @@ namespace Kiaro
 
         ServerSingleton::~ServerSingleton(void)
         {
+            // Call the server shutdown sequence in Lua
+            lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+            lua_getglobal(lua, "GameServer");
+            lua_getfield(lua, -1, "onShutdown");
+
+            lua_call(lua, 0, 0);
+
             // Disconnect everyone
             for (Kiaro::Network::ServerSingleton::clientIterator it = this->clientsBegin(); it != this->clientsEnd(); it++)
-                (*it)->disconnect("Server shutdown");
+                (*it)->disconnect("Server Shutdown");
 
             Kiaro::Engine::EntityGroupingSingleton::destroy();
 
             if (mInternalHost)
             {
+                enet_host_flush(mInternalHost); // Make sure we dispatch disconnects
                 enet_host_destroy(mInternalHost);
                 mInternalHost = NULL;
             }
@@ -164,12 +187,34 @@ namespace Kiaro
 
         void ServerSingleton::onClientConnected(Kiaro::Network::IncomingClient *client)
         {
+            // Can we accept this guy?
+            if (mConnectedClientSet.size() >= mMaximumClientCount)
+            {
+                client->disconnect("Server is full. ");
+                return;
+            }
+
+            // Call the Lua callback
+            lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+            lua_getglobal(lua, "GameServer");
+            lua_getfield(lua, -1, "onClientConnected");
+
+            lua_pushclient(lua, client);
+            lua_call(lua, 1, 0);
+
             Kiaro::Support::EventManagerSingleton::get()->mOnClientConnectedEvent.invoke(client);
             std::cout << "ServerSingleton: Received remote connection from " << client->getStringIPAddress() << ":" << client->getPort() << std::endl;
         }
 
         void ServerSingleton::onClientDisconnected(Kiaro::Network::IncomingClient *client)
         {
+            lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+            lua_getglobal(lua, "GameServer");
+            lua_getfield(lua, -1, "onClientDisconnected");
+
+            lua_pushclient(lua, client);
+            lua_call(lua, 1, 0);
+
             Kiaro::Support::EventManagerSingleton::get()->mOnClientDisconnectedEvent.invoke(client);
             std::cout << "ServerSingleton: Received disconnection from " << client->getStringIPAddress() << ":" << client->getPort() << std::endl;
         }

@@ -99,6 +99,25 @@ namespace Kiaro
             std::cout << "CoreSingleton: E-Net Version is " << ENET_VERSION_GET_MAJOR(enetVersion) << "." << ENET_VERSION_GET_MINOR(enetVersion) <<
             "." << ENET_VERSION_GET_PATCH(enetVersion) << std::endl;
 
+            // Initialize Lua
+            // FIXME (Robert MacGregor#9): Init and call our Lua main method within the try, catch
+            mLuaState = luaL_newstate();
+            luaL_checkversion(mLuaState);
+            lua_gc(mLuaState, LUA_GCSTOP, 0);
+            luaL_openlibs(mLuaState);
+            lua_gc(mLuaState, LUA_GCRESTART, 0);
+
+            // Now create the callback tables
+            lua_createtable(mLuaState, 0, 0);
+            lua_setglobal(mLuaState, "GameServer");
+            lua_pop(mLuaState, -1);
+
+            lua_createtable(mLuaState, 0, 0);
+            lua_setglobal(mLuaState, "GameClient");
+            lua_pop(mLuaState, -1);
+
+            std::cout << "CoreSingleton: Initialized Lua " << std::endl;
+
             switch (mEngineMode)
             {
                 case Kiaro::ENGINE_CLIENT:
@@ -165,16 +184,6 @@ namespace Kiaro
                 guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
                 guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
             }
-
-            // Initialize Lua
-            // FIXME (Robert MacGregor#9): Init and call our Lua main method within the try, catch
-            mLuaState = luaL_newstate();
-            luaL_checkversion(mLuaState);
-            lua_gc(mLuaState, LUA_GCSTOP, 0);
-            luaL_openlibs(mLuaState);
-            lua_gc(mLuaState, LUA_GCRESTART, 0);
-
-            std::cout << "CoreSingleton: Initialized Lua " << std::endl;
 
             // Load up the main file
             // TODO: Implement PhysFS in Lua
@@ -297,12 +306,6 @@ namespace Kiaro
         {
             std::cout << "CoreSingleton: Deinitializing ..." << std::endl;
 
-            if (mLuaState)
-            {
-                lua_close(mLuaState);
-                mLuaState = NULL;
-            }
-
             // TODO: Check the destroy order
             if (mClient)
             {
@@ -326,6 +329,12 @@ namespace Kiaro
             {
                 mIrrlichtDevice->drop();
                 mIrrlichtDevice = NULL;
+            }
+
+            if (mLuaState)
+            {
+                lua_close(mLuaState);
+                mLuaState = NULL;
             }
 
             PHYSFS_deinit();

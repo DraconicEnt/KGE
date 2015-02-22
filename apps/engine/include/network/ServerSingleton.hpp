@@ -151,6 +151,8 @@ namespace Kiaro
                 //! The Address that we're listening on.
                 const Kiaro::Common::String mListenAddress;
 
+                Kiaro::Common::U32 mMaximumClientCount;
+
                 std::set<IncomingClient *> mConnectedClientSet;
         };
     } // End Namespace Network

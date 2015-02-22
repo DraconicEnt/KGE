@@ -48,7 +48,7 @@ namespace Kiaro
                     void unpackData(Kiaro::Support::BitStream &in)
                     {
                         if (in.getSize() <= getMinimumPacketPayloadLength())
-                            throw std::runtime_error("Unable to unpack Disconnect packet; too small of a payload!");
+                            throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
 
                         mReason = in.readString();
                     }

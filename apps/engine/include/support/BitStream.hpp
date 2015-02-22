@@ -176,7 +176,7 @@ namespace Kiaro
                     const size_t outDataLength = sizeof(returnType);
 
                     if (outDataLength > mDataPointer)
-                        throw std::out_of_range("BitStream: Attempted to read out of range!");
+                        throw std::underflow_error("BitStream: Attempted to read out of range!");
 
                     mDataPointer -= outDataLength;
                     return *((returnType *)(mData + mDataPointer));
@@ -185,7 +185,7 @@ namespace Kiaro
                 void *readData(const size_t &outDataLength)
                 {
                     if (outDataLength > mDataPointer)
-                        throw std::out_of_range("BitStream: Attempted to read out of range!");
+                        throw std::underflow_error("BitStream: Attempted to read out of range!");
 
                     mDataPointer -= outDataLength;
                     return (void *)(mData + mDataPointer);
@@ -196,7 +196,7 @@ namespace Kiaro
                 void copyData(void *destination, const size_t &outDataLength)
                 {
                     if (outDataLength > mDataPointer)
-                        throw std::out_of_range("BitStream: Attempted to copy out of range!");
+                        throw std::underflow_error("BitStream: Attempted to copy out of range!");
                     else
                         mDataPointer -= outDataLength;
 
@@ -209,20 +209,6 @@ namespace Kiaro
                 template <typename returnType>
                 returnType copy(void)
                 {
-                   // if (mFileHandle)
-                   //{
-                    //    returnType result;
-                    //    const size_t outDataLength = sizeof(returnType);
-
-                    //    if (outDataLength > mDataPointer)
-                     //       throw std::out_of_range("BitStream: Attempted to read out of range");
-
-                     //   mDataPointer -= outDataLength;
-                      //  PHYSFS_read(mFileHandle, &result, outDataLength, 1);
-
-                      //  return result;
-                   // }
-
                     return this->read<returnType>();
                 }
 

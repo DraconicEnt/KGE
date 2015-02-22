@@ -29,6 +29,8 @@
 
 #include <support/BitStream.hpp>
 
+#include <easylua.hpp>
+
 namespace Kiaro
 {
     namespace Network
@@ -156,16 +158,33 @@ namespace Kiaro
             handShake.mVersionBuild = 4;
 
             this->send(&handShake, true);
+
+            lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+            lua_getglobal(lua, "GameClient");
+            lua_getfield(lua, -1, "onConnected");
+
+            if (lua_pcall(lua, 0, 0, 0))
+                std::cerr << "CoreSingleton: " << lua_tostring(lua, -1) << std::endl;
         }
 
         void OutgoingClientSingleton::onDisconnected(void)
         {
             std::cout << "OutgoingClient: Disconnected from the remote host" << std::endl;
+
+            lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+            lua_getglobal(lua, "GameClient");
+            lua_getfield(lua, -1, "onDisconnected");
+
+            EasyLua::call(lua, 1.02f, "Test", 5);
+            //lua_call(lua, 0, 0);
         }
 
         void OutgoingClientSingleton::onConnectFailed(void)
         {
-
+            lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
+            lua_getglobal(lua, "GameClient");
+            lua_getfield(lua, -1, "onConnectFailed");
+            lua_call(lua, 0, 0);
         }
 
         OutgoingClientSingleton *OutgoingClientSingleton::getPointer(irr::IrrlichtDevice *irrlicht)
@@ -282,7 +301,7 @@ namespace Kiaro
                         break;
                 }
 
-            onDisconnected();
+            this->onDisconnected();
         }
 
         void OutgoingClientSingleton::networkUpdate(void)
@@ -300,7 +319,7 @@ namespace Kiaro
                         enet_host_destroy(mInternalHost);
                         mInternalHost = NULL;
 
-                        onDisconnected();
+                        this->onDisconnected();
 
                         break;
                     }
@@ -308,7 +327,7 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_RECEIVE:
                     {
                         Kiaro::Support::BitStream incomingStream(event.packet->data, event.packet->dataLength);
-                        onReceivePacket(incomingStream);
+                        this->onReceivePacket(incomingStream);
 
                         break;
                     }
