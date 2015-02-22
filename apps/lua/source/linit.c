@@ -41,6 +41,7 @@ static const luaL_Reg loadedlibs[] = {
   {LUA_NETLIBNAME, luaopen_net},
   {LUA_ENGINELIBNAME, luaopen_engine},
   {LUA_VIDEOLIBNAME, luaopen_video},
+  {LUA_CLIENTLIBNAME, luaopen_client},
   {NULL, NULL}
 };
 
