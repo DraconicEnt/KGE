@@ -110,11 +110,9 @@ namespace Kiaro
             // Now create the callback tables
             lua_createtable(mLuaState, 0, 0);
             lua_setglobal(mLuaState, "GameServer");
-            lua_pop(mLuaState, -1);
 
             lua_createtable(mLuaState, 0, 0);
             lua_setglobal(mLuaState, "GameClient");
-            lua_pop(mLuaState, -1);
 
             std::cout << "CoreSingleton: Initialized Lua " << std::endl;
 
@@ -197,8 +195,11 @@ namespace Kiaro
             std::string mainLuaFile = mainFileBase;
             mainLuaFile += "/main.lua";
 
-            luaL_dofile(mLuaState, mainLuaFile.c_str());
+            if (luaL_dofile(mLuaState, mainLuaFile.c_str()) >= 1)
+            {
 
+               std::cout << "Failed to load main.lua!" << std::endl;
+            }
             // Call the main(argv) method
             lua_getglobal(mLuaState, "main");
             lua_newtable(mLuaState);

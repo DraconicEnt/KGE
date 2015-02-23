@@ -78,6 +78,11 @@ namespace Kiaro
             lua_pushstring(luaState, listenAddress.c_str());
             lua_settable(luaState, -3);
 
+            // The table "GameServer" is left so we chop it off
+            lua_pop(luaState, -1);
+
+            std::cout << "SERV: " << lua_gettop(luaState) << std::endl;
+
             // Create the map division
             Kiaro::Support::MapDivision::Get(12);
 
@@ -95,7 +100,6 @@ namespace Kiaro
             lua_State *lua = Kiaro::Engine::CoreSingleton::getPointer()->getLuaState();
             lua_getglobal(lua, "GameServer");
             lua_getfield(lua, -1, "onShutdown");
-
             lua_call(lua, 0, 0);
 
             // Disconnect everyone
