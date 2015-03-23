@@ -1,5 +1,5 @@
-#include <engine/CoreSingleton.hpp>
-#include <network/OutgoingClientSingleton.hpp>
+#include <engine/SEngineInstance.hpp>
+#include <network/SClient.hpp>
 
 #include <stdlib.h>
 
@@ -9,7 +9,7 @@ extern "C"
 {
     int lua_video_setresolution(lua_State *L)
     {
-        Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
+        Kiaro::Engine::SEngineInstance *engineCore = Kiaro::Engine::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
         {
@@ -32,7 +32,7 @@ extern "C"
 
     int lua_video_setfullscreen(lua_State *L)
     {
-        Kiaro::Engine::CoreSingleton *engineCore = Kiaro::Engine::CoreSingleton::getPointer();
+        Kiaro::Engine::SEngineInstance *engineCore = Kiaro::Engine::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
             return luaL_error(L, "Method 'video.setFullscreen' is not available for dedicated servers!");

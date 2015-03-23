@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 
-#include <network/MessageBase.hpp>
+#include <network/IMessage.hpp>
 
 namespace Kiaro
 {
@@ -28,21 +28,21 @@ namespace Kiaro
     {
         namespace Messages
         {
-            class SimCommit : public Kiaro::Network::MessageBase
+            class SimCommit : public Kiaro::Network::IMessage
             {
                 // Public Methods
                 public:
-                    SimCommit(Kiaro::Support::BitStream *in = NULL, Kiaro::Network::IncomingClientBase *sender = NULL) : Kiaro::Network::MessageBase(MESSAGE_SIMCOMMIT, in, sender)
+                    SimCommit(Kiaro::Support::CBitStream *in = NULL, Kiaro::Network::CClient *sender = NULL) : Kiaro::Network::IMessage(MESSAGE_SIMCOMMIT, in, sender)
                     {
 
                     }
 
-                    void packData(Kiaro::Support::BitStream &out)
+                    void packData(Kiaro::Support::CBitStream &out)
                     {
-                        Kiaro::Network::MessageBase::packData(out);
+                        Kiaro::Network::IMessage::packData(out);
                     }
 
-                    void unpackData(Kiaro::Support::BitStream &in)
+                    void unpackData(Kiaro::Support::CBitStream &in)
                     {
                         // FIXME (Robert MacGregor#9): Sim Commit Messages don't contain any values
                         //if (in.getSize() <= getMinimumPacketPayloadLength())
@@ -51,7 +51,7 @@ namespace Kiaro
 
                     Kiaro::Common::U32 getMinimumPacketPayloadLength(void)
                     {
-                        return Kiaro::Network::MessageBase::getMinimumPacketPayloadLength();
+                        return Kiaro::Network::IMessage::getMinimumPacketPayloadLength();
                     }
             };
         } // End NameSpace Packets

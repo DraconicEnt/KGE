@@ -17,19 +17,17 @@
 #include <gtest/gtest.h>
 #endif
 
-#include <tests/Tests.hpp>
-
 #include <boost/iostreams/stream_buffer.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include <engine/Logging.hpp>
 
-#include <engine/Common.hpp>
-#include <engine/CoreSingleton.hpp>
+#include <engine/common.hpp>
+#include <engine/SEngineInstance.hpp>
 
-#include <support/CommandLineParser.hpp>
-#include <support/MapDivision.hpp>
-#include <support/SchedulerSingleton.hpp>
+#include <support/CCommandLineParser.hpp>
+#include <support/CMapDivision.hpp>
+#include <engine/SScheduler.hpp>
 
 static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<std::string> &arguments, bool otherFlags)
 {
@@ -66,13 +64,13 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kia
     }
 
     // Create the Engine Instance
-    Kiaro::Engine::CoreSingleton *engineInstance = Kiaro::Engine::CoreSingleton::getPointer();
+    Kiaro::Engine::SEngineInstance *engineInstance = Kiaro::Engine::SEngineInstance::getPointer();
     engineInstance->setMode(engineMode);
     engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
     engineInstance->setGame(arguments[0]);
     engineInstance->run(argc, argv);
 
-    Kiaro::Engine::CoreSingleton::destroy();
+    Kiaro::Engine::SEngineInstance::destroy();
 }
 
 #if ENGINE_TESTS>0

@@ -17,10 +17,10 @@
 
         #include <gtest/gtest.h>
 
-        #include <engine/NetworkPersistableBase.hpp>
+        #include <engine/INetworkPersistable.hpp>
 
         // The Test class
-        class TestSerializedObject : public Kiaro::Engine::NetworkPersistableBase
+        class TestSerializedObject : public Kiaro::Engine::INetworkPersistable
         {
             // Public Methods
             public:
@@ -30,8 +30,8 @@
                     addNetworkedProperty("networkeduint", mNetworkedUInt);
                 }
 
-                void packData(Kiaro::Support::BitStream &out) { }
-                void unpackData(Kiaro::Support::BitStream &in) { }
+                void packData(Kiaro::Support::CBitStream &out) { }
+                void unpackData(Kiaro::Support::CBitStream &in) { }
 
             // Public Members
             public:

@@ -15,7 +15,7 @@
 #include <stdexcept>
 
 #include <game/messages/messages.hpp>
-#include <network/MessageBase.hpp>
+#include <network/IMessage.hpp>
 
 namespace Kiaro
 {
@@ -29,26 +29,26 @@ namespace Kiaro
     {
         namespace Messages
         {
-            class HandShake : public Kiaro::Network::MessageBase
+            class HandShake : public Kiaro::Network::IMessage
             {
                 // Public Methods
                 public:
-                    HandShake(Kiaro::Support::BitStream *in = NULL, Kiaro::Network::IncomingClientBase *sender = NULL) : Network::MessageBase(MESSAGE_HANDSHAKE, in, sender)
+                    HandShake(Kiaro::Support::CBitStream *in = NULL, Kiaro::Network::CClient *sender = NULL) : Network::IMessage(MESSAGE_HANDSHAKE, in, sender)
                     {
 
                     }
 
-                    void packData(Kiaro::Support::BitStream &out)
+                    void packData(Kiaro::Support::CBitStream &out)
                     {
                         out.write(mVersionMajor);
                         out.write(mVersionMinor);
                         out.write(mVersionRevision);
                         out.write(mVersionBuild);
 
-                        Kiaro::Network::MessageBase::packData(out);
+                        Kiaro::Network::IMessage::packData(out);
                     }
 
-                    void unpackData(Kiaro::Support::BitStream &in)
+                    void unpackData(Kiaro::Support::CBitStream &in)
                     {
                         if (in.getSize() <= getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack HandShake packet; too small of a payload!");

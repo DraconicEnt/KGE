@@ -1,4 +1,4 @@
-#include <engine/CoreSingleton.hpp>
+#include <engine/SEngineInstance.hpp>
 
 #include <stdlib.h>
 
@@ -8,7 +8,7 @@ extern "C"
 {
     int lua_engine_quit(lua_State *L)
     {
-        Kiaro::Engine::CoreSingleton::getPointer()->kill();
+        Kiaro::Engine::SEngineInstance::getPointer()->kill();
         return 1;
     }
 }
