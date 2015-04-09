@@ -1,6 +1,6 @@
 /**
- *  @file CBehaviorModel.h
- *  @brief Include file defining the Kiaro::CES::BehaviorModel class.
+ *  @file CBehaviorModel.hpp
+ *  @brief Include file defining the Kiaro::CES::CBehaviorModel class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

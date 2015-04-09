@@ -1,6 +1,6 @@
 /**
  *  @file CComponentGrabity.cpp
- *  @brief Source file implementating the Kiaro::CES::BehaviorModel class.
+ *  @brief Source file implementing the Kiaro::CES::CComponentGravity class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

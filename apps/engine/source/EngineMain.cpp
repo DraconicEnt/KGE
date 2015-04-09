@@ -42,6 +42,19 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kia
         return;
     }
 
+    // Get the addon list or report an error
+    std::vector<std::string> addonList;
+    if (parser->hasFlag("-addons") && parser->getFlagArgumentCount("-addons") == 0)
+    {
+        std::cerr << "No addons specified." << std::endl << std::endl;
+
+        parser->displayHelp(parser, argc, argv, arguments, otherFlags);
+        return;
+    }
+    else if (parser->hasFlag("-addons"))
+        for (Kiaro::Common::U32 iteration = 0; iteration < parser->getFlagArgumentCount("-addons"); iteration++)
+            addonList.push_back(parser->getFlagArgument("-addons", iteration));
+
     Kiaro::ENGINE_MODE engineMode = Kiaro::ENGINE_CLIENT;
 
     if (parser->hasFlag("-dedicated"))
@@ -192,6 +205,12 @@ Kiaro::Common::S32 main(Kiaro::Common::S32 argc, Kiaro::Common::C8 *argv[])
     currentFlagEntry->name = "-v";
     currentFlagEntry->description = "Print versioning information.";
     currentFlagEntry->responder = new Kiaro::Support::CommandLineParser::FlagResponder::StaticDelegateType(versionFlagHandler);
+    commandLineParser.setFlagResponder(currentFlagEntry);
+
+    currentFlagEntry = new Kiaro::Support::CommandLineParser::FlagEntry;
+    currentFlagEntry->name = "-addons";
+    currentFlagEntry->description = "<addon1> [addon2...] : Run the game with a list of addons installed.";
+    currentFlagEntry->responder = NULL;
     commandLineParser.setFlagResponder(currentFlagEntry);
 
     // Add a -tests response flag

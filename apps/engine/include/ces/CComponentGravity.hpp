@@ -1,6 +1,6 @@
 /**
  *  @file IComponent.h
- *  @brief Include file defining the Kiaro::CES::ComponentBase class.
+ *  @brief Include file defining the Kiaro::CES::CComponentGrabity class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

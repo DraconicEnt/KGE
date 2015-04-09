@@ -38,6 +38,8 @@ namespace Kiaro
 				else if (currentFlagName != NULL)
                     mFlags[currentFlagHash].push_back(argv[iteration]);
 
+            // The command line parser implementation will always have an -h option to generate
+            // a help from the information fed to it by the main source.
             FlagEntry *helpEntry = new FlagEntry;
             helpEntry->name = "-h";
             helpEntry->description = "Displays this help text.";
@@ -135,12 +137,13 @@ namespace Kiaro
             {
                 FlagEntry *currentEntry = (*it);
 
-                // Build the seperator for this line
-                std::string blankSeperator;
-                for (size_t iteration = 0; iteration < mCurrentLongestFlagLength - currentEntry->name.length(); iteration++)
-                    blankSeperator += " ";
+                // Output the help
+                std::cout << "  " << currentEntry->name;
 
-                std::cout << "  " << currentEntry->name << blankSeperator << currentEntry->description << std::endl;
+                for (size_t iteration = 0; iteration < mCurrentLongestFlagLength - currentEntry->name.length(); iteration++)
+                    std::cout << " ";
+
+                std::cout << currentEntry->description << std::endl;
             }
         }
     } // End Namespace Support
