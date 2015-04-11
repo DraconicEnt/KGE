@@ -14,7 +14,7 @@
 
 #include <easydelegate.hpp>
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 namespace Kiaro
 {

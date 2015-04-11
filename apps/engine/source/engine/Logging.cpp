@@ -14,8 +14,8 @@
 #include <stdarg.h>
 #include <iostream>
 
-#include <engine/Config.hpp>
-#include <engine/Common.hpp>
+#include <engine/config.hpp>
+#include <engine/common.hpp>
 #include <engine/Logging.hpp>
 
 namespace Kiaro

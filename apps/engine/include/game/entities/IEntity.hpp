@@ -17,7 +17,7 @@
 
 #include <ces/IComponent.hpp>
 
-#include "engine/Common.hpp"
+#include "engine/common.hpp"
 
 #include <engine/SEngineInstance.hpp>
 #include <engine/CFileReader.hpp>

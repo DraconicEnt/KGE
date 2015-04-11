@@ -9,7 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <engine/Config.hpp>
+#include <engine/config.hpp>
 
 #if ENGINE_TESTS>0
     #ifndef _INCLUDE_KIARO_TESTS_SERIALIZEDOBJECTS_H_

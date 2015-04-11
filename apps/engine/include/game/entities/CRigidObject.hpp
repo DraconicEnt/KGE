@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_CRIGIDOBJECT_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_CRIGIDOBJECT_HPP_
 
-#include "engine/Common.hpp"
+#include "engine/common.hpp"
 
 #include <game/entities/IRigidObject.hpp>
 

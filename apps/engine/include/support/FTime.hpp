@@ -14,7 +14,7 @@
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 namespace Kiaro
 {

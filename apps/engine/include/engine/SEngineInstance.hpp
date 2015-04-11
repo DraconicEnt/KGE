@@ -16,7 +16,7 @@
 #include <irrlicht.h>
 #include <easydelegate.hpp>
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 namespace Kiaro
 {
@@ -48,6 +48,8 @@ namespace Kiaro
 
                 irr::IrrlichtDevice *getIrrlichtDevice(void);
 
+                irr::scene::ISceneManager *getSceneManager(void);
+
                 Kiaro::Common::U32 run(Kiaro::Common::S32 argc, Kiaro::Common::C8 *argv[]);
                 void kill(void);
 
@@ -74,6 +76,7 @@ namespace Kiaro
                 //! An enumeration representing the engine
                 ENGINE_MODE mEngineMode;
                 irr::IrrlichtDevice *mIrrlichtDevice;
+                irr::scene::ISceneManager *mSceneManager;
 
                 Kiaro::Common::C8 *mTargetServerAddress;
                 Kiaro::Common::U16 mTargetServerPort;

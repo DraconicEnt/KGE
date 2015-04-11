@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_NETWORK_IMESSAGE_H_
 #define _INCLUDE_KIARO_NETWORK_IMESSAGE_H_
 
-#include "engine/Common.hpp"
+#include "engine/common.hpp"
 
 #include <support/CBitStream.hpp>
 

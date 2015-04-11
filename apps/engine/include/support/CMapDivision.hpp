@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_CMAPDIVISION_HPP_
 #define _INCLUDE_KIARO_SUPPORT_CMAPDIVISION_HPP_
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 namespace Kiaro
 {

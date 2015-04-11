@@ -18,8 +18,8 @@
 
 #include <easydelegate.hpp>
 
-#include <engine/Common.hpp>
-#include <engine/Config.hpp>
+#include <engine/common.hpp>
+#include <engine/config.hpp>
 
 namespace Kiaro
 {

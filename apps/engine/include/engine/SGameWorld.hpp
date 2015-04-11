@@ -14,7 +14,7 @@
 
 #include <set>  // std::set
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 namespace Kiaro
 {

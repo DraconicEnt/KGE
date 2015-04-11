@@ -17,7 +17,7 @@
 
 #include <physfs.h>
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 #include <engine/ISerializable.hpp>
 

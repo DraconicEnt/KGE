@@ -15,7 +15,7 @@
 #include <LinearMath/btIDebugDraw.h>
 #include <irrlicht.h>
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 
 namespace Kiaro
 {

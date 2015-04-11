@@ -79,6 +79,11 @@ namespace Kiaro
             return mIrrlichtDevice;
         }
 
+        irr::scene::ISceneManager *SEngineInstance::getSceneManager(void)
+        {
+            return mSceneManager;
+        }
+
         Kiaro::Common::U32 SEngineInstance::run(Kiaro::Common::S32 argc, Kiaro::Common::C8 *argv[])
         {
             mRunning = true;
@@ -152,6 +157,9 @@ namespace Kiaro
             // Start up Irrlicht
             mIrrlichtDevice = irr::createDevice(videoDriver, irr::core::dimension2d<Kiaro::Common::U32>(640, 480), 32, false, false, false, inputListener);
             mIrrlichtDevice->setWindowCaption(L"Kiaro Game Engine");
+
+            // Grab the scene manager and store it to reduce a function call
+            mSceneManager = mIrrlichtDevice->getSceneManager();
 
             // Start up CEGUI (if we're a client)
             if (mEngineMode == Kiaro::ENGINE_CLIENTCONNECT || mEngineMode == Kiaro::ENGINE_CLIENT)
@@ -248,7 +256,7 @@ namespace Kiaro
 
                         // Since we're a client, render the frame right after updating
                         mIrrlichtDevice->getVideoDriver()->beginScene(true, true, mClearColor);
-                        mIrrlichtDevice->getSceneManager()->drawAll();
+                        mSceneManager->drawAll();
 
                         CEGUI::System::getSingleton().renderAllGUIContexts();
 

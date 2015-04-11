@@ -14,9 +14,9 @@
 
 #include <enet/enet.h>
 
-#include "engine/Common.hpp"
+#include "engine/common.hpp"
 
-#include <game/entities/Entities.hpp>
+#include <game/entities/entities.hpp>
 
 namespace Kiaro
 {

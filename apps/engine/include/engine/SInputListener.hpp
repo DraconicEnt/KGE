@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_ENGINE_SINPUTLISTENERSINGLETON_HPP_
 #define _INCLUDE_KIARO_ENGINE_SINPUTLISTENERSINGLETON_HPP_
 
-#include <engine/Common.hpp>
+#include <engine/common.hpp>
 #include <irrlicht.h>
 
 #include <physfs.h>
