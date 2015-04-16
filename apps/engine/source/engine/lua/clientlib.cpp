@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include <lua.hpp>
-#include <lualibs/clientlib.hpp>
+#include <lualibs/clientlib.h>
 
 extern "C"
 {

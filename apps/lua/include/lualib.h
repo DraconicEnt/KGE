@@ -54,6 +54,9 @@ LUAMOD_API int (luaopen_video)(lua_State *L);
 #define LUA_CLIENTLIBNAME "client"
 LUAMOD_API int (luaopen_client)(lua_State *L);
 
+#define LUA_SCENEGRAPHLIBNAME "scenegraph"
+LUAMOD_API int luaopen_scenegraph(lua_State *L);
+
 /* open all previous libraries */
 LUALIB_API void (luaL_openlibs) (lua_State *L);
 

@@ -42,31 +42,46 @@ namespace Kiaro
 
         bool SInputListener::OnEvent(const irr::SEvent& event)
         {
-            if (event.EventType == irr::EET_MOUSE_INPUT_EVENT)
+            switch(event.EventType)
             {
-                CEGUI::GUIContext &guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-                switch(event.MouseInput.Event)
+                // Mouse Input
+                case irr::EET_MOUSE_INPUT_EVENT:
                 {
-                    case irr::EMIE_MOUSE_MOVED:
+                    CEGUI::GUIContext &guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+
+                    switch(event.MouseInput.Event)
                     {
-                        guiContext.injectMousePosition(event.MouseInput.X, event.MouseInput.Y);
-                        break;
+                        case irr::EMIE_MOUSE_MOVED:
+                        {
+                            guiContext.injectMousePosition(event.MouseInput.X, event.MouseInput.Y);
+                            return true;
+                        }
+
+                        case irr::EMIE_LMOUSE_PRESSED_DOWN:
+                        {
+                            guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
+                            return true;
+                        }
+
+                        case irr::EMIE_LMOUSE_LEFT_UP:
+                        {
+                            guiContext.injectMouseButtonUp(CEGUI::MouseButton::LeftButton);
+                            return true;
+                        }
                     }
 
-                    case irr::EMIE_LMOUSE_PRESSED_DOWN:
-                    {
-                        guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
-                        break;
-                    }
+                    return false;
+                }
 
-                    case irr::EMIE_LMOUSE_LEFT_UP:
-                    {
-                        guiContext.injectMouseButtonUp(CEGUI::MouseButton::LeftButton);
-                        break;
-                    }
+                // Logging
+                case irr::EET_LOG_TEXT_EVENT:
+                {
+                    std::cout << "SInputListener: " << event.LogEvent.Text << std::endl;
+                    return true;
                 }
             }
+
+            return false;
         }
     } // End Namespace Game
 } // End Namespace Kiaro

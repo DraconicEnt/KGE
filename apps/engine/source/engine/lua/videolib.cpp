@@ -46,4 +46,22 @@ extern "C"
         std::cerr << "VideoLib: Method 'video.setResolution' is unimplemented. " << std::endl;
         return 0;
     }
+
+    int lua_video_takescreenshot(lua_State *L)
+    {
+        Kiaro::Engine::SEngineInstance *engineCore = Kiaro::Engine::SEngineInstance::getPointer();
+
+        if (engineCore->isDedicated())
+            return luaL_error(L, "Method 'video.takeScreenShot' is not available for dedicated servers!");
+        else if (lua_gettop(L) != 1)
+            return luaL_error(L, "Method 'video.takeScreenShot' takes one parameter.");
+
+        irr::video::IVideoDriver *video = engineCore->getIrrlichtDevice()->getVideoDriver();
+
+        // FIXME (Robert MacGregor#9): Do I/O through PhysFS
+        const char *fileName = luaL_checkstring(L, -1);
+        video->writeImageToFile(video->createScreenShot(), fileName);
+
+        std::cout << "VideoLib: Wrote screenshot to " << fileName << std::endl;
+    }
 }

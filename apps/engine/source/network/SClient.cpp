@@ -160,8 +160,8 @@ namespace Kiaro
             this->send(&handShake, true);
 
             lua_State *lua = Kiaro::Engine::SEngineInstance::getPointer()->getLuaState();
-            lua_getglobal(lua, "GameClient");
-            lua_getfield(lua, -1, "onConnected");
+
+            EasyLua::pushObject(lua, "GameClient", "onConnected");
 
             if (lua_pcall(lua, 0, 0, 0))
                 std::cerr << "SEngineInstance: " << lua_tostring(lua, -1) << std::endl;
@@ -172,8 +172,8 @@ namespace Kiaro
             std::cout << "SClient: Disconnected from the remote host" << std::endl;
 
             lua_State *lua = Kiaro::Engine::SEngineInstance::getPointer()->getLuaState();
-            lua_getglobal(lua, "GameClient");
-            lua_getfield(lua, -1, "onDisconnected");
+
+            EasyLua::pushObject(lua, "GameClient", "onDisconnected");
 
             EasyLua::call(lua, 1.02f, "Test", 5);
             //lua_call(lua, 0, 0);
@@ -182,8 +182,8 @@ namespace Kiaro
         void SClient::onConnectFailed(void)
         {
             lua_State *lua = Kiaro::Engine::SEngineInstance::getPointer()->getLuaState();
-            lua_getglobal(lua, "GameClient");
-            lua_getfield(lua, -1, "onConnectFailed");
+
+            EasyLua::pushObject(lua, "GameClient", "onConnectFailed");
             lua_call(lua, 0, 0);
         }
 

@@ -55,10 +55,10 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kia
         for (Kiaro::Common::U32 iteration = 0; iteration < parser->getFlagArgumentCount("-addons"); iteration++)
             addonList.push_back(parser->getFlagArgument("-addons", iteration));
 
-    Kiaro::ENGINE_MODE engineMode = Kiaro::ENGINE_CLIENT;
+    Kiaro::Engine::MODE_NAME engineMode = Kiaro::Engine::MODE_CLIENT;
 
     if (parser->hasFlag("-dedicated"))
-        engineMode = Kiaro::ENGINE_DEDICATED;
+        engineMode = Kiaro::Engine::MODE_DEDICATED;
 
     // Check for the -server <ip address> flag
     std::string targetServerIP;
@@ -73,7 +73,7 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kia
             return;
         }
 
-        engineMode = Kiaro::ENGINE_CLIENTCONNECT;
+        engineMode = Kiaro::Engine::MODE_CLIENTCONNECT;
     }
 
     // Create the Engine Instance
@@ -81,8 +81,9 @@ static void gameFlagHandler(Kiaro::Support::CommandLineParser *parser, const Kia
     engineInstance->setMode(engineMode);
     engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
     engineInstance->setGame(arguments[0]);
-    engineInstance->run(argc, argv);
+    engineInstance->start(argc, argv);
 
+    // Release used memory when the start routine eventually returns
     Kiaro::Engine::SEngineInstance::destroy();
 }
 

@@ -26,7 +26,7 @@
 
 #include <game/IGameMode.hpp>
 
-#include <lualibs/clientlib.hpp>
+#include <lualibs/clientlib.h>
 
 namespace Kiaro
 {

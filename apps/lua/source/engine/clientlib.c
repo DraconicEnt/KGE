@@ -8,7 +8,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include <lualibs/clientlib.hpp>
+#include <lualibs/clientlib.h>
 
 int lua_client_getport(lua_State *L);
 

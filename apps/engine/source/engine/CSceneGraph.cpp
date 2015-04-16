@@ -21,9 +21,38 @@ namespace Kiaro
             mRoot = Kiaro::Engine::SEngineInstance::getPointer()->getSceneManager()->addEmptySceneNode();
         }
 
+        CSceneGraph::~CSceneGraph(void)
+        {
+            mRoot->removeAll();
+            mRoot->remove();
+            mRoot = NULL;
+
+            std::cout << "CSceneGraph: Destroyed a scene graph." << std::endl;
+        }
+
         void CSceneGraph::add(irr::scene::ISceneNode *node)
         {
             mRoot->addChild(node);
+        }
+
+        bool CSceneGraph::isVisible(void)
+        {
+            return mRoot->isVisible();
+        }
+
+        void CSceneGraph::setVisible(const bool &visible)
+        {
+            mRoot->setVisible(visible);
+        }
+
+        const Kiaro::Common::ColorRGBA &CSceneGraph::getClearColor(void)
+        {
+            return mClearColor;
+        }
+
+        void CSceneGraph::setClearColor(const Kiaro::Common::ColorRGBA &color)
+        {
+            mClearColor = color;
         }
     } // End NameSpace Engine
 } // End NameSpace Kiaro

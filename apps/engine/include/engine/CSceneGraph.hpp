@@ -12,6 +12,8 @@
 #ifndef _INCLUDE_ENGINE_CSCENEGRAPH_HPP_
 #define _INCLUDE_ENGINE_CSCENEGRAPH_HPP_
 
+#include <engine/common.hpp>
+
 #include <irrlicht.h>
 
 namespace Kiaro
@@ -22,11 +24,20 @@ namespace Kiaro
         {
             public:
                 CSceneGraph(void);
+                ~CSceneGraph(void);
 
                 void add(irr::scene::ISceneNode *node);
 
+                bool isVisible(void);
+                void setVisible(const bool &visible);
+
+                const Kiaro::Common::ColorRGBA &getClearColor(void);
+                void setClearColor(const Kiaro::Common::ColorRGBA &color);
+
             private:
                 irr::scene::ISceneNode *mRoot;
+
+                Kiaro::Common::ColorRGBA mClearColor;
         };
     } // End NameSpace Engine
 } // End NameSpace Kiaro

@@ -30,7 +30,7 @@ namespace Kiaro
          *  The CommandLineParser class parses console input where any arguments prepended with
          *  a dash is considered a flag while the rest is considered arguments to the flags.
          *
-         *  <b>Ex:</b> ./kiaro64_d -Game base -Server 98.238.10.100 -Port 11595
+         *  <b>Ex:</b> ./kiaro64_d -game base -server 98.238.10.100 -port 11595
          */
         class CommandLineParser
         {
