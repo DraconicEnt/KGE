@@ -17,6 +17,7 @@
 
 #include <engine/config.hpp>
 #include <engine/SEngineInstance.hpp>
+#include <engine/SResourceProvider.hpp>
 #include <engine/Logging.hpp>
 #include <engine/SInputListener.hpp>
 
@@ -92,6 +93,9 @@ namespace Kiaro
 
             std::cout << "SEngineInstance: Running game '" << mGameName << "'" << std::endl;
 
+            // Initialize PhysFS
+            PHYSFS_init((argv));
+
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
             {
@@ -110,7 +114,10 @@ namespace Kiaro
                 return 1;
 
             this->initializeRenderer();
-            this->initializeGUI();
+
+            mRunning = this->initializeGUI() == 0 ? true : false;
+            if (!mRunning)
+                return 1;
 
             this->initializeSound();
             this->initializeNetwork();
@@ -190,44 +197,48 @@ namespace Kiaro
                 mServer->networkUpdate(0.0f);
         }
 
-        lua_State *SEngineInstance::getLuaState(void)
-        {
-            return mLuaState;
-        }
+        lua_State *SEngineInstance::getLuaState(void) { return mLuaState; }
 
-        void SEngineInstance::initializeGUI(void)
+        int SEngineInstance::initializeGUI(void)
         {
             // Start up CEGUI (if we're a client)
             if (mEngineMode == Kiaro::Engine::MODE_CLIENTCONNECT || mEngineMode == Kiaro::Engine::MODE_CLIENT)
             {
-                // We don't need the OS cursor
-                mIrrlichtDevice->getCursorControl()->setVisible(false);
+                try
+                {
+                    // We don't need the OS cursor
+                    mIrrlichtDevice->getCursorControl()->setVisible(false);
 
-                CEGUI::IrrlichtRenderer::bootstrapSystem(*mIrrlichtDevice);
+                    CEGUI::IrrlichtRenderer &renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
+                    Kiaro::Engine::SResourceProvider *resourceProvider = Kiaro::Engine::SResourceProvider::getPointer();
+                    CEGUI::System::create(renderer, static_cast<CEGUI::ResourceProvider*>(resourceProvider), NULL, NULL, NULL, "", "log.txt");
+                    //EGUI::IrrlichtRenderer::bootstrapSystem(*mIrrlichtDevice);
 
-                // Setup our resource directories
-                // TODO (Robert MacGregor#9): Build a resource provider for CEGUI that implements PhysFS
-                CEGUI::DefaultResourceProvider* resourceProvider = static_cast<CEGUI::DefaultResourceProvider*>( CEGUI::System::getSingleton().getResourceProvider());
+                    resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
+                    resourceProvider->setResourceGroupDirectory("ui", "ui/");
+                  //  resourceProvider->setResourceGroupDirectory("global", basePath);
 
-                std::string basePath = "./";
-                basePath += mGameName + "/";
+                    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
+                    CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
 
-                resourceProvider->setResourceGroupDirectory("fonts", basePath + "fonts/");
-                resourceProvider->setResourceGroupDirectory("ui", basePath + "ui/");
-                resourceProvider->setResourceGroupDirectory("global", basePath);
+                    // Set the defaults
+                    CEGUI::GUIContext &guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
 
-                CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
-                CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
+                    guiContext.setDefaultFont( "DejaVuSans-10" );
+                    guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
+                    guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
 
-                // Set the defaults
-                CEGUI::GUIContext &guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-                guiContext.setDefaultFont( "DejaVuSans-10" );
-                guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
-                guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
-
-                std::cout << "SEngineInstance: Initialized the GUI system." << std::endl;
+                    std::cout << "SEngineInstance: Initialized the GUI system." << std::endl;
+                }
+                catch (CEGUI::InvalidRequestException &e)
+                {
+                    std::cerr << "SEngineInstance: Failed to initialize the GUI System." << std::endl;
+                    std::cerr << "What: \t" << e.what() << std::endl;
+                    return 1;
+                }
             }
+
+            return 0;
         }
 
         Kiaro::Common::U32 SEngineInstance::initializeLua(const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[])

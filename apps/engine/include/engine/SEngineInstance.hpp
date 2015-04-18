@@ -121,7 +121,7 @@ namespace Kiaro
 
                 void networkUpdate(void);
 
-                void initializeGUI(void);
+                int initializeGUI(void);
 
                 /**
                  *  @brief A helper method to initialize the Lua scripting engine.
