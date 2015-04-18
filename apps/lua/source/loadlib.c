@@ -8,6 +8,7 @@
 ** systems.
 */
 
+#include <physfs.h>
 
 /*
 ** if needed, includes windows header before everything else
@@ -328,9 +329,10 @@ static int ll_loadlib (lua_State *L) {
 
 
 static int readable (const char *filename) {
-  FILE *f = fopen(filename, "r");  /* try to open file */
+  PHYSFS_file *f = PHYSFS_openRead(filename);
   if (f == NULL) return 0;  /* open failed */
-  fclose(f);
+
+  PHYSFS_close(f);
   return 1;
 }
 
@@ -349,22 +351,23 @@ static const char *pushnexttemplate (lua_State *L, const char *path) {
 static const char *searchpath (lua_State *L, const char *name,
                                              const char *path,
                                              const char *sep,
-                                             const char *dirsep) {
-  luaL_Buffer msg;  /* to build error message */
-  luaL_buffinit(L, &msg);
-  if (*sep != '\0')  /* non-empty separator? */
-    name = luaL_gsub(L, name, sep, dirsep);  /* replace it by 'dirsep' */
-  while ((path = pushnexttemplate(L, path)) != NULL) {
-    const char *filename = luaL_gsub(L, lua_tostring(L, -1),
-                                     LUA_PATH_MARK, name);
-    lua_remove(L, -2);  /* remove path template */
-    if (readable(filename))  /* does file exist and is readable? */
-      return filename;  /* return that file name */
-    lua_pushfstring(L, "\n\tno file " LUA_QS, filename);
-    lua_remove(L, -2);  /* remove file name */
-    luaL_addvalue(&msg);  /* concatenate error msg. entry */
+                                             const char *dirsep)
+{
+  if (readable(name))
+  {
+    printf("Lua: Loading %s\n", name);
+    return name;
   }
-  luaL_pushresult(&msg);  /* create error message */
+
+ luaL_Buffer msg;  /* to build error message */
+ luaL_buffinit(L, &msg);
+
+ lua_pushfstring(L, "\n\tno file " LUA_QS, name);
+ lua_remove(L, -2);  /* remove file name */
+ luaL_addvalue(&msg);  /* concatenate error msg. entry */
+
+luaL_pushresult(&msg);  /* create error message */
+
   return NULL;  /* not found */
 }
 
@@ -514,6 +517,7 @@ static int ll_require (lua_State *L) {
     return 1;  /* package is already loaded */
   /* else must load package */
   lua_pop(L, 1);  /* remove 'getfield' result */
+
   findloader(L, name);
   lua_pushstring(L, name);  /* pass name as argument to module loader */
   lua_insert(L, -2);  /* name is 1st argument (before search data) */
@@ -636,19 +640,17 @@ static int noenv (lua_State *L) {
 
 static void setpath (lua_State *L, const char *fieldname, const char *envname1,
                                    const char *envname2, const char *def) {
-  const char *path = getenv(envname1);
-  if (path == NULL)  /* no environment variable? */
-    path = getenv(envname2);  /* try alternative name */
-  if (path == NULL || noenv(L))  /* no environment variable? */
-    lua_pushstring(L, def);  /* use default */
-  else {
+
+  // We don't need to use environment variables in search paths
+  const char *path = ""; // Shouldn't need to do any searching, really
+
     /* replace ";;" by ";AUXMARK;" and then AUXMARK by default path */
     path = luaL_gsub(L, path, LUA_PATH_SEP LUA_PATH_SEP,
                               LUA_PATH_SEP AUXMARK LUA_PATH_SEP);
     luaL_gsub(L, path, AUXMARK, def);
     lua_remove(L, -2);
-  }
   setprogdir(L);
+
   lua_setfield(L, -2, fieldname);
 }
 
@@ -673,8 +675,10 @@ static const luaL_Reg ll_funcs[] = {
 
 
 static void createsearcherstable (lua_State *L) {
+  // We don't want the C loaders
+  // We also want to search for Luas first
   static const lua_CFunction searchers[] =
-    {searcher_preload, searcher_Lua, searcher_C, searcher_Croot, NULL};
+    {searcher_Lua, searcher_preload, NULL};
   int i;
   /* create 'searchers' table */
   lua_createtable(L, sizeof(searchers)/sizeof(searchers[0]) - 1, 0);

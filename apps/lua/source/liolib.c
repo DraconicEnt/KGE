@@ -126,7 +126,6 @@ typedef luaL_Stream LStream;
 
 #define isclosed(p)	((p)->closef == NULL)
 
-
 static int io_type (lua_State *L) {
   LStream *p;
   luaL_checkany(L, 1);
@@ -202,8 +201,8 @@ static int f_gc (lua_State *L) {
 */
 static int io_fclose (lua_State *L) {
   LStream *p = tolstream(L);
-  int res = fclose(p->f);
-  return luaL_fileresult(L, (res == 0), NULL);
+  int res = PHYSFS_close(p->f);
+  return luaL_fileresult(L, (res != 0), NULL);
 }
 
 
@@ -217,7 +216,13 @@ static LStream *newfile (lua_State *L) {
 
 static void opencheck (lua_State *L, const char *fname, const char *mode) {
   LStream *p = newfile(L);
-  p->f = fopen(fname, mode);
+
+  // TODO (Robert MacGregor#9): Better determine open mode
+  if (mode[0] == "r")
+    p->f = PHYSFS_openRead(fname);
+  else
+    p->f = PHYSFS_openWrite(fname);
+
   if (p->f == NULL)
     luaL_error(L, "cannot open file " LUA_QS " (%s)", fname, strerror(errno));
 }
@@ -229,7 +234,13 @@ static int io_open (lua_State *L) {
   LStream *p = newfile(L);
   const char *md = mode;  /* to traverse/check mode */
   luaL_argcheck(L, lua_checkmode(md), 2, "invalid mode");
-  p->f = fopen(filename, mode);
+
+  // TODO (Robert MacGregor#9): Better determine open mode
+  if (mode[0] == "r")
+    p->f = PHYSFS_openRead(filename);
+  else
+    p->f = PHYSFS_openWrite(filename);
+
   return (p->f == NULL) ? luaL_fileresult(L, 0, filename) : 1;
 }
 
@@ -347,9 +358,10 @@ static int io_lines (lua_State *L) {
 */
 
 
-static int read_number (lua_State *L, FILE *f) {
+static int read_number (lua_State *L, PHYSFS_file *f) {
   lua_Number d;
-  if (fscanf(f, LUA_NUMBER_SCAN, &d) == 1) {
+
+  if (PHYSFS_read(f, &d, sizeof(lua_Number), 1) == 1) {
     lua_pushnumber(L, d);
     return 1;
   }
@@ -360,21 +372,26 @@ static int read_number (lua_State *L, FILE *f) {
 }
 
 
-static int test_eof (lua_State *L, FILE *f) {
-  int c = getc(f);
-  ungetc(c, f);
+static int test_eof (lua_State *L, PHYSFS_file *f) {
+  char c;
+
+  PHYSFS_read(f, &c, 1, 1);
+  PHYSFS_seek(f, PHYSFS_tell(f) - 1);
+
   lua_pushlstring(L, NULL, 0);
   return (c != EOF);
 }
 
 
-static int read_line (lua_State *L, FILE *f, int chop) {
+static int read_line (lua_State *L, PHYSFS_file *f, int chop) {
   luaL_Buffer b;
   luaL_buffinit(L, &b);
   for (;;) {
     size_t l;
     char *p = luaL_prepbuffer(&b);
-    if (fgets(p, LUAL_BUFFERSIZE, f) == NULL) {  /* eof? */
+
+    // TODO (Robert MacGregor#9): Verify PhysFS functionality when readSize > bytes left
+    if (PHYSFS_read(f, p, LUAL_BUFFERSIZE, 1) == 0) {  /* eof? */
       luaL_pushresult(&b);  /* close buffer */
       return (lua_rawlen(L, -1) > 0);  /* check whether read something */
     }
@@ -392,13 +409,14 @@ static int read_line (lua_State *L, FILE *f, int chop) {
 
 #define MAX_SIZE_T	(~(size_t)0)
 
-static void read_all (lua_State *L, FILE *f) {
+static void read_all (lua_State *L, PHYSFS_file *f) {
   size_t rlen = LUAL_BUFFERSIZE;  /* how much to read in each cycle */
   luaL_Buffer b;
   luaL_buffinit(L, &b);
   for (;;) {
     char *p = luaL_prepbuffsize(&b, rlen);
-    size_t nr = fread(p, sizeof(char), rlen, f);
+
+    size_t nr = PHYSFS_read(f, p, sizeof(char), rlen);
     luaL_addsize(&b, nr);
     if (nr < rlen) break;  /* eof? */
     else if (rlen <= (MAX_SIZE_T / 4))  /* avoid buffers too large */
@@ -408,20 +426,21 @@ static void read_all (lua_State *L, FILE *f) {
 }
 
 
-static int read_chars (lua_State *L, FILE *f, size_t n) {
+static int read_chars (lua_State *L, PHYSFS_file *f, size_t n) {
   size_t nr;  /* number of chars actually read */
   char *p;
   luaL_Buffer b;
   luaL_buffinit(L, &b);
   p = luaL_prepbuffsize(&b, n);  /* prepare buffer to read whole block */
-  nr = fread(p, sizeof(char), n, f);  /* try to read 'n' chars */
+
+  nr = PHYSFS_read(f, p, sizeof(char), n); /* try to read 'n' chars */
   luaL_addsize(&b, nr);
   luaL_pushresult(&b);  /* close buffer */
   return (nr > 0);  /* true iff read something */
 }
 
 
-static int g_read (lua_State *L, FILE *f, int first) {
+static int g_read (lua_State *L, PHYSFS_file *f, int first) {
   int nargs = lua_gettop(L) - 1;
   int success;
   int n;
@@ -461,8 +480,9 @@ static int g_read (lua_State *L, FILE *f, int first) {
       }
     }
   }
-  if (ferror(f))
-    return luaL_fileresult(L, 0, NULL);
+    // TODO (Robert MacGregor#9): Determine PhysFS error
+ // if (ferror(f))
+  //  return luaL_fileresult(L, 0, NULL);
   if (!success) {
     lua_pop(L, 1);  /* remove last result */
     lua_pushnil(L);  /* push nil instead */
@@ -511,7 +531,7 @@ static int io_readline (lua_State *L) {
 /* }====================================================== */
 
 
-static int g_write (lua_State *L, FILE *f, int arg) {
+static int g_write (lua_State *L, PHYSFS_file *f, int arg) {
   int nargs = lua_gettop(L) - arg;
   int status = 1;
   for (; nargs--; arg++) {
@@ -523,7 +543,8 @@ static int g_write (lua_State *L, FILE *f, int arg) {
     else {
       size_t l;
       const char *s = luaL_checklstring(L, arg, &l);
-      status = status && (fwrite(s, sizeof(char), l, f) == l);
+
+      status = status && (PHYSFS_write(f, s, sizeof(char), l) == l);
     }
   }
   if (status) return 1;  /* file handle already on stack top */
@@ -537,7 +558,7 @@ static int io_write (lua_State *L) {
 
 
 static int f_write (lua_State *L) {
-  FILE *f = tofile(L);
+  PHYSFS_file *f = tofile(L);
   lua_pushvalue(L, 1);  /* push file at the stack top (to be returned) */
   return g_write(L, f, 2);
 }
@@ -546,7 +567,7 @@ static int f_write (lua_State *L) {
 static int f_seek (lua_State *L) {
   static const int mode[] = {SEEK_SET, SEEK_CUR, SEEK_END};
   static const char *const modenames[] = {"set", "cur", "end", NULL};
-  FILE *f = tofile(L);
+  PHYSFS_file *f = tofile(L);
   int op = luaL_checkoption(L, 2, "cur", modenames);
   lua_Number p3 = luaL_optnumber(L, 3, 0);
   l_seeknum offset = (l_seeknum)p3;
@@ -565,7 +586,7 @@ static int f_seek (lua_State *L) {
 static int f_setvbuf (lua_State *L) {
   static const int mode[] = {_IONBF, _IOFBF, _IOLBF};
   static const char *const modenames[] = {"no", "full", "line", NULL};
-  FILE *f = tofile(L);
+  PHYSFS_file *f = tofile(L);
   int op = luaL_checkoption(L, 2, NULL, modenames);
   lua_Integer sz = luaL_optinteger(L, 3, LUAL_BUFFERSIZE);
   int res = setvbuf(f, NULL, mode[op], sz);
@@ -641,7 +662,7 @@ static int io_noclose (lua_State *L) {
 }
 
 
-static void createstdfile (lua_State *L, FILE *f, const char *k,
+static void createstdfile (lua_State *L, PHYSFS_file *f, const char *k,
                            const char *fname) {
   LStream *p = newprefile(L);
   p->f = f;

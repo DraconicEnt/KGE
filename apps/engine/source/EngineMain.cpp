@@ -225,6 +225,25 @@ Kiaro::Common::S32 main(Kiaro::Common::S32 argc, Kiaro::Common::C8 *argv[])
     commandLineParser.setFlagResponder(currentFlagEntry);
     #endif // ENGINE_TESTS
 
+
+    // Print out the search paths
+    Kiaro::Common::C8 **searchPaths = PHYSFS_getSearchPath();
+    Kiaro::Common::C8 *searchPath = searchPaths[1];
+    PHYSFS_removeFromSearchPath(searchPath);
+    PHYSFS_freeList(searchPaths);
+
+    //searchPaths = PHYSFS_getSearchPath();
+    //searchPath = searchPaths[0];
+
+    //std::cout << "Search Paths: " << std::endl;
+    //while ((searchPath = *(searchPaths++)) != NULL)
+  //      std::cout << searchPath << std::endl;
+
+    //std::cout << "EngineMain: Removed " << searchPath << " from the search paths." << std::endl;
+
+   // PHYSFS_freeList(searchPaths);
+
+
     commandLineParser.invokeFlagResponders();
 
     std::cout << "EngineMain: Exited successfully." << std::endl;

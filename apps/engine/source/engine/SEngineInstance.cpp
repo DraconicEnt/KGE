@@ -93,9 +93,6 @@ namespace Kiaro
 
             std::cout << "SEngineInstance: Running game '" << mGameName << "'" << std::endl;
 
-            // Initialize PhysFS
-            PHYSFS_init((argv));
-
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
             {
@@ -263,20 +260,11 @@ namespace Kiaro
 
             // Load up the main file
             // TODO: Implement PhysFS in Lua
-            const char *mainFileBase = PHYSFS_getRealDir("main.lua");
-            if (!mainFileBase)
+            if (luaL_dofile(mLuaState, "main.lua") >= 1)
             {
-                std::cerr << "SEngineInstance: Failed to locate main.lua file!" << std::endl;
-                return 1;
-            }
-
-            std::string mainLuaFile = mainFileBase;
-            mainLuaFile += "/main.lua";
-
-            if (luaL_dofile(mLuaState, mainLuaFile.c_str()) >= 1)
-            {
-               std::cerr << "Failed to load main.lua!" << std::endl;
-               return 2;
+                std::cerr << "Failed to load main.lua Reason: ";
+                std::cerr << luaL_checkstring(mLuaState, -1) << std::endl;
+                return 2;
             }
             // Call the main(argv) method
             lua_getglobal(mLuaState, "main");
@@ -388,7 +376,6 @@ namespace Kiaro
             EngineTimePulseDelegate *timePulse = new EngineTimePulseDelegate(new EngineTimePulseDelegate::MemberDelegateType<SEngineInstance>(this, &SEngineInstance::networkUpdate));
             Kiaro::Support::SScheduler::getPointer()->schedule(timePulse, ENGINE_TICKRATE, true);
 
-            // The GUI and sound systems run independently of our network time pulse
             while (mRunning && mIrrlichtDevice->run())
             {
                 try
@@ -396,9 +383,10 @@ namespace Kiaro
                     // Update all our subsystems
                     Kiaro::Support::FTime::timer timerID = Kiaro::Support::FTime::startTimer();
 
+                    // Pump a time pulse at the scheduler
                     Kiaro::Support::SScheduler::getPointer()->update();
 
-                    // Send a time pulse to all the client end functionality
+                    // The GUI, video and sound systems run independently of our network time pulse
                     if (mEngineMode == Kiaro::Engine::MODE_CLIENT || mEngineMode == Kiaro::Engine::MODE_CLIENTCONNECT)
                     {
                         irr::core::dimension2d<Kiaro::Common::U32> currentDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
