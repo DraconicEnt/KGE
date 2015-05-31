@@ -150,7 +150,7 @@ static int f_tostring (lua_State *L) {
 }
 
 
-static FILE *tofile (lua_State *L) {
+static PHYSFS_File *tofile (lua_State *L) {
   LStream *p = tolstream(L);
   if (isclosed(p))
     luaL_error(L, "attempt to use a closed file");
@@ -218,7 +218,7 @@ static void opencheck (lua_State *L, const char *fname, const char *mode) {
   LStream *p = newfile(L);
 
   // TODO (Robert MacGregor#9): Better determine open mode
-  if (mode[0] == "r")
+  if (mode[0] == 'r')
     p->f = PHYSFS_openRead(fname);
   else
     p->f = PHYSFS_openWrite(fname);
@@ -236,7 +236,7 @@ static int io_open (lua_State *L) {
   luaL_argcheck(L, lua_checkmode(md), 2, "invalid mode");
 
   // TODO (Robert MacGregor#9): Better determine open mode
-  if (mode[0] == "r")
+  if (mode[0] == 'r')
     p->f = PHYSFS_openRead(filename);
   else
     p->f = PHYSFS_openWrite(filename);
@@ -271,7 +271,7 @@ static int io_tmpfile (lua_State *L) {
 }
 
 
-static FILE *getiofile (lua_State *L, const char *findex) {
+static PHYSFS_File *getiofile (lua_State *L, const char *findex) {
   LStream *p;
   lua_getfield(L, LUA_REGISTRYINDEX, findex);
   p = (LStream *)lua_touserdata(L, -1);
@@ -601,7 +601,7 @@ static int io_flush (lua_State *L) {
 
 
 static int f_flush (lua_State *L) {
-  return luaL_fileresult(L, fflush(tofile(L)) == 0, NULL);
+  return luaL_fileresult(L, PHYSFS_flush(tofile(L)) != 0, NULL);
 }
 
 

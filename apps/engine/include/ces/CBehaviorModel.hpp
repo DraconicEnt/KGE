@@ -15,7 +15,7 @@
 #include <set>
 #include <string>
 
-#include <engine/common.hpp>
+#include <core/common.hpp>
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
@@ -24,7 +24,7 @@ namespace Kiaro
     {
         class IComponent;
 
-        class CBehaviorModel : public Kiaro::Support::ISerializable
+        class CBehaviorModel : public Support::ISerializable
         {
             // Public Methods
             public:
@@ -52,8 +52,8 @@ namespace Kiaro
                 /**
                  *
                  */
-                virtual void packData(Kiaro::Support::CBitStream &out);
-                virtual void unpackData(Kiaro::Support::CBitStream &in);
+                virtual void packData(Support::CBitStream &out);
+                virtual void unpackData(Support::CBitStream &in);
 
             // Private Members
             private:

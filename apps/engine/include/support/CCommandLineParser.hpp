@@ -18,8 +18,9 @@
 
 #include <easydelegate.hpp>
 
-#include <engine/common.hpp>
-#include <engine/config.hpp>
+#include <support/support.hpp>
+#include <core/common.hpp>
+#include <core/config.hpp>
 
 namespace Kiaro
 {
@@ -36,12 +37,12 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, const Kiaro::Common::S32 &, Kiaro::Common::C8 **, const std::vector<Kiaro::Common::String>&, bool> FlagResponder;
+                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, const Common::S32 &, Common::C8 **, const std::vector<Support::String>&, bool> FlagResponder;
 
                 typedef struct
                 {
-                    std::string name;
-                    std::string description;
+                    Support::String name;
+                    Support::String description;
                     FlagResponder *responder;
                 } FlagEntry;
 
@@ -50,7 +51,7 @@ namespace Kiaro
                  *  @param argc A Kiaro::s32 representing the total number of arguments in our array.
                  *  @param argv An array of Kiaro::c8 representing the input arguments to parse.
                  */
-                CommandLineParser(Kiaro::Common::S32 argc, Kiaro::Common::C8 **argv);
+                CommandLineParser(Common::S32 argc, Common::C8 **argv);
 
                 //! Standard Destructor
                 ~CommandLineParser(void);
@@ -60,28 +61,27 @@ namespace Kiaro
                  *  @param flag A Kiaro::String representing the flag name to test for.
                  *  @return A boolean representing whether or not the CommandLineParser had the flag.
                  */
-                bool hasFlag(const Kiaro::Common::C8 *flagName);
+                bool hasFlag(const Common::C8 *flagName);
 
-                Kiaro::Common::String getFlagArgument(const Kiaro::Common::C8 *targetFlag, Kiaro::Common::U8 argumentIdentifier);
+                Support::Vector<Support::String> getFlagArguments(const Common::C8 *targetFlag);
 
-                size_t getFlagArgumentCount(const Kiaro::Common::C8 *targetFlag);
+                size_t getFlagArgumentCount(const Common::C8 *targetFlag);
 
-                void setFlagResponder(FlagEntry *entry);
-                void invokeFlagResponders(void);
+                void setFlagDescription(const Support::String &flagName, const Support::String &description);
 
-                void displayHelp(CommandLineParser *parser, const Kiaro::Common::S32 &argc, Kiaro::Common::C8 *argv[], const std::vector<Kiaro::Common::String> &arguments, bool otherFlags);
+                void displayHelp(const Common::S32 &argc, Common::C8 *argv[]);
 
             // Private Members
             private:
-                Kiaro::Common::C8 **mArgv;
-                Kiaro::Common::S32 mArgc;
+                Common::C8 **mArgv;
+                Common::S32 mArgc;
 
-                std::unordered_map<size_t, std::vector<Kiaro::Common::String>> mFlags;
-                std::unordered_map<size_t, FlagEntry *> mFlagResponders;
+                Support::UnorderedMap<size_t, Support::Vector<Support::String>> mFlags;
+                Support::UnorderedMap<size_t, Support::Pair<Support::String, Support::String>> mFlagDescriptions;
 
-                std::vector<FlagEntry *> mFlagEntries;
+                Support::Vector<FlagEntry *> mFlagEntries;
 
-                std::string mCommandLine;
+                Support::String mCommandLine;
 
                 size_t mCurrentLongestFlagLength;
         };

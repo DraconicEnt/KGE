@@ -11,7 +11,10 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <EngineCommon.h>
+#include <core/common.hpp>
+
+#ifndef _INCLUDE_KIARO_SUPPORT_FENDIAN_HPP_
+#define _INCLUDE_KIARO_SUPPORT_FENDIAN_HPP_
 
 namespace Kiaro
 {
@@ -201,3 +204,5 @@ namespace Kiaro
         }
     }
 }
+
+#endif // _INCLUDE_KIARO_SUPPORT_FENDIAN_HPP_

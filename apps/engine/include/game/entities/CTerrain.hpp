@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_CTERRAIN_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_CTERRAIN_HPP_
 
-#include "engine/common.hpp"
+#include "core/common.hpp"
 
 #include <game/entities/IRigidObject.hpp>
 

@@ -15,7 +15,7 @@
 #include <stdexcept>
 
 #include <game/messages/messages.hpp>
-#include <network/IMessage.hpp>
+#include <net/IMessage.hpp>
 
 namespace Kiaro
 {
@@ -29,34 +29,28 @@ namespace Kiaro
     {
         namespace Messages
         {
-            class HandShake : public Kiaro::Network::IMessage
+            class HandShake : public Kiaro::Net::IMessage
             {
                 // Public Methods
                 public:
-                    HandShake(Kiaro::Support::CBitStream *in = NULL, Kiaro::Network::CClient *sender = NULL) : Network::IMessage(MESSAGE_HANDSHAKE, in, sender)
+                    HandShake(Kiaro::Support::CBitStream *in = NULL, Kiaro::Net::CClient *sender = NULL) : Net::IMessage(MESSAGE_HANDSHAKE, in, sender)
                     {
 
                     }
 
-                    void packData(Kiaro::Support::CBitStream &out)
+                    void writeTo(Kiaro::Support::CBitStream &out) const
                     {
-                        out.write(mVersionMajor);
-                        out.write(mVersionMinor);
-                        out.write(mVersionRevision);
-                        out.write(mVersionBuild);
+                        out << mVersionMajor << mVersionMinor << mVersionRevision << mVersionBuild;
 
-                        Kiaro::Network::IMessage::packData(out);
+                        Kiaro::Net::IMessage::writeTo(out);
                     }
 
-                    void unpackData(Kiaro::Support::CBitStream &in)
+                    void extractFrom(Kiaro::Support::CBitStream &in)
                     {
-                        if (in.getSize() <= getMinimumPacketPayloadLength())
+                        if (in.getWrittenLength() < getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack HandShake packet; too small of a payload!");
 
-                        mVersionBuild = in.read<Kiaro::Common::U32>();
-                        mVersionRevision = in.read<Kiaro::Common::U8>();
-                        mVersionMinor = in.read<Kiaro::Common::U8>();
-                        mVersionMajor = in.read<Kiaro::Common::U8>();
+                        in >> mVersionBuild >> mVersionRevision >> mVersionMinor >> mVersionMajor;
                     }
 
                     Kiaro::Common::U32 getMinimumPacketPayloadLength(void)
@@ -64,6 +58,10 @@ namespace Kiaro
                         return sizeof(Kiaro::Common::U32) + (sizeof(Kiaro::Common::U8) * 3);
                     }
 
+                    size_t getRequiredMemory(void)
+                    {
+                        return (sizeof(Common::U8) * 3) + sizeof(Common::U32) + Net::IMessage::getRequiredMemory();
+                    }
                 // Public Members
                 public:
                     //! The major version of the engine.

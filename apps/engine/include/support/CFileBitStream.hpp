@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_SUPPORT_FILEBITSTREAM_HPP_
 #define _INCLUDE_SUPPORT_FILEBITSTREAM_HPP_
 
+#include <support/support.hpp>
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
@@ -30,7 +31,7 @@ namespace Kiaro
         {
             // Public Members
             public:
-                FileBitStream(const Kiaro::Common::String &fileName, const BITSTREAM_MODE &fileMode);
+                FileBitStream(const Support::String &fileName, const BITSTREAM_MODE &fileMode);
                 ~FileBitStream(void);
 
                 template <typename returnType>

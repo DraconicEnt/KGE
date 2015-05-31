@@ -15,7 +15,7 @@
 #include <stdexcept>
 
 #include <game/messages/messages.hpp>
-#include <network/IMessage.hpp>
+#include <net/IMessage.hpp>
 
 namespace Kiaro
 {
@@ -29,38 +29,43 @@ namespace Kiaro
     {
         namespace Messages
         {
-            class Disconnect : public Kiaro::Network::IMessage
+            class Disconnect : public Net::IMessage
             {
                 // Public Methods
                 public:
-                    Disconnect(Kiaro::Support::CBitStream *in = NULL, Kiaro::Network::CClient *sender = NULL) : Network::IMessage(MESSAGE_DISCONNECT, in, sender)
+                    Disconnect(Support::CBitStream *in = NULL, Net::CClient *sender = NULL) : Net::IMessage(MESSAGE_DISCONNECT, in, sender)
                     {
 
                     }
 
-                    void packData(Kiaro::Support::CBitStream &out)
+                    void writeTo(Support::CBitStream &out) const
                     {
-                        out.writeString(mReason);
+                        out << mReason;
 
-                        Kiaro::Network::IMessage::packData(out);
+                        Net::IMessage::writeTo(out);
                     }
 
-                    void unpackData(Kiaro::Support::CBitStream &in)
+                    void extractFrom(Support::CBitStream &in)
                     {
-                        if (in.getSize() <= getMinimumPacketPayloadLength())
+                        if (in.getWrittenLength() <= getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
 
-                        mReason = in.readString();
+                        in >> mReason;
                     }
 
-                    Kiaro::Common::U32 getMinimumPacketPayloadLength(void)
+                    Common::U32 getMinimumPacketPayloadLength(void)
                     {
-                        return sizeof(Kiaro::Common::U32);
+                        return sizeof(Common::U32);
+                    }
+
+                    size_t getRequiredMemory(void)
+                    {
+                        return mReason.length();
                     }
 
                 // Public Members
                 public:
-                    Kiaro::Common::String mReason;
+                    Support::String mReason;
             };
         } // End NameSpace Packets
     } // End NameSpace Game

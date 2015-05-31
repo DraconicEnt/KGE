@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 
-#include <network/IMessage.hpp>
+#include <net/IMessage.hpp>
 
 namespace Kiaro
 {
@@ -28,30 +28,40 @@ namespace Kiaro
     {
         namespace Messages
         {
-            class SimCommit : public Kiaro::Network::IMessage
+            class SimCommit : public Kiaro::Net::IMessage
             {
                 // Public Methods
                 public:
-                    SimCommit(Kiaro::Support::CBitStream *in = NULL, Kiaro::Network::CClient *sender = NULL) : Kiaro::Network::IMessage(MESSAGE_SIMCOMMIT, in, sender)
+                    SimCommit(Kiaro::Support::CBitStream *in = NULL, Kiaro::Net::CClient *sender = NULL) : Kiaro::Net::IMessage(MESSAGE_SIMCOMMIT, in, sender)
                     {
 
                     }
 
-                    void packData(Kiaro::Support::CBitStream &out)
+                    void writeTo(Kiaro::Support::CBitStream &out) const
                     {
-                        Kiaro::Network::IMessage::packData(out);
+                        Kiaro::Net::IMessage::writeTo(out);
                     }
 
-                    void unpackData(Kiaro::Support::CBitStream &in)
+                    void readFrom(Kiaro::Support::CBitStream &in)
                     {
                         // FIXME (Robert MacGregor#9): Sim Commit Messages don't contain any values
                         //if (in.getSize() <= getMinimumPacketPayloadLength())
                         //    throw std::runtime_error("Unable to unpack SimCommit packet; too small of a payload!");
                     }
 
+                    void extractFrom(Support::CBitStream &in)
+                    {
+
+                    }
+
                     Kiaro::Common::U32 getMinimumPacketPayloadLength(void)
                     {
-                        return Kiaro::Network::IMessage::getMinimumPacketPayloadLength();
+                        return Kiaro::Net::IMessage::getMinimumPacketPayloadLength();
+                    }
+
+                    size_t getRequiredMemory(void)
+                    {
+                        return Net::IMessage::getRequiredMemory();
                     }
             };
         } // End NameSpace Packets

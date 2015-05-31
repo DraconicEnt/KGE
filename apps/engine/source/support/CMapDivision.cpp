@@ -27,42 +27,42 @@ namespace Kiaro
         }
 
         // MapDivision Code Begin
-        static CMapDivision *MapDivisionInstance = NULL;
+        static CMapDivision *sInstance = NULL;
 
-        CMapDivision *CMapDivision::Get(Kiaro::Common::U32 power, Kiaro::Common::U32 divisions)
+        CMapDivision *CMapDivision::Get(Common::U32 power, Common::U32 divisions)
         {
-            if (!MapDivisionInstance)
-                MapDivisionInstance = new Kiaro::Support::CMapDivision(power, divisions);
+            if (!sInstance)
+                sInstance = new Support::CMapDivision(power, divisions);
 
-            return MapDivisionInstance;
+            return sInstance;
         }
 
         void CMapDivision::Destroy(void)
         {
-            if (MapDivisionInstance)
+            if (sInstance)
             {
-                delete MapDivisionInstance;
-                MapDivisionInstance = NULL;
+                delete sInstance;
+                sInstance = NULL;
             }
         }
 
-        CMapDivision::CMapDivision(Kiaro::Common::U32 power, Kiaro::Common::U32 divisions) : mDivisions(divisions), mResolution(pow(2, power))
+        CMapDivision::CMapDivision(Common::U32 power, Common::U32 divisions) : mDivisions(divisions), mResolution(pow(2, power))
         {
-            Kiaro::Support::FTime::timer timerHandle = Kiaro::Support::FTime::startTimer();
+            Support::FTime::timer timerHandle = Support::FTime::startTimer();
             std::cout << "CMapDivision: Initializing with a " << mResolution << "x" << mResolution << " map size ..." << std::endl;
 
-            Kiaro::Common::U32 currentResolution = mResolution;
+            Common::U32 currentResolution = mResolution;
             while (currentResolution > 1)
             {
-                Kiaro::Common::U32 currentLODDivision = mResolution / currentResolution;
+                Common::U32 currentLODDivision = mResolution / currentResolution;
 
                 std::vector<std::vector<CMapDivisionSquare>> currentLOD;
-                for (Kiaro::Common::U32 iterationX = 0; iterationX < currentLODDivision; iterationX++)
+                for (Common::U32 iterationX = 0; iterationX < currentLODDivision; iterationX++)
                 {
                     std::vector<CMapDivisionSquare> currentYAxis;
                     currentLOD.push_back(currentYAxis);
 
-                    for (Kiaro::Common::U32 iterationY = 0; iterationY < currentLODDivision; iterationY++)
+                    for (Common::U32 iterationY = 0; iterationY < currentLODDivision; iterationY++)
                         currentYAxis.push_back(CMapDivisionSquare());
                 }
 
@@ -73,7 +73,7 @@ namespace Kiaro
                 currentResolution >>= 1;
             }
 
-            std::cout << "CMapDivision: Built grid in " << Kiaro::Support::FTime::stopTimer(timerHandle) << " seconds " << std::endl;
+            std::cout << "CMapDivision: Built grid in " << Support::FTime::stopTimer(timerHandle) << " seconds " << std::endl;
         }
     } // End NameSpace Support
 } // End NameSpace Kiaro

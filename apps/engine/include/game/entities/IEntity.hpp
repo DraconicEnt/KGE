@@ -17,11 +17,11 @@
 
 #include <ces/IComponent.hpp>
 
-#include "engine/common.hpp"
+#include <core/common.hpp>
 
-#include <engine/SEngineInstance.hpp>
-#include <engine/CFileReader.hpp>
-#include <engine/INetworkPersistable.hpp>
+#include <core/SEngineInstance.hpp>
+#include <filesystem/CFileReader.hpp>
+#include <net/INetworkPersistable.hpp>
 
 namespace Kiaro
 {
@@ -29,8 +29,8 @@ namespace Kiaro
     {
         namespace Entities
         {
-            typedef Kiaro::Common::U32 TypeMask;
-            typedef Kiaro::Common::U32 EntityHintMask;
+            typedef Common::U32 TypeMask;
+            typedef Common::U32 EntityHintMask;
 
             /**
              *  @brief Enumerations representing
@@ -47,7 +47,7 @@ namespace Kiaro
                 ENTITYHINT_STATIC = 4,
             };
 
-            class IEntity : public Kiaro::Engine::INetworkPersistable
+            class IEntity : public Core::INetworkPersistable
             {
                 // Public Methods
                 public:
@@ -56,7 +56,7 @@ namespace Kiaro
                      *  @param typeMask A Kiaro::Common::U32 representing the type of this
                      *  object.
                      */
-                    IEntity(const Kiaro::Game::Entities::TypeMask &typeMask, const Kiaro::Game::Entities::EntityHintMask &hintMask = 0);
+                    IEntity(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask = 0);
 
                     //! Standard destructor.
                     ~IEntity(void);
@@ -65,26 +65,26 @@ namespace Kiaro
                      *  @brief Gets the type mask of this object.
                      *  @return A Kiaro::Common::U32 representing the typemask.
                      */
-                    Kiaro::Common::U32 getTypeMask(void) const;
+                    Common::U32 getTypeMask(void) const;
 
-                    Kiaro::Common::U32 getNetID(void) const;
+                    Common::U32 getNetID(void) const;
 
-                    Kiaro::Common::U32 getHintMask(void) const;
+                    Common::U32 getHintMask(void) const;
 
-                    virtual void packUpdate(Kiaro::Support::CBitStream &out);
-                    virtual void unpackUpdate(Kiaro::Support::CBitStream &in);
-                    virtual void packInitialization(Kiaro::Support::CBitStream &out);
-                    virtual void unpackInitialization(Kiaro::Support::CBitStream &in);
+                    virtual void packUpdate(Support::CBitStream &out);
+                    virtual void unpackUpdate(Support::CBitStream &in);
+                    virtual void packInitialization(Support::CBitStream &out);
+                    virtual void unpackInitialization(Support::CBitStream &in);
                     virtual void instantiate(void);
-                    virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds) = 0;
+                    virtual void update(const Common::F32 &deltaTimeSeconds) = 0;
 
                 // Protected Members
                 protected:
-                    const Kiaro::Common::U32 mTypeMask;
-                    Kiaro::Common::U32 mHintMask;
-                    Kiaro::Common::U32 mNetID;
+                    const Common::U32 mTypeMask;
+                    Common::U32 mHintMask;
+                    Common::U32 mNetID;
 
-                    std::set<Kiaro::CES::IComponent*> mComponents;
+                    std::set<CES::IComponent*> mComponents;
 
                     std::string mName;
             };

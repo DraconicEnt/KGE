@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_CRIGIDOBJECT_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_CRIGIDOBJECT_HPP_
 
-#include "engine/common.hpp"
+#include "core/common.hpp"
 
 #include <game/entities/IRigidObject.hpp>
 
@@ -24,20 +24,20 @@ namespace Kiaro
     {
         namespace Entities
         {
-            class CRigidObject : public Kiaro::Game::Entities::IRigidObject
+            class CRigidObject : public Game::Entities::IRigidObject
             {
                 // Public Methods
                 public:
                     CRigidObject(void);
                     ~CRigidObject(void);
 
-                    void packUpdate(Kiaro::Support::CBitStream &out);
-                    void unpackUpdate(Kiaro::Support::CBitStream &in);
-                    void packInitialization(Kiaro::Support::CBitStream &out);
-                    void unpackInitialization(Kiaro::Support::CBitStream &in);
+                    void packUpdate(Support::CBitStream &out);
+                    void unpackUpdate(Support::CBitStream &in);
+                    void packInitialization(Support::CBitStream &out);
+                    void unpackInitialization(Support::CBitStream &in);
                     void instantiate(void);
 
-                    void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+                    void update(const Common::F32 &deltaTimeSeconds);
             };
         } // End Namespace Entities
     } // End Namespace Game

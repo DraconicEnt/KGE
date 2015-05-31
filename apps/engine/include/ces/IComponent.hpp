@@ -15,7 +15,7 @@
 #include <set>
 #include <string>
 
-#include <engine/common.hpp>
+#include <core/common.hpp>
 
 namespace Kiaro
 {
@@ -41,7 +41,7 @@ namespace Kiaro
 
                 virtual void initialize(void) = 0;
                 virtual void deinitialize(void) = 0;
-                virtual void tick(const Kiaro::Common::F32 &DeltaTimeSeconds) { }
+                virtual void tick(const Common::F32 &DeltaTimeSeconds) { }
 
             // Protected Members
             protected:

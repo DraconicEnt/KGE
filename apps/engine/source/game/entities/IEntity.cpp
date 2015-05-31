@@ -12,7 +12,7 @@
  */
 
 #include <game/entities/IEntity.hpp>
-#include <engine/SGameWorld.hpp>
+#include <core/SGameWorld.hpp>
 
 namespace Kiaro
 {
@@ -20,7 +20,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            IEntity::IEntity(const Kiaro::Game::Entities::TypeMask &typeMask, const Kiaro::Game::Entities::EntityHintMask &hintMask) : mTypeMask(typeMask),
+            IEntity::IEntity(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask) : mTypeMask(typeMask),
             mHintMask(hintMask), mNetID(0)
             {
 
@@ -31,35 +31,35 @@ namespace Kiaro
 
             }
 
-            Kiaro::Common::U32 IEntity::getTypeMask(void) const { return mTypeMask; }
+            Common::U32 IEntity::getTypeMask(void) const { return mTypeMask; }
 
-            Kiaro::Common::U32 IEntity::getNetID(void) const { return mNetID; }
+            Common::U32 IEntity::getNetID(void) const { return mNetID; }
 
-            Kiaro::Common::U32 IEntity::getHintMask(void) const { return mHintMask; }
+            Common::U32 IEntity::getHintMask(void) const { return mHintMask; }
 
-            void IEntity::packUpdate(Kiaro::Support::CBitStream &out)
+            void IEntity::packUpdate(Support::CBitStream &out)
             {
 
             }
 
-            void IEntity::unpackUpdate(Kiaro::Support::CBitStream &in)
+            void IEntity::unpackUpdate(Support::CBitStream &in)
             {
 
             }
 
-            void IEntity::packInitialization(Kiaro::Support::CBitStream &out)
+            void IEntity::packInitialization(Support::CBitStream &out)
             {
 
             }
 
-            void IEntity::unpackInitialization(Kiaro::Support::CBitStream &in)
+            void IEntity::unpackInitialization(Support::CBitStream &in)
             {
 
             }
 
             void IEntity::instantiate(void)
             {
-                Kiaro::Engine::SGameWorld::getPointer()->addEntity(this);
+                Core::SGameWorld::getPointer()->addEntity(this);
             }
         } // End Namespace Entities
     } // End Namespace Game

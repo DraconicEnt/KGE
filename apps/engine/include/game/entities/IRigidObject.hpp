@@ -25,11 +25,11 @@ namespace Kiaro
     {
         namespace Entities
         {
-            class IRigidObject : public Kiaro::Game::Entities::IEntity
+            class IRigidObject : public Game::Entities::IEntity
             {
                 // Public Methods
                 public:
-                    IRigidObject(const Kiaro::Game::Entities::TypeMask &typeMask, const Kiaro::Game::Entities::EntityHintMask &hintMask = 0);
+                    IRigidObject(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask = 0);
 
                 // Protected Members
                 protected:

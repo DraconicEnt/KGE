@@ -14,11 +14,11 @@
 #include <game/entities/CTerrain.hpp>
 #include <game/entities/types.hpp>
 
-#include <network/SServer.hpp>
+#include <net/SServer.hpp>
 
 #include <support/CBitStream.hpp>
 
-#include <engine/CFileReader.hpp>
+#include <filesystem/CFileReader.hpp>
 
 namespace Kiaro
 {
@@ -26,13 +26,13 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CTerrain::CTerrain(const std::string &terrainFile) : Kiaro::Game::Entities::IRigidObject(Kiaro::Game::Entities::ENTITY_TERRAIN),
+            CTerrain::CTerrain(const std::string &terrainFile) : Game::Entities::IRigidObject(Game::Entities::ENTITY_TERRAIN),
             mTerrainFile(terrainFile)
             {
                 instantiate();
             }
 
-            CTerrain::CTerrain(Kiaro::Support::CBitStream &in) : Kiaro::Game::Entities::IRigidObject(Kiaro::Game::Entities::ENTITY_TERRAIN)
+            CTerrain::CTerrain(Support::CBitStream &in) : Game::Entities::IRigidObject(Kiaro::Game::Entities::ENTITY_TERRAIN)
             {
                 unpackInitialization(in);
             }
@@ -42,39 +42,38 @@ namespace Kiaro
 
             }
 
-            void CTerrain::packUpdate(Kiaro::Support::CBitStream &out)
+            void CTerrain::packUpdate(Support::CBitStream &out)
             {
 
 
             }
 
-            void CTerrain::unpackUpdate(Kiaro::Support::CBitStream &in)
+            void CTerrain::unpackUpdate(Support::CBitStream &in)
             {
 
             }
 
-            void CTerrain::packInitialization(Kiaro::Support::CBitStream &out)
+            void CTerrain::packInitialization(Support::CBitStream &out)
             {
-                const Kiaro::Common::Vector3DF &position = mSceneNode->getPosition();
+                const Common::Vector3DF &position = mSceneNode->getPosition();
 
-                out.write<Kiaro::Common::F32>(position.X);
-                out.write<Kiaro::Common::F32>(position.Y);
-                out.write<Kiaro::Common::F32>(position.Z);
-                out.write(mTerrainFile);
+                out << position.X << position.Y << position.Z << mTerrainFile;
             }
 
-            void CTerrain::unpackInitialization(Kiaro::Support::CBitStream &in)
+            void CTerrain::unpackInitialization(Support::CBitStream &in)
             {
-                mTerrainFile = in.readString();
+                in >> mTerrainFile;
 
                 instantiate();
 
                 if (mSceneNode)
                 {
-                    Kiaro::Common::Vector3DF position;
-                    position.Z = in.read<Kiaro::Common::F32>();
-                    position.Y = in.read<Kiaro::Common::F32>();
-                    position.X = in.read<Kiaro::Common::F32>();
+                    Common::Vector3DF position;
+                    in >> position;
+
+                   // position.Z = in.read<Common::F32>();
+                    //position.Y = in.read<Common::F32>();
+                   // position.X = in.read<Common::F32>();
 
                     mSceneNode->setPosition(position);
                 }
@@ -82,9 +81,9 @@ namespace Kiaro
 
             void CTerrain::instantiate(void)
             {
-                Kiaro::Engine::FileReadObject fileHandle(mTerrainFile);
+                FileSystem::FileReadObject fileHandle(mTerrainFile);
 
-                irr::IrrlichtDevice *irrlichtDevice = Kiaro::Engine::SEngineInstance::getPointer()->getIrrlichtDevice();
+                irr::IrrlichtDevice *irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
                 irr::scene::ITerrainSceneNode *terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
 
                 if (terrain)

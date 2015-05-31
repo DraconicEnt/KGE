@@ -21,41 +21,41 @@ namespace Kiaro
     {
         namespace FTime
         {
-            static std::vector<Kiaro::Common::U64> sTimerStack;
-            static Kiaro::Common::U32 sCurrentSimTime = 0;
+            static std::vector<Common::U64> sTimerStack;
+            static Common::U32 sCurrentSimTime = 0;
 
-            Kiaro::Support::FTime::timer startTimer(void)
+            Support::FTime::timer startTimer(void)
             {
-                sTimerStack.push_back(Kiaro::Support::FTime::getCurrentTimeMicroseconds());
+                sTimerStack.push_back(Support::FTime::getCurrentTimeMicroseconds());
                 return sTimerStack.size();
             }
 
-            Kiaro::Common::F32 stopTimer(const Kiaro::Support::FTime::timer &timerIdentifier)
+            Common::F32 stopTimer(const Support::FTime::timer &timerIdentifier)
             {
                 if (sTimerStack.size() == 0)
                     throw std::logic_error("FTime: No timers to stop!");
                 else if (timerIdentifier != sTimerStack.size())
                     throw std::logic_error("FTime: Mismatched timer identifier!");
 
-                const Kiaro::Common::U64 lastTimeMicroseconds = sTimerStack.back();
-                const Kiaro::Common::U64 currentTimeMicroseconds = Kiaro::Support::FTime::getCurrentTimeMicroseconds();
+                const Common::U64 lastTimeMicroseconds = sTimerStack.back();
+                const Common::U64 currentTimeMicroseconds = Support::FTime::getCurrentTimeMicroseconds();
 
                 // NOTE (Robert MacGregor#1): Prevents the conversion calculation below from potentially being unrepresentable
-                Kiaro::Common::U64 deltaTimeMicroseconds = currentTimeMicroseconds - lastTimeMicroseconds;
+                Common::U64 deltaTimeMicroseconds = currentTimeMicroseconds - lastTimeMicroseconds;
 
                 // Only add deltas if we're the upper most timer
                 if(timerIdentifier == 1)
                     sCurrentSimTime += deltaTimeMicroseconds;
 
-                deltaTimeMicroseconds = std::max(static_cast<Kiaro::Common::U64>(100), deltaTimeMicroseconds);
+                deltaTimeMicroseconds = std::max(static_cast<Common::U64>(100), deltaTimeMicroseconds);
 
-                Kiaro::Common::F32 result = (Kiaro::Common::F32)(deltaTimeMicroseconds) / 1000000.f;
+                Common::F32 result = (Common::F32)(deltaTimeMicroseconds) / 1000000.f;
                 sTimerStack.pop_back();
 
                 return result;
             }
 
-            Kiaro::Common::U64 getCurrentTimeMicroseconds(void)
+            Common::U64 getCurrentTimeMicroseconds(void)
             {
                 timeval currentTime;
                 gettimeofday(&currentTime, NULL);
@@ -63,7 +63,7 @@ namespace Kiaro
                 return currentTime.tv_usec + (1000000ULL * currentTime.tv_sec);
             }
 
-            Kiaro::Common::U64 getTimerResolutionMicroseconds(void)
+            Common::U64 getTimerResolutionMicroseconds(void)
             {
                 //timespec tp;
                 //clock_getres(CLOCK_MONOTONIC, &tp);
@@ -72,12 +72,12 @@ namespace Kiaro
                 return 0;
             }
 
-            Kiaro::Common::U64 getSimTimeMicroseconds(void)
+            Common::U64 getSimTimeMicroseconds(void)
             {
                 return sCurrentSimTime;
             }
 
-            Kiaro::Common::U64 getSimTimeMilliseconds(void)
+            Common::U64 getSimTimeMilliseconds(void)
             {
                 return sCurrentSimTime / 1000ULL;
             }

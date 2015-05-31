@@ -1,6 +1,6 @@
 /**
  *  @file CComponentGrabity.cpp
- *  @brief Source file implementing the Kiaro::CES::CComponentGravity class.
+ *  @brief Source file implementing the CES::CComponentGravity class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -17,7 +17,7 @@ namespace Kiaro
     {
         CComponentGrabity::CComponentGrabity(void)
         {
-            mComponentTypeIdentifier = Kiaro::CES::COMPONENT_GRAVITY;
+            mComponentTypeIdentifier = CES::COMPONENT_GRAVITY;
         }
 
         void CComponentGrabity::initialize(void)

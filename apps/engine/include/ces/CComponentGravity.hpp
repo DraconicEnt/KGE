@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include <engine/common.hpp>
+#include <core/common.hpp>
 
 #include <ces/IComponent.hpp>
 
@@ -24,7 +24,7 @@ namespace Kiaro
     {
         class Entity;
 
-        class CComponentGrabity : public Kiaro::CES::IComponent
+        class CComponentGrabity : public CES::IComponent
         {
             // Public Methods
             public:

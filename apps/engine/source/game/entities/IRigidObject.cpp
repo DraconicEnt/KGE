@@ -19,7 +19,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            IRigidObject::IRigidObject(const Kiaro::Game::Entities::TypeMask &typeMask, const Kiaro::Game::Entities::EntityHintMask &hintMask) : Kiaro::Game::Entities::IEntity(typeMask, hintMask)
+            IRigidObject::IRigidObject(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask) : Game::Entities::IEntity(typeMask, hintMask)
             {
 
             }

@@ -14,7 +14,7 @@
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
-#include <engine/common.hpp>
+#include <core/common.hpp>
 
 namespace Kiaro
 {
@@ -22,7 +22,7 @@ namespace Kiaro
     {
         namespace FTime
         {
-            typedef Kiaro::Common::U8 timer;
+            typedef Common::U8 timer;
 
             timer startTimer(void);
 
@@ -31,13 +31,13 @@ namespace Kiaro
              *  to that of the current top level timer identifier.
              *  @throw std::logic_error When there are no running timers to stop.
              */
-            Kiaro::Common::F32 stopTimer(const timer &timerIdentifier);
+            Common::F32 stopTimer(const timer &timerIdentifier);
 
-            Kiaro::Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
-            Kiaro::Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
+            Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
+            Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
 
-            Kiaro::Common::U64 getSimTimeMicroseconds(void) NOTHROW;
-            Kiaro::Common::U64 getSimTimeMilliseconds(void) NOTHROW;
+            Common::U64 getSimTimeMicroseconds(void) NOTHROW;
+            Common::U64 getSimTimeMilliseconds(void) NOTHROW;
         } // End NameSpace Time
     } // End NameSpace Support
 } // End NameSpace Kiaro

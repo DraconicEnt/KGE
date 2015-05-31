@@ -13,11 +13,11 @@
 
 #include <game/entities/CSky.hpp>
 #include <game/entities/types.hpp>
-#include <network/SServer.hpp>
+#include <net/SServer.hpp>
 
 #include <support/CBitStream.hpp>
 
-#include <engine/CFileReader.hpp>
+#include <filesystem/CFileReader.hpp>
 
 namespace Kiaro
 {
@@ -25,14 +25,14 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CSky::CSky() : Kiaro::Game::Entities::IEntity(Kiaro::Game::Entities::ENTITY_SKY, Kiaro::Game::Entities::ENTITYHINT_NONTHINKING), mColor(0, 0, 0, 0)
+            CSky::CSky() : Game::Entities::IEntity(Game::Entities::ENTITY_SKY, Game::Entities::ENTITYHINT_NONTHINKING), mColor(0, 0, 0, 0)
             {
                 instantiate();
 
                 addNetworkedProperty("color", mColor);
             }
 
-            CSky::CSky(Kiaro::Support::CBitStream &in) : Kiaro::Game::Entities::IEntity(Kiaro::Game::Entities::ENTITY_SKY), mColor(0, 0, 0, 0)
+            CSky::CSky(Support::CBitStream &in) : Game::Entities::IEntity(Game::Entities::ENTITY_SKY), mColor(0, 0, 0, 0)
             {
                 unpackInitialization(in);
             }
@@ -42,47 +42,47 @@ namespace Kiaro
 
             }
 
-            void CSky::packUpdate(Kiaro::Support::CBitStream &out)
+            void CSky::packUpdate(Support::CBitStream &out)
             {
 
             }
 
-            void CSky::unpackUpdate(Kiaro::Support::CBitStream &in)
+            void CSky::unpackUpdate(Support::CBitStream &in)
             {
 
             }
 
-            void CSky::packInitialization(Kiaro::Support::CBitStream &out)
+            void CSky::packInitialization(Support::CBitStream &out)
             {
 
             }
 
-            void CSky::unpackInitialization(Kiaro::Support::CBitStream &in)
+            void CSky::unpackInitialization(Support::CBitStream &in)
             {
 
             }
 
-            void CSky::packData(Kiaro::Support::CBitStream &out)
+            void CSky::writeTo(Support::CBitStream &out) const
             {
 
             }
 
-            void CSky::unpackData(Kiaro::Support::CBitStream &in)
+            void CSky::extractFrom(Support::CBitStream &in)
             {
 
             }
 
             void CSky::instantiate(void)
             {
-                Kiaro::Game::Entities::IEntity::instantiate();
+                Game::Entities::IEntity::instantiate();
             }
 
-            void CSky::update(const Kiaro::Common::F32 &deltaTimeSeconds)
+            void CSky::update(const Common::F32 &deltaTimeSeconds)
             {
 
             }
 
-            const Kiaro::Common::ColorRGBA &CSky::getColor(void)
+            const Common::ColorRGBA &CSky::getColor(void)
             {
                 return mColor;
             }

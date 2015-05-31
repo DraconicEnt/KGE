@@ -9,28 +9,28 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <engine/SEventManager.hpp>
+#include <game/SEventManager.hpp>
 
 namespace Kiaro
 {
-    namespace Engine
+    namespace Core
     {
-        static SEventManager *sSingletonInstance = NULL;
+        static SEventManager *sInstance = NULL;
 
         SEventManager *SEventManager::get(void)
         {
-            if (!sSingletonInstance)
-                sSingletonInstance = new SEventManager;
+            if (!sInstance)
+                sInstance = new SEventManager;
 
-            return sSingletonInstance;
+            return sInstance;
         }
 
         void SEventManager::destroy(void)
         {
-            if (sSingletonInstance)
+            if (sInstance)
             {
-                delete sSingletonInstance;
-                sSingletonInstance = NULL;
+                delete sInstance;
+                sInstance = NULL;
             }
         }
 

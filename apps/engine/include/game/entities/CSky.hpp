@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_
 
-#include "engine/common.hpp"
+#include "core/common.hpp"
 
 #include <game/entities/IEntity.hpp>
 
@@ -29,29 +29,34 @@ namespace Kiaro
     {
         namespace Entities
         {
-            class CSky : public Kiaro::Game::Entities::IEntity
+            class CSky : public Game::Entities::IEntity
             {
                 // Public Methods
                 public:
                     CSky();
-                    CSky(Kiaro::Support::CBitStream &in);
+                    CSky(Support::CBitStream &in);
 
                     ~CSky(void);
 
-                    virtual void packUpdate(Kiaro::Support::CBitStream &out);
-                    virtual void unpackUpdate(Kiaro::Support::CBitStream &in);
-                    virtual void packData(Kiaro::Support::CBitStream &out);
-                    virtual void unpackData(Kiaro::Support::CBitStream &in);
-                    virtual void packInitialization(Kiaro::Support::CBitStream &out);
-                    virtual void unpackInitialization(Kiaro::Support::CBitStream &in);
+                    virtual void packUpdate(Support::CBitStream &out);
+                    virtual void unpackUpdate(Support::CBitStream &in);
+                    virtual void writeTo(Support::CBitStream &out) const;
+                    virtual void extractFrom(Support::CBitStream &in);
+                    virtual void packInitialization(Support::CBitStream &out);
+                    virtual void unpackInitialization(Support::CBitStream &in);
                     virtual void instantiate(void);
-                    virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+                    virtual void update(const Common::F32 &deltaTimeSeconds);
 
-                    const Kiaro::Common::ColorRGBA &getColor(void);
+                    size_t getRequiredMemory(void)
+                    {
+                        return sizeof(Common::C8) * 4;
+                    }
+
+                    const Common::ColorRGBA &getColor(void);
 
                 // Private Members
                 private:
-                    Kiaro::Common::ColorRGBA mColor;
+                    Common::ColorRGBA mColor;
             };
         } // End Namespace Entities
     } // End Namespace Game

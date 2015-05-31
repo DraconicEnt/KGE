@@ -20,7 +20,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CRigidObject::CRigidObject(void) : Kiaro::Game::Entities::IRigidObject(Kiaro::Game::Entities::ENTITY_RIGIDPROP)
+            CRigidObject::CRigidObject(void) : Game::Entities::IRigidObject(Game::Entities::ENTITY_RIGIDPROP)
             {
 
             }
@@ -30,22 +30,22 @@ namespace Kiaro
 
             }
 
-            void CRigidObject::packUpdate(Kiaro::Support::CBitStream &out)
+            void CRigidObject::packUpdate(Support::CBitStream &out)
             {
 
             }
 
-            void CRigidObject::unpackUpdate(Kiaro::Support::CBitStream &in)
+            void CRigidObject::unpackUpdate(Support::CBitStream &in)
             {
 
             }
 
-            void CRigidObject::packInitialization(Kiaro::Support::CBitStream &out)
+            void CRigidObject::packInitialization(Support::CBitStream &out)
             {
 
             }
 
-            void CRigidObject::unpackInitialization(Kiaro::Support::CBitStream &in)
+            void CRigidObject::unpackInitialization(Support::CBitStream &in)
             {
 
             }
@@ -55,7 +55,7 @@ namespace Kiaro
 
             }
 
-            void CRigidObject::update(const Kiaro::Common::F32 &deltaTimeSeconds)
+            void CRigidObject::update(const Common::F32 &deltaTimeSeconds)
             {
 
             }

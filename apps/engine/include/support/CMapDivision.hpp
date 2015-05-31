@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_CMAPDIVISION_HPP_
 #define _INCLUDE_KIARO_SUPPORT_CMAPDIVISION_HPP_
 
-#include <engine/common.hpp>
+#include <core/common.hpp>
 
 namespace Kiaro
 {
@@ -28,22 +28,22 @@ namespace Kiaro
             public:
                 CMapDivisionSquare(void);
 
-                std::vector<Kiaro::CES::Entity*> mContents;
+                std::vector<CES::Entity*> mContents;
         }; // End Class CMapDivisionSquare
 
         class CMapDivision
         {
             // Public Methods
             public:
-                static CMapDivision *Get(Kiaro::Common::U32 power = 12, Kiaro::Common::U32 divisions = 999);
+                static CMapDivision *Get(Common::U32 power = 12, Common::U32 divisions = 999);
                 static void Destroy(void);
 
-                const Kiaro::Common::U32 mDivisions;
+                const Common::U32 mDivisions;
                 const size_t mResolution;
 
             // Private Members
             private:
-                CMapDivision(Kiaro::Common::U32 power, Kiaro::Common::U32 divisions = 999);
+                CMapDivision(Common::U32 power, Common::U32 divisions = 999);
 
                 //! 3D Array: LOD,X,Y
                 std::vector<std::vector<std::vector<CMapDivisionSquare>>> mLODs;

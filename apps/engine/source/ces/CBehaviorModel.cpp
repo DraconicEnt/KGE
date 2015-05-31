@@ -1,6 +1,6 @@
 /**
  *  @file CBehaviorModel.cpp
- *  @brief Source file implementing the Kiaro::CES::CBehaviorModel class.
+ *  @brief Source file implementing the CES::CBehaviorModel class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -38,14 +38,14 @@ namespace Kiaro
                 return mName;
             }
 
-            void CBehaviorModel::packData(Kiaro::Support::CBitStream &out)
+            void CBehaviorModel::packData(Support::CBitStream &out)
             {
                 // TODO (Robert MacGregor#9): Transmit the associations by component identifiers
                 //for (std::set<ComponentBase*>::iterator it = mComponents.begin(); it != mComponents.end(); it++)
                 //    (*it).packData(out);
             }
 
-            void CBehaviorModel::unpackData(Kiaro::Support::CBitStream &in)
+            void CBehaviorModel::unpackData(Support::CBitStream &in)
             {
 
             }
