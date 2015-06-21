@@ -27,7 +27,8 @@ namespace Kiaro
                 virtual void setup(void) { std::cerr << "IGameMode: Gamemode setup not implemented!" << std::endl; }
                 virtual void tearDown(void) { std::cerr << "IGameMode: Gamemode teardown not implemented!" << std::endl; }
 
-                virtual void OnPlayerKilled(void) { }
+                virtual void onPlayerKilled(void) { }
+
         };
     } // End Namespace Game
 } // End Namespace Kiaro

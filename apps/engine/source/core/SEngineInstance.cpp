@@ -21,6 +21,7 @@
 #include <core/SEngineInstance.hpp>
 #include <filesystem/SResourceProvider.hpp>
 #include <input/SInputListener.hpp>
+#include <core/SSettingsRegistry.hpp>
 
 #include <net/SClient.hpp>
 
@@ -36,7 +37,7 @@ namespace Kiaro
 {
     namespace Core
     {
-        static Kiaro::Core::SEngineInstance *sInstance = NULL;
+        static Kiaro::Core::SEngineInstance* sInstance = NULL;
 
         SEngineInstance *SEngineInstance::getPointer(void)
         {
@@ -57,18 +58,18 @@ namespace Kiaro
             sInstance = NULL;
         }
 
-        void SEngineInstance::setMode(const MODE_NAME &mode)
+        void SEngineInstance::setMode(const MODE_NAME& mode)
         {
             mEngineMode = mode;
         }
 
-        void SEngineInstance::setTargetServer(Common::C8 *address, Common::U16 port)
+        void SEngineInstance::setTargetServer(Common::C8* address, Common::U16 port)
         {
             mTargetServerAddress = address;
             mTargetServerPort = port;
         }
 
-        void SEngineInstance::setGame(const Support::String &gameName)
+        void SEngineInstance::setGame(const Support::String& gameName)
         {
             mGameName = gameName;
         }
@@ -78,17 +79,17 @@ namespace Kiaro
             return mEngineMode & Kiaro::Core::MODE_DEDICATED;
         }
 
-        irr::IrrlichtDevice *SEngineInstance::getIrrlichtDevice(void)
+        irr::IrrlichtDevice* SEngineInstance::getIrrlichtDevice(void)
         {
             return mIrrlichtDevice;
         }
 
-        irr::scene::ISceneManager *SEngineInstance::getSceneManager(void)
+        irr::scene::ISceneManager* SEngineInstance::getSceneManager(void)
         {
             return mSceneManager;
         }
 
-        Kiaro::Common::S32 SEngineInstance::start(const Common::S32 &argc, Kiaro::Common::C8 *argv[])
+        Kiaro::Common::S32 SEngineInstance::start(const Common::S32& argc, Common::C8* argv[])
         {
             mRunning = true;
 
@@ -108,13 +109,19 @@ namespace Kiaro
             else
                 std::cout << "SEngineInstance: Mounted game directory '" << mGameName << "' successfully." << std::endl;
 
+            // TODO (Robert MacGregor#9): Load config values from a file somewhere
+            Core::SSettingsRegistry *settings = Core::SSettingsRegistry::getPointer();
+
+            settings->setValue("fullscreen", true);
+            settings->setValue("resolution", irr::core::dimension2d<Common::U32>(640, 480));
+
             // TODO (Robert MacGregor#9): Return error codes for Lua, renderer, GUI and the netcode
             mRunning = this->initializeLua(argc, argv) == 0 ? true : false;
             if (!mRunning)
                 return 1;
 
             // Init the taskers
-            Core::Tasking::SAsynchronousTaskManager *asyncTaskManager = Core::Tasking::SAsynchronousTaskManager::getPointer();
+            Core::Tasking::SAsynchronousTaskManager* asyncTaskManager = Core::Tasking::SAsynchronousTaskManager::getPointer();
             asyncTaskManager->addTask(Core::Tasking::SAsynchronousSchedulerTask::getPointer());
 
             this->initializeRenderer();
@@ -187,6 +194,8 @@ namespace Kiaro
                 mLuaState = NULL;
             }
 
+            Core::SSettingsRegistry::destroy();
+
             PHYSFS_deinit();
             enet_deinitialize();
         }
@@ -213,7 +222,7 @@ namespace Kiaro
                     // We don't need the OS cursor
                     mIrrlichtDevice->getCursorControl()->setVisible(false);
 
-                    CEGUI::IrrlichtRenderer &renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
+                    CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
                     FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
                     CEGUI::System::create(renderer, static_cast<CEGUI::ResourceProvider*>(resourceProvider), NULL, NULL, NULL, "", "log.txt");
                     //EGUI::IrrlichtRenderer::bootstrapSystem(*mIrrlichtDevice);
@@ -226,7 +235,7 @@ namespace Kiaro
                     CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
 
                     // Set the defaults
-                    CEGUI::GUIContext &guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+                    CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
 
                     guiContext.setDefaultFont( "DejaVuSans-10" );
                     guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
@@ -234,7 +243,7 @@ namespace Kiaro
 
                     std::cout << "SEngineInstance: Initialized the GUI system." << std::endl;
                 }
-                catch (CEGUI::InvalidRequestException &e)
+                catch (CEGUI::InvalidRequestException& e)
                 {
                     std::cerr << "SEngineInstance: Failed to initialize the GUI System." << std::endl;
                     std::cerr << "What: \t" << e.what() << std::endl;
@@ -245,7 +254,7 @@ namespace Kiaro
             return 0;
         }
 
-        Common::U32 SEngineInstance::initializeLua(const Common::S32 &argc, Common::C8 *argv[])
+        Common::U32 SEngineInstance::initializeLua(const Common::S32& argc, Common::C8* argv[])
         {
             // Initialize Lua
             // FIXME (Robert MacGregor#9): Init and call our Lua main method within the try, catch
@@ -304,10 +313,10 @@ namespace Kiaro
                 videoDriver = irr::video::EDT_NULL;
 
             // Init the Input listener
-            Input::SInputListener *inputListener = Input::SInputListener::getPointer();
+            Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
             // Start up Irrlicht
-            mIrrlichtDevice = irr::createDevice(videoDriver, irr::core::dimension2d<Kiaro::Common::U32>(640, 480), 32, false, false, false, inputListener);
+            mIrrlichtDevice = irr::createDevice(videoDriver, irr::core::dimension2d<Common::U32>(640, 480), 32, false, false, false, inputListener);
             mIrrlichtDevice->setWindowCaption(L"Kiaro Game Engine");
 
             // Grab the scene manager and store it to reduce a function call
@@ -325,9 +334,9 @@ namespace Kiaro
         Common::U32 SEngineInstance::initializeNetwork(void)
         {
             // Print the linked E-Net version
-            const ENetVersion enetVersion = enet_linked_version();
-            std::cout << "SEngineInstance: E-Net Version is " << ENET_VERSION_GET_MAJOR(enetVersion) << ".";
-            std::cout << ENET_VERSION_GET_MINOR(enetVersion) << "." << ENET_VERSION_GET_PATCH(enetVersion) << std::endl;
+          //  const ENetVersion enetVersion = enet_linked_version();
+          //  std::cout << "SEngineInstance: E-Net Version is " << ENET_VERSION_GET_MAJOR(enetVersion) << ".";
+          //  std::cout << ENET_VERSION_GET_MINOR(enetVersion) << "." << ENET_VERSION_GET_PATCH(enetVersion) << std::endl;
 
             // Catch if the netcode somehow doesn't initialize correctly.
             if (enet_initialize() < 0)
@@ -354,7 +363,7 @@ namespace Kiaro
                     {
                         std::cerr << "SEngineInstance: Failed to connect to remote host with server flag" << std::endl;
 
-                        Kiaro::Net::SClient::destroy();
+                        Net::SClient::destroy();
                     }
 
                     break;
@@ -421,7 +430,7 @@ namespace Kiaro
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
                 }
-                catch(std::exception &e)
+                catch(std::exception& e)
                 {
                     std::cerr << "SEngineInstance: An internal exception of type '" << typeid(e).name() << "' has occurred: \"" << e.what() << "\"" << std::endl;
 
@@ -437,7 +446,7 @@ namespace Kiaro
                     // Servers just drop off the client that it last processed
                     if (mServer)
                     {
-                        Net::CClient *lastClient = mServer->getLastPacketSender();
+                        Net::CClient* lastClient = mServer->getLastPacketSender();
 
                         // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
                         if (lastClient)
@@ -461,7 +470,7 @@ namespace Kiaro
             return 0;
         }
 
-        void SEngineInstance::initializeFileSystem(const Common::S32 &argc, Common::C8 *argv[])
+        void SEngineInstance::initializeFileSystem(const Common::S32& argc, Common::C8* argv[])
         {
             // Initialize the file system
             PHYSFS_init(argv[0]);
@@ -469,13 +478,13 @@ namespace Kiaro
 
             // Remove the search path that points to the same directory as the executable
             // TODO (Robert MacGregor#9): Research this.
-            Common::C8 **searchPaths = PHYSFS_getSearchPath();
-            Common::C8 *searchPath = searchPaths[1];
+            Common::C8** searchPaths = PHYSFS_getSearchPath();
+            Common::C8* searchPath = searchPaths[1];
             PHYSFS_removeFromSearchPath(searchPath);
             PHYSFS_freeList(searchPaths);
         }
 
-        void SEngineInstance::setSceneGraph(Video::CSceneGraph *graph)
+        void SEngineInstance::setSceneGraph(Video::CSceneGraph* graph)
         {
             if (mCurrentScene)
                 mCurrentScene->setVisible(false);

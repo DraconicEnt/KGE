@@ -9,7 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <core/SGameWorld.hpp>
+#include <game/SGameWorld.hpp>
 
 #include <game/SEventManager.hpp>
 
@@ -32,25 +32,25 @@ namespace Kiaro
 {
     namespace Net
     {
-        SServer *ServerSingleton_Instance = NULL;
+        SServer* sInstance = NULL;
 
-        SServer *SServer::getPointer(const Support::String &listenAddress, const Common::U16 &listenPort, const Common::U32 &maximumClientCount)
+        SServer* SServer::getPointer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount)
         {
-            if (!ServerSingleton_Instance)
-                ServerSingleton_Instance = new SServer(listenAddress, listenPort, maximumClientCount);
+            if (!sInstance)
+                sInstance = new SServer(listenAddress, listenPort, maximumClientCount);
 
-            return ServerSingleton_Instance;
+            return sInstance;
         }
 
         void SServer::destroy(void)
         {
-            if (ServerSingleton_Instance)
-                delete ServerSingleton_Instance;
+            if (sInstance)
+                delete sInstance;
 
-            ServerSingleton_Instance = NULL;
+            sInstance = NULL;
         }
 
-        SServer::SServer(const Support::String &listenAddress, const Common::U16 &listenPort, const Common::U32 &maximumClientCount) :
+        SServer::SServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
         mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mCurrentGamemode(NULL), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
             ENetAddress enetAddress;
@@ -67,7 +67,7 @@ namespace Kiaro
             }
 
             // Setup some more of the Lua implements
-            lua_State *luaState = Core::SEngineInstance::getPointer()->getLuaState();
+            lua_State* luaState = Core::SEngineInstance::getPointer()->getLuaState();
 
             lua_getglobal(luaState, "GameServer");
             lua_pushstring(luaState, "listenPort");
@@ -86,7 +86,7 @@ namespace Kiaro
             // Create the map division
             Support::CMapDivision::Get(12);
 
-            mEntityGroup = Core::SGameWorld::getPointer();
+            mEntityGroup = Game::SGameWorld::getPointer();
 
             // All entities register themselves with the Entity grouping singleton
             new Game::Entities::CSky();
@@ -97,7 +97,7 @@ namespace Kiaro
         SServer::~SServer(void)
         {
             // Call the server shutdown sequence in Lua
-            lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
+            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
             lua_getglobal(lua, "GameServer");
             lua_getfield(lua, -1, "onShutdown");
             lua_call(lua, 0, 0);
@@ -106,7 +106,7 @@ namespace Kiaro
             for (Net::SServer::clientIterator it = this->clientsBegin(); it != this->clientsEnd(); it++)
                 (*it)->disconnect("Server Shutdown");
 
-            Kiaro::Core::SGameWorld::destroy();
+            Game::SGameWorld::destroy();
 
             if (mInternalHost)
             {
@@ -120,20 +120,20 @@ namespace Kiaro
             Support::CMapDivision::Destroy();
         }
 
-        void SServer::update(const Common::F32 &deltaTimeSeconds)
+        void SServer::update(const Common::F32& deltaTimeSeconds)
         {
             Net::SServer::networkUpdate(deltaTimeSeconds);
 
             mEntityGroup->update(deltaTimeSeconds);
         }
 
-        void SServer::globalSend(Net::IMessage *packet, const bool &reliable)
+        void SServer::globalSend(Net::IMessage* packet, const bool& reliable)
         {
             for (std::set<Net::CClient*>::iterator it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
                 (*it)->send(packet, reliable);
         }
 
-        void SServer::networkUpdate(const Common::F32 &deltaTimeSeconds)
+        void SServer::networkUpdate(const Common::F32& deltaTimeSeconds)
         {
             // Dispatch commit packets after we're done dispatching sim updates
             Game::Messages::SimCommit commitPacket;
@@ -146,7 +146,7 @@ namespace Kiaro
                 {
                     case ENET_EVENT_TYPE_CONNECT:
                     {
-                        CClient *client = new Net::CClient(event.peer, this);
+                        CClient* client = new Net::CClient(event.peer, this);
                         event.peer->data = client;
 
                         mConnectedClientSet.insert(mConnectedClientSet.end(), client);
@@ -157,7 +157,7 @@ namespace Kiaro
 
                     case ENET_EVENT_TYPE_DISCONNECT:
                     {
-                        Net::CClient *disconnected = (Net::CClient*)event.peer->data;
+                        Net::CClient* disconnected = (Net::CClient*)event.peer->data;
                         onClientDisconnected(disconnected);
 
                         mConnectedClientSet.erase(disconnected);
@@ -174,7 +174,7 @@ namespace Kiaro
                             throw std::runtime_error("SServer: Invalid ENet peer data on packet receive!");
                         }
 
-                        Net::CClient *sender = (Net::CClient*)event.peer->data;
+                        Net::CClient* sender = (Net::CClient*)event.peer->data;
                         Support::CBitStream incomingStream(event.packet->data, event.packet->dataLength);
 
                         onReceivePacket(incomingStream, sender);
@@ -212,7 +212,7 @@ namespace Kiaro
 
         void SServer::onClientDisconnected(Net::CClient *client)
         {
-            lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
+            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
             lua_getglobal(lua, "GameServer");
             lua_getfield(lua, -1, "onClientDisconnected");
 
@@ -255,9 +255,9 @@ namespace Kiaro
             mLastPacketSender = NULL;
         }
 
-        Net::CClient *SServer::getLastPacketSender(void)
+        Net::CClient* SServer::getLastPacketSender(void)
         {
-            Net::CClient *result = mLastPacketSender;
+            Net::CClient* result = mLastPacketSender;
             mLastPacketSender = NULL;
 
             return result;
@@ -270,7 +270,7 @@ namespace Kiaro
             return mConnectedClientSet.size();
         }
 
-        void SServer::setGamemode(Game::IGameMode *game)
+        void SServer::setGamemode(Game::IGameMode* game)
         {
             if (mCurrentGamemode)
                 mCurrentGamemode->tearDown();

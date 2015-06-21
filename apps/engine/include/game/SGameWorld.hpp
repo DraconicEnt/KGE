@@ -24,26 +24,23 @@ namespace Kiaro
         {
             class IEntity;
             class CSky;
-        }
-    }
+        } // End NameSpace Entities
 
-    namespace Core
-    {
         class SGameWorld
         {
             // Public Methods
             public:
-                static SGameWorld *getPointer(void);
+                static SGameWorld* getPointer(void);
                 static void destroy(void);
 
-                bool addEntity(Game::Entities::IEntity *entity);
+                bool addEntity(Entities::IEntity* entity);
 
-                const std::set<Game::Entities::IEntity *> &getEntities(void);
-                const std::set<Game::Entities::IEntity *> &getUpdatedEntities(void);
-                const std::set<Game::Entities::IEntity *> &getNetworkedEntities(void);
+                const Support::Set<Entities::IEntity*>& getEntities(void);
+                const Support::Set<Entities::IEntity*>& getUpdatedEntities(void);
+                const Support::Set<Entities::IEntity*>& getNetworkedEntities(void);
 
-                void update(const Common::F32 &deltaTimeSeconds);
-                const Game::Entities::CSky *getSky(void);
+                void update(const Common::F32& deltaTimeSeconds);
+                const Entities::CSky* getSky(void);
 
             // Private Methods
             private:
@@ -54,12 +51,12 @@ namespace Kiaro
 
             // Private Members
             private:
-                Support::Set<Game::Entities::IEntity *> mEntities;
-                Support::Set<Game::Entities::IEntity *> mUpdatedEntities;
-                Support::Set<Game::Entities::IEntity *> mNetworkedEntities;
+                Support::Set<Entities::IEntity*> mEntities;
+                Support::Set<Entities::IEntity*> mUpdatedEntities;
+                Support::Set<Entities::IEntity*> mNetworkedEntities;
 
-                Kiaro::Game::Entities::CSky *mSky;
+                Entities::CSky* mSky;
         };
-    } // End Namespace Engine
+    } // End Namespace Game
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_ENGINE_ENTITYGROUPINGSINGLETON_HPP_

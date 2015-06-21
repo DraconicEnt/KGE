@@ -33,11 +33,11 @@ namespace Kiaro
         class CBitStream
         {
             public:
-                CBitStream(ISerializable *in);
+                CBitStream(ISerializable* in);
 
-                CBitStream(void *initializer, const size_t &initializerLength);
+                CBitStream(void* initializer, const size_t& initializerLength);
 
-                CBitStream(const size_t &sizeInBytes, const void *initializer = NULL, size_t initializerLength = 0);
+                CBitStream(const size_t& sizeInBytes, const void* initializer = NULL, size_t initializerLength = 0);
 
                 //! Standard destructor.
                 ~CBitStream(void);
@@ -54,7 +54,7 @@ namespace Kiaro
                     mPointer += sizeof(inType);
                 }
 
-                void write(const ISerializable *in);
+                void write(const ISerializable* in);
 
                 template <typename type>
                 void pop(void)
@@ -66,7 +66,7 @@ namespace Kiaro
                 }
 
                 template <typename outType>
-                outType &top(void) const
+                outType& top(void) const
                 {
                     if (mPointer <= 0 || sizeof(outType) > mPointer)
                         throw std::underflow_error("Stack Underflow");
@@ -75,7 +75,7 @@ namespace Kiaro
                 }
 
                 template <typename outType>
-                outType *extract(void)
+                outType* extract(void)
                 {
                     return new outType(*this);
                 }
@@ -87,14 +87,14 @@ namespace Kiaro
                 void resize(const size_t &newSize);
 
                 template <typename inType>
-                friend CBitStream &operator <<(CBitStream &stack, inType input)
+                friend CBitStream& operator <<(CBitStream& stack, inType input)
                 {
                     stack.write(input);
                     return stack;
                 }
 
                 template <typename outType>
-                friend CBitStream &operator >>(CBitStream &stack, outType &output)
+                friend CBitStream& operator >>(CBitStream& stack, outType& output)
                 {
                     output = stack.top<outType>();
                     stack.pop<outType>();
@@ -103,19 +103,19 @@ namespace Kiaro
                 }
 
                 template <typename serializableType>
-                friend CBitStream &operator >>(CBitStream &stack, serializableType *&output)
+                friend CBitStream& operator >>(CBitStream& stack, serializableType*& output)
                 {
                     output = stack.extract<serializableType>();
                     return stack;
                 }
 
                 size_t getWrittenLength(void);
-                void *getBlock(void);
-                void setPointer(const size_t &pointer);
+                void* getBlock(void);
+                void setPointer(const size_t& pointer);
 
             private:
                 //! A pointer to the start of the contiguous memory block.
-                unsigned char *mMemoryBlock;
+                unsigned char* mMemoryBlock;
 
                 //! The number of elements currently in the stack.
                 size_t mPointer;

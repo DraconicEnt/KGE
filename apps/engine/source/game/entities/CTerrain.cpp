@@ -26,13 +26,13 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CTerrain::CTerrain(const std::string &terrainFile) : Game::Entities::IRigidObject(Game::Entities::ENTITY_TERRAIN),
+            CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN),
             mTerrainFile(terrainFile)
             {
                 instantiate();
             }
 
-            CTerrain::CTerrain(Support::CBitStream &in) : Game::Entities::IRigidObject(Kiaro::Game::Entities::ENTITY_TERRAIN)
+            CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
             {
                 unpackInitialization(in);
             }
@@ -42,25 +42,25 @@ namespace Kiaro
 
             }
 
-            void CTerrain::packUpdate(Support::CBitStream &out)
+            void CTerrain::packUpdate(Support::CBitStream& out)
             {
 
 
             }
 
-            void CTerrain::unpackUpdate(Support::CBitStream &in)
+            void CTerrain::unpackUpdate(Support::CBitStream& in)
             {
 
             }
 
-            void CTerrain::packInitialization(Support::CBitStream &out)
+            void CTerrain::packInitialization(Support::CBitStream& out)
             {
-                const Common::Vector3DF &position = mSceneNode->getPosition();
+                const Common::Vector3DF& position = mSceneNode->getPosition();
 
                 out << position.X << position.Y << position.Z << mTerrainFile;
             }
 
-            void CTerrain::unpackInitialization(Support::CBitStream &in)
+            void CTerrain::unpackInitialization(Support::CBitStream& in)
             {
                 in >> mTerrainFile;
 
@@ -83,8 +83,8 @@ namespace Kiaro
             {
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
-                irr::IrrlichtDevice *irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
-                irr::scene::ITerrainSceneNode *terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
+                irr::IrrlichtDevice* irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
+                irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
 
                 if (terrain)
                 {
@@ -96,7 +96,7 @@ namespace Kiaro
                     std::cerr << "CTerrain: Failed to instantiate using '" << mTerrainFile << "'" << std::endl;
             }
 
-            void CTerrain::update(const Kiaro::Common::F32 &deltaTimeSeconds)
+            void CTerrain::update(const Common::F32& deltaTimeSeconds)
             {
 
             }

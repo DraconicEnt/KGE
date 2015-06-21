@@ -14,9 +14,12 @@
 
 #include <enet/enet.h>
 
-#include <support/support.hpp>
-#include "core/common.hpp"
+#include <support/Set.hpp>
+#include <support/String.hpp>
+#include <support/CBitStream.hpp>
 
+#include "core/common.hpp"
+#include <game/SGameWorld.hpp>
 #include <game/entities/entities.hpp>
 
 namespace Kiaro
@@ -52,12 +55,12 @@ namespace Kiaro
         {
             // Public Typedefs
             public:
-                typedef Support::Set<CClient *>::iterator clientIterator;
-                typedef Support::Set<CClient *>::const_iterator clientConstIterator;
+                typedef Support::Set<CClient*>::iterator clientIterator;
+                typedef Support::Set<CClient*>::const_iterator clientConstIterator;
 
             // Public Methods
             public:
-                static SServer *getPointer(const Support::String &listenAddress = "0.0.0.0", const Common::U16 &listenPort = 11595, const Common::U32 &maximumClientCount = 32);
+                static SServer* getPointer(const Support::String& listenAddress = "0.0.0.0", const Common::U16& listenPort = 11595, const Common::U32 &maximumClientCount = 32);
                 static void destroy(void);
 
                 /**
@@ -65,9 +68,9 @@ namespace Kiaro
                  */
                 void stop(void);
 
-                void globalSend(Net::IMessage *packet, const bool &reliable);
+                void globalSend(Net::IMessage* packet, const bool &reliable);
 
-                void setGamemode(Game::IGameMode *game);
+                void setGamemode(Game::IGameMode* game);
 
                 /**
                  *  @brief Returns the current running status of the server.
@@ -76,12 +79,12 @@ namespace Kiaro
                 bool isRunning(void);
 
                 //! Performs an update time pulse on the server.
-                void update(const Common::F32 &deltaTimeSeconds);
+                void update(const Common::F32& deltaTimeSeconds);
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
 
-                void networkUpdate(const Common::F32 &deltaTimeSeconds);
+                void networkUpdate(const Common::F32& deltaTimeSeconds);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -89,7 +92,7 @@ namespace Kiaro
                  *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the incoming connection.
                  */
-                void onClientConnected(Net::CClient *client);
+                void onClientConnected(Net::CClient* client);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -97,7 +100,7 @@ namespace Kiaro
                  *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the disconnected client.
                  */
-                void onClientDisconnected(Net::CClient *client);
+                void onClientDisconnected(Net::CClient* client);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -107,9 +110,9 @@ namespace Kiaro
                  *  @param sender A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the sender of the packet.
                  */
-                void onReceivePacket(Support::CBitStream &incomingStream, Net::CClient *sender);
+                void onReceivePacket(Support::CBitStream& incomingStream, Net::CClient* sender);
 
-                Net::CClient *getLastPacketSender(void);
+                Net::CClient* getLastPacketSender(void);
 
                 Common::U32 getClientCount(void);
 
@@ -126,7 +129,7 @@ namespace Kiaro
                  *  @param listen_port A Kiaro::Common::U16 representing the port number to listen on.
                  *  @param clients A Kiaro::Common::U32 representing the maximum number of clients to accept.
                  */
-                SServer(const Support::String &listenAddress, const Common::U16 &listenPort, const Common::U32 &maximumClientCount);
+                SServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
 
                 /**
                  *  @brief Standard virtual destructor.
@@ -137,15 +140,15 @@ namespace Kiaro
 
             // Private Members
             private:
-                Net::CClient *mLastPacketSender;
+                Net::CClient* mLastPacketSender;
 
-                Core::SGameWorld *mEntityGroup;
+                Game::SGameWorld* mEntityGroup;
 
-                Game::IGameMode *mCurrentGamemode;
+                Game::IGameMode* mCurrentGamemode;
 
                 bool mIsRunning;
 
-                ENetHost *mInternalHost;
+                ENetHost* mInternalHost;
 
                 //! The Port number that we're listening on.
                 const Common::U16 mListenPort;
@@ -154,7 +157,7 @@ namespace Kiaro
 
                 Common::U32 mMaximumClientCount;
 
-                Support::Set<CClient *> mConnectedClientSet;
+                Support::Set<CClient*> mConnectedClientSet;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

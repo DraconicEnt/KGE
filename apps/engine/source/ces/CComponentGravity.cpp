@@ -15,17 +15,17 @@ namespace Kiaro
 {
     namespace CES
     {
-        CComponentGrabity::CComponentGrabity(void)
+        CComponentGravity::CComponentGravity(void)
         {
-            mComponentTypeIdentifier = CES::COMPONENT_GRAVITY;
+            mComponentTypeIdentifier = COMPONENT_GRAVITY;
         }
 
-        void CComponentGrabity::initialize(void)
+        void CComponentGravity::initialize(void)
         {
 
         }
 
-        void CComponentGrabity::deinitialize(void)
+        void CComponentGravity::deinitialize(void)
         {
 
         }

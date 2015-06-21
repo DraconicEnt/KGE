@@ -12,7 +12,7 @@
  */
 
 #include <game/entities/IEntity.hpp>
-#include <core/SGameWorld.hpp>
+#include <game/SGameWorld.hpp>
 
 namespace Kiaro
 {
@@ -20,7 +20,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            IEntity::IEntity(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask) : mTypeMask(typeMask),
+            IEntity::IEntity(const TypeMask& typeMask, const EntityHintMask& hintMask) : mTypeMask(typeMask),
             mHintMask(hintMask), mNetID(0)
             {
 
@@ -37,17 +37,17 @@ namespace Kiaro
 
             Common::U32 IEntity::getHintMask(void) const { return mHintMask; }
 
-            void IEntity::packUpdate(Support::CBitStream &out)
+            void IEntity::packUpdate(Support::CBitStream& out)
             {
 
             }
 
-            void IEntity::unpackUpdate(Support::CBitStream &in)
+            void IEntity::unpackUpdate(Support::CBitStream& in)
             {
 
             }
 
-            void IEntity::packInitialization(Support::CBitStream &out)
+            void IEntity::packInitialization(Support::CBitStream& out)
             {
 
             }
@@ -59,7 +59,7 @@ namespace Kiaro
 
             void IEntity::instantiate(void)
             {
-                Core::SGameWorld::getPointer()->addEntity(this);
+                Game::SGameWorld::getPointer()->addEntity(this);
             }
         } // End Namespace Entities
     } // End Namespace Game

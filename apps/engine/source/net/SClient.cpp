@@ -17,7 +17,7 @@
 #include <enet/enet.h>
 
 #include <video/CBulletDebugDrawer.hpp>
-#include <core/SGameWorld.hpp>
+#include <game/SGameWorld.hpp>
 #include <core/SEngineInstance.hpp>
 
 #include <game/messages/messages.hpp>
@@ -35,11 +35,11 @@ namespace Kiaro
 {
     namespace Net
     {
-        static Net::SClient *sInstance = NULL;
+        static Net::SClient* sInstance = NULL;
 
-        SClient::SClient(irr::IrrlichtDevice *irrlicht, ENetPeer *incoming, Net::ServerBase *server) : mIsConnected(false), mPort(0), mCurrentStage(0), mInternalPeer(NULL), mInternalHost(NULL)
+        SClient::SClient(irr::IrrlichtDevice* irrlicht, ENetPeer* incoming, Net::ServerBase* server) : mIsConnected(false), mPort(0), mCurrentStage(0), mInternalPeer(NULL), mInternalHost(NULL)
         {
-            mEntityGroup = Core::SGameWorld::getPointer();
+            mEntityGroup = Game::SGameWorld::getPointer();
 
             mBroadphase = new btDbvtBroadphase();
             mCollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -87,10 +87,10 @@ namespace Kiaro
 
             std::cout << "SClient: Deinitialized Bullet" << std::endl;
 
-            Core::SGameWorld::destroy();
+            Game::SGameWorld::destroy();
         }
 
-        void SClient::onReceivePacket(Support::CBitStream &incomingStream)
+        void SClient::onReceivePacket(Support::CBitStream& incomingStream)
         {
             // We need to know what type of packet it is first
             Net::IMessage basePacket;
@@ -187,7 +187,7 @@ namespace Kiaro
             lua_call(lua, 0, 0);
         }
 
-        SClient *SClient::getPointer(irr::IrrlichtDevice *irrlicht)
+        SClient *SClient::getPointer(irr::IrrlichtDevice* irrlicht)
         {
             if (!sInstance)
                 sInstance = new SClient(irrlicht, NULL, NULL);
@@ -204,7 +204,7 @@ namespace Kiaro
             }
         }
 
-        void SClient::send(Net::IMessage *packet, const bool &reliable)
+        void SClient::send(Net::IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
             if (reliable)
@@ -213,11 +213,11 @@ namespace Kiaro
             // TODO: Packet Size Query
             Support::CBitStream outStream(packet);
 
-            ENetPacket *enetPacket = enet_packet_create(outStream.getBlock(), outStream.getWrittenLength(), packetFlag);
+            ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getWrittenLength(), packetFlag);
             enet_peer_send(mInternalPeer, 0, enetPacket);
         }
 
-        void SClient::connect(const Support::String &targetAddress, const Common::U16 &targetPort, const Common::U32 &wait)
+        void SClient::connect(const Support::String& targetAddress, const Common::U16& targetPort, const Common::U32& wait)
         {
 			// TODO: Report Error
 			if (mInternalPeer || mInternalHost)
@@ -318,7 +318,7 @@ namespace Kiaro
             }
         }
 
-        const bool &SClient::getIsConnected(void)
+        const bool& SClient::getIsConnected(void)
         {
             return mIsConnected;
         }

@@ -23,7 +23,7 @@ namespace Kiaro
         class CClient;
 
         //! Class representing a packet that has or is ready to traverse across the network to a remote host.
-        class IMessage : public Kiaro::Support::ISerializable
+        class IMessage : public Support::ISerializable
         {
             // Public Methods
             public:
@@ -31,16 +31,16 @@ namespace Kiaro
                  *  @brief Constructor that accepts a received netpacket from the underlaying networking subsystem.
                  *  @param received A packet from the internal networking subsystem to construct the class from.
                  */
-                IMessage(const Kiaro::Common::U32 &packetType = 0, Kiaro::Support::CBitStream *received = NULL, CClient *sender = NULL) : mID(0),
+                IMessage(const Common::U32& packetType = 0, Support::CBitStream* received = NULL, CClient* sender = NULL) : mID(0),
                 mType(packetType), mSender(sender)
                 {
                     //if (received)
                     //    UnpackData(*received);
                 }
 
-                virtual void writeTo(Kiaro::Support::CBitStream &out) const
+                virtual void writeTo(Support::CBitStream& out) const
                 {
-                    static Kiaro::Common::U32 sLastPacketID = 0;
+                    static Common::U32 sLastPacketID = 0;
 
                     out << mType << sLastPacketID;
                     // TODO (Robert MacGregor#9): Sequencing?
@@ -49,7 +49,7 @@ namespace Kiaro
                     sLastPacketID++;
                 }
 
-                virtual void extractFrom(Support::CBitStream &in)
+                virtual void extractFrom(Support::CBitStream& in)
                 {
                     in >> mID;
                     in >> mType;
@@ -71,15 +71,15 @@ namespace Kiaro
 
             // Public Members
             public:
-                static const Kiaro::Common::U8 sAcceptedStage = 0;
+                static const Common::U8 sAcceptedStage = 0;
 
                 //! A pointer to a Client instance that sent the data. If this is NULL, then the origin was a Server.
-                Kiaro::Net::CClient *mSender;
+                Net::CClient* mSender;
 
             // Private Members
             private:
-                Kiaro::Common::U32 mType;
-                Kiaro::Common::U32 mID;
+                Common::U32 mType;
+                Common::U32 mID;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

@@ -15,10 +15,10 @@
 #include <enet/enet.h>
 #include <btBulletDynamicsCommon.h>
 
-#include <core/SGameWorld.hpp>
+#include <game/SGameWorld.hpp>
 #include <net/IMessage.hpp>
 
-#include <support/support.hpp>
+#include <support/CBitStream.hpp>
 
 namespace irr
 {
@@ -47,14 +47,14 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                static SClient *getPointer(irr::IrrlichtDevice *irrlicht = NULL);
+                static SClient* getPointer(irr::IrrlichtDevice* irrlicht = NULL);
                 static void destroy(void);
 
                 /**
                  *  @brief Empty callback function for the the OnReceivePacket event.
                  *  @param packet The received packet.
                  */
-                void onReceivePacket(Support::CBitStream &incomingStream);
+                void onReceivePacket(Support::CBitStream& incomingStream);
 
                 void onConnected(void);
 
@@ -66,15 +66,15 @@ namespace Kiaro
 
                 void disconnect(void);
 
-                Kiaro::Common::U16 getPort(void);
+                Common::U16 getPort(void);
 
                 void networkUpdate(void);
 
-                void connect(const Support::String &targetAddress, const Common::U16 &targetPort, const Common::U32 &wait);
+                void connect(const Support::String& targetAddress, const Common::U16& targetPort, const Common::U32& wait);
 
-                void send(Net::IMessage *packet, const bool &reliable);
+                void send(Net::IMessage* packet, const bool& reliable);
 
-                const bool &getIsConnected(void);
+                const bool& getIsConnected(void);
 
                 void dispatch(void);
 
@@ -84,32 +84,32 @@ namespace Kiaro
                  *  @brief Constructor accepting a Peer object.
                  *  @param connecting A Peer object that is connecting.
                  */
-                SClient(irr::IrrlichtDevice *irrlicht, ENetPeer *connecting, Net::ServerBase *server);
+                SClient(irr::IrrlichtDevice* irrlicht, ENetPeer* connecting, Net::ServerBase* server);
 
                 ~SClient(void);
 
             // Private Members
             private:
                 bool mIsOppositeEndian;
-                ENetPeer *mInternalClient;
+                ENetPeer* mInternalClient;
 
-                btBroadphaseInterface *mBroadphase;
-                btCollisionDispatcher *mCollisionDispatcher;
-                btConstraintSolver *mConstraintSolver;
-                btDefaultCollisionConfiguration *mCollisionConfiguration;
-                btDiscreteDynamicsWorld *mPhysicalWorld;
+                btBroadphaseInterface* mBroadphase;
+                btCollisionDispatcher* mCollisionDispatcher;
+                btConstraintSolver* mConstraintSolver;
+                btDefaultCollisionConfiguration* mCollisionConfiguration;
+                btDiscreteDynamicsWorld* mPhysicalWorld;
 
-                Video::CBulletDebugDrawer *mPhysicalDebugger;
+                Video::CBulletDebugDrawer* mPhysicalDebugger;
 
                 // Net
                 bool mIsConnected;
                 Common::U16 mPort;
                 Common::U8 mCurrentStage;
 
-                Core::SGameWorld *mEntityGroup;
+                Game::SGameWorld* mEntityGroup;
 
-                ENetPeer *mInternalPeer;
-                ENetHost *mInternalHost;
+                ENetPeer* mInternalPeer;
+                ENetHost* mInternalHost;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

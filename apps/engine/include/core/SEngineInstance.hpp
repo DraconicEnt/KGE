@@ -55,7 +55,7 @@ namespace Kiaro
                  *  @return A pointer to the currently allocated SEngineInstance. If
                  *  this is the first call, then a new SEngineInstance will be allocated.
                  */
-                static SEngineInstance *getPointer(void);
+                static SEngineInstance* getPointer(void);
 
                 /**
                  *  @brief Destroys the engine instance singleton, performing any necessary
@@ -70,7 +70,7 @@ namespace Kiaro
                  *  @warning This should only be used before the Kiaro::Engine::SEngineInstance::start
                  *  call.
                  */
-                void setMode(const MODE_NAME &mode);
+                void setMode(const MODE_NAME& mode);
 
 
                 /**
@@ -81,7 +81,7 @@ namespace Kiaro
                  *  @warning This should only be used before the Kiaro::Engine::SEngineInstance::start
                  *  call.
                  */
-                void setTargetServer(Common::C8 *address, Common::U16 port);
+                void setTargetServer(Common::C8* address, Common::U16 port);
 
 
                 /**
@@ -91,16 +91,16 @@ namespace Kiaro
                  *  @warning This should only be used before the Kiaro::Engine::SEngineInstance::start
                  *  call.
                  */
-                void setGame(const Support::String &gameName);
+                void setGame(const Support::String& gameName);
 
-                irr::IrrlichtDevice *getIrrlichtDevice(void);
+                irr::IrrlichtDevice* getIrrlichtDevice(void);
 
-                irr::scene::ISceneManager *getSceneManager(void);
+                irr::scene::ISceneManager* getSceneManager(void);
 
-                Common::S32 start(const Common::S32 &argc, Common::C8 *argv[]);
+                Common::S32 start(const Common::S32& argc, Common::C8* argv[]);
                 void kill(void);
 
-                void setSceneGraph(Video::CSceneGraph *graph);
+                void setSceneGraph(Video::CSceneGraph* graph);
 
                 /**
                  *  @brief Returns whether or not the engine is running as a dedicated server at the
@@ -110,7 +110,7 @@ namespace Kiaro
                  */
                 bool isDedicated(void);
 
-                lua_State *getLuaState(void);
+                lua_State* getLuaState(void);
 
             // Public Members
             public:
@@ -135,7 +135,7 @@ namespace Kiaro
                  *  passed to the application. This value should be passed in unmolested all
                  *  the way from main.
                  */
-                Common::U32 initializeLua(const Common::S32 &argc, Common::C8 *argv[]);
+                Common::U32 initializeLua(const Common::S32& argc, Common::C8* argv[]);
 
                 //! A subroutine that is called to initialize the renderer.
                 void initializeRenderer(void);
@@ -148,7 +148,7 @@ namespace Kiaro
                  */
                 Common::U32 initializeSound(void);
 
-                void initializeFileSystem(const Common::S32 &argc, Common::C8 *argv[]);
+                void initializeFileSystem(const Common::S32& argc, Common::C8* argv[]);
 
                 void runGameLoop(void);
 
@@ -160,27 +160,27 @@ namespace Kiaro
                 MODE_NAME mEngineMode;
 
                 //! A pointer to the Irrlicht renderer device.
-                irr::IrrlichtDevice *mIrrlichtDevice;
+                irr::IrrlichtDevice* mIrrlichtDevice;
                 //! A pointer to the Irrlicht scene manager.
-                irr::scene::ISceneManager *mSceneManager;
+                irr::scene::ISceneManager* mSceneManager;
                 /**
                  *  @brief A pointer to the main scene graph that the engine will
                  *  use to render the main game simulation.
                  */
-                Video::CSceneGraph *mMainScene;
+                Video::CSceneGraph* mMainScene;
 
-                Video::CSceneGraph *mCurrentScene;
+                Video::CSceneGraph* mCurrentScene;
 
-                Common::C8 *mTargetServerAddress;
+                Common::C8* mTargetServerAddress;
                 Common::U16 mTargetServerPort;
 
                 //! A stored pointer to the client singleton instance.
-                Net::SClient *mClient;
+                Net::SClient* mClient;
                 //! A stored pointer to the server singleton instance.
-                Net::SServer *mServer;
+                Net::SServer* mServer;
 
                 //! A pointer to the Lua scripting engine instance.
-                lua_State *mLuaState;
+                lua_State* mLuaState;
 
                 //! The name of the currently running game name.
                 Support::String mGameName;

@@ -9,8 +9,6 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <map>
-
 #include <ces/CBehaviorModel.hpp>
 #include <ces/IComponent.hpp>
 
@@ -18,36 +16,36 @@ namespace Kiaro
 {
     namespace CES
     {
-            CBehaviorModel::CBehaviorModel(const std::string &name)
-            {
+        CBehaviorModel::CBehaviorModel(const Support::String& name)
+        {
 
-            }
+        }
 
-            CBehaviorModel::~CBehaviorModel(void)
-            {
+        CBehaviorModel::~CBehaviorModel(void)
+        {
 
-            }
+        }
 
-            void CBehaviorModel::setName(const std::string &name)
-            {
-                mName = name;
-            }
+        void CBehaviorModel::setName(const Support::String& name)
+        {
+            mName = name;
+        }
 
-            const std::string &CBehaviorModel::getName(void)
-            {
-                return mName;
-            }
+        const Support::String& CBehaviorModel::getName(void)
+        {
+            return mName;
+        }
 
-            void CBehaviorModel::packData(Support::CBitStream &out)
-            {
-                // TODO (Robert MacGregor#9): Transmit the associations by component identifiers
-                //for (std::set<ComponentBase*>::iterator it = mComponents.begin(); it != mComponents.end(); it++)
-                //    (*it).packData(out);
-            }
+        void CBehaviorModel::packData(Support::CBitStream& out)
+        {
+            // TODO (Robert MacGregor#9): Transmit the associations by component identifiers
+            //for (std::set<ComponentBase*>::iterator it = mComponents.begin(); it != mComponents.end(); it++)
+            //    (*it).packData(out);
+        }
 
-            void CBehaviorModel::unpackData(Support::CBitStream &in)
-            {
+        void CBehaviorModel::unpackData(Support::CBitStream& in)
+        {
 
-            }
-    }
-}
+        }
+    } // End NameSpace CES
+} // End NameSpace Kiaro

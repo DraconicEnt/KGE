@@ -12,28 +12,28 @@
 #include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 
-#include <core/SGameWorld.hpp>
+#include <game/SGameWorld.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Game
     {
-        Kiaro::Core::SGameWorld *EntityGroupingSingleton_Instance = NULL;
+        SGameWorld *sInstance = NULL;
 
         SGameWorld *SGameWorld::getPointer(void)
         {
-            if (!EntityGroupingSingleton_Instance)
-                EntityGroupingSingleton_Instance = new SGameWorld;
+            if (!sInstance)
+                sInstance = new SGameWorld;
 
-            return EntityGroupingSingleton_Instance;
+            return sInstance;
         }
 
         void SGameWorld::destroy(void)
         {
-            if (EntityGroupingSingleton_Instance)
-                delete EntityGroupingSingleton_Instance;
+            if (sInstance)
+                delete sInstance;
 
-            EntityGroupingSingleton_Instance = NULL;
+            sInstance = NULL;
         }
 
         bool SGameWorld::addEntity(Game::Entities::IEntity *entity)

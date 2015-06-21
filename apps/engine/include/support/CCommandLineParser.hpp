@@ -12,9 +12,9 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_COMMANDLINEPARSER_H_
 #define _INCLUDE_KIARO_SUPPORT_COMMANDLINEPARSER_H_
 
-#include <string>        // std::string
-#include <vector>        // std::vector
-#include <unordered_map> // std::unordered_map
+#include <support/String.hpp>
+#include <support/Vector.hpp>
+#include <support/UnorderedMap.hpp> // std::unordered_map
 
 #include <easydelegate.hpp>
 
@@ -37,7 +37,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                typedef EasyDelegate::DelegateBase<void, CommandLineParser *, const Common::S32 &, Common::C8 **, const std::vector<Support::String>&, bool> FlagResponder;
+                typedef EasyDelegate::DelegateBase<void, CommandLineParser* , const Common::S32&, Common::C8**, const Support::Vector<Support::String>&, bool> FlagResponder;
 
                 typedef struct
                 {
@@ -51,7 +51,7 @@ namespace Kiaro
                  *  @param argc A Kiaro::s32 representing the total number of arguments in our array.
                  *  @param argv An array of Kiaro::c8 representing the input arguments to parse.
                  */
-                CommandLineParser(Common::S32 argc, Common::C8 **argv);
+                CommandLineParser(Common::S32 argc, Common::C8** argv);
 
                 //! Standard Destructor
                 ~CommandLineParser(void);
@@ -61,25 +61,25 @@ namespace Kiaro
                  *  @param flag A Kiaro::String representing the flag name to test for.
                  *  @return A boolean representing whether or not the CommandLineParser had the flag.
                  */
-                bool hasFlag(const Common::C8 *flagName);
+                bool hasFlag(const Common::C8* flagName);
 
-                Support::Vector<Support::String> getFlagArguments(const Common::C8 *targetFlag);
+                Support::Vector<Support::String> getFlagArguments(const Common::C8* targetFlag);
 
-                size_t getFlagArgumentCount(const Common::C8 *targetFlag);
+                size_t getFlagArgumentCount(const Common::C8* targetFlag);
 
-                void setFlagDescription(const Support::String &flagName, const Support::String &description);
+                void setFlagDescription(const Support::String& flagName, const Support::String& description);
 
-                void displayHelp(const Common::S32 &argc, Common::C8 *argv[]);
+                void displayHelp(const Common::S32& argc, Common::C8* argv[]);
 
             // Private Members
             private:
-                Common::C8 **mArgv;
+                Common::C8** mArgv;
                 Common::S32 mArgc;
 
                 Support::UnorderedMap<size_t, Support::Vector<Support::String>> mFlags;
                 Support::UnorderedMap<size_t, Support::Pair<Support::String, Support::String>> mFlagDescriptions;
 
-                Support::Vector<FlagEntry *> mFlagEntries;
+                Support::Vector<FlagEntry*> mFlagEntries;
 
                 Support::String mCommandLine;
 

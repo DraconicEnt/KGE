@@ -14,7 +14,7 @@
 
 #include <enet/enet.h>
 
-#include <support/support.hpp>
+#include <support/String.hpp>
 #include <core/common.hpp>
 
 namespace Kiaro

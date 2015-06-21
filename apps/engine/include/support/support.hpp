@@ -29,48 +29,50 @@
 #include <queue>
 #include <deque>
 #include <string>
+#include <stack>
+
+#include <support/Tuple.hpp>
+#include <support/UnorderedMap.hpp>
+#include <support/Vector.hpp>
+#include <support/Set.hpp>
+#include <support/UnorderedSet.hpp>
+#include <support/Map.hpp>
 
 namespace Kiaro
 {
     namespace Support
     {
-        template <typename storedType>
-        using Set = std::set<storedType>;
-
-        template <typename storedType>
-        using UnorderedSet = std::unordered_set<storedType>;
-
-        template <typename keyType, typename storedType>
-        using Map = std::map<keyType, storedType>;
-
-        template <typename keyType, typename storedType>
-        using UnorderedMap = std::unordered_map<keyType, storedType>;
-
-        template <typename... storedTypes>
-        using Tuple = std::tuple<storedTypes...>;
-
+		//! A typedef to an std::atomic.
         template <typename storedType>
         using Atomic = std::atomic<storedType>;
 
+		//! A typedef to an std::deque.
         template <typename storedType>
         using Deque = std::deque<storedType>;
-
-        template <typename storedType>
-        using Vector = std::vector<storedType>;
 
         // TODO (Robert MacGregor#9): Compare template param
         template <typename storedType, typename containerType = Deque<storedType>>
         using PriorityQueue = std::priority_queue<storedType, containerType>;
 
+		//! A typrdef to an std::queue.
         template <typename storedType, typename containerType = Deque<storedType>>
         using Queue = std::queue<storedType, containerType>;
 
+		//! A typedef to an std::pair.
         template <typename storedTypeOne, typename storedTypeTwo>
         using Pair = std::pair<storedTypeOne, storedTypeTwo>;
 
+		//! A typedef to an std::string.
+		template <typename storedType>
+		using Stack = std::stack<storedType>;
+
+		//! A typedef to an std::mutex.
         typedef std::mutex Mutex;
+		//! A typedef to an std::thread.
         typedef std::thread Thread;
+		//! A typedef to an std::string.
         typedef std::string String;
+		//! A typedef to an std::wstring.
         typedef std::wstring WString;
     }
 }
