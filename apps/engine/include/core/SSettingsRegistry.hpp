@@ -5,6 +5,8 @@
 #ifndef _INCLUDE_CORE_SETTINGSREGISTRY_HPP_
 #define _INCLUDE_CORE_SETTINGSREGISTRY_HPP_
 
+#include <allegro5/allegro.h>
+
 #include <core/common.hpp>
 
 #include <support/String.hpp>
@@ -48,7 +50,8 @@ namespace Kiaro
                         if (!heapEntry)
                             throw std::bad_alloc();
 
-                        memcpy(heapEntry, &value, sizeof(storedType));
+                        // FIXME (Robert MacGregor#9): Values that own heap entries will create memory leaks
+                        new (heapEntry) storedType(value);
 
                         mStoredProperties[mapIndex] = std::make_pair(heapEntry, typeid(storedType).hash_code());
                         return;

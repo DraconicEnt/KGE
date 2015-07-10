@@ -28,8 +28,6 @@ namespace Kiaro
 {
     namespace Support
     {
-        typedef unsigned short StringLengthType;
-
         class CBitStream
         {
             public:
@@ -66,12 +64,12 @@ namespace Kiaro
                 }
 
                 template <typename outType>
-                outType& top(void) const
+                outType* top(void) const
                 {
                     if (mPointer <= 0 || sizeof(outType) > mPointer)
                         throw std::underflow_error("Stack Underflow");
 
-                    return *((outType *)&mMemoryBlock[mPointer - sizeof(outType)]);
+                    return (outType *)&mMemoryBlock[mPointer - sizeof(outType)];
                 }
 
                 template <typename outType>
@@ -96,7 +94,7 @@ namespace Kiaro
                 template <typename outType>
                 friend CBitStream& operator >>(CBitStream& stack, outType& output)
                 {
-                    output = stack.top<outType>();
+                    output = *stack.top<outType>();
                     stack.pop<outType>();
 
                     return stack;
@@ -118,7 +116,7 @@ namespace Kiaro
                 unsigned char* mMemoryBlock;
 
                 //! The number of elements currently in the stack.
-                size_t mPointer;
+                int mPointer;
 
                 size_t mTotalSize;
 

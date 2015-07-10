@@ -9,6 +9,9 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+
+#include <allegro5/allegro.h>
+
 #include <irrlicht.h>
 #include <lua.hpp>
 
@@ -23,15 +26,18 @@
 #include <input/SInputListener.hpp>
 #include <core/SSettingsRegistry.hpp>
 
+#include <game/SGameServer.hpp>
+
 #include <net/SClient.hpp>
 
 #include <net/CClient.hpp>
-#include <net/SServer.hpp>
 
 #include <support/FTime.hpp>
 #include <core/SSynchronousScheduler.hpp>
 
 #include <video/CSceneGraph.hpp>
+
+#include <core/Logging.hpp>
 
 namespace Kiaro
 {
@@ -93,27 +99,24 @@ namespace Kiaro
         {
             mRunning = true;
 
+            al_init();
+
             this->initializeFileSystem(argc, argv);
 
-            std::cout << "SEngineInstance: Running game '" << mGameName << "'" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
 
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
             {
-               mRunning = false;
+                mRunning = false;
 
-               std::cerr << "SEngineInstance: Failed to mount game directory '" << mGameName << "'. Reason: ";
-               std::cerr << PHYSFS_getLastError() << std::endl;
-               return -1;
+                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
+                return -1;
             }
             else
-                std::cout << "SEngineInstance: Mounted game directory '" << mGameName << "' successfully." << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
 
-            // TODO (Robert MacGregor#9): Load config values from a file somewhere
-            Core::SSettingsRegistry *settings = Core::SSettingsRegistry::getPointer();
-
-            settings->setValue("fullscreen", true);
-            settings->setValue("resolution", irr::core::dimension2d<Common::U32>(640, 480));
+            Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
 
             // TODO (Robert MacGregor#9): Return error codes for Lua, renderer, GUI and the netcode
             mRunning = this->initializeLua(argc, argv) == 0 ? true : false;
@@ -148,20 +151,20 @@ namespace Kiaro
             //    mServer->
            // }
 
-            std::cout << "SEngineInstance: Killed via Kill()" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
 
             mRunning = false;
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595), mClient(NULL), mServer(NULL),
-        mRunning(false), mClearColor(Kiaro::Common::ColorRGBA(0, 0, 0, 0)), mLuaState(NULL), mCurrentScene(NULL)
+        mRunning(false), mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)), mLuaState(NULL), mCurrentScene(NULL)
         {
 
         }
 
         SEngineInstance::~SEngineInstance(void)
         {
-            std::cout << "SEngineInstance: Deinitializing ..." << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
 
             // TODO: Check the destroy order
             if (mClient)
@@ -174,7 +177,7 @@ namespace Kiaro
 
             if (mServer)
             {
-                Net::SServer::destroy();
+                Game::SGameServer::destroy();
 
                 mServer = NULL;
             }
@@ -241,12 +244,11 @@ namespace Kiaro
                     guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
                     guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
 
-                    std::cout << "SEngineInstance: Initialized the GUI system." << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
                 }
                 catch (CEGUI::InvalidRequestException& e)
                 {
-                    std::cerr << "SEngineInstance: Failed to initialize the GUI System." << std::endl;
-                    std::cerr << "What: \t" << e.what() << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the GUI System. Reason:\n%s", e.what());
                     return 1;
                 }
             }
@@ -275,13 +277,12 @@ namespace Kiaro
             lua_setglobal(mLuaState, "GameWindow");
 
             // Load up the main file
-            // TODO: Implement PhysFS in Lua
             if (luaL_dofile(mLuaState, "main.lua") >= 1)
             {
-                std::cerr << "Failed to load main.lua Reason: ";
-                std::cerr << luaL_checkstring(mLuaState, -1) << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to load main.lua. Reason: '%s'", luaL_checkstring(mLuaState, -1));
                 return 2;
             }
+
             // Call the main(argv) method
             lua_getglobal(mLuaState, "main");
 
@@ -299,8 +300,7 @@ namespace Kiaro
             }
             lua_call(mLuaState, 2, 0);
 
-            std::cout << "SEngineInstance: Initialized Lua " << std::endl;
-
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized Lua.");
             return 0;
         }
 
@@ -312,36 +312,34 @@ namespace Kiaro
             if (mEngineMode == Kiaro::Core::MODE_DEDICATED)
                 videoDriver = irr::video::EDT_NULL;
 
+            Core::SSettingsRegistry *settings = Core::SSettingsRegistry::getPointer();
+
             // Init the Input listener
             Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
             // Start up Irrlicht
-            mIrrlichtDevice = irr::createDevice(videoDriver, irr::core::dimension2d<Common::U32>(640, 480), 32, false, false, false, inputListener);
+            mIrrlichtDevice = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Resolution"), 32, false, false, false, inputListener);
             mIrrlichtDevice->setWindowCaption(L"Kiaro Game Engine");
 
             // Grab the scene manager and store it to reduce a function call
             mSceneManager = mIrrlichtDevice->getSceneManager();
+            mSceneManager->addCameraSceneNode();
 
             // Initialize the main scene and set it
             // TODO (Robert MacGregor#9): Only initialize when running as a client.
             mMainScene = new Video::CSceneGraph();
             this->setSceneGraph(mMainScene);
 
-            std::cout << "SEngineInstance: Irrlicht version is " << mIrrlichtDevice->getVersion() << std::endl;
-            std::cout << "SEngineInstance: Initialized renderer. " << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
         }
 
         Common::U32 SEngineInstance::initializeNetwork(void)
         {
-            // Print the linked E-Net version
-          //  const ENetVersion enetVersion = enet_linked_version();
-          //  std::cout << "SEngineInstance: E-Net Version is " << ENET_VERSION_GET_MAJOR(enetVersion) << ".";
-          //  std::cout << ENET_VERSION_GET_MINOR(enetVersion) << "." << ENET_VERSION_GET_PATCH(enetVersion) << std::endl;
-
             // Catch if the netcode somehow doesn't initialize correctly.
             if (enet_initialize() < 0)
             {
-                std::cerr << "SEngineInstance: Failed to initialize the network!" << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the network!");
                 return 1;
             }
 
@@ -361,7 +359,7 @@ namespace Kiaro
 
                     if (!mClient->getIsConnected())
                     {
-                        std::cerr << "SEngineInstance: Failed to connect to remote host with server flag" << std::endl;
+                        Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with srrver flag!");
 
                         Net::SClient::destroy();
                     }
@@ -371,12 +369,12 @@ namespace Kiaro
 
                 case Core::MODE_DEDICATED:
                 {
-                    mServer = Net::SServer::getPointer("0.0.0.0", 11595, 32);
+                    mServer = Game::SGameServer::getPointer();
                     break;
                 }
             }
 
-            std::cout << "SEngineInstance: Initialized network." << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized network.");
             return 0;
         }
 
@@ -432,7 +430,7 @@ namespace Kiaro
                 }
                 catch(std::exception& e)
                 {
-                    std::cerr << "SEngineInstance: An internal exception of type '" << typeid(e).name() << "' has occurred: \"" << e.what() << "\"" << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
                     // Something is probably up, we should leave.
                     if (mClient)
@@ -463,7 +461,7 @@ namespace Kiaro
                 return 0;
 
             #ifndef ENGINE_BUILD_SOUNDENGINE
-                std::cout << "SEngineInstance: Built without sound support. There will be no audio playback. " << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_WARNING, "SEngineInstance: Built without audio support. There will be no sound.");
             #else
             #endif // ENGINE_BUILD_SOUNDENGINE
 
@@ -482,6 +480,8 @@ namespace Kiaro
             Common::C8* searchPath = searchPaths[1];
             PHYSFS_removeFromSearchPath(searchPath);
             PHYSFS_freeList(searchPaths);
+
+            // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
         }
 
         void SEngineInstance::setSceneGraph(Video::CSceneGraph* graph)

@@ -23,8 +23,13 @@ namespace Kiaro
 {
     namespace Net
     {
-        class SServer;
+        class IServer;
         class SClient;
+    }
+
+    namespace Game
+    {
+        class SGameServer;
     }
 
     namespace Video
@@ -82,7 +87,6 @@ namespace Kiaro
                  *  call.
                  */
                 void setTargetServer(Common::C8* address, Common::U16 port);
-
 
                 /**
                  *  @brief Notifies the engine of what game to run.
@@ -177,7 +181,7 @@ namespace Kiaro
                 //! A stored pointer to the client singleton instance.
                 Net::SClient* mClient;
                 //! A stored pointer to the server singleton instance.
-                Net::SServer* mServer;
+                Game::SGameServer* mServer;
 
                 //! A pointer to the Lua scripting engine instance.
                 lua_State* mLuaState;

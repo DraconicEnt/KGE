@@ -15,9 +15,7 @@
     #include <gtest/gtest.h>
 #endif
 
-#include <boost/iostreams/stream_buffer.hpp>
-#include <boost/filesystem/fstream.hpp>
-
+#include <core/Logging.hpp>
 #include <core/common.hpp>
 #include <support/support.hpp>
 #include <core/SEngineInstance.hpp>
@@ -28,50 +26,6 @@
 
 using namespace Kiaro;
 
-class DebugLog : public boost::iostreams::sink
-{
-    // Public Methods
-    public:
-        DebugLog(std::ostream &overwrittenStream, boost::filesystem::ofstream &logFileStream, const std::string textPrepend = "") : mOldStream(overwrittenStream),
-        mTextPrepend(textPrepend), mWrotePrependText(false), mLogFileStream(logFileStream)
-        {
-
-        }
-
-        std::streamsize write(const Kiaro::Common::C8 *str, std::streamsize size)
-        {
-            std::string newString(str, size);
-
-            // Add the prepend text if we wrote a new line (and it's not just a newline char)
-            if (!mTextPrepend.empty() && !mWrotePrependText && newString != "\n")
-            {
-                newString = mTextPrepend + newString;
-                mWrotePrependText = true;
-            }
-
-            // Write to whatever old stream we have
-            mOldStream.write(newString.c_str(), newString.length());
-            mOldStream.flush();
-
-            // Write to the log
-            mLogFileStream.write(newString.c_str(), newString.length());
-            mLogFileStream.flush();
-
-            // If this contained a newline char, prepare the stream to write the prepend text next time around
-            if (newString.rfind("\n") != std::string::npos)
-                mWrotePrependText = false;
-
-            return size;
-        }
-
-        // Private Members
-        private:
-            bool mWrotePrependText;
-            boost::filesystem::ofstream &mLogFileStream;
-            const std::string mTextPrepend;
-            std::ostream &mOldStream;
-};
-
 /**
  *  @brief Standard entry point.
  *  @param arg A Kiaro::Common::S32 representing the total number of arguments passed to the program.
@@ -80,11 +34,9 @@ class DebugLog : public boost::iostreams::sink
  */
 Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 {
-    std::cout << "------------------------------------------------" << std::endl;
-    std::cout << "Kiaro Game Engine" << std::endl;
-    //std::cout << "Kiaro Game Engine v%u.%u.%u Build %u\n", KIARO_ENGINE_VERSION_MAJOR, KIARO_ENGINE_VERSION_MINOR, KIARO_ENGINE_VERSION_REVISION, KIARO_ENGINE_BUILD_COUNT);
-    std::cout << "Copyright (c) 2014 Draconic Entertainment" << std::endl;
-    std::cout <<"------------------------------------------------" << std::endl;
+    Core::Logging::write(Core::Logging::MESSAGE_INFO, "------------------------------------------------");
+    Core::Logging::write(Core::Logging::MESSAGE_INFO, "Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+    Core::Logging::write(Core::Logging::MESSAGE_INFO, "------------------------------------------------");
 
     // Create our parser as a pointer so we can destroy it when entering the engine
     Kiaro::Support::CommandLineParser commandLineParser(argc, argv);
@@ -111,9 +63,8 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         commandLineParser.displayHelp(argc, argv);
     // Print the version information?
     else if (commandLineParser.hasFlag("-v"))
-    {
-        std::cout << "Kiaro Game Engine version " << std::endl;
-    }
+        Core::Logging::write(Core::Logging::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+
     // Run the thing?
     else if (commandLineParser.hasFlag("-game"))
     {
@@ -121,8 +72,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 
         if (gameArguments.size() != 1)
         {
-            std::cerr << "No game specified." << std::endl << std::endl;
-
+            Core::Logging::write(Core::Logging::MESSAGE_FATAL, "No game specified.\n");
             commandLineParser.displayHelp(argc, argv);
 
             // FIXME (Robert MacGregor#9): Segfault upon exit?
@@ -135,7 +85,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Support::Vector<Support::String> addonList;
         if (commandLineParser.hasFlag("-addons") && commandLineParser.getFlagArgumentCount("-addons") == 0)
         {
-            std::cerr << "No addons specified." << std::endl << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_FATAL, "No addons specified.\n");
 
             commandLineParser.displayHelp(argc, argv);
             return -2;
@@ -155,7 +105,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
             targetServerIP = commandLineParser.getFlagArguments("-server")[0];
             if (targetServerIP.empty())
             {
-                std::cerr << "No server specified with the server flag." << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "No server specified.\n");
 
                 commandLineParser.displayHelp(argc, argv);
                 return -3;
@@ -165,7 +115,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         }
 
         // Create the Engine Instance
-        Core::SEngineInstance *engineInstance = Core::SEngineInstance::getPointer();
+        Core::SEngineInstance* engineInstance = Core::SEngineInstance::getPointer();
         engineInstance->setMode(engineMode);
         engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
         engineInstance->setGame(gameName);
@@ -175,7 +125,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Core::SEngineInstance::destroy();
     }
 
-    std::cout << "EngineMain: Exited successfully." << std::endl;
+    Core::Logging::write(Core::Logging::MESSAGE_INFO, "EngineMain: Exited successfully.");
 
     return 0;
 }

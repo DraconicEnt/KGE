@@ -4,11 +4,16 @@
 
 #include <video/SRenderer.hpp>
 
+#include <core/SSettingsRegistry.hpp>
+#include <input/SInputListener.hpp>
+#include <video/CSceneGraph.hpp>
+#include <core/Logging.hpp>
+
 namespace Kiaro
 {
     namespace Video
     {
-        static SRenderer *sInstance = NULL;
+        static SRenderer* sInstance = NULL;
 
         SRenderer* SRenderer::getPointer(void)
         {
@@ -29,20 +34,41 @@ namespace Kiaro
 
         SRenderer::SRenderer(void)
         {
-            // TODO (Robert MacGregor#9): Load resolution, etc from settings registry
+            // Handle Execution Flag
+            irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
+
+           // if (mEngineMode == Kiaro::Core::MODE_DEDICATED)
+           //     videoDriver = irr::video::EDT_NULL;
+
+            Core::SSettingsRegistry *settings = Core::SSettingsRegistry::getPointer();
+
+            // Init the Input listener
+            Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
             // Start up Irrlicht
-            mIrrlicht = irr::createDevice(irr::video::EDT_OPENGL,
-            //irr::core::dimension2d<Common::U32>(640, 480), 32, false, false, false, inputListener);
-            irr::core::dimension2d<Common::U32>(640, 480), 32, false, false, false, NULL);
-
+            mIrrlicht = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Resolution"), 32, false, false, false, inputListener);
             mIrrlicht->setWindowCaption(L"Kiaro Game Engine");
 
             // Grab the scene manager and store it to reduce a function call
             mSceneManager = mIrrlicht->getSceneManager();
+            mSceneManager->addCameraSceneNode();
 
-            std::cout << "SRenderer: Irrlicht version is " << mIrrlicht->getVersion() << std::endl;
-            std::cout << "SRenderer: Initialized renderer. " << std::endl;
+            // Initialize the main scene and set it
+            // TODO (Robert MacGregor#9): Only initialize when running as a client.
+            mMainScene = new Video::CSceneGraph();
+            this->setSceneGraph(mMainScene);
+
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlicht->getVersion());
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
+        }
+
+        void SRenderer::setSceneGraph(CSceneGraph* graph)
+        {
+            if (mCurrentScene)
+                mCurrentScene->setVisible(false);
+
+            mCurrentScene = graph;
+            mCurrentScene->setVisible(true);
         }
 
         SRenderer::~SRenderer(void)

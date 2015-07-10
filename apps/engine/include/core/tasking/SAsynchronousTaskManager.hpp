@@ -26,7 +26,7 @@ namespace Kiaro
             {
                 // Public Methods
                 public:
-                    static SAsynchronousTaskManager *getPointer(const size_t &poolSize = WORKER_THREAD_POOL_SIZE);
+                    static SAsynchronousTaskManager *getPointer(void);
                     static void destroy(void);
 
                     void tick(void);
@@ -39,21 +39,21 @@ namespace Kiaro
 
                 // Private Methods
                 private:
-                    SAsynchronousTaskManager(const size_t &poolSize);
+                    SAsynchronousTaskManager(void);
                     ~SAsynchronousTaskManager(void);
 
                 // Private Members
                 private:
-                    const size_t mPoolSize;
+                    const Common::U8 mPoolSize;
 
                     //! A set of tasks that were not handed off to a worker yet.
-                    Kiaro::Support::Queue<Kiaro::Core::Tasking::CTask *> mScheduledTasks;
+                    Kiaro::Support::Queue<Kiaro::Core::Tasking::CTask*> mScheduledTasks;
 
                     //! A set of workers that are not doing anything.
-                    Kiaro::Support::UnorderedSet<WorkerContext *> mIdleWorkers;
+                    Kiaro::Support::UnorderedSet<WorkerContext*> mIdleWorkers;
 
                     //! A set of workers that are doing some thing.
-                    Kiaro::Support::UnorderedSet<WorkerContext *> mActiveWorkers;
+                    Kiaro::Support::UnorderedSet<WorkerContext*> mActiveWorkers;
             };
         } // End NameSpace Tasking
     } // End NameSpace Engine

@@ -16,6 +16,7 @@
 
 #include <enet/enet.h>
 
+#include <core/Logging.hpp>
 #include <video/CBulletDebugDrawer.hpp>
 #include <game/SGameWorld.hpp>
 #include <core/SEngineInstance.hpp>
@@ -24,6 +25,8 @@
 #include <game/messages/Disconnect.hpp>
 #include <game/messages/HandShake.hpp>
 #include <game/messages/SimCommit.hpp>
+#include <game/messages/Scope.hpp>
+#include <game/MoveManager.hpp>
 
 #include <net/SClient.hpp>
 
@@ -50,7 +53,7 @@ namespace Kiaro
             mPhysicalWorld = new btDiscreteDynamicsWorld(mCollisionDispatcher, mBroadphase, mConstraintSolver, mCollisionConfiguration);
             mPhysicalWorld->setDebugDrawer(mPhysicalDebugger);
 
-            std::cout << "SClient: Initialized Bullet" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Initialized Bullet.");
         }
 
         SClient::~SClient(void)
@@ -85,7 +88,7 @@ namespace Kiaro
             delete mPhysicalDebugger;
             mPhysicalDebugger = NULL;
 
-            std::cout << "SClient: Deinitialized Bullet" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Deinitialized Bullet.");
 
             Game::SGameWorld::destroy();
         }
@@ -98,15 +101,22 @@ namespace Kiaro
 
             switch (basePacket.getType())
             {
+                case Game::Messages::MESSAGE_SCOPE:
+                {
+                    Game::Messages::Scope receivedScope;
+                    receivedScope.extractFrom(incomingStream);
+
+                    break;
+                }
+
                 case Game::Messages::MESSAGE_HANDSHAKE:
                 {
                     Game::Messages::HandShake receivedHandshake;
                     receivedHandshake.extractFrom(incomingStream);
 
                     // NOTE: Would rather printf here but then the stdout override doesn't work
-                    std::cout << "OutgoingClient: Server Version is " << (Common::U32)receivedHandshake.mVersionMajor << "."
-                    << (Common::U32)receivedHandshake.mVersionMinor << "." << (Common::U32)receivedHandshake.mVersionRevision << "."
-                    << (Common::U32)receivedHandshake.mVersionBuild << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
                     mCurrentStage = 1;
 
@@ -126,7 +136,7 @@ namespace Kiaro
                     disconnect.extractFrom(incomingStream);
 
                     // TODO (Robert MacGregor#9): Call an onDisconnect method in Lua
-                    std::cout << "SClient: Received disconnect packet from remote host. Reason: \"" << disconnect.mReason << "\"" << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
                     this->disconnect();
 
                     // TODO (Robert MacGregor#9): Safe to do from within the class like this?
@@ -148,28 +158,24 @@ namespace Kiaro
 
         void SClient::onConnected(void)
         {
-            std::cout << "SClient: Established connection to remote host" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Established connection to remote host.");
 
             // Dispatch our own handshake in response
             Game::Messages::HandShake handShake;
-            handShake.mVersionMajor = 1;
-            handShake.mVersionMinor = 2;
-            handShake.mVersionRevision = 3;
-            handShake.mVersionBuild = 4;
 
             this->send(&handShake, true);
 
-            lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
+            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
 
             EasyLua::pushObject(lua, "GameClient", "onConnected");
 
             if (lua_pcall(lua, 0, 0, 0))
-                std::cerr << "SEngineInstance: " << lua_tostring(lua, -1) << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SClient: %s", lua_tostring(lua, -1));
         }
 
         void SClient::onDisconnected(void)
         {
-            std::cout << "SClient: Disconnected from the remote host" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Disconnected from remote host.");
 
             lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
 
@@ -181,13 +187,13 @@ namespace Kiaro
 
         void SClient::onConnectFailed(void)
         {
-            lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
+            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
 
             EasyLua::pushObject(lua, "GameClient", "onConnectFailed");
             lua_call(lua, 0, 0);
         }
 
-        SClient *SClient::getPointer(irr::IrrlichtDevice* irrlicht)
+        SClient* SClient::getPointer(irr::IrrlichtDevice* irrlicht)
         {
             if (!sInstance)
                 sInstance = new SClient(irrlicht, NULL, NULL);
@@ -233,7 +239,7 @@ namespace Kiaro
             //    return;
            // }
 
-            std::cout << "SClient: Attempting connection to remote host " << targetAddress << ":" << targetPort << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Attempting connection to remote host %s:%u.", targetAddress.data(), targetPort);
 
             ENetAddress enetAddress;
             enet_address_set_host(&enetAddress, targetAddress.c_str());
@@ -260,7 +266,7 @@ namespace Kiaro
                 return;
             }
 
-            std::cerr << "SClient: Failed to connect to remote host" << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
 
             onConnectFailed();
             enet_peer_reset(mInternalPeer);
@@ -270,6 +276,8 @@ namespace Kiaro
         {
             if (!mIsConnected)
                 return;
+
+            Game::MoveManager::reset();
 
             mIsConnected = false;
             enet_peer_disconnect_later(mInternalPeer, 0);

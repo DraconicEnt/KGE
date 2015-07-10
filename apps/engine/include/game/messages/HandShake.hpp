@@ -9,11 +9,12 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_GAME_PACKETS_HANDSHAKE_HPP_
-#define _INCLUDE_KIARO_GAME_PACKETS_HANDSHAKE_HPP_
+#ifndef _INCLUDE_GAME_MESSAGES_HANDSHAKE_HPP_
+#define _INCLUDE_GAME_MESSAGES_HANDSHAKE_HPP_
 
 #include <stdexcept>
 
+#include <core/common.hpp>
 #include <game/messages/messages.hpp>
 #include <net/IMessage.hpp>
 
@@ -29,51 +30,56 @@ namespace Kiaro
     {
         namespace Messages
         {
-            class HandShake : public Kiaro::Net::IMessage
+            class HandShake : public Net::IMessage
             {
+                // Private Members
+                public:
+                    //! The major version of the engine.
+                    Common::U8 mVersionMajor;
+                    //! The minor version of the engine.
+                    Common::U8 mVersionMinor;
+                    //! The revision of the engine.
+                    Common::U8 mVersionRevision;
+                    //! The build # of the engine.
+                    Common::U32 mVersionBuild;
+                    //! The network protocol version.
+                    Common::U32 mProtocolVersion;
+
                 // Public Methods
                 public:
-                    HandShake(Kiaro::Support::CBitStream *in = NULL, Kiaro::Net::CClient *sender = NULL) : Net::IMessage(MESSAGE_HANDSHAKE, in, sender)
+                    HandShake(Support::CBitStream* in = NULL, Net::CClient* sender = NULL) : Net::IMessage(MESSAGE_HANDSHAKE, in, sender),
+                    mVersionMajor(VERSION::MAJOR), mVersionMinor(VERSION::MINOR), mVersionRevision(VERSION::REVISION),
+                    mVersionBuild(VERSION::BUILD), mProtocolVersion(VERSION::PROTOCOL)
                     {
 
                     }
 
-                    void writeTo(Kiaro::Support::CBitStream &out) const
+                    void writeTo(Support::CBitStream& out) const
                     {
-                        out << mVersionMajor << mVersionMinor << mVersionRevision << mVersionBuild;
+                        out << mVersionMajor << mVersionMinor << mVersionRevision << mVersionBuild << mProtocolVersion;
 
-                        Kiaro::Net::IMessage::writeTo(out);
+                        Net::IMessage::writeTo(out);
                     }
 
-                    void extractFrom(Kiaro::Support::CBitStream &in)
+                    void extractFrom(Support::CBitStream& in)
                     {
-                        if (in.getWrittenLength() < getMinimumPacketPayloadLength())
+                        if (in.getWrittenLength() < this->getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack HandShake packet; too small of a payload!");
 
-                        in >> mVersionBuild >> mVersionRevision >> mVersionMinor >> mVersionMajor;
+                        in >> mProtocolVersion >> mVersionBuild >> mVersionRevision >> mVersionMinor >> mVersionMajor;
                     }
 
-                    Kiaro::Common::U32 getMinimumPacketPayloadLength(void)
+                    Common::U32 getMinimumPacketPayloadLength(void)
                     {
-                        return sizeof(Kiaro::Common::U32) + (sizeof(Kiaro::Common::U8) * 3);
+                        return (sizeof(Common::U32) * 2) + (sizeof(Common::U8) * 3);
                     }
 
                     size_t getRequiredMemory(void)
                     {
-                        return (sizeof(Common::U8) * 3) + sizeof(Common::U32) + Net::IMessage::getRequiredMemory();
+                        return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 2) + Net::IMessage::getRequiredMemory();
                     }
-                // Public Members
-                public:
-                    //! The major version of the engine.
-                    Kiaro::Common::U8 mVersionMajor;
-                    //! The minor version of the engine.
-                    Kiaro::Common::U8 mVersionMinor;
-                    //! The revision of the engine.
-                    Kiaro::Common::U8 mVersionRevision;
-                    //! The build # of the engine.
-                    Kiaro::Common::U32 mVersionBuild;
             };
-        } // End NameSpace Packets
+        } // End NameSpace Messages
     } // End NameSpace Game
 } // End NameSpace Kiaro
-#endif // _INCLUDE_KIARO_GAME_PACKETS_HANDSHAKE_HPP_
+#endif // _INCLUDE_GAME_MESSAGES_HANDSHAKE_HPP_

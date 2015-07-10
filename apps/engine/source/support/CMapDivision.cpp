@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include <core/Logging.hpp>
+
 #include <support/FTime.hpp>
 #include <support/CMapDivision.hpp>
 
@@ -27,9 +29,9 @@ namespace Kiaro
         }
 
         // MapDivision Code Begin
-        static CMapDivision *sInstance = NULL;
+        static CMapDivision* sInstance = NULL;
 
-        CMapDivision *CMapDivision::Get(Common::U32 power, Common::U32 divisions)
+        CMapDivision* CMapDivision::Get(Common::U32 power, Common::U32 divisions)
         {
             if (!sInstance)
                 sInstance = new Support::CMapDivision(power, divisions);
@@ -49,7 +51,7 @@ namespace Kiaro
         CMapDivision::CMapDivision(Common::U32 power, Common::U32 divisions) : mDivisions(divisions), mResolution(pow(2, power))
         {
             Support::FTime::timer timerHandle = Support::FTime::startTimer();
-            std::cout << "CMapDivision: Initializing with a " << mResolution << "x" << mResolution << " map size ..." << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Initializing with a %ux%u map size ... ", mResolution, mResolution);
 
             Common::U32 currentResolution = mResolution;
             while (currentResolution > 1)
@@ -73,7 +75,7 @@ namespace Kiaro
                 currentResolution >>= 1;
             }
 
-            std::cout << "CMapDivision: Built grid in " << Support::FTime::stopTimer(timerHandle) << " seconds " << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Built grid in %f seconds.", Support::FTime::stopTimer(timerHandle));
         }
     } // End NameSpace Support
 } // End NameSpace Kiaro

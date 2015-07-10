@@ -15,9 +15,10 @@ namespace Kiaro
 {
     namespace FileSystem
     {
-        FileReadObject::FileReadObject(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.c_str()))
+        FileReadObject::FileReadObject(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data()))
         {
-
+            if (!mFileHandle)
+                throw std::logic_error(PHYSFS_getLastError());
         }
 
         FileReadObject::~FileReadObject(void)

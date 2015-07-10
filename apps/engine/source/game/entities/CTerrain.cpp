@@ -11,10 +11,11 @@
  *  @copyright (c) 2013 Draconic Entertainment
  */
 
+#include <core/Logging.hpp>
 #include <game/entities/CTerrain.hpp>
 #include <game/entities/types.hpp>
 
-#include <net/SServer.hpp>
+#include <net/IServer.hpp>
 
 #include <support/CBitStream.hpp>
 
@@ -26,8 +27,8 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN),
-            mTerrainFile(terrainFile)
+            CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN, NO_THINKING | NO_SCOPING),
+            mTerrainFile(terrainFile), mSceneNode(NULL)
             {
                 instantiate();
             }
@@ -53,34 +54,33 @@ namespace Kiaro
 
             }
 
-            void CTerrain::packInitialization(Support::CBitStream& out)
+            void CTerrain::packInitialization(Support::CBitStream& out) const
             {
                 const Common::Vector3DF& position = mSceneNode->getPosition();
 
-                out << position.X << position.Y << position.Z << mTerrainFile;
+                out << position.X << position.Y << position.Z;
+                out.write(mTerrainFile);
+
+                IEntity::packInitialization(out);
             }
 
             void CTerrain::unpackInitialization(Support::CBitStream& in)
             {
-                in >> mTerrainFile;
+                mTerrainFile = in.top<const Common::C8>();
+                in.pop<const Common::C8*>();
 
                 instantiate();
 
+                Common::Vector3DF position;
+                in >> position;
+
                 if (mSceneNode)
-                {
-                    Common::Vector3DF position;
-                    in >> position;
-
-                   // position.Z = in.read<Common::F32>();
-                    //position.Y = in.read<Common::F32>();
-                   // position.X = in.read<Common::F32>();
-
                     mSceneNode->setPosition(position);
-                }
             }
 
             void CTerrain::instantiate(void)
             {
+                Core::Logging::write(Core::Logging::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
                 irr::IrrlichtDevice* irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
@@ -89,11 +89,17 @@ namespace Kiaro
                 if (terrain)
                 {
                     terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+                    terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 
                     mSceneNode = terrain;
                 }
                 else
-                    std::cerr << "CTerrain: Failed to instantiate using '" << mTerrainFile << "'" << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
+            }
+
+            void CTerrain::setPosition(const Common::Vector3DF& position)
+            {
+                mSceneNode->setPosition(position);
             }
 
             void CTerrain::update(const Common::F32& deltaTimeSeconds)

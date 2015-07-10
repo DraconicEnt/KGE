@@ -17,6 +17,7 @@
 #include <irrlicht.h>
 #include <btBulletDynamicsCommon.h>
 
+#include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 
 namespace Kiaro
@@ -25,16 +26,16 @@ namespace Kiaro
     {
         namespace Entities
         {
-            class IRigidObject : public Game::Entities::IEntity
+            class IRigidObject : public IEntity
             {
-                // Public Methods
-                public:
-                    IRigidObject(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask = 0);
-
                 // Protected Members
                 protected:
-                    irr::scene::ISceneNode *mRender;
-                    btRigidBody *mPhysicalBody;
+                    irr::scene::ISceneNode* mRender;
+                    btRigidBody* mPhysicalBody;
+
+                // Public Methods
+                public:
+                    IRigidObject(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
             }; // End Class RigidObjectBase
         } // End NameSpace Entities
     } // End NameSpace Game

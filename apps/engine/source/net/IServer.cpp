@@ -13,10 +13,12 @@
 
 #include <game/SEventManager.hpp>
 
+#include <core/Logging.hpp>
 #include <game/messages/HandShake.hpp>
 #include <game/messages/SimCommit.hpp>
 #include <game/messages/Disconnect.hpp>
-#include <net/SServer.hpp>
+#include <game/messages/Scope.hpp>
+#include <net/IServer.hpp>
 
 #include <net/CClient.hpp>
 
@@ -32,27 +34,11 @@ namespace Kiaro
 {
     namespace Net
     {
-        SServer* sInstance = NULL;
-
-        SServer* SServer::getPointer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount)
+        IServer::IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
+        mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
-            if (!sInstance)
-                sInstance = new SServer(listenAddress, listenPort, maximumClientCount);
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
 
-            return sInstance;
-        }
-
-        void SServer::destroy(void)
-        {
-            if (sInstance)
-                delete sInstance;
-
-            sInstance = NULL;
-        }
-
-        SServer::SServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
-        mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mCurrentGamemode(NULL), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
-        {
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
             enet_address_set_host(&enetAddress, listenAddress.c_str());
@@ -63,7 +49,7 @@ namespace Kiaro
             {
                 mIsRunning = false;
 
-                throw std::runtime_error("SServer: Failed to create ENet host!");
+                throw std::runtime_error("IServer: Failed to create ENet host!");
             }
 
             // Setup some more of the Lua implements
@@ -81,20 +67,15 @@ namespace Kiaro
             // The table "GameServer" is left so we chop it off
             lua_pop(luaState, -1);
 
-            std::cout << "SERV: " << lua_gettop(luaState) << std::endl;
-
             // Create the map division
             Support::CMapDivision::Get(12);
 
             mEntityGroup = Game::SGameWorld::getPointer();
 
-            // All entities register themselves with the Entity grouping singleton
-            new Game::Entities::CSky();
-
             // Create an init a gamemode
         }
 
-        SServer::~SServer(void)
+        IServer::~IServer(void)
         {
             // Call the server shutdown sequence in Lua
             lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
@@ -103,7 +84,7 @@ namespace Kiaro
             lua_call(lua, 0, 0);
 
             // Disconnect everyone
-            for (Net::SServer::clientIterator it = this->clientsBegin(); it != this->clientsEnd(); it++)
+            for (Net::IServer::clientIterator it = this->clientsBegin(); it != this->clientsEnd(); it++)
                 (*it)->disconnect("Server Shutdown");
 
             Game::SGameWorld::destroy();
@@ -120,20 +101,20 @@ namespace Kiaro
             Support::CMapDivision::Destroy();
         }
 
-        void SServer::update(const Common::F32& deltaTimeSeconds)
+        void IServer::update(const Common::F32& deltaTimeSeconds)
         {
-            Net::SServer::networkUpdate(deltaTimeSeconds);
+            Net::IServer::networkUpdate(deltaTimeSeconds);
 
             mEntityGroup->update(deltaTimeSeconds);
         }
 
-        void SServer::globalSend(Net::IMessage* packet, const bool& reliable)
+        void IServer::globalSend(Net::IMessage* packet, const bool& reliable)
         {
             for (std::set<Net::CClient*>::iterator it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
                 (*it)->send(packet, reliable);
         }
 
-        void SServer::networkUpdate(const Common::F32& deltaTimeSeconds)
+        void IServer::networkUpdate(const Common::F32& deltaTimeSeconds)
         {
             // Dispatch commit packets after we're done dispatching sim updates
             Game::Messages::SimCommit commitPacket;
@@ -171,7 +152,7 @@ namespace Kiaro
                         if (!event.peer->data)
                         {
                             enet_packet_destroy(event.packet);
-                            throw std::runtime_error("SServer: Invalid ENet peer data on packet receive!");
+                            throw std::runtime_error("IServer: Invalid ENet peer data on packet receive!");
                         }
 
                         Net::CClient* sender = (Net::CClient*)event.peer->data;
@@ -189,7 +170,7 @@ namespace Kiaro
             }
         }
 
-        void SServer::onClientConnected(Net::CClient *client)
+        void IServer::onClientConnected(Net::CClient* client)
         {
             // Can we accept this guy?
             if (mConnectedClientSet.size() >= mMaximumClientCount)
@@ -207,10 +188,20 @@ namespace Kiaro
             lua_call(lua, 1, 0);
 
             Core::SEventManager::get()->mOnClientConnectedEvent.invoke(client);
-            std::cout << "SServer: Received remote connection from " << client->getStringIPAddress() << ":" << client->getPort() << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received remote connection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
+
+            // FIXME (Robert MacGregor#9): Net some objects across their entire net sequence; perform only on proper client auth
+            Game::Messages::Scope scope;
+            const Game::Entities::IEntity* const* activeEntities = Game::SGameWorld::getPointer()->getEntities();
+
+            for (Common::U32 iteration = 0; iteration < 4096; iteration++)
+                if (activeEntities[iteration] && activeEntities[iteration]->getHintMask() & Game::Entities::NO_SCOPING)
+                    scope.add(activeEntities[iteration]);
+
+            client->send(&scope, true);
         }
 
-        void SServer::onClientDisconnected(Net::CClient *client)
+        void IServer::onClientDisconnected(Net::CClient* client)
         {
             lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
             lua_getglobal(lua, "GameServer");
@@ -220,10 +211,10 @@ namespace Kiaro
             lua_call(lua, 1, 0);
 
             Core::SEventManager::get()->mOnClientDisconnectedEvent.invoke(client);
-            std::cout << "SServer: Received disconnection from " << client->getStringIPAddress() << ":" << client->getPort() << std::endl;
+            Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received disconnection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
         }
 
-        void SServer::onReceivePacket(Support::CBitStream &incomingStream, Net::CClient *sender)
+        void IServer::onReceivePacket(Support::CBitStream& incomingStream, Net::CClient* sender)
         {
             mLastPacketSender = sender;
 
@@ -237,15 +228,10 @@ namespace Kiaro
                     Game::Messages::HandShake receivedHandshake;
                     receivedHandshake.extractFrom(incomingStream);
 
-                    std::cout << "SServer: Client Version is " << (Common::U32)receivedHandshake.mVersionMajor << "."
-                    << (Common::U32)receivedHandshake.mVersionMinor << "." << (Common::U32)receivedHandshake.mVersionRevision << "."
-                    << (Common::U32)receivedHandshake.mVersionBuild << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
-                    Kiaro::Game::Messages::HandShake handShake;
-                    handShake.mVersionMajor = 1;
-                    handShake.mVersionMinor = 2;
-                    handShake.mVersionRevision = 3;
-                    handShake.mVersionBuild = 4;
+                    Game::Messages::HandShake handShake;
 
                     sender->send(&handShake, true);
                     break;
@@ -255,7 +241,7 @@ namespace Kiaro
             mLastPacketSender = NULL;
         }
 
-        Net::CClient* SServer::getLastPacketSender(void)
+        Net::CClient* IServer::getLastPacketSender(void)
         {
             Net::CClient* result = mLastPacketSender;
             mLastPacketSender = NULL;
@@ -263,25 +249,14 @@ namespace Kiaro
             return result;
         }
 
-        void SServer::stop(void) { mIsRunning = false; }
+        void IServer::stop(void) { mIsRunning = false; }
 
-        Common::U32 SServer::getClientCount(void)
+        Common::U32 IServer::getClientCount(void)
         {
             return mConnectedClientSet.size();
         }
 
-        void SServer::setGamemode(Game::IGameMode* game)
-        {
-            if (mCurrentGamemode)
-                mCurrentGamemode->tearDown();
-
-            delete mCurrentGamemode;
-            mCurrentGamemode = game;
-
-            mCurrentGamemode->setup();
-        }
-
-        void SServer::dispatch(void)
+        void IServer::dispatch(void)
         {
             if (mIsRunning)
                 enet_host_flush(mInternalHost);

@@ -13,7 +13,7 @@
 
 #include <game/entities/CSky.hpp>
 #include <game/entities/types.hpp>
-#include <net/SServer.hpp>
+#include <net/IServer.hpp>
 
 #include <support/CBitStream.hpp>
 
@@ -25,14 +25,14 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CSky::CSky() : Game::Entities::IEntity(Game::Entities::ENTITY_SKY, Game::Entities::ENTITYHINT_NONTHINKING), mColor(0, 0, 0, 0)
+            CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, NO_THINKING), mColor(0, 0, 0, 0)
             {
                 instantiate();
 
                 addNetworkedProperty("color", mColor);
             }
 
-            CSky::CSky(Support::CBitStream &in) : Game::Entities::IEntity(Game::Entities::ENTITY_SKY), mColor(0, 0, 0, 0)
+            CSky::CSky(Support::CBitStream& in) : IEntity(ENTITY_SKY), mColor(0, 0, 0, 0)
             {
                 unpackInitialization(in);
             }
@@ -74,15 +74,15 @@ namespace Kiaro
 
             void CSky::instantiate(void)
             {
-                Game::Entities::IEntity::instantiate();
+                IEntity::instantiate();
             }
 
-            void CSky::update(const Common::F32 &deltaTimeSeconds)
+            void CSky::update(const Common::F32& deltaTimeSeconds)
             {
 
             }
 
-            const Common::ColorRGBA &CSky::getColor(void)
+            const Common::ColorRGBA& CSky::getColor(void)
             {
                 return mColor;
             }

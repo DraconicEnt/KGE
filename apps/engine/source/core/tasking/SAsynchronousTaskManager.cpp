@@ -1,6 +1,10 @@
 /**
  */
 
+#include <core/Logging.hpp>
+#include <core/SSettingsRegistry.hpp>
+
+#include <core/tasking/SSynchronousTaskManager.hpp>
 #include <core/tasking/SAsynchronousTaskManager.hpp>
 
 namespace Kiaro
@@ -9,9 +13,9 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SAsynchronousTaskManager *sInstance = NULL;
+            static SAsynchronousTaskManager* sInstance = NULL;
 
-            static void workerThreadLogic(Kiaro::Core::Tasking::WorkerContext *context)
+            static void workerThreadLogic(Core::Tasking::WorkerContext* context)
             {
                 // TODO (Robert MacGregor #9): Detect thread error?
                 if (!context)
@@ -31,10 +35,10 @@ namespace Kiaro
                 }
             }
 
-            SAsynchronousTaskManager *SAsynchronousTaskManager::getPointer(const size_t &poolSize)
+            SAsynchronousTaskManager* SAsynchronousTaskManager::getPointer(void)
             {
                 if (!sInstance)
-                    sInstance = new SAsynchronousTaskManager(poolSize);
+                    sInstance = new SAsynchronousTaskManager();
 
                 return sInstance;
             }
@@ -69,7 +73,7 @@ namespace Kiaro
                 // Do we have any tasks that have completed?
                 for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
                 {
-                    Kiaro::Core::Tasking::WorkerContext *currentWorker = *it;
+                    Core::Tasking::WorkerContext* currentWorker = *it;
 
                     if (currentWorker->mIsComplete)
                     {
@@ -88,12 +92,12 @@ namespace Kiaro
                 return mIdleWorkers.size();
             }
 
-            const size_t &SAsynchronousTaskManager::getWorkerPoolSize(void)
+            const size_t& SAsynchronousTaskManager::getWorkerPoolSize(void)
             {
                 return mPoolSize;
             }
 
-            bool SAsynchronousTaskManager::addTask(Kiaro::Core::Tasking::CTask *task)
+            bool SAsynchronousTaskManager::addTask(Core::Tasking::CTask* task)
             {
                 if (!task)
                 {
@@ -101,10 +105,18 @@ namespace Kiaro
                     return false;
                 }
 
+                // Config demands that we don't do anything asynchronously, so we delegate to the synchronous tasker
+                if (mPoolSize == 0)
+                {
+                    SSynchronousTaskManager::getPointer()->addTask(task);
+                    return false;
+                }
+
                 mScheduledTasks.push(task);
+                return true;
             }
 
-            bool SAsynchronousTaskManager::removeTask(Kiaro::Core::Tasking::CTask *task)
+            bool SAsynchronousTaskManager::removeTask(Core::Tasking::CTask *task)
             {
                 if (!task)
                 {
@@ -118,24 +130,37 @@ namespace Kiaro
                return false;
             }
 
-            SAsynchronousTaskManager::SAsynchronousTaskManager(const size_t &poolSize) : mPoolSize(poolSize)
+            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Core::SSettingsRegistry::getPointer()->getValue<Common::U8>("WorkerThreadCount"))
             {
-                for (size_t iteration = 0; iteration < poolSize; iteration++)
+                if (mPoolSize == 0)
                 {
-                    Kiaro::Core::Tasking::WorkerContext *currentWorker = new Kiaro::Core::Tasking::WorkerContext;
+                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Using no asynchrnous workers; will delegate to the synchronous task manager.");
+                    return;
+                }
+
+                for (Common::U8 iteration = 0; iteration < mPoolSize; iteration++)
+                {
+                    Kiaro::Core::Tasking::WorkerContext* currentWorker = new Kiaro::Core::Tasking::WorkerContext;
                     currentWorker->mTask = NULL;
                     currentWorker->mIsComplete = true;
-                    currentWorker->mThread = new Kiaro::Support::Thread(workerThreadLogic, currentWorker);
+                    currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
+                    currentWorker->mThread->detach();
 
                     mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                 }
 
-                std::cout << "SAsynchronousTaskManager: Initialized with " << poolSize << " workers." << std::endl;
+                Core::Logging::write(Core::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
             }
 
             SAsynchronousTaskManager::~SAsynchronousTaskManager(void)
             {
+                // Kill any active workers
+                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
+                    delete (*it);
 
+                // Kill inactive workers
+                for (auto it = mIdleWorkers.begin(); it != mIdleWorkers.end(); it++)
+                    delete (*it);
             }
         } // End NameSpace Tasking
     } // End NameSpace Engine

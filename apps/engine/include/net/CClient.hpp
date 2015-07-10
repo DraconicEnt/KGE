@@ -27,9 +27,9 @@ namespace Kiaro
     namespace Net
     {
         class IMessage;
-        class SServer;
+        class IServer;
 
-        //! The RemoteClient class is merely used to differentiate between a Client instance we created and a connected remote host in code.
+        //! The CClient class is a handle for a remote host that has connected to the game server.
         class CClient
         {
             public:
@@ -37,7 +37,7 @@ namespace Kiaro
                  *  @brief Constructor accepting a Peer object.
                  *  @param connecting A Peer object that is connecting.
                  */
-                CClient(ENetPeer *connecting, Net::SServer *server);
+                CClient(ENetPeer *connecting, Net::IServer *server);
 
                 //! Standard destructor.
                 ~CClient(void);

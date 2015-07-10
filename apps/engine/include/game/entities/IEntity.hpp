@@ -23,6 +23,8 @@
 #include <filesystem/CFileReader.hpp>
 #include <net/INetworkPersistable.hpp>
 
+#include <game/entities/types.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -35,16 +37,16 @@ namespace Kiaro
             /**
              *  @brief Enumerations representing
              */
-            enum ENTITYHINT_NAME
+            enum HINT_NAME
             {
-                //! NULL hint.
-                ENTITYHINT_NULL = 0,
                 //! A hint that tells the engine that this object does not need automated net updating. It may be pushing updates on its own.
-                ENTITYHINT_NONUPDATING = 1,
+                NO_UPDATING = 1,
                 //! A hint that tells the engine that this object does not need update pulses.
-                ENTITYHINT_NONTHINKING = 2,
+                NO_THINKING = 2,
+                //! A hint that tells the engine that this object is not scoped.
+                NO_SCOPING = 3,
                 //! A hint that tells the engine that this object very rarely updates within any context.
-                ENTITYHINT_STATIC = 4,
+                IS_STATIC = 4,
             };
 
             class IEntity : public Core::INetworkPersistable
@@ -56,7 +58,7 @@ namespace Kiaro
                      *  @param typeMask A Kiaro::Common::U32 representing the type of this
                      *  object.
                      */
-                    IEntity(const Game::Entities::TypeMask &typeMask, const Game::Entities::EntityHintMask &hintMask = 0);
+                    IEntity(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
 
                     //! Standard destructor.
                     ~IEntity(void);
@@ -71,16 +73,20 @@ namespace Kiaro
 
                     Common::U32 getHintMask(void) const;
 
-                    virtual void packUpdate(Support::CBitStream &out);
-                    virtual void unpackUpdate(Support::CBitStream &in);
-                    virtual void packInitialization(Support::CBitStream &out);
-                    virtual void unpackInitialization(Support::CBitStream &in);
+                    void setNetID(const Common::U32& identifier);
+
+                    virtual void packUpdate(Support::CBitStream& out);
+                    virtual void unpackUpdate(Support::CBitStream& in);
+                    virtual void packInitialization(Support::CBitStream& out) const;
+                    virtual void unpackInitialization(Support::CBitStream& in);
                     virtual void instantiate(void);
-                    virtual void update(const Common::F32 &deltaTimeSeconds) = 0;
+                    virtual void update(const Common::F32& deltaTimeSeconds) = 0;
+
+                    virtual void setPosition(const Common::Vector3DF& position) = 0;
 
                 // Protected Members
                 protected:
-                    const Common::U32 mTypeMask;
+                    ENTITY_TYPE mType;
                     Common::U32 mHintMask;
                     Common::U32 mNetID;
 

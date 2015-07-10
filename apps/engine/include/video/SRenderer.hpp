@@ -13,6 +13,8 @@ namespace Kiaro
 {
     namespace Video
     {
+        class CSceneGraph;
+
         class SRenderer
         {
             // Private Members
@@ -20,6 +22,9 @@ namespace Kiaro
                 irr::IrrlichtDevice* mIrrlicht;
                 irr::video::IVideoDriver* mVideo;
                 irr::scene::ISceneManager* mSceneManager;
+
+                CSceneGraph* mMainScene;
+                CSceneGraph* mCurrentScene;
 
                 Common::ColorRGBA mClearColor;
 
@@ -30,6 +35,7 @@ namespace Kiaro
 
                 void drawFrame(void);
 
+                void setSceneGraph(CSceneGraph* graph);
                 void setClearColor(const Common::ColorRGBA& color);
                 const Common::ColorRGBA& getClearColor(void);
 

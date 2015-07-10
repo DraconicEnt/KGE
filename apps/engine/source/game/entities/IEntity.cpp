@@ -11,6 +11,7 @@
  *  @copyright (c) 2013 Draconic Entertainment
  */
 
+#include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 #include <game/SGameWorld.hpp>
 
@@ -20,7 +21,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            IEntity::IEntity(const TypeMask& typeMask, const EntityHintMask& hintMask) : mTypeMask(typeMask),
+            IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : mType(typeMask),
             mHintMask(hintMask), mNetID(0)
             {
 
@@ -31,7 +32,7 @@ namespace Kiaro
 
             }
 
-            Common::U32 IEntity::getTypeMask(void) const { return mTypeMask; }
+            Common::U32 IEntity::getTypeMask(void) const { return mType; }
 
             Common::U32 IEntity::getNetID(void) const { return mNetID; }
 
@@ -47,14 +48,20 @@ namespace Kiaro
 
             }
 
-            void IEntity::packInitialization(Support::CBitStream& out)
+            void IEntity::packInitialization(Support::CBitStream& out) const
             {
-
+                // Here we pack our net ID and type ID
+                out << mType << mNetID;
             }
 
             void IEntity::unpackInitialization(Support::CBitStream &in)
             {
+                in >> mNetID >> mType;
+            }
 
+            void IEntity::setNetID(const Common::U32& identifier)
+            {
+                mNetID = identifier;
             }
 
             void IEntity::instantiate(void)

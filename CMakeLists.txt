@@ -27,8 +27,8 @@ FIND_PACKAGE(ENet REQUIRED)
 FIND_PACKAGE(Irrlicht REQUIRED)
 FIND_PACKAGE(Bullet REQUIRED)
 FIND_PACKAGE(PhysFS REQUIRED)
-FIND_PACKAGE(Boost "1.54.0" REQUIRED "system" "filesystem")
 FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
+FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog)
 
 # Might be useful for something later
 #FIND_PACKAGE(SDL REQUIRED)
@@ -52,7 +52,7 @@ ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
     SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     # gnu++0x is necessary for GTest on Windows, apparently.
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=gnu++0x")
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     
     # To use std::thread and friends, we must pass -lpthread and -pthread to the compiler and Linker for GCC
     IF (NOT WIN32)

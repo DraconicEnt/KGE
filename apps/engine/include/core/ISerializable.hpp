@@ -1,3 +1,9 @@
+/**
+ */
+
+#ifndef _INCLUDE_CORE_ISERIALIZABLE_HPP_
+#define _INCLUDE_CORE_ISERIALIZABLE_HPP_
+
 namespace Kiaro
 {
     namespace Support
@@ -8,12 +14,13 @@ namespace Kiaro
         {
             public:
                 ISerializable(void) { }
-                ISerializable(Support::CBitStream &in) { this->extractFrom(in); }
-                virtual void writeTo(Support::CBitStream &out) const = 0;
+                ISerializable(Support::CBitStream& in) { this->extractFrom(in); }
+                virtual void writeTo(Support::CBitStream& out) const { }
 
-                virtual void extractFrom(Support::CBitStream &in) { }
+                virtual void extractFrom(Support::CBitStream& in) { }
 
-                virtual size_t getRequiredMemory(void) = 0;
+                virtual size_t getRequiredMemory(void) const { }
         };
     }
 }
+#endif // _INCLUDE_CORE_ISERIALIZABLE_HPP_

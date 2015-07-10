@@ -25,6 +25,23 @@ namespace Kiaro
         //! Class representing a packet that has or is ready to traverse across the network to a remote host.
         class IMessage : public Support::ISerializable
         {
+            // Public Members
+            public:
+                static const Common::U8 sAcceptedStage = 0;
+
+                //! A pointer to a Client instance that sent the data. If this is NULL, then the origin was a Server.
+                Net::CClient* mSender;
+
+            // Protected members
+            protected:
+               // const bool mReliable;
+               // const bool mOrdered;
+
+            // Private Members
+            private:
+                Common::U32 mType;
+                Common::U32 mID;
+
             // Public Methods
             public:
                 /**
@@ -42,11 +59,10 @@ namespace Kiaro
                 {
                     static Common::U32 sLastPacketID = 0;
 
-                    out << mType << sLastPacketID;
+                    out << mType << (sLastPacketID++);
                     // TODO (Robert MacGregor#9): Sequencing?
                    // mID = sLastPacketID;
 
-                    sLastPacketID++;
                 }
 
                 virtual void extractFrom(Support::CBitStream& in)
@@ -68,18 +84,6 @@ namespace Kiaro
                 {
                     return sizeof(Common::U32) * 2;
                 }
-
-            // Public Members
-            public:
-                static const Common::U8 sAcceptedStage = 0;
-
-                //! A pointer to a Client instance that sent the data. If this is NULL, then the origin was a Server.
-                Net::CClient* mSender;
-
-            // Private Members
-            private:
-                Common::U32 mType;
-                Common::U32 mID;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

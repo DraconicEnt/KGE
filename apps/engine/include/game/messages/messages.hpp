@@ -23,6 +23,7 @@ namespace Kiaro
                 MESSAGE_HANDSHAKE = 0x03,
                 MESSAGE_SIMCOMMIT = 0x04,
                 MESSAGE_DISCONNECT = 0x05,
+                MESSAGE_SCOPE = 0x06,
             }; // End Enum MESSAGE_TYPE
         } // End NameSpace Packets
     } // End Namespace Game

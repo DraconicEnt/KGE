@@ -12,28 +12,31 @@
 
 #include <CEGUI/CEGUI.h>
 
+#include <game/MoveManager.hpp>
 #include <input/SInputListener.hpp>
+
+#include <core/Logging.hpp>
 
 namespace Kiaro
 {
     namespace Input
     {
-        static SInputListener *InputListenerSingleton_Instance = NULL;
+        static SInputListener* sInstance = NULL;
 
         SInputListener *SInputListener::getPointer(void)
         {
-            if (!InputListenerSingleton_Instance)
-                InputListenerSingleton_Instance = new SInputListener;
+            if (!sInstance)
+                sInstance = new SInputListener;
 
-            return InputListenerSingleton_Instance;
+            return sInstance;
         }
 
         void SInputListener::destroy(void)
         {
-            if (InputListenerSingleton_Instance)
-                delete InputListenerSingleton_Instance;
+            if (sInstance)
+                delete sInstance;
 
-            InputListenerSingleton_Instance = NULL;
+            sInstance = NULL;
         }
 
         SInputListener::SInputListener(void) { }
@@ -47,7 +50,7 @@ namespace Kiaro
                 // Mouse Input
                 case irr::EET_MOUSE_INPUT_EVENT:
                 {
-                    CEGUI::GUIContext &guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+                    CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
 
                     switch(event.MouseInput.Event)
                     {
@@ -76,7 +79,7 @@ namespace Kiaro
                 // Logging
                 case irr::EET_LOG_TEXT_EVENT:
                 {
-                    std::cout << "SInputListener: " << event.LogEvent.Text << std::endl;
+                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SInputListener: %s", event.LogEvent.Text);
                     return true;
                 }
             }

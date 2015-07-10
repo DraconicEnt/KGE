@@ -26,17 +26,17 @@ namespace Kiaro
 {
     namespace Net
     {
-        CClient::CClient(ENetPeer *connecting, Net::SServer *server) : mInternalClient(connecting)
+        CClient::CClient(ENetPeer* connecting, Net::IServer* server) : mInternalClient(connecting)
         {
 
         }
 
         CClient::~CClient(void)
         {
-
+            this->disconnect("Destroyed net handle.");
         }
 
-        void CClient::send(Net::IMessage *packet, const bool &reliable)
+        void CClient::send(Net::IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
@@ -55,7 +55,7 @@ namespace Kiaro
             return mIsOppositeEndian;
         }
 
-        void CClient::disconnect(const Support::String &reason)
+        void CClient::disconnect(const Support::String& reason)
         {
             Game::Messages::Disconnect disconnect;
             disconnect.mReason = reason;
@@ -64,12 +64,12 @@ namespace Kiaro
             enet_peer_disconnect_later(mInternalClient, 0);
         }
 
-        const Common::U16 &CClient::getPort(void)
+        const Common::U16& CClient::getPort(void)
         {
             return mInternalClient->address.port;
         }
 
-        const Common::U32 &CClient::getBinaryIPAddress(void)
+        const Common::U32& CClient::getBinaryIPAddress(void)
         {
             return mInternalClient->address.host;
         }

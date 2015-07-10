@@ -25,6 +25,16 @@
 
 namespace Kiaro
 {
+    //! An enumeration used to store versioning information.
+    enum VERSION
+    {
+        MAJOR = 0,
+        MINOR = 0,
+        BUILD = 0,
+        REVISION = 0,
+        PROTOCOL = 0
+    };
+
     //! Enumeration used to represent all possible engine exit statuses.
     enum EXIT_STATUS_NAME
     {

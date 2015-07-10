@@ -38,6 +38,7 @@ namespace Kiaro
     namespace Game
     {
         class IGameMode;
+        class CGameClient;
 
         namespace Entities
         {
@@ -51,7 +52,7 @@ namespace Kiaro
         class CClient;
 
         //! Server class that remote hosts connect to.
-        class SServer
+        class IServer
         {
             // Public Typedefs
             public:
@@ -60,9 +61,6 @@ namespace Kiaro
 
             // Public Methods
             public:
-                static SServer* getPointer(const Support::String& listenAddress = "0.0.0.0", const Common::U16& listenPort = 11595, const Common::U32 &maximumClientCount = 32);
-                static void destroy(void);
-
                 /**
                  *  @brief Signals the server to stop running.
                  */
@@ -121,30 +119,28 @@ namespace Kiaro
 
                 clientConstIterator clientsEnd(void) { return mConnectedClientSet.end(); }
 
-            // Private Methods
-            private:
+            // Protected Methods
+            protected:
                 /**
                  *  @brief Constructor that initializes a server instance with the given information.
                  *  @param listen_address An array of c8 representing the IP address to listen on.
                  *  @param listen_port A Kiaro::Common::U16 representing the port number to listen on.
                  *  @param clients A Kiaro::Common::U32 representing the maximum number of clients to accept.
                  */
-                SServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
+                IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
 
                 /**
                  *  @brief Standard virtual destructor.
                  *  @note The only reason this destructor is virtual is to prevent compiler warnings when deleting instances that
                  *  are children of this Server class.
                  */
-                ~SServer(void);
+                ~IServer(void);
 
             // Private Members
             private:
                 Net::CClient* mLastPacketSender;
 
                 Game::SGameWorld* mEntityGroup;
-
-                Game::IGameMode* mCurrentGamemode;
 
                 bool mIsRunning;
 

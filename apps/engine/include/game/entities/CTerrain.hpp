@@ -41,17 +41,19 @@ namespace Kiaro
             {
                 // Public Methods
                 public:
-                    CTerrain(const std::string &terrainFile);
-                    CTerrain(Kiaro::Support::CBitStream &in);
+                    CTerrain(const std::string& terrainFile);
+                    CTerrain(Kiaro::Support::CBitStream& in);
 
                     ~CTerrain(void);
 
                     virtual void packUpdate(Kiaro::Support::CBitStream &out);
                     virtual void unpackUpdate(Kiaro::Support::CBitStream &in);
-                    virtual void packInitialization(Kiaro::Support::CBitStream &out);
+                    virtual void packInitialization(Kiaro::Support::CBitStream &out) const;
                     virtual void unpackInitialization(Kiaro::Support::CBitStream &in);
                     virtual void instantiate(void);
                     virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+
+                    void setPosition(const Common::Vector3DF& position);
 
                 // Private Members
                 private:

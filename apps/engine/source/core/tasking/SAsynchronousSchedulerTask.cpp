@@ -9,9 +9,9 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SAsynchronousSchedulerTask *sInstance = NULL;
+            static SAsynchronousSchedulerTask* sInstance = NULL;
 
-            SAsynchronousSchedulerTask *SAsynchronousSchedulerTask::getPointer(void)
+            SAsynchronousSchedulerTask* SAsynchronousSchedulerTask::getPointer(void)
             {
                 if (!sInstance)
                     sInstance = new SAsynchronousSchedulerTask;
@@ -33,7 +33,7 @@ namespace Kiaro
 
             }
 
-            bool SAsynchronousSchedulerTask::tick(const Kiaro::Common::F32 &deltaTime)
+            bool SAsynchronousSchedulerTask::tick(const Kiaro::Common::F32& deltaTime)
             {
                 mMutex.lock();
 

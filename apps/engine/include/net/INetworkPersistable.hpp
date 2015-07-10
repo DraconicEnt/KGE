@@ -59,26 +59,6 @@ namespace Kiaro
                 //! Standard Constructor
                 INetworkPersistable(void) : mFinalizedNetworkedProperties(false) { }
 
-                /**
-                void finalizeNetworkedProperties(void)
-                {
-                    // New map with our bit indexes
-                    std::map<size_t, std::tuple<void*, size_t, size_t> > replacementMap;
-
-                    Kiaro::Common::U32 currentBitIdentifier = 0;
-                    for (std::map<size_t, std::tuple<void*, size_t, size_t> >::iterator it = mNetworkedProperties.begin(); it != mNetworkedProperties.end(); it++)
-                    {
-                        std::tuple<void*, size_t, size_t> currentPropertyInformation = (*it).second;
-                        replacementMap[(*it).first] = std::make_tuple(std::get<0>(currentPropertyInformation), std::get<1>(currentPropertyInformation), currentBitIdentifier);
-
-                        currentBitIdentifier++;
-                    }
-
-                    mFinalizedNetworkedProperties = true;
-                    mNetworkedProperties = replacementMap;
-                }
-                */
-
                 template <typename propertyType>
                 void addNetworkedProperty(const Support::String& name, propertyType &propertyValue)
                 {
