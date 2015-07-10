@@ -20,18 +20,11 @@ namespace Kiaro
     {
         static SInputListener* sInstance = NULL;
 
-       static void TestThing(bool pressed)
-        {
-            const Common::C8* message = pressed ? "Pressed" : "Not Pressed";
-            Core::Logging::write(Core::Logging::MESSAGE_DEBUG, message);
-        }
-
         SInputListener* SInputListener::getPointer(void)
         {
             if (!sInstance)
                 sInstance = new SInputListener;
 
-            sInstance->setKeyResponder(CEGUI::Key::A, TestThing);
             return sInstance;
         }
 
