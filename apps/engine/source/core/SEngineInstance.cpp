@@ -312,7 +312,7 @@ namespace Kiaro
             if (mEngineMode == Kiaro::Core::MODE_DEDICATED)
                 videoDriver = irr::video::EDT_NULL;
 
-            Core::SSettingsRegistry *settings = Core::SSettingsRegistry::getPointer();
+            Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
 
             // Init the Input listener
             Input::SInputListener* inputListener = Input::SInputListener::getPointer();
@@ -395,7 +395,6 @@ namespace Kiaro
                 {
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
-
                     Core::Tasking::SAsynchronousTaskManager::getPointer()->tick();
 
                     // Pump a time pulse at the scheduler
