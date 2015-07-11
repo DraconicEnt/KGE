@@ -20,8 +20,12 @@ IF (BUILD_UNITTESTS)
 ENDIF (BUILD_UNITTESTS)
 
 # Configure the Project itself
-file(GLOB_RECURSE ENGINE_SOURCES "source/*.cpp" "tests/*.cpp")
 file(GLOB_RECURSE ENGINE_INCLUDES "include/*.hpp")
+IF(NOT ENGINE_UB)
+    file(GLOB_RECURSE ENGINE_SOURCES "source/*.cpp")
+ELSE (NOT ENGINE_UB)
+    SET(ENGINE_SOURCES "source/UB_main.cpp")
+ENDIF (NOT ENGINE_UB)
 
 SET (ENGINE_BUILDLOCATION "../../bin/KGE")
 

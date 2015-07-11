@@ -7,10 +7,14 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
 PROJECT (Lua)
 
 # Configure the Project itself
-file(GLOB_RECURSE LUA_SOURCES "source/*.c")
-file(GLOB_RECURSE LUA_SOURCES_CPP "source/*.cpp")
 file(GLOB_RECURSE LUA_INCLUDES_HPP "include/*.hpp")
 file(GLOB_RECURSE LUA_INCLUDES "include/*.hpp")
+    
+IF(NOT ENGINE_UB)
+    file(GLOB_RECURSE LUA_SOURCES "source/*.c")
+ELSE (NOT ENGINE_UB)
+    SET(LUA_SOURCES "source/UB_main.c")
+ENDIF (NOT ENGINE_UB)
 
 SET (LUA_BUILDLOCATION "lua")
 
