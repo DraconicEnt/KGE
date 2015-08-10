@@ -77,6 +77,7 @@ ENDIF(ENGINE_UB)
 
 # Handle our build options
 IF (BUILD_ENGINE)
-    ADD_SUBDIRECTORY("apps/lua")
-    ADD_SUBDIRECTORY("apps/engine")
+    ADD_SUBDIRECTORY("deps")
+    ADD_SUBDIRECTORY("components")
+    ADD_SUBDIRECTORY("apps")
 ENDIF (BUILD_ENGINE)
