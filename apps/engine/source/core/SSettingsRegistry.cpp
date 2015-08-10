@@ -39,17 +39,17 @@ namespace Kiaro
             {
                 Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
 
-                // Server
-                this->setValue("ListenAddress", Support::String("0.0.0.0"));
-                this->setValue("ListenPort", Common::U16(11595));
-                this->setValue("MaximumClientCount", Common::U32(32));
+                this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
+                this->setValue("Server::ListenPort", Common::U16(11595));
+                this->setValue("Server::MaximumClientCount", Common::U32(32));
 
-                // Video
-                this->setValue("Fullscreen", true);
-                this->setValue("Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+                this->setValue("Video::Fullscreen", true);
+                this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
 
-                // System
-                this->setValue("WorkerThreadCount", Common::U8(6));
+                this->setValue("System::WorkerThreadCount", Common::U8(6));
+
+                // Set default keymap values
+
             }
             else
             {
@@ -83,17 +83,14 @@ namespace Kiaro
                 if (workerThreadCountConfig)
                     workerThreadCount = atoi(workerThreadCountConfig);
 
-                // Server
-                this->setValue("ListenAddress", listenAddress);
-                this->setValue("ListenPort", listenPort);
-                this->setValue("MaximumClientCount", maximumClientCount);
+                this->setValue("Server::ListenAddress", listenAddress);
+                this->setValue("Server::ListenPort", listenPort);
+                this->setValue("Server::MaximumClientCount", maximumClientCount);
 
-                // Video
-                this->setValue("Fullscreen", fullScreen);
-                this->setValue("Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+                this->setValue("Video::Fullscreen", fullScreen);
+                this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
 
-                // System
-                this->setValue("WorkerThreadCount", workerThreadCount);
+                this->setValue("System::WorkerThreadCount", workerThreadCount);
 
                 al_destroy_config(config);
                 Core::Logging::write(Core::Logging::MESSAGE_INFO, "SSettingsRegistry: Loaded config.cfg.");

@@ -146,17 +146,11 @@ namespace Kiaro
             if (!mRunning)
                 return;
 
-            //if (mServer)
-            //{
-            //    mServer->
-           // }
-
             Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
-
             mRunning = false;
         }
 
-        SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595), mClient(NULL), mServer(NULL),
+        SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
         mRunning(false), mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)), mLuaState(NULL), mCurrentScene(NULL)
         {
 
@@ -167,21 +161,8 @@ namespace Kiaro
             Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
 
             // TODO: Check the destroy order
-            if (mClient)
-            {
-                mClient->disconnect();
-                Net::SClient::destroy();
-
-                mClient = NULL;
-            }
-
-            if (mServer)
-            {
-                Game::SGameServer::destroy();
-
-                mServer = NULL;
-            }
-
+            Net::SClient::destroy();
+            Game::SGameServer::destroy();
             Input::SInputListener::destroy();
             Support::SSynchronousScheduler::destroy();
 
@@ -206,11 +187,13 @@ namespace Kiaro
         void SEngineInstance::networkUpdate(void)
         {
             // FIXME (Robert MacGregor#9): Pass in the time delta
-            if (mClient)
-                mClient->networkUpdate();
+            Net::SClient* client = Net::SClient::getPointer();
+            if (client)
+                client->networkUpdate();
 
-            if (mServer)
-                mServer->networkUpdate(0.0f);
+            Game::SGameServer* server = Game::SGameServer::getPointer();
+            if (server)
+                server->networkUpdate(0.0f);
         }
 
         lua_State *SEngineInstance::getLuaState(void) { return mLuaState; }
@@ -318,7 +301,7 @@ namespace Kiaro
             Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
             // Start up Irrlicht
-            mIrrlichtDevice = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Resolution"), 32, false, false, false, inputListener);
+            mIrrlichtDevice = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution"), 32, false, false, false, inputListener);
             mIrrlichtDevice->setWindowCaption(L"Kiaro Game Engine");
 
             // Grab the scene manager and store it to reduce a function call
@@ -348,16 +331,17 @@ namespace Kiaro
             {
                 case Core::MODE_CLIENT:
                 {
-                    mClient = Net::SClient::getPointer();
+                    Net::SClient::initialize(mIrrlichtDevice);
                     break;
                 }
 
                 case Core::MODE_CLIENTCONNECT:
                 {
-                    mClient = Net::SClient::getPointer();
-                    mClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
+                    Net::SClient::initialize(mIrrlichtDevice);
+                    Net::SClient* client = Net::SClient::getPointer();
+                    client->connect(mTargetServerAddress, mTargetServerPort, 5000);
 
-                    if (!mClient->getIsConnected())
+                    if (!client->getIsConnected())
                     {
                         Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with srrver flag!");
 
@@ -369,7 +353,7 @@ namespace Kiaro
 
                 case Core::MODE_DEDICATED:
                 {
-                    mServer = Game::SGameServer::getPointer();
+                    Game::SGameServer::initialize();
                     break;
                 }
             }
@@ -432,18 +416,13 @@ namespace Kiaro
                     Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
                     // Something is probably up, we should leave.
-                    if (mClient)
-                    {
-                        mClient->disconnect();
-                        mClient = NULL;
-
-                        Net::SClient::destroy();
-                    }
+                    Net::SClient::destroy();
 
                     // Servers just drop off the client that it last processed
-                    if (mServer)
+                    Game::SGameServer* server = Game::SGameServer::getPointer();
+                    if (server)
                     {
-                        Net::CClient* lastClient = mServer->getLastPacketSender();
+                        Net::CClient* lastClient = server->getLastPacketSender();
 
                         // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
                         if (lastClient)

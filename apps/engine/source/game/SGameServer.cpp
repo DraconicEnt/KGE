@@ -15,17 +15,20 @@ namespace Kiaro
     {
         static SGameServer* sInstance = NULL;
 
-        SGameServer* SGameServer::getPointer(void)
+        void SGameServer::initialize(void)
         {
             if (!sInstance)
             {
                 Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
 
-                sInstance = new SGameServer(settings->getValue<Support::String>("ListenAddress"),
-                                            settings->getValue<Common::U16>("ListenPort"),
-                                            settings->getValue<Common::U32>("MaximumClientCount"));
+                sInstance = new SGameServer(settings->getValue<Support::String>("Server::ListenAddress"),
+                                            settings->getValue<Common::U16>("Server::ListenPort"),
+                                            settings->getValue<Common::U32>("Server::MaximumClientCount"));
             }
+        }
 
+        SGameServer* SGameServer::getPointer(void)
+        {
             return sInstance;
         }
 
@@ -40,9 +43,7 @@ namespace Kiaro
 
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
-            // Create a terrain entity to test
-            Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain("textures/terrain-heightmap.bmp");
-            Game::SGameWorld::getPointer()->addEntity(terrain);
+
         }
 
         SGameServer::~SGameServer(void)

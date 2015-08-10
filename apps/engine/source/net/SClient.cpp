@@ -193,11 +193,14 @@ namespace Kiaro
             lua_call(lua, 0, 0);
         }
 
-        SClient* SClient::getPointer(irr::IrrlichtDevice* irrlicht)
+        void SClient::initialize(irr::IrrlichtDevice* irrlicht)
         {
             if (!sInstance)
                 sInstance = new SClient(irrlicht, NULL, NULL);
+        }
 
+        SClient* SClient::getPointer(void)
+        {
             return sInstance;
         }
 
@@ -205,6 +208,8 @@ namespace Kiaro
         {
             if (sInstance)
             {
+                sInstance->disconnect();
+
                 delete sInstance;
                 sInstance = NULL;
             }

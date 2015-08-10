@@ -15,6 +15,7 @@ namespace Kiaro
         class SGameServer : public Net::IServer
         {
             public:
+                static void initialize(void);
                 static SGameServer* getPointer(void);
                 static void destroy(void);
 

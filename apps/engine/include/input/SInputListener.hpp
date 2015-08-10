@@ -15,7 +15,10 @@
 #include <core/common.hpp>
 #include <irrlicht.h>
 
+#include <CEGUI/CEGUI.h>
 #include <physfs.h>
+
+#include <support/UnorderedMap.hpp>
 
 namespace Kiaro
 {
@@ -23,12 +26,24 @@ namespace Kiaro
     {
         class SInputListener : public irr::IEventReceiver
         {
+            // Public Members
+            public:
+                typedef void (*KeyResponderPointer)(bool state);
+
+            // Private Members
+            private:
+                 bool mKeyStates[256];
+
+                 Support::UnorderedMap<Common::C8, KeyResponderPointer> mKeyResponders;
+
             // Public Methods
             public:
                 static SInputListener *getPointer(void);
                 static void destroy(void);
 
                 bool OnEvent(const irr::SEvent &event);
+
+                void setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderPointer responder);
 
             // Private Methods
             private:

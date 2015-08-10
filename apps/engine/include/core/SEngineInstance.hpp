@@ -178,10 +178,6 @@ namespace Kiaro
                 Common::C8* mTargetServerAddress;
                 Common::U16 mTargetServerPort;
 
-                //! A stored pointer to the client singleton instance.
-                Net::SClient* mClient;
-                //! A stored pointer to the server singleton instance.
-                Game::SGameServer* mServer;
 
                 //! A pointer to the Lua scripting engine instance.
                 lua_State* mLuaState;

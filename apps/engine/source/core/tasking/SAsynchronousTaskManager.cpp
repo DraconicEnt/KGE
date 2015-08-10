@@ -130,7 +130,7 @@ namespace Kiaro
                return false;
             }
 
-            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Core::SSettingsRegistry::getPointer()->getValue<Common::U8>("WorkerThreadCount"))
+            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Core::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
             {
                 if (mPoolSize == 0)
                 {

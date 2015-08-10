@@ -47,7 +47,8 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                static SClient* getPointer(irr::IrrlichtDevice* irrlicht = NULL);
+                static void initialize(irr::IrrlichtDevice* irrlicht);
+                static SClient* getPointer(void);
                 static void destroy(void);
 
                 /**

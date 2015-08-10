@@ -33,6 +33,9 @@ namespace Kiaro
                 {
                     size_t mapIndex = Common::string_hash(name);
 
+                    if (mStoredProperties.count(mapIndex) == 0)
+                        throw std::out_of_range("No such setting key!");
+
                     return *(storedType*)(mStoredProperties[mapIndex].first);
                 }
 
