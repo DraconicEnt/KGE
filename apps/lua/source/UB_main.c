@@ -41,5 +41,6 @@
 #include "engine/netlib.c"
 #include "engine/scenegraphlib.c"
 #include "engine/videolib.c"
+#include "engine/gamelib.c"
 
 #endif

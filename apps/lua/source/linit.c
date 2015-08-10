@@ -43,6 +43,7 @@ static const luaL_Reg loadedlibs[] = {
   {LUA_VIDEOLIBNAME, luaopen_video},
   {LUA_CLIENTLIBNAME, luaopen_client},
   {LUA_SCENEGRAPHLIBNAME, luaopen_scenegraph},
+  {LUA_GAMELIBNAME, luaopen_game},
   {NULL, NULL}
 };
 
