@@ -1,0 +1,22 @@
+# Kiaro Game Engine CMake Build File
+# This software is licensed under the Draconic Free License Version 1.
+# Please refer to LICENSE.txt for more information.
+# Copyright (c) 2014 Draconic Entertainment
+
+MESSAGE(STATUS "Configuring Support Component ...")
+
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+PROJECT (Support)
+
+# Configure the Project itself
+file(GLOB_RECURSE SUPPORT_INCLUDES "include/*.hpp")
+file(GLOB_RECURSE SUPPORT_SOURCES "source/*.cpp")
+
+# FIXME: Include dirs?
+INCLUDE_DIRECTORIES ("include/" "../engine/include")
+ADD_LIBRARY (Support "STATIC" ${SUPPORT_SOURCES} ${SUPPORT_INCLUDES})
+
+# Ensure that the parent can see our includes
+GET_FILENAME_COMPONENT(SUPPORT_INCLUDE_DIRECTORY "include/" ABSOLUTE)
+SET(SUPPORT_INCLUDES ${SUPPORT_INCLUDES} PARENT_SCOPE)
+SET(SUPPORT_INCLUDE_DIRECTORY ${SUPPORT_INCLUDE_DIRECTORY} PARENT_SCOPE)
