@@ -4,7 +4,7 @@
 #ifndef _INCLUDE_SSYNCHRONOUS_TASK_MANAGER_HPP_
 #define _INCLUDE_SSYNCHRONOUS_TASK_MANAGER_HPP_
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <core/tasking/CTask.hpp>
 #include <support/support.hpp>
@@ -22,9 +22,9 @@ namespace Kiaro
                     static SSynchronousTaskManager *getPointer(void);
                     static void destroy(void);
 
-                    void tick(const Kiaro::Common::F32 &deltaTime);
-                    bool addTask(Kiaro::Core::Tasking::CTask *task);
-                    bool removeTask(Kiaro::Core::Tasking::CTask *task);
+                    void tick(const Common::F32 &deltaTime);
+                    bool addTask(CTask *task);
+                    bool removeTask(CTask *task);
 
                 // Private Methods
                 private:
@@ -33,7 +33,7 @@ namespace Kiaro
 
                 // Private Members
                 private:
-                    Kiaro::Support::UnorderedSet<Kiaro::Core::Tasking::CTask *> mTaskList;
+                    Support::UnorderedSet<CTask *> mTaskList;
             };
         } // End NameSpace Tasking
     } // End NameSpace Engine

@@ -5,7 +5,7 @@
 #define _INCLUDE_CTASK_HPP
 
 #include <support/support.hpp>
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {
@@ -20,7 +20,7 @@ namespace Kiaro
 
                     virtual void initialize(void) = 0;
 
-                    virtual bool tick(const Kiaro::Common::F32 &deltaTime) = 0;
+                    virtual bool tick(const Common::F32 &deltaTime) = 0;
 
                     virtual void deinitialize(void) = 0;
 

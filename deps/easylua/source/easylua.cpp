@@ -1,7 +1,7 @@
 /**
  */
 
-#include <easylua.hpp>
+#include <easylua/easylua.hpp>
 
 namespace EasyLua
 {

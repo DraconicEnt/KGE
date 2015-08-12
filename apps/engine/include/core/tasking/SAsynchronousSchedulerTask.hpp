@@ -2,9 +2,9 @@
 #ifndef _INCLUDE_KIARO_ENGINE_TASKER_SASYNCHRONOUSSCHEDULERTASK_HPP_
 #define _INCLUDE_KIARO_ENGINE_TASKER_SASYNCHRONOUSSCHEDULERTASK_HPP_
 
-#include <easydelegate.hpp>
+#include <easydelegate/easydelegate.hpp>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <support/support.hpp>
 
@@ -25,7 +25,7 @@ namespace Kiaro
 
                     void initialize(void);
 
-                    bool tick(const Kiaro::Common::F32 &deltaTime);
+                    bool tick(const Common::F32 &deltaTime);
 
                     void deinitialize(void);
 
@@ -38,11 +38,11 @@ namespace Kiaro
 
                 // Public Members
                 public:
-                    Kiaro::Support::Mutex mMutex;
+                    Support::Mutex mMutex;
 
                 // Private Members
                 private:
-                    Kiaro::Support::UnorderedSet<EasyDelegate::GenericCachedDelegate *> mScheduledTasks;
+                    Support::UnorderedSet<EasyDelegate::IDeferredCaller *> mScheduledTasks;
             };
         } // End NameSpace Tasking
     } // End Namespace Engine

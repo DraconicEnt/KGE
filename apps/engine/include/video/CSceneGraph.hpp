@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_ENGINE_CSCENEGRAPH_HPP_
 #define _INCLUDE_ENGINE_CSCENEGRAPH_HPP_
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <irrlicht.h>
 
