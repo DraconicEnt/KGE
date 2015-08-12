@@ -7,7 +7,7 @@
 
 #include <allegro5/allegro.h>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <support/String.hpp>
 #include <support/UnorderedMap.hpp>

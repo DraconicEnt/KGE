@@ -28,16 +28,15 @@
 
 #include <game/SGameServer.hpp>
 
-#include <net/SClient.hpp>
-
-#include <net/CClient.hpp>
+#include <net/IOutgoingClient.hpp>
+#include <net/CIncomingClient.hpp>
 
 #include <support/FTime.hpp>
 #include <core/SSynchronousScheduler.hpp>
 
 #include <video/CSceneGraph.hpp>
 
-#include <core/Logging.hpp>
+#include <support/Logging.hpp>
 
 namespace Kiaro
 {
@@ -103,18 +102,18 @@ namespace Kiaro
 
             this->initializeFileSystem(argc, argv);
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
 
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
             {
                 mRunning = false;
 
-                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
+                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
                 return -1;
             }
             else
-                Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
+                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
 
             Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
 

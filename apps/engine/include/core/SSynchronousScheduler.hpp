@@ -13,12 +13,12 @@
 
 #include <tuple> // std::tuple
 
-#include <easydelegate.hpp>
+#include <easydelegate/easydelegate.hpp>
 
 #include <support/FTime.hpp>
 
 #include <support/support.hpp>
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {

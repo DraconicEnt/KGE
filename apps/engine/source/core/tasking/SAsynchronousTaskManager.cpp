@@ -1,7 +1,8 @@
 /**
  */
 
-#include <core/Logging.hpp>
+#include <support/Logging.hpp>
+#include <core/config.hpp>
 #include <core/SSettingsRegistry.hpp>
 
 #include <core/tasking/SSynchronousTaskManager.hpp>
@@ -15,7 +16,7 @@ namespace Kiaro
         {
             static SAsynchronousTaskManager* sInstance = NULL;
 
-            static void workerThreadLogic(Core::Tasking::WorkerContext* context)
+            static void workerThreadLogic(WorkerContext* context)
             {
                 // TODO (Robert MacGregor #9): Detect thread error?
                 if (!context)
@@ -58,10 +59,10 @@ namespace Kiaro
                 for (size_t iteration = 0; iteration < mScheduledTasks.size() && iteration < mIdleWorkers.size(); iteration++)
                 {
                     // TODO (Robert MacGregor#9): More efficiency?
-                    Kiaro::Core::Tasking::WorkerContext *currentWorker = *mIdleWorkers.begin();
+                    WorkerContext* currentWorker = *mIdleWorkers.begin();
                     mIdleWorkers.erase(currentWorker);
 
-                    Kiaro::Core::Tasking::CTask *currentTask = mScheduledTasks.front();
+                    CTask* currentTask = mScheduledTasks.front();
                     mScheduledTasks.pop();
 
                     currentWorker->mTask = currentTask;
@@ -73,7 +74,7 @@ namespace Kiaro
                 // Do we have any tasks that have completed?
                 for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
                 {
-                    Core::Tasking::WorkerContext* currentWorker = *it;
+                    WorkerContext* currentWorker = *it;
 
                     if (currentWorker->mIsComplete)
                     {
@@ -97,7 +98,7 @@ namespace Kiaro
                 return mPoolSize;
             }
 
-            bool SAsynchronousTaskManager::addTask(Core::Tasking::CTask* task)
+            bool SAsynchronousTaskManager::addTask(CTask* task)
             {
                 if (!task)
                 {
@@ -116,7 +117,7 @@ namespace Kiaro
                 return true;
             }
 
-            bool SAsynchronousTaskManager::removeTask(Core::Tasking::CTask *task)
+            bool SAsynchronousTaskManager::removeTask(CTask *task)
             {
                 if (!task)
                 {
@@ -130,17 +131,17 @@ namespace Kiaro
                return false;
             }
 
-            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Core::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
+            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
             {
                 if (mPoolSize == 0)
                 {
-                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Using no asynchrnous workers; will delegate to the synchronous task manager.");
+                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Using no asynchrnous workers; will delegate to the synchronous task manager.");
                     return;
                 }
 
                 for (Common::U8 iteration = 0; iteration < mPoolSize; iteration++)
                 {
-                    Kiaro::Core::Tasking::WorkerContext* currentWorker = new Kiaro::Core::Tasking::WorkerContext;
+                    WorkerContext* currentWorker = new WorkerContext();
                     currentWorker->mTask = NULL;
                     currentWorker->mIsComplete = true;
                     currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
@@ -149,7 +150,7 @@ namespace Kiaro
                     mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                 }
 
-                Core::Logging::write(Core::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
+                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
             }
 
             SAsynchronousTaskManager::~SAsynchronousTaskManager(void)

@@ -2,8 +2,8 @@
  *  @file SSettingsRegistry.cpp
  */
 
-#include <core/Logging.hpp>
-#include <core/common.hpp>
+#include <support/Logging.hpp>
+#include <support/common.hpp>
 #include <support/String.hpp>
 
 #include <core/SSettingsRegistry.hpp>
@@ -37,14 +37,14 @@ namespace Kiaro
 
             if (!config)
             {
-                Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
+                Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
 
                 this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
                 this->setValue("Server::ListenPort", Common::U16(11595));
                 this->setValue("Server::MaximumClientCount", Common::U32(32));
 
                 this->setValue("Video::Fullscreen", true);
-                this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+              //  this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
 
                 this->setValue("System::WorkerThreadCount", Common::U8(6));
 
@@ -88,12 +88,12 @@ namespace Kiaro
                 this->setValue("Server::MaximumClientCount", maximumClientCount);
 
                 this->setValue("Video::Fullscreen", fullScreen);
-                this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+              //  this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
 
                 this->setValue("System::WorkerThreadCount", workerThreadCount);
 
                 al_destroy_config(config);
-                Core::Logging::write(Core::Logging::MESSAGE_INFO, "SSettingsRegistry: Loaded config.cfg.");
+                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SSettingsRegistry: Loaded config.cfg.");
             }
         }
 
@@ -149,10 +149,10 @@ namespace Kiaro
                 al_save_config_file("config.cfg", config);
                 al_destroy_config(config);
 
-                Core::Logging::write(Core::Logging::MESSAGE_INFO, "SSettingsRegistry: Wrote new configuration file.");
+                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SSettingsRegistry: Wrote new configuration file.");
             }
             else
-                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SSettingsRegistry: Failed to acquire Allegro config handle!");
+                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SSettingsRegistry: Failed to acquire Allegro config handle!");
 
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); it++)

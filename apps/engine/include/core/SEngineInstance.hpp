@@ -14,10 +14,9 @@
 
 #include <lua.hpp>
 #include <irrlicht.h>
-#include <easydelegate.hpp>
 
 #include <support/support.hpp>
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {
