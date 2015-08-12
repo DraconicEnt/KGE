@@ -11,10 +11,7 @@
 
 #include <net/IServer.hpp>
 
-#include <net/CClient.hpp>
-
-#include <net/messages/HandShake.hpp>
-#include <net/messages/SimCommit.hpp>
+#include <net/CIncomingClient.hpp>
 
 namespace Kiaro
 {
@@ -100,15 +97,15 @@ namespace Kiaro
 
         void IServer::globalSend(Net::IMessage* packet, const bool& reliable)
         {
-            for (std::set<Net::CClient*>::iterator it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
+            for (std::set<Net::CIncomingClient*>::iterator it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
                 (*it)->send(packet, reliable);
         }
 
         void IServer::networkUpdate(const Common::F32& deltaTimeSeconds)
         {
             // Dispatch commit packets after we're done dispatching sim updates
-            Net::Messages::SimCommit commitPacket;
-            this->globalSend(&commitPacket, true);
+           // Net::Messages::SimCommit commitPacket;
+           // this->globalSend(&commitPacket, true);
 
             ENetEvent event;
             while (enet_host_service(mInternalHost, &event, 0) > 0)
@@ -117,7 +114,7 @@ namespace Kiaro
                 {
                     case ENET_EVENT_TYPE_CONNECT:
                     {
-                        CClient* client = new Net::CClient(event.peer, this);
+                        CIncomingClient* client = new CIncomingClient(event.peer, this);
                         event.peer->data = client;
 
                         mConnectedClientSet.insert(mConnectedClientSet.end(), client);
@@ -128,7 +125,7 @@ namespace Kiaro
 
                     case ENET_EVENT_TYPE_DISCONNECT:
                     {
-                        Net::CClient* disconnected = (Net::CClient*)event.peer->data;
+                        CIncomingClient* disconnected = (CIncomingClient*)event.peer->data;
                         onClientDisconnected(disconnected);
 
                         mConnectedClientSet.erase(disconnected);
@@ -145,7 +142,7 @@ namespace Kiaro
                             throw std::runtime_error("IServer: Invalid ENet peer data on packet receive!");
                         }
 
-                        Net::CClient* sender = (Net::CClient*)event.peer->data;
+                        CIncomingClient* sender = (CIncomingClient*)event.peer->data;
                         Support::CBitStream incomingStream(event.packet->data, event.packet->dataLength);
 
                         onReceivePacket(incomingStream, sender);
@@ -160,7 +157,7 @@ namespace Kiaro
             }
         }
 
-        void IServer::onClientConnected(Net::CClient* client)
+        void IServer::onClientConnected(CIncomingClient* client)
         {
             // Can we accept this guy?
             if (mConnectedClientSet.size() >= mMaximumClientCount)
@@ -193,7 +190,7 @@ namespace Kiaro
             //client->send(&scope, true);
         }
 
-        void IServer::onClientDisconnected(Net::CClient* client)
+        void IServer::onClientDisconnected(CIncomingClient* client)
         {
             /*
             lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
@@ -208,13 +205,14 @@ namespace Kiaro
             //Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received disconnection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
         }
 
-        void IServer::onReceivePacket(Support::CBitStream& incomingStream, Net::CClient* sender)
+        void IServer::onReceivePacket(Support::CBitStream& incomingStream, CIncomingClient* sender)
         {
             mLastPacketSender = sender;
 
-            Net::IMessage basePacket;
-            basePacket.extractFrom(incomingStream);
+//            Net::IMessage basePacket;
+//            basePacket.extractFrom(incomingStream);
 
+            /*
             switch (basePacket.getType())
             {
                 case Net::Messages::MESSAGE_HANDSHAKE:
@@ -231,13 +229,14 @@ namespace Kiaro
                     break;
                 }
             }
+            */
 
             mLastPacketSender = NULL;
         }
 
-        Net::CClient* IServer::getLastPacketSender(void)
+        CIncomingClient* IServer::getLastPacketSender(void)
         {
-            Net::CClient* result = mLastPacketSender;
+            CIncomingClient* result = mLastPacketSender;
             mLastPacketSender = NULL;
 
             return result;

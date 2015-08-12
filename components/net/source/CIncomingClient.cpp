@@ -14,29 +14,29 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <net/CClient.hpp>
+#include <net/CIncomingClient.hpp>
 
 #include <support/CBitStream.hpp>
 
 #include <net/IMessage.hpp>
 
-#include <net/messages/Disconnect.hpp>
+//#include <net/messages/Disconnect.hpp>
 
 namespace Kiaro
 {
     namespace Net
     {
-        CClient::CClient(ENetPeer* connecting, Net::IServer* server) : mInternalClient(connecting)
+        CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting)
         {
 
         }
 
-        CClient::~CClient(void)
+        CIncomingClient::~CIncomingClient(void)
         {
             this->disconnect("Destroyed net handle.");
         }
 
-        void CClient::send(Net::IMessage* packet, const bool& reliable)
+        void CIncomingClient::send(IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
@@ -50,31 +50,31 @@ namespace Kiaro
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
 
-        bool CClient::getIsOppositeEndian(void)
+        bool CIncomingClient::getIsOppositeEndian(void)
         {
             return mIsOppositeEndian;
         }
 
-        void CClient::disconnect(const Support::String& reason)
+        void CIncomingClient::disconnect(const Support::String& reason)
         {
-            Net::Messages::Disconnect disconnect;
-            disconnect.mReason = reason;
+         //   Net::Messages::Disconnect disconnect;
+         //   disconnect.mReason = reason;
 
-            this->send(&disconnect, true);
-            enet_peer_disconnect_later(mInternalClient, 0);
+          //  this->send(&disconnect, true);
+          //  enet_peer_disconnect_later(mInternalClient, 0);
         }
 
-        const Common::U16& CClient::getPort(void)
+        const Common::U16& CIncomingClient::getPort(void)
         {
             return mInternalClient->address.port;
         }
 
-        const Common::U32& CClient::getBinaryIPAddress(void)
+        const Common::U32& CIncomingClient::getBinaryIPAddress(void)
         {
             return mInternalClient->address.host;
         }
 
-        Support::String CClient::getStringIPAddress(void)
+        Support::String CIncomingClient::getStringIPAddress(void)
         {
             Common::C8 temporaryBuffer[32];
 

@@ -16,32 +16,26 @@
 
 #include <enet/enet.h>
 
+#include <support/Logging.hpp>
+
 //#include <core/Logging.hpp>
 //#include <video/CBulletDebugDrawer.hpp>
 //#include <game/SGameWorld.hpp>
 //#include <core/SEngineInstance.hpp>
 
-#include <net/messages/messages.hpp>
-#include <net/messages/Disconnect.hpp>
-#include <net/messages/HandShake.hpp>
-#include <net/messages/SimCommit.hpp>
-#include <net/messages/Scope.hpp>
 //#include <game/MoveManager.hpp>
 
-#include <net/SClient.hpp>
+#include <net/IOutgoingClient.hpp>
 
 #include <support/CBitStream.hpp>
-
-#include <easylua.hpp>
 
 namespace Kiaro
 {
     namespace Net
     {
-        static Net::SClient* sInstance = NULL;
-
-        SClient::SClient(irr::IrrlichtDevice* irrlicht, ENetPeer* incoming, Net::ServerBase* server) : mIsConnected(false), mPort(0), mCurrentStage(0), mInternalPeer(NULL), mInternalHost(NULL)
+        IOutgoingClient::IOutgoingClient() : mIsConnected(false), mPort(0), mCurrentStage(0) //, mInternalPeer(NULL), mInternalHost(NULL)
         {
+        /*
             mEntityGroup = Game::SGameWorld::getPointer();
 
             mBroadphase = new btDbvtBroadphase();
@@ -54,9 +48,10 @@ namespace Kiaro
             mPhysicalWorld->setDebugDrawer(mPhysicalDebugger);
 
             Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Initialized Bullet.");
+            */
         }
 
-        SClient::~SClient(void)
+        IOutgoingClient::~IOutgoingClient(void)
         {
             if (mInternalPeer)
             {
@@ -70,6 +65,7 @@ namespace Kiaro
                 mInternalHost = NULL;
             }
 
+/*
             delete mPhysicalWorld;
             mPhysicalWorld = NULL;
 
@@ -91,9 +87,11 @@ namespace Kiaro
             Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Deinitialized Bullet.");
 
             Game::SGameWorld::destroy();
+            */
         }
 
-        void SClient::onReceivePacket(Support::CBitStream& incomingStream)
+/*
+        void IOutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
         {
             // We need to know what type of packet it is first
             Net::IMessage basePacket;
@@ -155,8 +153,10 @@ namespace Kiaro
                 }
             }
         }
+    */
 
-        void SClient::onConnected(void)
+/*
+        void IOutgoingClient::onConnected(void)
         {
             Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Established connection to remote host.");
 
@@ -172,8 +172,10 @@ namespace Kiaro
             if (lua_pcall(lua, 0, 0, 0))
                 Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SClient: %s", lua_tostring(lua, -1));
         }
+        */
 
-        void SClient::onDisconnected(void)
+/*
+        void IOutgoingClient::onDisconnected(void)
         {
             Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Disconnected from remote host.");
 
@@ -184,38 +186,19 @@ namespace Kiaro
             EasyLua::call(lua, 1.02f, "Test", 5);
             //lua_call(lua, 0, 0);
         }
+        */
 
-        void SClient::onConnectFailed(void)
+/*
+        void IOutgoingClient::onConnectFailed(void)
         {
             lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
 
             EasyLua::pushObject(lua, "GameClient", "onConnectFailed");
             lua_call(lua, 0, 0);
         }
+        */
 
-        void SClient::initialize(irr::IrrlichtDevice* irrlicht)
-        {
-            if (!sInstance)
-                sInstance = new SClient(irrlicht, NULL, NULL);
-        }
-
-        SClient* SClient::getPointer(void)
-        {
-            return sInstance;
-        }
-
-        void SClient::destroy(void)
-        {
-            if (sInstance)
-            {
-                sInstance->disconnect();
-
-                delete sInstance;
-                sInstance = NULL;
-            }
-        }
-
-        void SClient::send(Net::IMessage* packet, const bool& reliable)
+        void IOutgoingClient::send(IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
             if (reliable)
@@ -228,7 +211,7 @@ namespace Kiaro
             enet_peer_send(mInternalPeer, 0, enetPacket);
         }
 
-        void SClient::connect(const Support::String& targetAddress, const Common::U16& targetPort, const Common::U32& wait)
+        void IOutgoingClient::connect(const Support::String& hostName, const Common::U16& targetPort, const Common::U32& wait)
         {
 			// TODO: Report Error
 			if (mInternalPeer || mInternalHost)
@@ -244,10 +227,10 @@ namespace Kiaro
             //    return;
            // }
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Attempting connection to remote host %s:%u.", targetAddress.data(), targetPort);
+      //      Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Attempting connection to remote host %s:%u.", targetAddress.data(), targetPort);
 
             ENetAddress enetAddress;
-            enet_address_set_host(&enetAddress, targetAddress.c_str());
+            enet_address_set_host(&enetAddress, hostName.c_str());
             enetAddress.port = targetPort;
 
             mInternalHost = enet_host_create(NULL /* create a client host */,
@@ -263,7 +246,7 @@ namespace Kiaro
             {
                 mCurrentStage = 0;
 
-                onConnected();
+                this->onConnected();
                 mIsConnected = true;
 
                 //this->address = enet_address.host;
@@ -271,31 +254,30 @@ namespace Kiaro
                 return;
             }
 
-            Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
+          //  Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
 
-            onConnectFailed();
+            this->onConnectFailed();
             enet_peer_reset(mInternalPeer);
         }
 
-        void SClient::disconnect(void)
+        void IOutgoingClient::disconnect(void)
         {
             if (!mIsConnected)
                 return;
 
-            Game::MoveManager::reset();
+           // Game::MoveManager::reset();
 
             mIsConnected = false;
             enet_peer_disconnect_later(mInternalPeer, 0);
         }
 
-        void SClient::networkUpdate(void)
+        void IOutgoingClient::update(void)
         {
             if (!mIsConnected && !mInternalPeer)
                 return;
 
             ENetEvent event;
             while (mInternalHost && enet_host_service(mInternalHost, &event, 0) > 0)
-            {
                 switch(event.type)
                 {
                     case ENET_EVENT_TYPE_DISCONNECT:
@@ -304,6 +286,7 @@ namespace Kiaro
                         mInternalHost = NULL;
 
                         this->onDisconnected();
+                        Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Disconnected from remote host.");
 
                         break;
                     }
@@ -328,15 +311,14 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_CONNECT:
                         break;
                 }
-            }
         }
 
-        const bool& SClient::getIsConnected(void)
+        const bool& IOutgoingClient::isConnected(void)
         {
             return mIsConnected;
         }
 
-        void SClient::dispatch(void)
+        void IOutgoingClient::dispatch(void)
         {
             if (mInternalHost)
                 enet_host_flush(mInternalHost);

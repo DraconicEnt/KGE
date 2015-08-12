@@ -9,8 +9,8 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_NETWORK_CCLIENT_HPP_
-#define _INCLUDE_NETWORK_CCLIENT_HPP_
+#ifndef _INCLUDE_NETWORK_CINCOMINGCLIENT_HPP_
+#define _INCLUDE_NETWORK_CINCOMINGCLIENT_HPP_
 
 #include <enet/enet.h>
 
@@ -30,17 +30,17 @@ namespace Kiaro
         class IServer;
 
         //! The CClient class is a handle for a remote host that has connected to the game server.
-        class CClient
+        class CIncomingClient
         {
             public:
                 /**
                  *  @brief Constructor accepting a Peer object.
                  *  @param connecting A Peer object that is connecting.
                  */
-                CClient(ENetPeer *connecting, Net::IServer *server);
+                CIncomingClient(ENetPeer *connecting, Net::IServer *server);
 
                 //! Standard destructor.
-                ~CClient(void);
+                ~CIncomingClient(void);
 
                 void send(Net::IMessage *packet, const bool &reliable) NOTHROW;
 
@@ -62,4 +62,4 @@ namespace Kiaro
         };
     } // End Namespace Network
 } // End Namespace Kiaro
-#endif // _INCLUDE_NETWORK_CCLIENT_HPP_
+#endif // _INCLUDE_NETWORK_CINCOMINGCLIENT_HPP_
