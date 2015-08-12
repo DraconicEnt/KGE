@@ -7,15 +7,13 @@
 #include <iostream>
 #include <fstream>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <support/String.hpp>
 
-#include <physfs.h>
-
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Logging
         {
