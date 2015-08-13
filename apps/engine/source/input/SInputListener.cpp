@@ -12,7 +12,7 @@
 #include <game/MoveManager.hpp>
 #include <input/SInputListener.hpp>
 
-#include <core/Logging.hpp>
+#include <support/Logging.hpp>
 
 namespace Kiaro
 {
@@ -274,7 +274,7 @@ namespace Kiaro
                 // Logging
                 case irr::EET_LOG_TEXT_EVENT:
                 {
-                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SInputListener: %s", event.LogEvent.Text);
+                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "SInputListener: %s", event.LogEvent.Text);
                     return true;
                 }
             }

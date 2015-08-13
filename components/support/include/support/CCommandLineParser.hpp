@@ -16,8 +16,6 @@
 #include <support/Vector.hpp>
 #include <support/UnorderedMap.hpp> // std::unordered_map
 
-#include <easydelegate/easydelegate.hpp>
-
 #include <support/support.hpp>
 #include <support/common.hpp>
 //#include <core/config.hpp>

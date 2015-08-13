@@ -17,7 +17,7 @@
 #include <physfs.h>
 
 #include <support/support.hpp>
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {

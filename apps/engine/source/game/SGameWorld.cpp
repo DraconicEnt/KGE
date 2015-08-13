@@ -9,7 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <core/Logging.hpp>
+#include <support/Logging.hpp>
 #include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 
@@ -63,9 +63,7 @@ namespace Kiaro
             {
                 // FIXME (Robert MacGregor#9): Properly replace the sky entity
                 if (mSky)
-                {
-                    Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SGameWorld: Overwrote an old instance of the sky!");
-                }
+                    Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SGameWorld: Overwrote an old instance of the sky!");
 
                 mSky = (Entities::CSky*)entity;
             }

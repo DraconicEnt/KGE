@@ -13,7 +13,7 @@
 #define _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
 
 #include <support/Stack.hpp>
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {

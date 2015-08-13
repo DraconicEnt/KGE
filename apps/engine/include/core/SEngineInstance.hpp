@@ -117,7 +117,7 @@ namespace Kiaro
 
             // Public Members
             public:
-                Common::ColorRGBA mClearColor;
+             //   Common::ColorRGBA mClearColor;
 
             // Private Methods
             private:

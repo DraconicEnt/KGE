@@ -6,13 +6,13 @@
 
 #include <support/String.hpp>
 
-#include <net/CClient.hpp>
+#include <net/CIncomingClient.hpp>
 
 namespace Kiaro
 {
     namespace Game
     {
-        class CGameAIClient : public Net::CClient
+        class CGameAIClient : public Net::CIncomingClient
         {
             public:
                 CGameAIClient(void);

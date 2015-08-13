@@ -1,5 +1,4 @@
 #include <core/SEngineInstance.hpp>
-#include <net/SClient.hpp>
 
 #include <stdlib.h>
 
@@ -9,7 +8,7 @@ extern "C"
 {
     int lua_video_setresolution(lua_State *L)
     {
-        Kiaro::Core::SEngineInstance *engineCore = Kiaro::Core::SEngineInstance::getPointer();
+        Kiaro::Core::SEngineInstance* engineCore = Kiaro::Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
         {
@@ -24,7 +23,7 @@ extern "C"
         //    return 0;
         //}
 
-        irr::IrrlichtDevice *device = engineCore->getIrrlichtDevice();
+        irr::IrrlichtDevice* device = engineCore->getIrrlichtDevice();
 
         std::cerr << "VideoLib: Method 'video.setResolution' is unimplemented. " << std::endl;
         return 0;
@@ -32,7 +31,7 @@ extern "C"
 
     int lua_video_setfullscreen(lua_State *L)
     {
-        Kiaro::Core::SEngineInstance *engineCore = Kiaro::Core::SEngineInstance::getPointer();
+        Kiaro::Core::SEngineInstance* engineCore = Kiaro::Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
             return luaL_error(L, "Method 'video.setFullscreen' is not available for dedicated servers!");
@@ -49,7 +48,7 @@ extern "C"
 
     int lua_video_takescreenshot(lua_State *L)
     {
-        Kiaro::Core::SEngineInstance *engineCore = Kiaro::Core::SEngineInstance::getPointer();
+        Kiaro::Core::SEngineInstance* engineCore = Kiaro::Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
             return luaL_error(L, "Method 'video.takeScreenShot' is not available for dedicated servers!");
@@ -59,7 +58,7 @@ extern "C"
         irr::video::IVideoDriver *video = engineCore->getIrrlichtDevice()->getVideoDriver();
 
         // FIXME (Robert MacGregor#9): Do I/O through PhysFS
-        const char *fileName = luaL_checkstring(L, -1);
+        const Kiaro::Common::C8* fileName = luaL_checkstring(L, -1);
         video->writeImageToFile(video->createScreenShot(), fileName);
 
         std::cout << "VideoLib: Wrote screenshot to " << fileName << std::endl;

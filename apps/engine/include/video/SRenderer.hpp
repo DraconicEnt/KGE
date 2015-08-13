@@ -7,7 +7,7 @@
 
 #include <irrlicht.h>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {
@@ -26,7 +26,7 @@ namespace Kiaro
                 CSceneGraph* mMainScene;
                 CSceneGraph* mCurrentScene;
 
-                Common::ColorRGBA mClearColor;
+               // Common::ColorRGBA mClearColor;
 
             // Public Methods
             public:
@@ -36,8 +36,8 @@ namespace Kiaro
                 void drawFrame(void);
 
                 void setSceneGraph(CSceneGraph* graph);
-                void setClearColor(const Common::ColorRGBA& color);
-                const Common::ColorRGBA& getClearColor(void);
+               // void setClearColor(const Common::ColorRGBA& color);
+               // const Common::ColorRGBA& getClearColor(void);
 
             // Private Methods
             private:

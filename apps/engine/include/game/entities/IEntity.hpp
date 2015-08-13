@@ -17,7 +17,7 @@
 
 #include <ces/IComponent.hpp>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <core/SEngineInstance.hpp>
 #include <filesystem/CFileReader.hpp>
@@ -82,7 +82,7 @@ namespace Kiaro
                     virtual void instantiate(void);
                     virtual void update(const Common::F32& deltaTimeSeconds) = 0;
 
-                    virtual void setPosition(const Common::Vector3DF& position) = 0;
+                    //virtual void setPosition(const Common::Vector3DF& position) = 0;
 
                 // Protected Members
                 protected:

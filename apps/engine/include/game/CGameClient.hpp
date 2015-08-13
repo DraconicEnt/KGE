@@ -4,13 +4,13 @@
 #ifndef _INCLUDE_GAME_CGAMECLIENT_HPP_
 #define _INCLUDE_GAME_CGAMECLIENT_HPP_
 
-#include <net/CClient.hpp>
+#include <net/CIncomingClient.hpp>
 
 namespace Kiaro
 {
     namespace Game
     {
-        class CGameClient : public Net::CClient
+        class CGameClient : public Net::CIncomingClient
         {
             public:
         };

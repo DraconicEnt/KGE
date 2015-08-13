@@ -7,7 +7,7 @@ namespace Kiaro
 {
     namespace Game
     {
-        CGameAIClient::CGameAIClient(void) : Net::CClient(NULL, NULL)
+        CGameAIClient::CGameAIClient(void) : Net::CIncomingClient(NULL, NULL)
         {
 
         }

@@ -4,7 +4,7 @@
 #ifndef _INCLUDE_GAME_MOVEMANAGER_HPP_
 #define _INCLUDE_GAME_MOVEMANAGER_HPP_
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {

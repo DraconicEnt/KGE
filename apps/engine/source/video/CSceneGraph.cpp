@@ -45,6 +45,7 @@ namespace Kiaro
             mRoot->setVisible(visible);
         }
 
+/*
         const Common::ColorRGBA &CSceneGraph::getClearColor(void)
         {
             return mClearColor;
@@ -54,5 +55,7 @@ namespace Kiaro
         {
             mClearColor = color;
         }
+        */
+
     } // End NameSpace Engine
 } // End NameSpace Kiaro

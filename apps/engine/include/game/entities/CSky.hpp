@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_
 
-#include "core/common.hpp"
+#include "support/common.hpp"
 
 #include <game/entities/IEntity.hpp>
 
@@ -52,11 +52,11 @@ namespace Kiaro
                         return sizeof(Common::C8) * 4;
                     }
 
-                    const Common::ColorRGBA &getColor(void);
+                   // const Common::ColorRGBA &getColor(void);
 
                 // Private Members
                 private:
-                    Common::ColorRGBA mColor;
+                   // Common::ColorRGBA mColor;
             };
         } // End Namespace Entities
     } // End Namespace Game

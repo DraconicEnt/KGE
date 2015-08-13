@@ -12,9 +12,9 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_SEVENTMANAGER_HPP_
 #define _INCLUDE_KIARO_SUPPORT_SEVENTMANAGER_HPP_
 
-#include <easydelegate.hpp>
+#include <easydelegate/easydelegate.hpp>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {

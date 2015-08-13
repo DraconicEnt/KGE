@@ -1,5 +1,5 @@
 #include <core/SEngineInstance.hpp>
-#include <net/SClient.hpp>
+#include <net/IOutgoingClient.hpp>
 
 #include <stdlib.h>
 
@@ -21,6 +21,7 @@ extern "C"
         else if (!lua_isstring(L, -1))
             return luaL_error(L, "IP parameter for method 'net.connect' is not a string!");
 
+/*
         Net::SClient *outClient = Net::SClient::getPointer();
 
         outClient->disconnect();
@@ -37,12 +38,14 @@ extern "C"
         }
 
         outClient->connect(address, port, 3000);
+*/
 
         return 1;
     }
 
     int lua_net_disconnect(lua_State *L)
     {
+    /*
         Core::SEngineInstance *engineCore = Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
@@ -54,6 +57,7 @@ extern "C"
             return luaL_error(L, "Method 'net.disconnect' called without an active connection to a server!");
 
         outClient->disconnect();
+*/
 
         return 1;
     }

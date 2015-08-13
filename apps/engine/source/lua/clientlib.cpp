@@ -1,6 +1,6 @@
 #include <core/SEngineInstance.hpp>
-#include <net/SClient.hpp>
-#include <net/CClient.hpp>
+#include <net/IOutgoingClient.hpp>
+#include <net/CIncomingClient.hpp>
 
 #include <stdlib.h>
 
@@ -13,7 +13,7 @@ extern "C"
     {
         Client *luaClient = (Client *)lua_touserdata(L, 1);
 
-        Kiaro::Net::CClient *client = reinterpret_cast<Kiaro::Net::CClient *>(luaClient->mPointer);
+        Kiaro::Net::CIncomingClient *client = reinterpret_cast<Kiaro::Net::CIncomingClient *>(luaClient->mPointer);
         lua_pushnumber(L, client->getPort());
 
         return 1;

@@ -25,14 +25,14 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, NO_THINKING), mColor(0, 0, 0, 0)
+            CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, NO_THINKING) //, mColor(0, 0, 0, 0)
             {
                 instantiate();
 
-                addNetworkedProperty("color", mColor);
+               // addNetworkedProperty("color", mColor);
             }
 
-            CSky::CSky(Support::CBitStream& in) : IEntity(ENTITY_SKY), mColor(0, 0, 0, 0)
+            CSky::CSky(Support::CBitStream& in) : IEntity(ENTITY_SKY) //, mColor(0, 0, 0, 0)
             {
                 unpackInitialization(in);
             }
@@ -82,10 +82,10 @@ namespace Kiaro
 
             }
 
-            const Common::ColorRGBA& CSky::getColor(void)
-            {
-                return mColor;
-            }
+           // const Common::ColorRGBA& CSky::getColor(void)
+          // {
+           //     return mColor;
+           // }
         } // End Namespace Entities
     } // End Namespace Game
 } // End Namespace Kiaro

@@ -15,7 +15,7 @@
 #include <set>
 #include <string>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 namespace Kiaro
 {

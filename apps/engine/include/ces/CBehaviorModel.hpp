@@ -14,7 +14,7 @@
 
 #include <support/support.hpp>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 #include <support/CBitStream.hpp>
 
 namespace Kiaro

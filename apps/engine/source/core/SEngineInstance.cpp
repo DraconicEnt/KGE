@@ -145,22 +145,23 @@ namespace Kiaro
             if (!mRunning)
                 return;
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
             mRunning = false;
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-        mRunning(false), mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)), mLuaState(NULL), mCurrentScene(NULL)
+        mRunning(false),// mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)),
+        mLuaState(NULL), mCurrentScene(NULL)
         {
 
         }
 
         SEngineInstance::~SEngineInstance(void)
         {
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
 
             // TODO: Check the destroy order
-            Net::SClient::destroy();
+         //   Net::SClient::destroy();
             Game::SGameServer::destroy();
             Input::SInputListener::destroy();
             Support::SSynchronousScheduler::destroy();
@@ -186,9 +187,9 @@ namespace Kiaro
         void SEngineInstance::networkUpdate(void)
         {
             // FIXME (Robert MacGregor#9): Pass in the time delta
-            Net::SClient* client = Net::SClient::getPointer();
-            if (client)
-                client->networkUpdate();
+  //          Net::SClient* client = Net::SClient::getPointer();
+  //          if (client)
+  //              client->networkUpdate();
 
             Game::SGameServer* server = Game::SGameServer::getPointer();
             if (server)
@@ -226,11 +227,11 @@ namespace Kiaro
                     guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
                     guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
 
-                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
+                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
                 }
                 catch (CEGUI::InvalidRequestException& e)
                 {
-                    Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the GUI System. Reason:\n%s", e.what());
+                    Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the GUI System. Reason:\n%s", e.what());
                     return 1;
                 }
             }
@@ -261,7 +262,7 @@ namespace Kiaro
             // Load up the main file
             if (luaL_dofile(mLuaState, "main.lua") >= 1)
             {
-                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to load main.lua. Reason: '%s'", luaL_checkstring(mLuaState, -1));
+                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to load main.lua. Reason: '%s'", luaL_checkstring(mLuaState, -1));
                 return 2;
             }
 
@@ -282,7 +283,7 @@ namespace Kiaro
             }
             lua_call(mLuaState, 2, 0);
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized Lua.");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized Lua.");
             return 0;
         }
 
@@ -312,8 +313,8 @@ namespace Kiaro
             mMainScene = new Video::CSceneGraph();
             this->setSceneGraph(mMainScene);
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
         }
 
         Common::U32 SEngineInstance::initializeNetwork(void)
@@ -321,7 +322,7 @@ namespace Kiaro
             // Catch if the netcode somehow doesn't initialize correctly.
             if (enet_initialize() < 0)
             {
-                Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the network!");
+                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the network!");
                 return 1;
             }
 
@@ -330,12 +331,13 @@ namespace Kiaro
             {
                 case Core::MODE_CLIENT:
                 {
-                    Net::SClient::initialize(mIrrlichtDevice);
+                   // Net::SClient::initialize(mIrrlichtDevice);
                     break;
                 }
 
                 case Core::MODE_CLIENTCONNECT:
                 {
+                    /*
                     Net::SClient::initialize(mIrrlichtDevice);
                     Net::SClient* client = Net::SClient::getPointer();
                     client->connect(mTargetServerAddress, mTargetServerPort, 5000);
@@ -346,6 +348,7 @@ namespace Kiaro
 
                         Net::SClient::destroy();
                     }
+                    */
 
                     break;
                 }
@@ -357,7 +360,7 @@ namespace Kiaro
                 }
             }
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized network.");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized network.");
             return 0;
         }
 
@@ -400,7 +403,7 @@ namespace Kiaro
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
 
                         // Since we're a client, render the frame right after updating
-                        mIrrlichtDevice->getVideoDriver()->beginScene(true, true, mClearColor);
+                        mIrrlichtDevice->getVideoDriver()->beginScene(true, true);
                         mSceneManager->drawAll();
 
                         CEGUI::System::getSingleton().renderAllGUIContexts();
@@ -412,16 +415,16 @@ namespace Kiaro
                 }
                 catch(std::exception& e)
                 {
-                    Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
+                    Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
                     // Something is probably up, we should leave.
-                    Net::SClient::destroy();
+                //    Net::SClient::destroy();
 
                     // Servers just drop off the client that it last processed
                     Game::SGameServer* server = Game::SGameServer::getPointer();
                     if (server)
                     {
-                        Net::CClient* lastClient = server->getLastPacketSender();
+                        Net::CIncomingClient* lastClient = server->getLastPacketSender();
 
                         // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
                         if (lastClient)
@@ -438,7 +441,7 @@ namespace Kiaro
                 return 0;
 
             #ifndef ENGINE_BUILD_SOUNDENGINE
-                Core::Logging::write(Core::Logging::MESSAGE_WARNING, "SEngineInstance: Built without audio support. There will be no sound.");
+                Support::Logging::write(Support::Logging::MESSAGE_WARNING, "SEngineInstance: Built without audio support. There will be no sound.");
             #else
             #endif // ENGINE_BUILD_SOUNDENGINE
 

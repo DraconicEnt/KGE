@@ -26,26 +26,6 @@ namespace Kiaro
             //std::cout << "TEST" << std::endl;
         }
 
-        // MapDivision Code Begin
-        static CMapDivision* sInstance = NULL;
-
-        CMapDivision* CMapDivision::Get(Common::U32 power, Common::U32 divisions)
-        {
-            if (!sInstance)
-                sInstance = new Support::CMapDivision(power, divisions);
-
-            return sInstance;
-        }
-
-        void CMapDivision::Destroy(void)
-        {
-            if (sInstance)
-            {
-                delete sInstance;
-                sInstance = NULL;
-            }
-        }
-
         CMapDivision::CMapDivision(Common::U32 power, Common::U32 divisions) : mDivisions(divisions), mResolution(pow(2, power))
         {
             Support::FTime::timer timerHandle = Support::FTime::startTimer();
@@ -71,9 +51,7 @@ namespace Kiaro
                 mLODs.push_back(currentLOD);
 
                 currentResolution >>= 1;
-            }
-
-            //Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Built grid in %f seconds.", Support::FTime::stopTimer(timerHandle));
+            }//Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Built grid in %f seconds.", Support::FTime::stopTimer(timerHandle));
         }
     } // End NameSpace Support
 } // End NameSpace Kiaro

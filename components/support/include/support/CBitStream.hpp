@@ -21,7 +21,6 @@
 #include <support/common.hpp>
 
 //#include <core/ISerializable.hpp>
-
 namespace Kiaro
 {
     namespace Support

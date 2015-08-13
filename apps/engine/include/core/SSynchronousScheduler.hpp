@@ -28,7 +28,7 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                CScheduledEvent(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Common::U64 &waitTimeMS, const bool &recurring) : mInternalDelegate(cachedDelegate)
+                CScheduledEvent(EasyDelegate::IDeferredCaller *cachedDelegate, const Common::U64 &waitTimeMS, const bool &recurring) : mInternalDelegate(cachedDelegate)
                 {
                     mTriggerTimeMS = Support::FTime::getSimTimeMilliseconds() + waitTimeMS;
 
@@ -79,7 +79,7 @@ namespace Kiaro
                 //! The time measured in milliseconds at which the scheduled event should be dispatched at.
                 Common::U64 mTriggerTimeMS;
                 //! The delegate to dispatch when the scheduled event hits its mTriggerTimeMS.
-                EasyDelegate::GenericCachedDelegate *mInternalDelegate;
+                EasyDelegate::IDeferredCaller *mInternalDelegate;
 
                 bool mRecurring;
                 Common::U64 mWaitTimeMS;
@@ -92,16 +92,16 @@ namespace Kiaro
                 template <typename returnType, typename... parameters>
                 CScheduledEvent *schedule(const Common::U32 &waitTimeMS, const bool &recurring, EasyDelegate::StaticMethodPointer<returnType, parameters...> method, parameters... params)
                 {
-                    return this->schedule(new EasyDelegate::CachedStaticDelegate<returnType, parameters...>(method, params...), waitTimeMS, recurring);
+                    return this->schedule(new EasyDelegate::DeferredStaticCaller<returnType, parameters...>(method, params...), waitTimeMS, recurring);
                 }
 
                 template <typename classType, typename returnType, typename... parameters>
                 CScheduledEvent *schedule(const Common::U32 &waitTimeMS, const bool &recurring, classType *thisPointer, EasyDelegate::MemberMethodPointer<classType, returnType, parameters...> method, parameters... params)
                 {
-                    return this->schedule(new EasyDelegate::CachedMemberDelegate<classType, returnType, parameters...>(method, thisPointer, params...), waitTimeMS, recurring);
+                    return this->schedule(new EasyDelegate::DeferredMemberCaller<classType, returnType, parameters...>(method, thisPointer, params...), waitTimeMS, recurring);
                 }
 
-                CScheduledEvent *schedule(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Common::U32 &waitTimeMS, const bool &recurring = false);
+                CScheduledEvent *schedule(EasyDelegate::IDeferredCaller *cachedDelegate, const Common::U32 &waitTimeMS, const bool &recurring = false);
 
                 void update(void);
 

@@ -7,7 +7,7 @@
 #include <core/SSettingsRegistry.hpp>
 #include <input/SInputListener.hpp>
 #include <video/CSceneGraph.hpp>
-#include <core/Logging.hpp>
+#include <support/Logging.hpp>
 
 namespace Kiaro
 {
@@ -58,8 +58,8 @@ namespace Kiaro
             mMainScene = new Video::CSceneGraph();
             this->setSceneGraph(mMainScene);
 
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlicht->getVersion());
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlicht->getVersion());
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
         }
 
         void SRenderer::setSceneGraph(CSceneGraph* graph)
@@ -78,13 +78,14 @@ namespace Kiaro
 
         void SRenderer::drawFrame(void)
         {
-            mVideo->beginScene(true, true, mClearColor);
+            mVideo->beginScene(true, true);
 
             mSceneManager->drawAll();
 
             mVideo->endScene();
         }
 
+/*
         void SRenderer::setClearColor(const Common::ColorRGBA& color)
         {
             mClearColor = color;
@@ -94,5 +95,6 @@ namespace Kiaro
         {
             return mClearColor;
         }
+        */
     } // End NameSpace Video
 } // End NameSpace Kiaro

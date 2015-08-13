@@ -31,13 +31,13 @@ namespace Kiaro
                 bool isVisible(void);
                 void setVisible(const bool &visible);
 
-                const Kiaro::Common::ColorRGBA &getClearColor(void);
-                void setClearColor(const Kiaro::Common::ColorRGBA &color);
+               // const Kiaro::Common::ColorRGBA &getClearColor(void);
+               // void setClearColor(const Kiaro::Common::ColorRGBA &color);
 
             private:
                 irr::scene::ISceneNode *mRoot;
 
-                Kiaro::Common::ColorRGBA mClearColor;
+              // Kiaro::Common::ColorRGBA mClearColor;
         };
     } // End NameSpace Engine
 } // End NameSpace Kiaro

@@ -35,15 +35,14 @@ namespace Kiaro
         {
             // Public Methods
             public:
-                static CMapDivision *Get(Common::U32 power = 12, Common::U32 divisions = 999);
-                static void Destroy(void);
+                CMapDivision(Common::U32 power, Common::U32 divisions = 999);
 
                 const Common::U32 mDivisions;
                 const size_t mResolution;
 
             // Private Members
             private:
-                CMapDivision(Common::U32 power, Common::U32 divisions = 999);
+
 
                 //! 3D Array: LOD,X,Y
                 std::vector<std::vector<std::vector<CMapDivisionSquare>>> mLODs;

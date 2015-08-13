@@ -35,7 +35,7 @@ namespace Kiaro
             sInstance = NULL;
         }
 
-        CScheduledEvent *SSynchronousScheduler::schedule(EasyDelegate::GenericCachedDelegate *cachedDelegate, const Common::U32 &waitTimeMS, const bool &recurring)
+        CScheduledEvent *SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller *cachedDelegate, const Common::U32 &waitTimeMS, const bool &recurring)
         {
             CScheduledEvent *event = new CScheduledEvent(cachedDelegate, waitTimeMS, recurring);
             mScheduledEventSet.insert(event);

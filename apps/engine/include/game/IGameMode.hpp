@@ -12,9 +12,9 @@
 #ifndef _INCLUDE_KIARO_IGAMEMODE_HPP_
 #define _INCLUDE_KIARO_IGAMEMODE_HPP_
 
-#include <easydelegate.hpp>
+#include <easydelegate/easydelegate.hpp>
 
-#include "core/common.hpp"
+#include "support/common.hpp"
 
 namespace Kiaro
 {

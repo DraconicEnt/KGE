@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 
 #include <ces/IComponent.hpp>
 
