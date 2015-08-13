@@ -25,7 +25,7 @@
 #include <support/UnorderedSet.hpp>
 #include <support/String.hpp>
 
-#include <core/common.hpp>
+#include <support/common.hpp>
 #include <support/CBitStream.hpp>
 
 namespace Kiaro

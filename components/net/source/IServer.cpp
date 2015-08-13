@@ -53,7 +53,7 @@ namespace Kiaro
             */
 
             // Create the map division
-            Support::CMapDivision::Get(12);
+            //Support::CMapDivision::Get(12);
 
            // mEntityGroup = Game::SGameWorld::getPointer();
 
@@ -85,7 +85,7 @@ namespace Kiaro
 
             mIsRunning = false;
 
-            Support::CMapDivision::Destroy();
+           // Support::CMapDivision::Destroy();
         }
 
         void IServer::update(const Common::F32& deltaTimeSeconds)
@@ -145,7 +145,7 @@ namespace Kiaro
                         CIncomingClient* sender = (CIncomingClient*)event.peer->data;
                         Support::CBitStream incomingStream(event.packet->data, event.packet->dataLength);
 
-                        onReceivePacket(incomingStream, sender);
+                        this->onReceivePacket(incomingStream, sender);
                         enet_packet_destroy(event.packet);
 
                         break;

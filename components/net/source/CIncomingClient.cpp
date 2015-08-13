@@ -46,7 +46,7 @@ namespace Kiaro
             // TODO: Packet Size Query
             Support::CBitStream outStream(packet);
 
-            ENetPacket *enetPacket = enet_packet_create(outStream.getBlock(), outStream.getWrittenLength(), packetFlag);
+            ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getWrittenLength(), packetFlag);
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
 
