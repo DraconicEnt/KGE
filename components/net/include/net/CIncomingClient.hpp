@@ -1,6 +1,6 @@
 /**
  *  @file CClient.h
- *  @brief Main include file defining "global" scope functions and including sub files.
+ *  @brief Include file declaring the CIncomingClient type.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -33,7 +33,7 @@ namespace Kiaro
             class IMessage;
         }
 
-        //! The CClient class is a handle for a remote host that has connected to the game server.
+        //! The CIncomingClient class is a handle for a remote host that has connected to the game server.
         class CIncomingClient
         {
             public:
@@ -46,17 +46,27 @@ namespace Kiaro
                 //! Standard destructor.
                 ~CIncomingClient(void);
 
-                void send(Messages::IMessage *packet, const bool &reliable) NOTHROW;
+                /**
+                 *  @brief Sends a message to the given CIncomingClient.
+                 *  @param message A pointer to the message to be sent.
+                 *  @param reliable A boolean representing whether or not the
+                 *  message should be sent reliably.
+                 */
+                void send(Messages::IMessage* message, const bool& reliable) NOTHROW;
 
                 bool getIsOppositeEndian(void) NOTHROW;
 
                 //! Disconnects this client from the server.
                 void disconnect(const Support::String &reason) NOTHROW;
 
-                //! Get the port number that this client is connecting on.
-                const Kiaro::Common::U16 &getPort(void) NOTHROW;
+                /**
+                 *  @brief Get the port number that this CIncomingClient is connecting on.
+                 *  @return A Common::U16 representing the port number that this CIncomingClient is
+                 *  connected on.
+                 */
+                const Common::U16 &getPort(void) NOTHROW;
 
-                const Kiaro::Common::U32 &getBinaryIPAddress(void) NOTHROW;
+                const Common::U32 &getBinaryIPAddress(void) NOTHROW;
                 Support::String getStringIPAddress(void);
 
                 void setStage(const Common::U32& in);
