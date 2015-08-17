@@ -14,8 +14,7 @@ SET(KIARO_VERSION_REVISION 0)
 ADD_DEFINITIONS(-DCMAKE_CONFIG=1)
 
 # Optional Settings
-OPTION(DEBUG "Build debug versions of all the software." OFF)
-OPTION(BUILD_UNITTESTS "Build unit tests in all of the software. (It requires GTest)" ON)
+OPTION(BUILD_UNITTESTS "Build unit tests in all of the software. (It requires GTest)" OFF)
 OPTION(ENGINE_UB "Use Unity builds when compiling the engine." OFF)
 
 # Options to build specific parts of the engine
@@ -32,9 +31,6 @@ FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
 FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog) 
 FIND_PACKAGE(PythonLibs REQUIRED)
 
-# Might be useful for something later
-#FIND_PACKAGE(SDL REQUIRED)
-
 IF (BUILD_UNITTESTS)
     FIND_PACKAGE(GTest)
 ELSE(BUILD_UNITTESTS)
@@ -42,33 +38,23 @@ ELSE(BUILD_UNITTESTS)
     SET(GTEST_LIBRARIES "")
 ENDIF (BUILD_UNITTESTS)
 
-# Raise a warning if we couldn't find GTest
+# Raise a warning if we couldn't find GTest and we wanted to use it
 IF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
     SET(BUILD_UNITTESTS OFF)
     MESSAGE(WARNING "Did not find the Google Testing framework. Will build without unit tests.")
 ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 
-# TODO: Add /TP option to command line for Lua module to build when using MSVS
-
 # Configure for GNU Compiler
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
-    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-    # gnu++0x is necessary for GTest on Windows, apparently.
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    # c++11 is necessary for GTest on Windows, apparently.
+    SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
     
     # To use std::thread and friends, we must pass -lpthread and -pthread to the compiler and Linker for GCC
     IF (NOT WIN32)
-        SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lpthread -pthread")
-        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -pthread")
-        SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lpthread -pthread" )
-    ELSE (NOT WIN32)
-        ADD_DEFINITIONS(-DGNUWIN32=1)
+        SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -lpthread -pthread)
+        SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -lpthread -pthread)
+        SET(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -lpthread -pthread)
     ENDIF (NOT WIN32)
-
-    IF (DEBUG)
-        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-        SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
-    ENDIF (DEBUG)
 ENDIF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
 
 IF (ENGINE_UB)
