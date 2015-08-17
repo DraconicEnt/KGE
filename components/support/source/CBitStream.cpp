@@ -22,7 +22,7 @@ namespace Kiaro
         CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()), mMemoryBlock(new Common::U8[in->getRequiredMemory()]), mPointer(0),
         mOwnsMemoryBlock(true)
         {
-            in->writeTo(*this);
+            in->packEverything(*this);
         }
 
         CBitStream::CBitStream(void* initializer, const size_t &initializerLength) : mMemoryBlock((Common::U8*)initializer), mTotalSize(initializerLength),
@@ -179,7 +179,7 @@ namespace Kiaro
 
         void CBitStream::write(const ISerializable *in)
         {
-            in->writeTo(*this);
+            in->packEverything(*this);
         }
     } // End Namespace Support
 } // End namespace Kiaro

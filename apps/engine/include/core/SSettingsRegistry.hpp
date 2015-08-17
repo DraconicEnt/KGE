@@ -34,9 +34,14 @@ namespace Kiaro
                     size_t mapIndex = Common::string_hash(name);
 
                     if (mStoredProperties.count(mapIndex) == 0)
-                        throw std::out_of_range("No such setting key!");
+                    {
+                        Support::String exceptionText = "No such setting key: ";
+                        exceptionText += name;
 
-                    return *(storedType*)(mStoredProperties[mapIndex].first);
+                        throw std::out_of_range(exceptionText);
+                    }
+
+                    return *reinterpret_cast<storedType*>(mStoredProperties[mapIndex].first);
                 }
 
                 template <typename storedType>
@@ -47,9 +52,9 @@ namespace Kiaro
                     // Does an entry exist?
                     if (mStoredProperties.count(mapIndex) == 0)
                     {
-                        storedType* heapEntry = (storedType*)malloc(sizeof(storedType));
+                        storedType* heapEntry = reinterpret_cast<storedType*>(malloc(sizeof(storedType)));
 
-                        // NOTE (Robert MacGregor#9): Hack to mimic C++ allocation behavior.
+                        // This is a bit of a hack to mimic C++ allocation behavior.
                         if (!heapEntry)
                             throw std::bad_alloc();
 

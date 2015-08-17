@@ -35,7 +35,7 @@ namespace Kiaro
 
             CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
             {
-                unpackInitialization(in);
+                this->unpack(in);
             }
 
             CTerrain::~CTerrain(void)
@@ -43,28 +43,17 @@ namespace Kiaro
 
             }
 
-            void CTerrain::packUpdate(Support::CBitStream& out)
-            {
-
-
-            }
-
-            void CTerrain::unpackUpdate(Support::CBitStream& in)
-            {
-
-            }
-
-            void CTerrain::packInitialization(Support::CBitStream& out) const
+            void CTerrain::packEverything(Support::CBitStream& out) const
             {
                 const Common::Vector3DF& position = mSceneNode->getPosition();
 
                 out << position.X << position.Y << position.Z;
                 out.write(mTerrainFile);
 
-                IEntity::packInitialization(out);
+                IEntity::packEverything(out);
             }
 
-            void CTerrain::unpackInitialization(Support::CBitStream& in)
+            void CTerrain::unpack(Support::CBitStream& in)
             {
                 mTerrainFile = in.top<const Common::C8>();
                 in.pop<const Common::C8*>();

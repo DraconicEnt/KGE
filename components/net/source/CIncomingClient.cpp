@@ -18,7 +18,7 @@
 
 #include <support/CBitStream.hpp>
 
-#include <net/IMessage.hpp>
+#include <net/messages/IMessage.hpp>
 
 //#include <net/messages/Disconnect.hpp>
 
@@ -26,7 +26,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting)
+        CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mCurrentStage(0)
         {
 
         }
@@ -36,7 +36,7 @@ namespace Kiaro
             this->disconnect("Destroyed net handle.");
         }
 
-        void CIncomingClient::send(IMessage* packet, const bool& reliable)
+        void CIncomingClient::send(Messages::IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
@@ -80,6 +80,16 @@ namespace Kiaro
 
             enet_address_get_host_ip(&mInternalClient->address, temporaryBuffer, 32);
             return temporaryBuffer;
+        }
+
+        void CIncomingClient::setStage(const Common::U32& in)
+        {
+            mCurrentStage = in;
+        }
+
+        const Common::U32& CIncomingClient::getStage(void)
+        {
+            return mCurrentStage;
         }
     } // End Namespace Network
 } // End Namespace Kiaro

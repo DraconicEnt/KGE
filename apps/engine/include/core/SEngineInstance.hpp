@@ -23,7 +23,6 @@ namespace Kiaro
     namespace Net
     {
         class IServer;
-        class SClient;
     }
 
     namespace Game
@@ -38,6 +37,8 @@ namespace Kiaro
 
     namespace Core
     {
+        class COutgoingClient;
+
         enum MODE_NAME
         {
             MODE_CLIENT = 0,
@@ -183,6 +184,8 @@ namespace Kiaro
 
                 //! The name of the currently running game name.
                 Support::String mGameName;
+
+                COutgoingClient *mActiveClient;
 
                 //typedef EasyDelegate::CachedDelegate<void> EngineTimePulseDelegate;
         };

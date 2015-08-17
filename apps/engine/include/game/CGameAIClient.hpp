@@ -18,7 +18,7 @@ namespace Kiaro
                 CGameAIClient(void);
 
                 void disconnect(const Support::String& reason);
-                void send(Net::IMessage* packet, const bool& reliable);
+                void send(Net::Messages::IMessage* packet, const bool& reliable);
         };
     } // End NameSpace Game
 } // End Namespace Kiaro

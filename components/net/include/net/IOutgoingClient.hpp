@@ -17,7 +17,7 @@
 
 //#include <game/SGameWorld.hpp>
 
-#include <net/IMessage.hpp>
+#include <net/messages/IMessage.hpp>
 #include <net/IServer.hpp>
 
 #include <support/CBitStream.hpp>
@@ -29,9 +29,17 @@ namespace Kiaro
         class CBitStream;
     } // End NameSpace Support
 
+    namespace Messages
+    {
+        class IMessage;
+    } // End NameSpace Messages
+
     namespace Net
     {
-        //! The RemoteClient class is merely used to differentiate between a Client instance we created and a connected remote host in code.
+        /**
+         *  @brief The IOutgoingClient type is an interface type used for representing outgoing clients
+         *  connecting to a remote host somewhere.
+         */
         class IOutgoingClient
         {
             // Public Methods
@@ -69,7 +77,7 @@ namespace Kiaro
                  *  @param incomingStream A CBitStream capable of indexing the raw memory block that was part
                  *  of the incoming packet's payload.
                  */
-                virtual void onReceivePacket(Support::CBitStream& incomingStream) = 0;
+                //virtual void onReceivePacket(Support::CBitStream& incomingStream) = 0;
 
                 bool getIsOppositeEndian(void) { return mIsOppositeEndian; }
 
@@ -96,16 +104,40 @@ namespace Kiaro
 
                 void update(void);
 
-                void send(IMessage* packet, const bool& reliable);
+                void send(Messages::IMessage* packet, const bool& reliable);
 
                 const bool& isConnected(void);
 
                 void dispatch(void);
 
+            // Private Methods
+            private:
+                /**
+                 *  @brief An internally called method used to process packet payloads specified in a CBitStream.
+                 *  @param incomingStream A CBitStream indexing the packet payload to use.
+                 */
+                void processPacket(Support::CBitStream& incomingStream);
+
+                /**
+                 *  @brief An internally called method used to process packet payloads specified in a CBitStream in
+                 *  respect to stage zero.
+                 *  @param incomingStream A CBitStream indexing the packet payload to use.
+                 */
+                void processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream);
+
+                /**
+                 *  @brief An internally called method used to process packet payloads specified in a CBitStream in
+                 *  respect to stage two.
+                 *  @param incomingStream A CBitStream indexing the packet payload to use.
+                 */
+                void processStageTwo(const Messages::IMessage& header, Support::CBitStream& incomingStream);
+
+                //! Internally called method when the IOutgoingClient connected to a remote host.
+                void internalOnConnected(void);
+
             // Private Members
             private:
                 bool mIsOppositeEndian;
-                ENetPeer* mInternalClient;
 
                // btBroadphaseInterface* mBroadphase;
                // btCollisionDispatcher* mCollisionDispatcher;
@@ -115,14 +147,26 @@ namespace Kiaro
 
                // Video::CBulletDebugDrawer* mPhysicalDebugger;
 
-                // Net
-                bool mIsConnected;
+                /**
+                 *  @brief What port is the IOutgoingClient currently connected on?
+                 *  @note This value is irrelevant if !mInternalPeer.
+                 */
                 Common::U16 mPort;
+
+                /**
+                 *  @brief What is the current connection stage that the IOutgoingClient is in?
+                 *  @note This value is irrelvant if !mInternalPeer.
+                 */
                 Common::U8 mCurrentStage;
+
+                bool mIsConnected;
 
                 //Game::SGameWorld* mEntityGroup;
 
+                //! A pointer to the internally utilized ENetPeer.
                 ENetPeer* mInternalPeer;
+
+                //! A pointer to the internally utilized ENetHost.
                 ENetHost* mInternalHost;
         };
     } // End Namespace Network

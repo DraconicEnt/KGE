@@ -21,7 +21,7 @@ namespace Kiaro
 
                 void setGamemode(IGameMode* game);
 
-                void update(const Common::F32& deltaTimeSeconds);
+                virtual void update(const Common::F32& deltaTimeSeconds);
 
             private:
                 SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);

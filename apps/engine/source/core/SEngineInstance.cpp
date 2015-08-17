@@ -38,6 +38,8 @@
 
 #include <support/Logging.hpp>
 
+#include <core/COutgoingClient.hpp>
+
 namespace Kiaro
 {
     namespace Core
@@ -151,7 +153,7 @@ namespace Kiaro
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
         mRunning(false),// mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)),
-        mLuaState(NULL), mCurrentScene(NULL)
+        mLuaState(NULL), mCurrentScene(NULL), mActiveClient(NULL)
         {
 
         }
@@ -188,12 +190,12 @@ namespace Kiaro
         {
             // FIXME (Robert MacGregor#9): Pass in the time delta
   //          Net::SClient* client = Net::SClient::getPointer();
-  //          if (client)
-  //              client->networkUpdate();
+            if (mActiveClient)
+                mActiveClient->update();
 
             Game::SGameServer* server = Game::SGameServer::getPointer();
             if (server)
-                server->networkUpdate(0.0f);
+                server->update(0.0f);
         }
 
         lua_State *SEngineInstance::getLuaState(void) { return mLuaState; }
@@ -331,24 +333,18 @@ namespace Kiaro
             {
                 case Core::MODE_CLIENT:
                 {
-                   // Net::SClient::initialize(mIrrlichtDevice);
+                    mActiveClient = new COutgoingClient();
                     break;
                 }
 
                 case Core::MODE_CLIENTCONNECT:
                 {
-                    /*
-                    Net::SClient::initialize(mIrrlichtDevice);
-                    Net::SClient* client = Net::SClient::getPointer();
-                    client->connect(mTargetServerAddress, mTargetServerPort, 5000);
+                    mActiveClient = new COutgoingClient();
+                    mActiveClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
 
-                    if (!client->getIsConnected())
-                    {
-                        Core::Logging::write(Core::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with srrver flag!");
-
-                        Net::SClient::destroy();
-                    }
-                    */
+                    // FIXME (Robert MacGregor#9): Move error check elsewhere since the connection isn't acknowledged until the handshakes occur
+                   // if (!mActiveClient->isConnected())
+                   //     Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with server flag!");
 
                     break;
                 }

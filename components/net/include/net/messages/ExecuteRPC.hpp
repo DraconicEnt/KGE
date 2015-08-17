@@ -1,5 +1,5 @@
 /**
- *  @file Disconnect.hpp
+ *  @file ExecuteRPC.hpp
  *  @brief The common include file for the Kiaro application defining things such as error values.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -9,45 +9,44 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
-#define _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
+#ifndef _INCLUDE_KIARO_GAME_MESSAGES_EXECUTERPC_HPP_
+#define _INCLUDE_KIARO_GAME_MESSAGES_EXECUTERPC_HPP_
 
 #include <stdexcept>
 
-#include <net/messages/messages.hpp>
-#include <net/IMessage.hpp>
+#include <net/messages/types.hpp>
+#include <net/messages/IMessage.hpp>
 
 namespace Kiaro
 {
     namespace Net
     {
-        class IncomingClient;
-        class NetworkedEntity;
+        class CIncomingClient;
 
         namespace Messages
         {
-            class Disconnect : public Net::IMessage
+            class ExecuteRPC : public IMessage
             {
                 // Public Methods
                 public:
-                    Disconnect(Support::CBitStream *in = NULL, Net::CClient *sender = NULL) : Net::IMessage(MESSAGE_DISCONNECT, in, sender)
+                    ExecuteRPC(Support::CBitStream* in = NULL, CIncomingClient* sender = NULL) : IMessage(TYPE_EXECUTERPC, in, sender)
                     {
 
                     }
 
-                    void writeTo(Support::CBitStream &out) const
+                    virtual void packEverything(Support::CBitStream& out) const
                     {
-                        out << mReason;
+                        out << mName;
 
-                        Net::IMessage::writeTo(out);
+                        IMessage::packEverything(out);
                     }
 
-                    void extractFrom(Support::CBitStream &in)
+                    void unpack(Support::CBitStream &in)
                     {
                         if (in.getWrittenLength() <= getMinimumPacketPayloadLength())
-                            throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
+                            throw std::underflow_error("Unable to unpack ExecuteRPC packet; too small of a payload!");
 
-                        in >> mReason;
+                        in >> mName;
                     }
 
                     Common::U32 getMinimumPacketPayloadLength(void)
@@ -57,14 +56,15 @@ namespace Kiaro
 
                     size_t getRequiredMemory(void)
                     {
-                        return mReason.length();
+                        return mName.length();
                     }
 
                 // Public Members
                 public:
-                    Support::String mReason;
+                    Support::String mName;
             };
         } // End NameSpace Packets
     } // End NameSpace Game
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
+

@@ -25,6 +25,9 @@
 
 #include <game/entities/types.hpp>
 
+#include <support/Set.hpp>
+#include <support/String.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -49,7 +52,7 @@ namespace Kiaro
                 IS_STATIC = 4,
             };
 
-            class IEntity : public Core::INetworkPersistable
+            class IEntity : public Net::INetworkPersistable
             {
                 // Public Methods
                 public:
@@ -75,12 +78,12 @@ namespace Kiaro
 
                     void setNetID(const Common::U32& identifier);
 
-                    virtual void packUpdate(Support::CBitStream& out);
-                    virtual void unpackUpdate(Support::CBitStream& in);
-                    virtual void packInitialization(Support::CBitStream& out) const;
-                    virtual void unpackInitialization(Support::CBitStream& in);
-                    virtual void instantiate(void);
+                    virtual void instantiate(void) = 0;
                     virtual void update(const Common::F32& deltaTimeSeconds) = 0;
+
+                    virtual void packDeltas(Support::CBitStream& out);
+                    virtual void packEverything(Support::CBitStream& out) const;
+                    virtual void unpack(Support::CBitStream& in);
 
                     //virtual void setPosition(const Common::Vector3DF& position) = 0;
 
@@ -90,9 +93,9 @@ namespace Kiaro
                     Common::U32 mHintMask;
                     Common::U32 mNetID;
 
-                    std::set<CES::IComponent*> mComponents;
+                    Support::Set<CES::IComponent*> mComponents;
 
-                    std::string mName;
+                    Support::String mName;
             };
         } // End Namespace Entities
     } // End Namespace Game

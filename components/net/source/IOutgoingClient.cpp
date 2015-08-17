@@ -29,11 +29,13 @@
 
 #include <support/CBitStream.hpp>
 
+#include <net/messages/messages.hpp>
+
 namespace Kiaro
 {
     namespace Net
     {
-        IOutgoingClient::IOutgoingClient() : mIsConnected(false), mPort(0), mCurrentStage(0) //, mInternalPeer(NULL), mInternalHost(NULL)
+        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mIsConnected(false), mInternalPeer(NULL), mInternalHost(NULL)
         {
         /*
             mEntityGroup = Game::SGameWorld::getPointer();
@@ -90,89 +92,22 @@ namespace Kiaro
             */
         }
 
-/*
-        void IOutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
+        void IOutgoingClient::internalOnConnected(void)
         {
-            // We need to know what type of packet it is first
-            Net::IMessage basePacket;
-            basePacket.extractFrom(incomingStream);
-
-            switch (basePacket.getType())
-            {
-                case Game::Messages::MESSAGE_SCOPE:
-                {
-                    Game::Messages::Scope receivedScope;
-                    receivedScope.extractFrom(incomingStream);
-
-                    break;
-                }
-
-                case Game::Messages::MESSAGE_HANDSHAKE:
-                {
-                    Game::Messages::HandShake receivedHandshake;
-                    receivedHandshake.extractFrom(incomingStream);
-
-                    // NOTE: Would rather printf here but then the stdout override doesn't work
-                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-
-                    mCurrentStage = 1;
-
-                    break;
-                }
-
-                case Game::Messages::MESSAGE_SIMCOMMIT:
-                {
-                    Game::Messages::SimCommit receivedCommit;
-                    receivedCommit.extractFrom(incomingStream);
-                    break;
-                }
-
-                case Game::Messages::MESSAGE_DISCONNECT:
-                {
-                    Game::Messages::Disconnect disconnect;
-                    disconnect.extractFrom(incomingStream);
-
-                    // TODO (Robert MacGregor#9): Call an onDisconnect method in Lua
-                    Core::Logging::write(Core::Logging::MESSAGE_INFO, "SEngineInstance: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
-                    this->disconnect();
-
-                    // TODO (Robert MacGregor#9): Safe to do from within the class like this?
-                    Net::SClient::destroy();
-                    break;
-                }
-
-                default:
-                {
-                    // FIXME (Robert MacGregor#9): Fails to print out the type identifier?
-                    std::string errorString = "SClient: Received unknown packet. Type Identifier: ";
-                    errorString += basePacket.getType();
-                    throw std::logic_error(errorString);
-
-                    break;
-                }
-            }
-        }
-    */
-
-/*
-        void IOutgoingClient::onConnected(void)
-        {
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Established connection to remote host.");
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Established connection to remote host.");
 
             // Dispatch our own handshake in response
-            Game::Messages::HandShake handShake;
+            Net::Messages::HandShake handShake;
 
             this->send(&handShake, true);
 
-            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
+            //lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
 
-            EasyLua::pushObject(lua, "GameClient", "onConnected");
+            //EasyLua::pushObject(lua, "GameClient", "onConnected");
 
-            if (lua_pcall(lua, 0, 0, 0))
-                Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SClient: %s", lua_tostring(lua, -1));
+            //if (lua_pcall(lua, 0, 0, 0))
+             //   Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SClient: %s", lua_tostring(lua, -1));
         }
-        */
 
 /*
         void IOutgoingClient::onDisconnected(void)
@@ -198,7 +133,7 @@ namespace Kiaro
         }
         */
 
-        void IOutgoingClient::send(IMessage* packet, const bool& reliable)
+        void IOutgoingClient::send(Messages::IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
             if (reliable)
@@ -246,15 +181,14 @@ namespace Kiaro
             {
                 mCurrentStage = 0;
 
-                this->onConnected();
-                mIsConnected = true;
+                this->internalOnConnected();
 
                 //this->address = enet_address.host;
                 mPort = targetPort;
                 return;
             }
 
-          //  Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
+            Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
 
             this->onConnectFailed();
             enet_peer_reset(mInternalPeer);
@@ -271,6 +205,109 @@ namespace Kiaro
             enet_peer_disconnect_later(mInternalPeer, 0);
         }
 
+        void IOutgoingClient::processPacket(Support::CBitStream& incomingStream)
+        {
+            while (!incomingStream.isEmpty())
+            {
+                Messages::IMessage basePacket;
+                basePacket.unpack(incomingStream);
+
+                switch (basePacket.getType())
+                {
+                    // Stageless messages
+                    case Net::Messages::TYPE_DISCONNECT:
+                    {
+                        Net::Messages::Disconnect disconnect;
+                        disconnect.unpack(incomingStream);
+
+                        Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
+                        this->disconnect();
+
+                        break;
+                    }
+
+                    // Either it's an unknown message or it's a staged message
+                    default:
+                    {
+                        switch (mCurrentStage)
+                        {
+                            case 0:
+                            {
+                                this->processStageZero(basePacket, incomingStream);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        void IOutgoingClient::processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream)
+        {
+            switch (header.getType())
+            {
+                case Messages::TYPE_HANDSHAKE:
+                {
+                    Messages::HandShake receivedHandshake;
+                    receivedHandshake.unpack(incomingStream);
+
+                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
+
+                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Passed initial authentication.");
+
+                    mIsConnected = true;
+                    this->onConnected();
+
+                    mCurrentStage = 1;
+
+                    break;
+                }
+
+                // Out of stage packet or unknown type
+                default:
+                {
+                    Support::String exceptionText = "IOutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: ";
+                    exceptionText += header.getType();
+
+                    throw std::out_of_range(exceptionText);
+                    break;
+                }
+            }
+        }
+
+        void IOutgoingClient::processStageTwo(const Messages::IMessage& header, Support::CBitStream& incomingStream)
+        {
+            switch (header.getType())
+            {
+                case Net::Messages::TYPE_SCOPE:
+                {
+                    Net::Messages::Scope receivedScope;
+                    receivedScope.unpack(incomingStream);
+
+                    break;
+                }
+
+                case Net::Messages::TYPE_SIMCOMMIT:
+                {
+                    Net::Messages::SimCommit receivedCommit;
+                    receivedCommit.unpack(incomingStream);
+
+                    break;
+                }
+
+                // Out of stage packet or unknown type
+                default:
+                {
+                    Support::String exceptionText = "IOutgoingClient: Out of stage or unknown message type encountered at stage 2 processing: ";
+                    exceptionText += header.getType();
+
+                    throw std::out_of_range(exceptionText);
+                    break;
+                }
+            }
+        }
+
         void IOutgoingClient::update(void)
         {
             if (!mIsConnected && !mInternalPeer)
@@ -284,6 +321,8 @@ namespace Kiaro
                     {
                         enet_host_destroy(mInternalHost);
                         mInternalHost = NULL;
+                        enet_peer_reset(mInternalPeer);
+                        mInternalPeer = NULL;
 
                         this->onDisconnected();
                         Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Disconnected from remote host.");
@@ -301,7 +340,8 @@ namespace Kiaro
                         }
 
                         Support::CBitStream incomingStream(event.packet->dataLength, event.packet->data);
-                        this->onReceivePacket(incomingStream);
+                        this->processPacket(incomingStream);
+                        enet_packet_destroy(event.packet);
 
                         break;
                     }

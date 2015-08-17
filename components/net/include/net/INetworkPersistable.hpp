@@ -35,7 +35,7 @@ namespace Kiaro
         class CBitStream;
     } // End NameSpace Support
 
-    namespace Core
+    namespace Net
     {
         //! An enumeration containing the entity identifiers for networked objects.
         enum NETWORKED_ENTITY_NAME
@@ -48,11 +48,20 @@ namespace Kiaro
             NETWORKED_ENTITY_BEHAVIORMODEL = 2,
         }; // End Enum NETWORKED_ENTITY_NAME
 
+        enum PROPERTY_TYPE
+        {
+            PROPERTY_F32 = 1,
+            PROPERTY_F64 = 2,
+            PROPERTY_U32 = 3,
+            PROPERTY_U64 = 4,
+            PROPERTY_U8 = 5,
+        };
+
         /**
          *  @brief A base class representing an object that can be serialized to
          *  and from a Kiaro::Support::BitStream.
          */
-       class INetworkPersistable : public Kiaro::Support::ISerializable
+       class INetworkPersistable : public Support::ISerializable
        {
             // Public Methods
             public:
@@ -60,13 +69,9 @@ namespace Kiaro
                 INetworkPersistable(void) : mFinalizedNetworkedProperties(false) { }
 
                 template <typename propertyType>
-                void addNetworkedProperty(const Support::String& name, propertyType &propertyValue)
+                void addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
                 {
-                    // Don't want to network pointer values
-                    static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
-
-                    // TODO (Robert MacGregor#9): Verify that the hash code calculated from typeid() is unique to each type
-                    mNetworkedProperties[Kiaro::Common::string_hash(name)] = std::make_tuple(&propertyValue, typeid(propertyValue).hash_code(), 0);
+                  //  static_assert(false, "INetworkPersistable: Cannot network this data type!");
                 }
 
                 template <typename propertyType>
@@ -75,14 +80,14 @@ namespace Kiaro
                     static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
 
                     size_t mapIndex = Common::string_hash(name);
-                    Support::Tuple<void*, size_t, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
+                    Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
 
                     // Is it the same type?
                     if (std::get<1>(networkedPropertyInfo) != typeid(newPropertyValue).hash_code())
                         throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
 
                     // Assign it
-                    propertyType& oldPropertyValue = *((propertyType*)std::get<0>(networkedPropertyInfo));
+                    propertyType& oldPropertyValue = *(reinterpret_cast<propertyType*>(std::get<0>(networkedPropertyInfo)));
                     oldPropertyValue = newPropertyValue;
 
                     // Add to the dirty properties
@@ -95,7 +100,7 @@ namespace Kiaro
                 {
                     static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
 
-                    std::tuple<void*, size_t, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
+                    Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
 
                     // Is it the same type?
                     if (std::get<1>(networkedPropertyInfo) != typeid(propertyType).hash_code())
@@ -105,15 +110,13 @@ namespace Kiaro
                     return returnValue;
                 }
 
-                virtual void packData(Support::CBitStream& out)
-                {
+                virtual void packDeltas(Support::CBitStream& out);
+                virtual void packEverything(Support::CBitStream& out) const;
+                virtual void unpack(Support::CBitStream& in);
 
-                }
-
-                virtual void unpackData(Support::CBitStream& in)
-                {
-
-                }
+            // Private Methods
+            private:
+                inline void packProperty(Support::CBitStream& out, const size_t& propertyHash, const Support::Tuple<void*, PROPERTY_TYPE, size_t>& property) const;
 
             // Public Members
             public:
@@ -125,7 +128,7 @@ namespace Kiaro
                 bool mFinalizedNetworkedProperties;
 
                 //! A map of string hashes (networked property names) to an std::pair representing the location & typeid hash
-                Support::UnorderedMap<size_t, Support::Tuple<void*, size_t, size_t>> mNetworkedProperties;
+                Support::UnorderedMap<size_t, Support::Tuple<void*, PROPERTY_TYPE, size_t>> mNetworkedProperties;
        };
     } // End Namespace Engine
 } // End Namespace Kiaro

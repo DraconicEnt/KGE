@@ -112,7 +112,7 @@ namespace Kiaro
 
             private:
                 //! A pointer to the start of the contiguous memory block.
-                unsigned char* mMemoryBlock;
+                Common::U8* mMemoryBlock;
 
                 //! The number of elements currently in the stack.
                 int mPointer;
@@ -126,10 +126,11 @@ namespace Kiaro
         {
             public:
                 ISerializable(void) { }
-                ISerializable(Support::CBitStream& in) { this->extractFrom(in); }
-                virtual void writeTo(Support::CBitStream& out) const { }
+                ISerializable(Support::CBitStream& in) { this->unpack(in); }
 
-                virtual void extractFrom(Support::CBitStream& in) { }
+                virtual void packEverything(Support::CBitStream& out) const = 0;
+
+                virtual void unpack(Support::CBitStream& in) { }
 
                 virtual size_t getRequiredMemory(void) const { }
         };

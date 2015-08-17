@@ -14,7 +14,7 @@
 
 #include <enet/enet.h>
 
-#include <support/Set.hpp>
+#include <support/UnorderedSet.hpp>
 #include <support/String.hpp>
 #include <support/CBitStream.hpp>
 
@@ -24,7 +24,11 @@ namespace Kiaro
 {
     namespace Net
     {
-        class IMessage;
+        namespace Messages
+        {
+            class IMessage;
+        }
+
         class CIncomingClient;
 
         //! Server class that remote hosts connect to.
@@ -32,8 +36,8 @@ namespace Kiaro
         {
             // Public Typedefs
             public:
-                typedef Support::Set<CIncomingClient*>::iterator clientIterator;
-                typedef Support::Set<CIncomingClient*>::const_iterator clientConstIterator;
+                typedef Support::UnorderedSet<CIncomingClient*>::iterator clientIterator;
+                typedef Support::UnorderedSet<CIncomingClient*>::const_iterator clientConstIterator;
 
             // Public Methods
             public:
@@ -42,7 +46,7 @@ namespace Kiaro
                  */
                 void stop(void);
 
-                void globalSend(Net::IMessage* packet, const bool &reliable);
+                void globalSend(Messages::IMessage* packet, const bool &reliable);
 
                 /**
                  *  @brief Returns the current running status of the server.
@@ -50,13 +54,10 @@ namespace Kiaro
                  */
                 bool isRunning(void);
 
-                //! Performs an update time pulse on the server.
-                void update(const Common::F32& deltaTimeSeconds);
-
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
 
-                void networkUpdate(const Common::F32& deltaTimeSeconds);
+                virtual void update(const Common::F32& deltaTimeSeconds);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -73,16 +74,6 @@ namespace Kiaro
                  *  the disconnected client.
                  */
                 void onClientDisconnected(Net::CIncomingClient* client);
-
-                /**
-                 *  @brief Callback function that is called upon the server's underlaying
-                 *  network subsystem receiving a packet.
-                 *  @param incomingStream A reference to the Kiaro::Support::BitStream that can be
-                 *  used to unpack the packet payload.
-                 *  @param sender A pointer to a Kiaro::Network::IncomingClientBase representing
-                 *  the sender of the packet.
-                 */
-                void onReceivePacket(Support::CBitStream& incomingStream, Net::CIncomingClient* sender);
 
                 Net::CIncomingClient* getLastPacketSender(void);
 
@@ -110,6 +101,11 @@ namespace Kiaro
                  */
                 ~IServer(void);
 
+            // Private Methods
+            private:
+                void processPacket(Support::CBitStream& incomingStream, Net::CIncomingClient* sender);
+                void processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::CIncomingClient* sender);
+
             // Private Members
             private:
                 Net::CIncomingClient* mLastPacketSender;
@@ -125,7 +121,10 @@ namespace Kiaro
 
                 Common::U32 mMaximumClientCount;
 
-                Support::Set<CIncomingClient*> mConnectedClientSet;
+                //! An unordered set of all clients that passed the authentication stage and are now technically playing.
+                Support::UnorderedSet<CIncomingClient*> mConnectedClientSet;
+                //! An unordered set of all clients waiting to pass the authentication stage.
+                Support::UnorderedSet<CIncomingClient*> mPendingClientSet;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

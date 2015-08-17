@@ -38,23 +38,18 @@ namespace Kiaro
 
             Common::U32 IEntity::getHintMask(void) const { return mHintMask; }
 
-            void IEntity::packUpdate(Support::CBitStream& out)
+            void IEntity::packDeltas(Support::CBitStream& out)
             {
 
             }
 
-            void IEntity::unpackUpdate(Support::CBitStream& in)
-            {
-
-            }
-
-            void IEntity::packInitialization(Support::CBitStream& out) const
+            void IEntity::packEverything(Support::CBitStream& out) const
             {
                 // Here we pack our net ID and type ID
                 out << mType << mNetID;
             }
 
-            void IEntity::unpackInitialization(Support::CBitStream &in)
+            void IEntity::unpack(Support::CBitStream &in)
             {
                 in >> mNetID >> mType;
             }

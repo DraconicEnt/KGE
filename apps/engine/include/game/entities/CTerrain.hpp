@@ -46,10 +46,8 @@ namespace Kiaro
 
                     ~CTerrain(void);
 
-                    virtual void packUpdate(Kiaro::Support::CBitStream &out);
-                    virtual void unpackUpdate(Kiaro::Support::CBitStream &in);
-                    virtual void packInitialization(Kiaro::Support::CBitStream &out) const;
-                    virtual void unpackInitialization(Kiaro::Support::CBitStream &in);
+                    virtual void packEverything(Kiaro::Support::CBitStream &out) const;
+                    virtual void unpack(Kiaro::Support::CBitStream &in);
                     virtual void instantiate(void);
                     virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
 

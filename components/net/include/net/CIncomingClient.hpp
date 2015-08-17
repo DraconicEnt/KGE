@@ -26,8 +26,12 @@ namespace Kiaro
 
     namespace Net
     {
-        class IMessage;
         class IServer;
+
+        namespace Messages
+        {
+            class IMessage;
+        }
 
         //! The CClient class is a handle for a remote host that has connected to the game server.
         class CIncomingClient
@@ -42,7 +46,7 @@ namespace Kiaro
                 //! Standard destructor.
                 ~CIncomingClient(void);
 
-                void send(Net::IMessage *packet, const bool &reliable) NOTHROW;
+                void send(Messages::IMessage *packet, const bool &reliable) NOTHROW;
 
                 bool getIsOppositeEndian(void) NOTHROW;
 
@@ -55,10 +59,16 @@ namespace Kiaro
                 const Kiaro::Common::U32 &getBinaryIPAddress(void) NOTHROW;
                 Support::String getStringIPAddress(void);
 
+                void setStage(const Common::U32& in);
+                const Common::U32& getStage(void);
+
             private:
                 //! A boolean representing whether or not this connecting client has the opposite endianness.
                 bool mIsOppositeEndian;
                 ENetPeer *mInternalClient;
+
+                //! What stage is this client currently operating in?
+                Common::U32 mCurrentStage;
         };
     } // End Namespace Network
 } // End Namespace Kiaro
