@@ -176,9 +176,9 @@ namespace Kiaro
                     // If it's not any stageless message, then drop into the appropriate stage handler
                     default:
                     {
-                        switch (sender->getStage())
+                        switch (sender->getConnectionStage())
                         {
-                            case 0:
+                            case STAGE_AUTHENTICATION:
                             {
                                 this->processStageZero(basePacket, incomingStream, sender);
                                 break;
@@ -186,7 +186,7 @@ namespace Kiaro
 
                             default:
                             {
-                                Support::Logging::write(Support::Logging::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getStage());
+                                Support::Logging::write(Support::Logging::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
                                 break;
                             }
                         }
@@ -217,7 +217,7 @@ namespace Kiaro
                     mPendingClientSet.erase(sender);
                     mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
 
-                    sender->setStage(1);
+                    sender->setConnectionStage(Net::STAGE_LOADING);
                     this->onClientConnected(sender);
 
                     break;

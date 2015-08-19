@@ -1,4 +1,5 @@
 /**
+ *  @file INetworkPersistable.cpp
  */
 
 #include <net/INetworkPersistable.hpp>
@@ -7,6 +8,66 @@ namespace Kiaro
 {
     namespace Net
     {
+        //! Parameterless Constructor.
+        INetworkPersistable::INetworkPersistable(void) { }
+
+        template <typename propertyType>
+        void INetworkPersistable::addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
+        {
+            //  static_assert(false, "INetworkPersistable: Cannot network this data type!");
+        }
+
+        template <typename propertyType>
+        void INetworkPersistable::setNetworkedPropertyValue(const Support::String& name, const propertyType& newValue)
+        {
+            static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
+
+            size_t mapIndex = Common::string_hash(name);
+            Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
+
+            // Is it the same type?
+            if (std::get<1>(networkedPropertyInfo) != typeid(newValue).hash_code())
+                throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
+
+            // Assign it
+            propertyType& oldPropertyValue = *(reinterpret_cast<propertyType*>(std::get<0>(networkedPropertyInfo)));
+            oldPropertyValue = newValue;
+
+            // Add to the dirty properties
+            if (mDirtyNetworkedProperties.count(mapIndex) == 0)
+                mDirtyNetworkedProperties.insert(mDirtyNetworkedProperties.end(), mapIndex);
+        }
+
+        template <typename propertyType>
+        const propertyType& INetworkPersistable::getNetworkedPropertyValue(const Support::String& name)
+        {
+            static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
+
+            Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
+
+            // Is it the same type?
+            if (std::get<1>(networkedPropertyInfo) != typeid(propertyType).hash_code())
+                throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
+
+            propertyType& returnValue = *((propertyType*)std::get<0>(networkedPropertyInfo));
+            return returnValue;
+        }
+
+        template <>
+        const Common::U64& INetworkPersistable::getNetworkedPropertyValue(const Support::String& name)
+        {
+            //static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
+
+            Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
+
+            // Is it the same type?
+            if (std::get<1>(networkedPropertyInfo) != PROPERTY_U64)
+                throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
+
+            const Common::U64& returnValue = *(reinterpret_cast<Common::U64*>(std::get<0>(networkedPropertyInfo)));
+            return returnValue;
+        }
+
         template <>
         void INetworkPersistable::addNetworkedProperty(const Support::String& name, Common::F32& propertyValue)
         {

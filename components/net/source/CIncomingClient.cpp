@@ -1,6 +1,6 @@
 /**
- *  @file CClient.cpp
- *  @brief Source code file defining logic for the Kiaro::Network::OutgoingClient class.
+ *  @file CIncomingClient.cpp
+ *  @brief Source code file defining logic for the Net::CIncomingClient class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -9,24 +9,18 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <iostream>
-
 #include <net/CIncomingClient.hpp>
 
+#include <net/messages/messages.hpp>
+
 #include <support/CBitStream.hpp>
-
-#include <net/messages/IMessage.hpp>
-
-//#include <net/messages/Disconnect.hpp>
 
 namespace Kiaro
 {
     namespace Net
     {
-        CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mCurrentStage(0)
+        CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
+        mCurrentConnectionStage(STAGE_AUTHENTICATION)
         {
 
         }
@@ -57,11 +51,11 @@ namespace Kiaro
 
         void CIncomingClient::disconnect(const Support::String& reason)
         {
-         //   Net::Messages::Disconnect disconnect;
-         //   disconnect.mReason = reason;
+            Net::Messages::Disconnect disconnect;
+            disconnect.mReason = reason;
 
-          //  this->send(&disconnect, true);
-          //  enet_peer_disconnect_later(mInternalClient, 0);
+            this->send(&disconnect, true);
+            enet_peer_disconnect_later(mInternalClient, 0);
         }
 
         const Common::U16& CIncomingClient::getPort(void)
@@ -69,27 +63,28 @@ namespace Kiaro
             return mInternalClient->address.port;
         }
 
-        const Common::U32& CIncomingClient::getBinaryIPAddress(void)
+        const Common::U32& CIncomingClient::getIPAddress(void)
         {
             return mInternalClient->address.host;
         }
 
-        Support::String CIncomingClient::getStringIPAddress(void)
+        Support::String CIncomingClient::getIPAddressString(void)
         {
-            Common::C8 temporaryBuffer[32];
+            // TODO (Robert MacGregor#9): Make sure that the STL handles this correctly?
+            Common::C8 temporaryBuffer[18];
+            enet_address_get_host_ip(&mInternalClient->address, temporaryBuffer, 18);
 
-            enet_address_get_host_ip(&mInternalClient->address, temporaryBuffer, 32);
             return temporaryBuffer;
         }
 
-        void CIncomingClient::setStage(const Common::U32& in)
+        void CIncomingClient::setConnectionStage(const STAGE_NAME& in)
         {
-            mCurrentStage = in;
+            mCurrentConnectionStage = in;
         }
 
-        const Common::U32& CIncomingClient::getStage(void)
+        const STAGE_NAME& CIncomingClient::getConnectionStage(void)
         {
-            return mCurrentStage;
+            return mCurrentConnectionStage;
         }
     } // End Namespace Network
 } // End Namespace Kiaro

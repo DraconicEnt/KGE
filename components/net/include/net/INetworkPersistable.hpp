@@ -12,11 +12,8 @@
 #ifndef _INCLUDE_NET_INETWORKPERSISTABLE_HPP_
 #define _INCLUDE_NET_INETWORKPERSISTABLE_HPP_
 
-#include <unordered_map>       // std::unordered_map
-#include <unordered_set>       // std::unordered_set
 #include <typeinfo>
 #include <type_traits> // std::is_pointer
-#include <tuple>   // std::tuple
 #include <typeindex> // std::type_index
 #include <exception>
 
@@ -48,76 +45,28 @@ namespace Kiaro
             NETWORKED_ENTITY_BEHAVIORMODEL = 2,
         }; // End Enum NETWORKED_ENTITY_NAME
 
+        //! Emumeration used to identify property types.
         enum PROPERTY_TYPE
         {
+            //! A Common::F32
             PROPERTY_F32 = 1,
+            //! A Common::F64
             PROPERTY_F64 = 2,
+            //! A Common::U32
             PROPERTY_U32 = 3,
+            //! A Common::U64
             PROPERTY_U64 = 4,
+            //! A Common::U8
             PROPERTY_U8 = 5,
         };
 
         /**
-         *  @brief A base class representing an object that can be serialized to
-         *  and from a Kiaro::Support::BitStream.
+         *  @brief An interface class representing an object that is serializable to and from
+         *  a Support::CBitStream while also implementing property tracking semantics for differential
+         *  synchrnonization across the network.
          */
        class INetworkPersistable : public Support::ISerializable
        {
-            // Public Methods
-            public:
-                //! Standard Constructor
-                INetworkPersistable(void) : mFinalizedNetworkedProperties(false) { }
-
-                template <typename propertyType>
-                void addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
-                {
-                  //  static_assert(false, "INetworkPersistable: Cannot network this data type!");
-                }
-
-                template <typename propertyType>
-                void setNetworkedPropertyValue(const Support::String& name, const propertyType& newPropertyValue)
-                {
-                    static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
-
-                    size_t mapIndex = Common::string_hash(name);
-                    Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
-
-                    // Is it the same type?
-                    if (std::get<1>(networkedPropertyInfo) != typeid(newPropertyValue).hash_code())
-                        throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
-
-                    // Assign it
-                    propertyType& oldPropertyValue = *(reinterpret_cast<propertyType*>(std::get<0>(networkedPropertyInfo)));
-                    oldPropertyValue = newPropertyValue;
-
-                    // Add to the dirty properties
-                    if (mDirtyNetworkedProperties.count(mapIndex) == 0)
-                        mDirtyNetworkedProperties.insert(mDirtyNetworkedProperties.end(), mapIndex);
-                }
-
-                template <typename propertyType>
-                propertyType getNetworkedPropertyValue(const Support::String& name)
-                {
-                    static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
-
-                    Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
-
-                    // Is it the same type?
-                    if (std::get<1>(networkedPropertyInfo) != typeid(propertyType).hash_code())
-                        throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
-
-                    propertyType& returnValue = *((propertyType*)std::get<0>(networkedPropertyInfo));
-                    return returnValue;
-                }
-
-                virtual void packDeltas(Support::CBitStream& out);
-                virtual void packEverything(Support::CBitStream& out) const;
-                virtual void unpack(Support::CBitStream& in);
-
-            // Private Methods
-            private:
-                inline void packProperty(Support::CBitStream& out, const size_t& propertyHash, const Support::Tuple<void*, PROPERTY_TYPE, size_t>& property) const;
-
             // Public Members
             public:
                 //! A set of all modified network properties
@@ -125,10 +74,65 @@ namespace Kiaro
 
             // Private Members
             private:
-                bool mFinalizedNetworkedProperties;
-
                 //! A map of string hashes (networked property names) to an std::pair representing the location & typeid hash
                 Support::UnorderedMap<size_t, Support::Tuple<void*, PROPERTY_TYPE, size_t>> mNetworkedProperties;
+
+            // Public Methods
+            public:
+                //! Parameterless Constructor.
+                INetworkPersistable(void);
+
+                /**
+                 *  @brief Base template method to add networked properties to this INetworkPersistable
+                 *  representing an erroneous input data type.
+                 *  @param name The name of the property to use.
+                 *  @param propertyValue The desired value to map to by name.
+                 */
+                template <typename propertyType>
+                void addNetworkedProperty(const Support::String& name, propertyType& propertyValue);
+
+                /**
+                 *  @brief Templated method to modify the values of properties that were already added.
+                 *  @details This is equivalent to directly writing to the actual data regularly, but it
+                 *  takes note that the property has been modified and will be networked on the next packDeltas
+                 *  call.
+                 *  @param name The name of the property to modify.
+                 *  @param newValue The desired value to use.
+                 */
+                template <typename propertyType>
+                void setNetworkedPropertyValue(const Support::String& name, const propertyType& newValue);
+
+                /**
+                 *  @brief Base template method to get networked property values from this INetworkPersistable
+                 *  representing an erroneous input data type.
+                 */
+                template <typename propertyType>
+                const propertyType& getNetworkedPropertyValue(const Support::String& name);
+
+                /**
+                 *  @brief Virtual method to pack only the properties that have changed into the output
+                 *  Support::CBitStream.
+                 *  @param out A reference to the Support::CBitStream to write output to.
+                 */
+                virtual void packDeltas(Support::CBitStream& out);
+
+                /**
+                 *  @brief Virtual method to pack everything into the output Support::CBitStream. This
+                 *  includes properties that have not changed.
+                 *  @param out A reference to the Support::CBitStream to write output to.
+                 */
+                virtual void packEverything(Support::CBitStream& out) const;
+
+                /**
+                 *  @brief Virtual method to unpack data from the Support::CBitStream into
+                 *  the appropriate property fields on this INetworkPersistable.
+                 *  @param in A reference to the Support::CBitStream to read from.
+                 */
+                virtual void unpack(Support::CBitStream& in);
+
+            // Private Methods
+            private:
+                inline void packProperty(Support::CBitStream& out, const size_t& propertyHash, const Support::Tuple<void*, PROPERTY_TYPE, size_t>& property) const;
        };
     } // End Namespace Engine
 } // End Namespace Kiaro

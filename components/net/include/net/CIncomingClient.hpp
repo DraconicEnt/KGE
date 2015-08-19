@@ -9,13 +9,15 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#ifndef _INCLUDE_NETWORK_CINCOMINGCLIENT_HPP_
-#define _INCLUDE_NETWORK_CINCOMINGCLIENT_HPP_
+#ifndef _INCLUDE_NET_CINCOMINGCLIENT_HPP_
+#define _INCLUDE_NET_CINCOMINGCLIENT_HPP_
 
 #include <enet/enet.h>
 
 #include <support/String.hpp>
 #include <support/common.hpp>
+
+#include <net/stages.hpp>
 
 namespace Kiaro
 {
@@ -38,7 +40,7 @@ namespace Kiaro
         {
             public:
                 /**
-                 *  @brief Constructor accepting a Peer object.
+                 *  @brief Constructor accepting an ENetPeer object pointer.
                  *  @param connecting A Peer object that is connecting.
                  */
                 CIncomingClient(ENetPeer *connecting, Net::IServer *server);
@@ -57,29 +59,64 @@ namespace Kiaro
                 bool getIsOppositeEndian(void) NOTHROW;
 
                 //! Disconnects this client from the server.
-                void disconnect(const Support::String &reason) NOTHROW;
+                void disconnect(const Support::String& reason) NOTHROW;
 
                 /**
                  *  @brief Get the port number that this CIncomingClient is connecting on.
                  *  @return A Common::U16 representing the port number that this CIncomingClient is
                  *  connected on.
                  */
-                const Common::U16 &getPort(void) NOTHROW;
+                const Common::U16& getPort(void) NOTHROW;
 
-                const Common::U32 &getBinaryIPAddress(void) NOTHROW;
-                Support::String getStringIPAddress(void);
+                /**
+                 *  @brief Get the IP address that this CIncomingClient is connecting from.
+                 *  @return A Common::U32 representing the IP address that this CIncomingClient is
+                 *  connected from.
+                 */
+                const Common::U32& getIPAddress(void) NOTHROW;
 
-                void setStage(const Common::U32& in);
-                const Common::U32& getStage(void);
+                /**
+                 *  @brief Gets the IP address that this CIncomingClient is connecting on and
+                 *  returns it as a string using dotted decimal notation.
+                 *  @return A Common::String representing the dotted decimal notation of the
+                 *  IP address that this CIncomingClient is connecting from.
+                 */
+                Support::String getIPAddressString(void);
+
+                /**
+                 *  @brief Sets the current connection stage of this CIncomingClient.
+                 *  @param in The stage to set this CIncomingClient to.
+                 *  @warning This has no affect on the client on the remote end; this is merely
+                 *  a tracker variable on the server side. It is up to the netcode to keep these
+                 *  two values in sync.
+                 *  @see mCurrentConnectionStage
+                 */
+                void setConnectionStage(const STAGE_NAME& in);
+
+                /**
+                 *  @brief Gets the current connection stage of this CIncomingClient.
+                 *  @return The current connection stage of this CIncomingClient.
+                 *  @see mCurrentConnectionStage
+                 */
+                const STAGE_NAME& getConnectionStage(void);
 
             private:
-                //! A boolean representing whether or not this connecting client has the opposite endianness.
-                bool mIsOppositeEndian;
-                ENetPeer *mInternalClient;
+                //! A pointer to the internally used ENet peer.
+                ENetPeer* mInternalClient;
 
-                //! What stage is this client currently operating in?
-                Common::U32 mCurrentStage;
+                //! A boolean representing whether or not this CIncomingClient has the opposite endianness.
+                bool mIsOppositeEndian;
+
+                /**
+                 *  @brief What stage is this client currently operating in?
+                 *  @warning This value can very easily go out of sync between the client and server
+                 *  because of packet loss and network latency. All netcode that causes stage transitions
+                 *  will need to account for these situations accordingly. If this value were to go be
+                 *  desynchronized, it is extremely likely that an out of stage error is going to be raised
+                 *  on either end, causing a client disconnect.
+                 */
+                STAGE_NAME mCurrentConnectionStage;
         };
     } // End Namespace Network
 } // End Namespace Kiaro
-#endif // _INCLUDE_NETWORK_CINCOMINGCLIENT_HPP_
+#endif // _INCLUDE_NET_CINCOMINGCLIENT_HPP_
