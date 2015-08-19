@@ -51,9 +51,9 @@ IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
     
     # To use std::thread and friends, we must pass -lpthread and -pthread to the compiler and Linker for GCC
     IF (NOT WIN32)
-        SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -lpthread -pthread)
-        SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -lpthread -pthread)
-        SET(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -lpthread -pthread)
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lpthread -pthread")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -pthread")
+        SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread -pthread")
     ENDIF (NOT WIN32)
 ENDIF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
 
