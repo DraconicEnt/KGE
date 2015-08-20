@@ -46,7 +46,7 @@ namespace Kiaro
             Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
             // Start up Irrlicht
-            mIrrlicht = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Resolution"), 32, false, false, false, inputListener);
+            mIrrlicht = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Resolution"), 32, false, false, false);
             mIrrlicht->setWindowCaption(L"Kiaro Game Engine");
 
             // Grab the scene manager and store it to reduce a function call

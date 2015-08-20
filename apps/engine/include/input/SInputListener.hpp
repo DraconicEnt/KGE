@@ -24,7 +24,7 @@ namespace Kiaro
 {
     namespace Input
     {
-        class SInputListener : public irr::IEventReceiver
+        class SInputListener
         {
             // Public Members
             public:
@@ -41,7 +41,9 @@ namespace Kiaro
                 static SInputListener *getPointer(void);
                 static void destroy(void);
 
-                bool OnEvent(const irr::SEvent &event);
+                void update(const Common::F32& deltaTimeSeconds);
+
+               // bool OnEvent(const irr::SEvent &event);
 
                 void setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderPointer responder);
 

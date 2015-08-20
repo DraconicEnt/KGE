@@ -12,6 +12,8 @@
 #ifndef _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
 #define _INCLUDE_KIARO_ENGINE_CORESINGLETON_HPP_
 
+#include <allegro5/allegro.h>
+
 #include <lua.hpp>
 #include <irrlicht.h>
 
@@ -185,7 +187,9 @@ namespace Kiaro
                 //! The name of the currently running game name.
                 Support::String mGameName;
 
-                COutgoingClient *mActiveClient;
+                COutgoingClient* mActiveClient;
+
+                ALLEGRO_DISPLAY* mDisplay;
 
                 //typedef EasyDelegate::CachedDelegate<void> EngineTimePulseDelegate;
         };

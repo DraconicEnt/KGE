@@ -9,6 +9,8 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+#include <allegro5/allegro.h>
+
 #include <game/MoveManager.hpp>
 #include <input/SInputListener.hpp>
 
@@ -61,6 +63,19 @@ namespace Kiaro
 
         }
 
+        void SInputListener::update(const Common::F32& deltaTimeSeconds)
+        {
+            // Update CEGUI's mouse
+            ALLEGRO_MOUSE_STATE mouseState;
+            al_get_mouse_state(&mouseState);
+
+            CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+            guiContext.injectMousePosition(mouseState.x, mouseState.y);
+
+            // TODO (Robert MacGregor#9): Mouse Events & Key Events should be implemented if CEGUI ever works
+        }
+
+        /*
         static inline CEGUI::Key::Scan irrlichtKeyToCEGUI(const irr::EKEY_CODE& code)
         {
             switch(code)
@@ -183,7 +198,6 @@ namespace Kiaro
                 case irr::EKEY_CODE::KEY_RIGHT:
                     return CEGUI::Key::Scan::ArrowRight;
 
-                /*
                 case irr::EKEY_CODE::KEY_:
                     return CEGUI::Key::Scan::Space;
                 case irr::EKEY_CODE::KEY_SPACE:
@@ -202,7 +216,6 @@ namespace Kiaro
                     return CEGUI::Key::Scan::Space;
                 case irr::EKEY_CODE::KEY_SPACE:
                     return CEGUI::Key::Scan::Space;
-                    */
 
             }
 
@@ -281,5 +294,6 @@ namespace Kiaro
 
             return false;
         }
+        */
     } // End Namespace Game
 } // End Namespace Kiaro

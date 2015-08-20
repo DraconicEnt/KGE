@@ -9,8 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-
-#include <allegro5/allegro.h>
+#include <core/SEngineInstance.hpp>
 
 #include <irrlicht.h>
 #include <lua.hpp>
@@ -18,10 +17,17 @@
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Irrlicht/Renderer.h>
 
+#if defined(ENGINE_UNIX)
+    #include <allegro5/allegro_x.h>
+#elif defined(ENGINE_WIN)
+    #include <allegro5/allegro_windows.h>
+#else
+    #include <allegro5/allegro_osx.h>
+#endif
+
 #include <core/config.hpp>
 #include <core/tasking/SAsynchronousTaskManager.hpp>
 #include <core/tasking/SAsynchronousSchedulerTask.hpp>
-#include <core/SEngineInstance.hpp>
 #include <filesystem/SResourceProvider.hpp>
 #include <input/SInputListener.hpp>
 #include <core/SSettingsRegistry.hpp>
@@ -44,9 +50,9 @@ namespace Kiaro
 {
     namespace Core
     {
-        static Kiaro::Core::SEngineInstance* sInstance = NULL;
+        static SEngineInstance* sInstance = NULL;
 
-        SEngineInstance *SEngineInstance::getPointer(void)
+        SEngineInstance* SEngineInstance::getPointer(void)
         {
             if (!sInstance)
                 sInstance = new SEngineInstance;
@@ -101,6 +107,7 @@ namespace Kiaro
             mRunning = true;
 
             al_init();
+            al_install_mouse();
 
             this->initializeFileSystem(argc, argv);
 
@@ -302,9 +309,30 @@ namespace Kiaro
             // Init the Input listener
             Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
-            // Start up Irrlicht
-            mIrrlichtDevice = irr::createDevice(videoDriver, settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution"), 32, false, false, false, inputListener);
-            mIrrlichtDevice->setWindowCaption(L"Kiaro Game Engine");
+            // Create the Allegro window and get its ID
+            al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS);
+
+            irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
+            mDisplay = al_create_display(resolution.Width, resolution.Height);
+            al_set_window_title(mDisplay, "Kiaro Game Engine");
+
+            // Setup the Irrlicht creation request
+            irr::SIrrlichtCreationParameters creationParameters;
+            creationParameters.Bits = 32;
+            creationParameters.IgnoreInput = false; // We will use Allegro for this
+
+            #if defined(ENGINE_UNIX)
+                XID windowID = al_get_x_window_id(mDisplay);
+                creationParameters.WindowId = (void*)windowID;
+            #elif defined(ENGINE_WIN)
+                HWND windowHandle = al_get_win_window_handle(mDisplay);
+                creationParameters.WindowId = (void*)windowHandle;
+            #else
+                NSWindow* windowHandle = al_osx_get_window(mDisplay);
+                creationParameters.WindowId = (void*)windowHandle;
+            #endif
+
+            mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
             // Grab the scene manager and store it to reduce a function call
             mSceneManager = mIrrlichtDevice->getSceneManager();
@@ -378,6 +406,7 @@ namespace Kiaro
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
                     Core::Tasking::SAsynchronousTaskManager::getPointer()->tick();
+                    Input::SInputListener::getPointer()->update(deltaTimeSeconds);
 
                     // Pump a time pulse at the scheduler
                     Support::SSynchronousScheduler::getPointer()->update();
