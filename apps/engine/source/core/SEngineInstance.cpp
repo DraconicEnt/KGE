@@ -135,14 +135,18 @@ namespace Kiaro
             Core::Tasking::SAsynchronousTaskManager* asyncTaskManager = Core::Tasking::SAsynchronousTaskManager::getPointer();
             asyncTaskManager->addTask(Core::Tasking::SAsynchronousSchedulerTask::getPointer());
 
-            this->initializeRenderer();
+            mRunning = this->initializeRenderer() == 0 ? true : false;
+            if (!mRunning)
+                return 2;
 
             mRunning = this->initializeGUI() == 0 ? true : false;
             if (!mRunning)
-                return 1;
+                return 3;
 
             this->initializeSound();
             this->initializeNetwork();
+
+            Input::SInputListener* inputListener = Input::SInputListener::getPointer();
 
             this->runGameLoop();
 
@@ -220,11 +224,9 @@ namespace Kiaro
                     CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
                     FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
                     CEGUI::System::create(renderer, static_cast<CEGUI::ResourceProvider*>(resourceProvider), NULL, NULL, NULL, "", "log.txt");
-                    //EGUI::IrrlichtRenderer::bootstrapSystem(*mIrrlichtDevice);
 
                     resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
                     resourceProvider->setResourceGroupDirectory("ui", "ui/");
-                  //  resourceProvider->setResourceGroupDirectory("global", basePath);
 
                     CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
                     CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
@@ -296,8 +298,11 @@ namespace Kiaro
             return 0;
         }
 
-        void SEngineInstance::initializeRenderer(void)
+        Common::U32 SEngineInstance::initializeRenderer(void)
         {
+            // Create the Allegro event queue
+            mWindowEventQueue = al_create_event_queue();
+
             // Handle Execution Flag
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
 
@@ -306,14 +311,25 @@ namespace Kiaro
 
             Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
 
-            // Init the Input listener
-            Input::SInputListener* inputListener = Input::SInputListener::getPointer();
+            Common::S32 monitorCount = al_get_num_video_adapters();
+            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
 
             // Create the Allegro window and get its ID
-            al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS);
+            al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
 
             irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
             mDisplay = al_create_display(resolution.Width, resolution.Height);
+
+            // TODO (Robert MacGregor#9): Use a preference for the desired screen
+            if (!mDisplay)
+            {
+                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to create Allegro display!");
+                return 1;
+            }
+
+            // If we got a good display, register some events with it
+            al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
+
             al_set_window_title(mDisplay, "Kiaro Game Engine");
 
             // Setup the Irrlicht creation request
@@ -345,6 +361,8 @@ namespace Kiaro
 
             Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
             Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
+
+            return 0;
         }
 
         Common::U32 SEngineInstance::initializeNetwork(void)
@@ -434,6 +452,8 @@ namespace Kiaro
                         CEGUI::System::getSingleton().renderAllGUIContexts();
 
                         mIrrlichtDevice->getVideoDriver()->endScene();
+
+                        this->processWindowEvents();
                     }
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
@@ -457,6 +477,48 @@ namespace Kiaro
                     }
                 }
             }
+        }
+
+        void SEngineInstance::processWindowEvents(void)
+        {
+            // Query for display events
+            ALLEGRO_EVENT windowEvent;
+
+            if (al_get_next_event(mWindowEventQueue, &windowEvent))
+                switch (windowEvent.type)
+                    {
+                        case ALLEGRO_EVENT_DISPLAY_CLOSE:
+                        {
+                            this->kill();
+                            break;
+                        }
+
+                        case ALLEGRO_EVENT_DISPLAY_RESIZE:
+                        {
+                            if (!al_acknowledge_resize(mDisplay))
+                                Support::Logging::write(Support::Logging::MESSAGE_WARNING, "SEngineInstance: Failed to resize display!");
+                            else
+                            {
+                                // What is the new display dimensions?
+                                Common::S32 displayWidth = al_get_display_width(mDisplay);
+                                Common::S32 displayHeight = al_get_display_height(mDisplay);
+
+                                mIrrlichtDevice->getVideoDriver()->OnResize(irr::core::dimension2d<Common::U32>(displayWidth, displayHeight));
+                            }
+
+                            break;
+                        }
+
+                        case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
+                        {
+                            break;
+                        }
+
+                        case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
+                        {
+                            break;
+                        }
+                    }
         }
 
         Common::U32 SEngineInstance::initializeSound(void)
