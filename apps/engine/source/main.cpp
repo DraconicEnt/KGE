@@ -11,10 +11,6 @@
 
 #include <physfs.h>
 
-#if ENGINE_TESTS>0
-    #include <gtest/gtest.h>
-#endif
-
 #include <support/Logging.hpp>
 #include <support/common.hpp>
 #include <support/support.hpp>
@@ -47,16 +43,6 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
     commandLineParser.setFlagDescription("-dedicated", "Start up the engine as a standalone server.");
     commandLineParser.setFlagDescription("-v", "Print versioning information.");
     commandLineParser.setFlagDescription("-addons", "<addon1> [addon2...] : Run the game with a list of addons installed.");
-
-    #if ENGINE_TESTS > 0
-        ::testing::InitGoogleTest(&argc, argv);
-
-        // Only add the -tests flag if we're actually building with the GTest unit tests.
-        commandLineParser.setFlagDescription("-tests", "Tests the engine with the Google Testing framework.");
-
-        if (commandLineParser.hasFlag("-tests"))
-            RUN_ALL_TESTS();
-    #endif // ENGINE_TESTS
 
     // Should we display the help info?
     if (commandLineParser.hasFlag("-h"))

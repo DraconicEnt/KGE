@@ -3,8 +3,6 @@
  *  @brief Testing code for the INetworkPersistable class.
  */
 
-#if ENGINE_TESTS>0
-
 #include <gtest/gtest.h>
 
 #include <net/INetworkPersistable.hpp>
@@ -26,6 +24,5 @@ namespace Kiaro
         }
     } // End NameSpace Net
 } // End NameSpace Kiaro
-#endif
 
 

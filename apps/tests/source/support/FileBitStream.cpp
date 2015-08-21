@@ -9,9 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#if ENGINE_TESTS>0
-    #include <gtest/gtest.h>
-#endif // ENGINE_TESTS
+#include <gtest/gtest.h>
 
 #include <support/CBitStream.hpp>
 
@@ -19,12 +17,9 @@ namespace Kiaro
 {
     namespace Support
     {
-        // BitStream GTest Code
-        #if ENGINE_TESTS>0
-            TEST(FileBitStream, BadStartFloats)
-            {
+        TEST(FileBitStream, BadStartFloats)
+        {
 
-            }
-        #endif // ENGINE_TESTS
+        }
     } // End Namespace Support
 } // End namespace Kiaro

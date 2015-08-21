@@ -14,6 +14,7 @@ namespace Kiaro
         void INetworkPersistable::addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
         {
             static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
+
             mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_F32, 0);
         }
 
