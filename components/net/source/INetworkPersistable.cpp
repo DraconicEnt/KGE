@@ -8,25 +8,25 @@ namespace Kiaro
 {
     namespace Net
     {
-        //! Parameterless Constructor.
         INetworkPersistable::INetworkPersistable(void) { }
 
         template <typename propertyType>
         void INetworkPersistable::addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
         {
-            //  static_assert(false, "INetworkPersistable: Cannot network this data type!");
+            static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
+            mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_F32, 0);
         }
 
         template <typename propertyType>
         void INetworkPersistable::setNetworkedPropertyValue(const Support::String& name, const propertyType& newValue)
         {
-            static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
+            static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
             size_t mapIndex = Common::string_hash(name);
             Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
 
             // Is it the same type?
-            if (std::get<1>(networkedPropertyInfo) != typeid(newValue).hash_code())
+            if (std::get<1>(networkedPropertyInfo) != TypeIDResolver<propertyType>::value)
                 throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
 
             // Assign it
@@ -41,55 +41,16 @@ namespace Kiaro
         template <typename propertyType>
         const propertyType& INetworkPersistable::getNetworkedPropertyValue(const Support::String& name)
         {
-            static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
+            static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
             Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
 
             // Is it the same type?
-            if (std::get<1>(networkedPropertyInfo) != typeid(propertyType).hash_code())
+            if (std::get<1>(networkedPropertyInfo) != TypeIDResolver<propertyType>::value)
                 throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
 
             propertyType& returnValue = *((propertyType*)std::get<0>(networkedPropertyInfo));
             return returnValue;
-        }
-
-        template <>
-        const Common::U64& INetworkPersistable::getNetworkedPropertyValue(const Support::String& name)
-        {
-            //static_assert(!std::is_pointer<propertyType>::value, "INetworkPersistable: Cannot network pointer values!");
-
-            Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
-
-            // Is it the same type?
-            if (std::get<1>(networkedPropertyInfo) != PROPERTY_U64)
-                throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
-
-            const Common::U64& returnValue = *(reinterpret_cast<Common::U64*>(std::get<0>(networkedPropertyInfo)));
-            return returnValue;
-        }
-
-        template <>
-        void INetworkPersistable::addNetworkedProperty(const Support::String& name, Common::F32& propertyValue)
-        {
-            mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_F32, 0);
-        }
-
-        template <>
-        void INetworkPersistable::addNetworkedProperty(const Support::String& name, Common::F64& propertyValue)
-        {
-            mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_F64, 0);
-        }
-
-        template <>
-        void INetworkPersistable::addNetworkedProperty(const Support::String& name, Common::U32& propertyValue)
-        {
-            mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_U32, 0);
-        }
-
-        template <>
-        void INetworkPersistable::addNetworkedProperty(const Support::String& name, Common::U64& propertyValue)
-        {
-            mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_U64, 0);
         }
 
         void INetworkPersistable::packDeltas(Support::CBitStream& out)

@@ -32,9 +32,6 @@ extern "C"
     }
 }
 
-// Moved to avoid confusing the templates
-#include "support/CBitStream.cpp"
-
 #include "main.cpp"
 #include "easylua.cpp"
 

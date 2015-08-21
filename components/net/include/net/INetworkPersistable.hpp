@@ -45,32 +45,37 @@ namespace Kiaro
             NETWORKED_ENTITY_BEHAVIORMODEL = 2,
         }; // End Enum NETWORKED_ENTITY_NAME
 
-        //! Emumeration used to identify property types.
-        enum PROPERTY_TYPE
-        {
-            //! A Common::F32
-            PROPERTY_F32 = 1,
-            //! A Common::F64
-            PROPERTY_F64 = 2,
-            //! A Common::U32
-            PROPERTY_U32 = 3,
-            //! A Common::U64
-            PROPERTY_U64 = 4,
-            //! A Common::U8
-            PROPERTY_U8 = 5,
-        };
-
         /**
          *  @brief An interface class representing an object that is serializable to and from
          *  a Support::CBitStream while also implementing property tracking semantics for differential
          *  synchrnonization across the network.
          */
-       class INetworkPersistable : public Support::ISerializable
-       {
+        class INetworkPersistable : public Support::ISerializable
+        {
             // Public Members
             public:
                 //! A set of all modified network properties
                 Support::UnorderedSet<size_t> mDirtyNetworkedProperties;
+
+                //! Emumeration used to identify property types.
+                enum PROPERTY_TYPE
+                {
+                    //! Unknown type.
+                    PROPERTY_UNKNOWN = 0,
+                    //! A Common::F32
+                    PROPERTY_F32 = 1,
+                    //! A Common::F64
+                    PROPERTY_F64 = 2,
+                    //! A Common::U32
+                    PROPERTY_U32 = 3,
+                    //! A Common::U64
+                    PROPERTY_U64 = 4,
+                    //! A Common::U8
+                    PROPERTY_U8 = 5,
+                };
+
+                template <typename propertyType>
+                struct TypeIDResolver { static const PROPERTY_TYPE value = PROPERTY_UNKNOWN; };
 
             // Private Members
             private:
@@ -132,8 +137,29 @@ namespace Kiaro
 
             // Private Methods
             private:
+                /**
+                 *  @brief Helper method used to pack arbitrary methods into the INetworkPersistable.
+                 *  @param out A reference to the Support::CBitStream to write into.
+                 *  @param propertyHash The hash code of the property to use.
+                 *  @param property A reference to the Support::Tuple to write.
+                 */
                 inline void packProperty(Support::CBitStream& out, const size_t& propertyHash, const Support::Tuple<void*, PROPERTY_TYPE, size_t>& property) const;
-       };
+        };
+
+        template <>
+        struct INetworkPersistable::TypeIDResolver<Common::F32> { static const PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F32; };
+
+        template <>
+        struct INetworkPersistable::TypeIDResolver<Common::F64> { static const PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F64; };
+
+        template <>
+        struct INetworkPersistable::TypeIDResolver<Common::U32> { static const PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U32; };
+
+        template <>
+        struct INetworkPersistable::TypeIDResolver<Common::U64> { static const PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U64; };
+
+        template <>
+        struct INetworkPersistable::TypeIDResolver<Common::U8> { static const PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U8; };
     } // End Namespace Engine
 } // End Namespace Kiaro
 #endif // _INCLUDE_NET_INETWORKPERSISTABLE_HPP_
