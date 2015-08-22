@@ -10,50 +10,6 @@ namespace Kiaro
     {
         INetworkPersistable::INetworkPersistable(void) { }
 
-        template <typename propertyType>
-        void INetworkPersistable::addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
-        {
-            static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
-            mNetworkedProperties[Common::string_hash(name)] = std::make_tuple(&propertyValue, PROPERTY_F32, 0);
-        }
-
-        template <typename propertyType>
-        void INetworkPersistable::setNetworkedPropertyValue(const Support::String& name, const propertyType& newValue)
-        {
-            static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
-            size_t mapIndex = Common::string_hash(name);
-            Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
-
-            // Is it the same type?
-            if (std::get<1>(networkedPropertyInfo) != TypeIDResolver<propertyType>::value)
-                throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
-
-            // Assign it
-            propertyType& oldPropertyValue = *(reinterpret_cast<propertyType*>(std::get<0>(networkedPropertyInfo)));
-            oldPropertyValue = newValue;
-
-            // Add to the dirty properties
-            if (mDirtyNetworkedProperties.count(mapIndex) == 0)
-                mDirtyNetworkedProperties.insert(mDirtyNetworkedProperties.end(), mapIndex);
-        }
-
-        template <typename propertyType>
-        const propertyType& INetworkPersistable::getNetworkedPropertyValue(const Support::String& name)
-        {
-            static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
-            Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
-
-            // Is it the same type?
-            if (std::get<1>(networkedPropertyInfo) != TypeIDResolver<propertyType>::value)
-                throw std::logic_error("INetworkPersistable: Networked property type mismatch!");
-
-            propertyType& returnValue = *((propertyType*)std::get<0>(networkedPropertyInfo));
-            return returnValue;
-        }
-
         void INetworkPersistable::packDeltas(Support::CBitStream& out)
         {
             out.write<Common::U32>(mDirtyNetworkedProperties.size());
