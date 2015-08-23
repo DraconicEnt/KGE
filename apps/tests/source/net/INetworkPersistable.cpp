@@ -11,7 +11,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        TEST(INetworkPersistable, PropertyAdd)
+        TEST(INetworkPersistable, PropertyLocations)
         {
             Net::INetworkPersistable networkedEntity;
 
