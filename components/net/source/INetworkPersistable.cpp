@@ -27,20 +27,19 @@ namespace Kiaro
 
         void INetworkPersistable::packEverything(Support::CBitStream& out) const
         {
-            out.write<Common::U32>(mNetworkedProperties.size());
-
             for (auto it = mNetworkedProperties.begin(); it != mNetworkedProperties.end(); it++)
             {
                 std::pair<size_t, Support::Tuple<void*, PROPERTY_TYPE, size_t>> networkedPropertyInfo = *it;
                 this->packProperty(out, networkedPropertyInfo.first, networkedPropertyInfo.second);
             }
+
+            out.write<Common::U32>(mNetworkedProperties.size());
         }
 
         void INetworkPersistable::packProperty(Support::CBitStream& out, const size_t& propertyHash, const Support::Tuple<void*, PROPERTY_TYPE, size_t>& property) const
         {
             // Write the property hash
             // FIXME (Robert MacGregor#9): size_t Differences will cause breakage when networking two systems that have different sizeof(size_t)
-            out.write<size_t>(propertyHash);
 
             // Pack each type accordingly
             switch(std::get<1>(property))
@@ -79,6 +78,8 @@ namespace Kiaro
                     break;
                 }
             }
+
+            out.write<size_t>(propertyHash);
         }
 
         void INetworkPersistable::unpack(Support::CBitStream& in)
@@ -91,8 +92,8 @@ namespace Kiaro
             for (Common::U32 iteration = 0; iteration < propertyCount; iteration++)
             {
                 // TODO (Robert MacGregor#9): Determine what to do when properties don't exist and are being unpacked here
-                const PROPERTY_TYPE& propertyType = *in.top<PROPERTY_TYPE>();
-                in.pop<PROPERTY_TYPE>();
+              //  const PROPERTY_TYPE& propertyType = *in.top<PROPERTY_TYPE>();
+              //  in.pop<PROPERTY_TYPE>();
 
                 const size_t& propertyHash = *in.top<size_t>();
                 in.pop<size_t>();
@@ -108,15 +109,13 @@ namespace Kiaro
 
                 const Support::Tuple<void*, PROPERTY_TYPE, size_t>& propertyInformation = mNetworkedProperties[propertyHash];
 
-                switch(propertyType)
+                switch(std::get<1>(propertyInformation))
                 {
                     case PROPERTY_F32:
                     {
                         Common::F32& out = *reinterpret_cast<Common::F32*>(std::get<0>(propertyInformation));
                         out = *in.top<Common::F32>();
                         in.pop<Common::F32>();
-
-
 
                         break;
                     }
