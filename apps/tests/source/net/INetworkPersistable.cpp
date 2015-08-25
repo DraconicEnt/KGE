@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 
 #include <net/INetworkPersistable.hpp>
+#include <support/CBitStream.hpp>
 
 namespace Kiaro
 {
@@ -85,6 +86,36 @@ namespace Kiaro
             EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
             EXPECT_THROW(networkedEntity.setNetworkedPropertyValue<Common::U64>("float", 1337), std::runtime_error);
             EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
+        }
+
+        TEST(INetworkPersistable, PackUnpack)
+        {
+            Net::INetworkPersistable serverEntity;
+            Net::INetworkPersistable clientEntity;
+
+            // A couple of networked values
+            Common::F32 serverFloat = 3.14f;
+            Common::U32 serverInt = 1337;
+
+            serverEntity.addNetworkedProperty("float", serverFloat);
+            serverEntity.addNetworkedProperty("uint", serverInt);
+
+            // Now pack into a BitStream
+            Support::CBitStream stream(256);
+            serverEntity.packEverything(stream);
+
+            Common::F32 clientFloat = 7.83f;
+            Common::U32 clientInt = 1995;
+
+            clientEntity.addNetworkedProperty("float", clientFloat);
+            clientEntity.addNetworkedProperty("uint", clientInt);
+
+            // Unpack into it
+            clientEntity.unpack(stream);
+
+            // Make sure the values are correct
+            EXPECT_EQ(serverInt, clientEntity.getNetworkedPropertyValue<Common::U32>("uint"));
+            EXPECT_EQ(serverFloat, clientEntity.getNetworkedPropertyValue<Common::F32>("float"));
         }
     } // End NameSpace Net
 } // End NameSpace Kiaro
