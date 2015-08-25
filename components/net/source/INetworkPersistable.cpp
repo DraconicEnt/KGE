@@ -40,7 +40,7 @@ namespace Kiaro
         {
             // Write the property hash
             // FIXME (Robert MacGregor#9): size_t Differences will cause breakage when networking two systems that have different sizeof(size_t)
-            out.write(propertyHash);
+            out.write<size_t>(propertyHash);
 
             // Pack each type accordingly
             switch(std::get<1>(property))
@@ -61,7 +61,7 @@ namespace Kiaro
 
                 case PROPERTY_U32:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::U32*>(std::get<0>(property));
+                    const Common::U32& value = *reinterpret_cast<Common::U32*>(std::get<0>(property));
                     out.write<Common::U32>(value);
                     break;
                 }
@@ -90,6 +90,7 @@ namespace Kiaro
             // Unpack that many properties: If the payload was crafted to have wrong numbers, then the bit stream will throw underflow exceptions
             for (Common::U32 iteration = 0; iteration < propertyCount; iteration++)
             {
+                // TODO (Robert MacGregor#9): Determine what to do when properties don't exist and are being unpacked here
                 const PROPERTY_TYPE& propertyType = *in.top<PROPERTY_TYPE>();
                 in.pop<PROPERTY_TYPE>();
 
@@ -98,7 +99,12 @@ namespace Kiaro
 
                 // Do we have such a property?
                 if (mNetworkedProperties.count(propertyHash) == 0)
-                    throw std::domain_error("INetworkPersisable: Encountered unknown property in unpack!");
+                {
+                    Support::String exceptionMessage = "INetworkPersisable: Encountered unknown property in unpack! HashCode: ";
+                    exceptionMessage += propertyHash;
+
+                    throw std::domain_error(exceptionMessage);
+                }
 
                 const Support::Tuple<void*, PROPERTY_TYPE, size_t>& propertyInformation = mNetworkedProperties[propertyHash];
 
@@ -109,6 +115,8 @@ namespace Kiaro
                         Common::F32& out = *reinterpret_cast<Common::F32*>(std::get<0>(propertyInformation));
                         out = *in.top<Common::F32>();
                         in.pop<Common::F32>();
+
+
 
                         break;
                     }

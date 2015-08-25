@@ -102,6 +102,14 @@ namespace Kiaro
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
                     size_t mapIndex = Common::string_hash(name);
+                    this->setNetworkedPropertyValue<propertyType>(mapIndex, newValue);
+                }
+
+                template <typename propertyType>
+                void setNetworkedPropertyValue(const size_t& mapIndex, const propertyType& newValue)
+                {
+                    static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
+
                     Support::Tuple<void*, PROPERTY_TYPE, size_t> networkedPropertyInfo = mNetworkedProperties[mapIndex];
 
                     // Is it the same type?
