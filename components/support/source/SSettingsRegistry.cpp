@@ -6,11 +6,11 @@
 #include <support/common.hpp>
 #include <support/String.hpp>
 
-#include <core/SSettingsRegistry.hpp>
+#include <support/SSettingsRegistry.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         static SSettingsRegistry* sInstance = NULL;
 

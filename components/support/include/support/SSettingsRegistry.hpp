@@ -15,7 +15,7 @@
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         class SSettingsRegistry
         {
