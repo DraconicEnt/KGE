@@ -4,7 +4,7 @@
 
 #include <video/SRenderer.hpp>
 
-#include <core/SSettingsRegistry.hpp>
+#include <support/SSettingsRegistry.hpp>
 #include <input/SInputListener.hpp>
 #include <video/CSceneGraph.hpp>
 #include <support/Logging.hpp>
@@ -40,7 +40,7 @@ namespace Kiaro
            // if (mEngineMode == Kiaro::Core::MODE_DEDICATED)
            //     videoDriver = irr::video::EDT_NULL;
 
-            Core::SSettingsRegistry *settings = Core::SSettingsRegistry::getPointer();
+            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getPointer();
 
             // Init the Input listener
             Input::SInputListener* inputListener = Input::SInputListener::getPointer();

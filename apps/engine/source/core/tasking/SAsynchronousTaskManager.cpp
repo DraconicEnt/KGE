@@ -3,7 +3,7 @@
 
 #include <support/Logging.hpp>
 #include <core/config.hpp>
-#include <core/SSettingsRegistry.hpp>
+#include <support/SSettingsRegistry.hpp>
 
 #include <core/tasking/SSynchronousTaskManager.hpp>
 #include <core/tasking/SAsynchronousTaskManager.hpp>
@@ -131,7 +131,7 @@ namespace Kiaro
                return false;
             }
 
-            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
+            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
             {
                 if (mPoolSize == 0)
                 {

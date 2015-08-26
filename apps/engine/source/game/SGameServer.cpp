@@ -1,7 +1,7 @@
 /**
  */
 
-#include <core/SSettingsRegistry.hpp>
+#include <support/SSettingsRegistry.hpp>
 
 #include <game/SGameServer.hpp>
 
@@ -19,7 +19,7 @@ namespace Kiaro
         {
             if (!sInstance)
             {
-                Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
                 sInstance = new SGameServer(settings->getValue<Support::String>("Server::ListenAddress"),
                                             settings->getValue<Common::U16>("Server::ListenPort"),

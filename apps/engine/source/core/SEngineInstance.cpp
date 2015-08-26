@@ -30,7 +30,7 @@
 #include <core/tasking/SAsynchronousSchedulerTask.hpp>
 #include <filesystem/SResourceProvider.hpp>
 #include <input/SInputListener.hpp>
-#include <core/SSettingsRegistry.hpp>
+#include <support/SSettingsRegistry.hpp>
 
 #include <game/SGameServer.hpp>
 
@@ -124,7 +124,7 @@ namespace Kiaro
             else
                 Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
 
-            Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
             // TODO (Robert MacGregor#9): Return error codes for Lua, renderer, GUI and the netcode
             mRunning = this->initializeLua(argc, argv) == 0 ? true : false;
@@ -191,7 +191,7 @@ namespace Kiaro
                 mLuaState = NULL;
             }
 
-            Core::SSettingsRegistry::destroy();
+            Support::SSettingsRegistry::destroy();
 
             PHYSFS_deinit();
             enet_deinitialize();
@@ -306,10 +306,10 @@ namespace Kiaro
             // Handle Execution Flag
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
 
-            if (mEngineMode == Kiaro::Core::MODE_DEDICATED)
+            if (mEngineMode == Core::MODE_DEDICATED)
                 videoDriver = irr::video::EDT_NULL;
 
-            Core::SSettingsRegistry* settings = Core::SSettingsRegistry::getPointer();
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
             Common::S32 monitorCount = al_get_num_video_adapters();
             Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
