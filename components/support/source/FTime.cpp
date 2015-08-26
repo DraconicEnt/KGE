@@ -9,11 +9,14 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
+#include <numeric>
 #include <algorithm>
 
 #include <sys/time.h>
 
 #include <support/FTime.hpp>
+#include <support/Stack.hpp>
+#include <support/String.hpp>
 
 namespace Kiaro
 {
@@ -21,23 +24,32 @@ namespace Kiaro
     {
         namespace FTime
         {
-            static std::vector<Common::U64> sTimerStack;
+            static Support::Stack<Common::U64> sTimerStack;
             static Common::U32 sCurrentSimTime = 0;
 
             Support::FTime::timer startTimer(void)
             {
-                sTimerStack.push_back(Support::FTime::getCurrentTimeMicroseconds());
+                sTimerStack.push(Support::FTime::getCurrentTimeMicroseconds());
                 return sTimerStack.size();
             }
 
             Common::F32 stopTimer(const Support::FTime::timer &timerIdentifier)
             {
                 if (sTimerStack.size() == 0)
-                    throw std::logic_error("FTime: No timers to stop!");
+                    throw std::runtime_error("FTime: No timers to stop!");
+                else if (sTimerStack.size() >= std::numeric_limits<Common::U8>::max())
+                    throw std::runtime_error("FTime: Too many timers on stack!");
                 else if (timerIdentifier != sTimerStack.size())
-                    throw std::logic_error("FTime: Mismatched timer identifier!");
+                {
+                    Support::String errorString = "FTime: Mismatched timer identifier in stopTimer! Current: ";
+                    errorString += sTimerStack.size();
+                    errorString += " Given: ";
+                    errorString += timerIdentifier;
 
-                const Common::U64 lastTimeMicroseconds = sTimerStack.back();
+                    throw std::runtime_error(errorString);
+                }
+
+                const Common::U64 lastTimeMicroseconds = sTimerStack.top();
                 const Common::U64 currentTimeMicroseconds = Support::FTime::getCurrentTimeMicroseconds();
 
                 // NOTE (Robert MacGregor#1): Prevents the conversion calculation below from potentially being unrepresentable
@@ -50,7 +62,7 @@ namespace Kiaro
                 deltaTimeMicroseconds = std::max(static_cast<Common::U64>(100), deltaTimeMicroseconds);
 
                 Common::F32 result = (Common::F32)(deltaTimeMicroseconds) / 1000000.f;
-                sTimerStack.pop_back();
+                sTimerStack.pop();
 
                 return result;
             }

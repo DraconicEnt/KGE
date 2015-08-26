@@ -1,5 +1,5 @@
 /**
- *  @file BitStream_Tests.cpp
+ *  @file FileBitStream.cpp
  *  @brief Source file containing coding for the BitStream tests.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer

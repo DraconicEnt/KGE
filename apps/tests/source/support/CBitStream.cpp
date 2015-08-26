@@ -1,5 +1,5 @@
 /**
- *  @file TBitStream.cpp
+ *  @file CBitStream.cpp
  *  @brief Source file containing coding for the BitStream tests.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -50,7 +50,7 @@ namespace Kiaro
         {
             Common::U32 expectedStreamSize = sFloatCount * sizeof(Common::F32);
 
-            Support::CBitStream floatStream(expectedStreamSize);
+            CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
 
             // Check if our BitStream size is correct
@@ -68,11 +68,11 @@ namespace Kiaro
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
 
-            Support::CBitStream floatStream(expectedStreamSize);
+            CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
 
             // We wil have a memory block to use from the float stream
-            Support::CBitStream blockStream(floatStream.getBlock(), floatStream.getWrittenLength());
+            CBitStream blockStream(floatStream.getBlock(), floatStream.getWrittenLength());
 
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
             {
@@ -85,39 +85,20 @@ namespace Kiaro
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
 
-            Support::CBitStream floatStream(expectedStreamSize - 3);
+            CBitStream floatStream(expectedStreamSize - 3);
 
             bool caughtException = false;
-            try
-            {
-                PackFloats(floatStream);
-            }
-            catch (std::overflow_error& e)
-            {
-                caughtException = true;
-            }
-
-            EXPECT_TRUE(caughtException);
+            EXPECT_THROW(PackFloats(floatStream), std::overflow_error);
         }
 
         TEST(BitStream, BufferUnderflow)
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
-            Support::CBitStream floatStream(expectedStreamSize);
+            CBitStream floatStream(expectedStreamSize);
 
             PackFloats(floatStream);
-            bool caughtException = false;
-            try
-            {
-                floatStream.pop<Common::Vector3DF>();
-                floatStream.top<Common::Vector3DF>();
-            }
-            catch (std::underflow_error& e)
-            {
-                caughtException = true;
-            }
-
-            EXPECT_TRUE(caughtException);
+            EXPECT_THROW(floatStream.pop<Common::Vector3DF>(), std::underflow_error);
+            EXPECT_THROW(floatStream.top<Common::Vector3DF>(), std::underflow_error);
         }
 
         TEST(BitStream, Vector)
@@ -125,7 +106,7 @@ namespace Kiaro
             Common::U32 expectedStreamSize = 3 * sizeof(Common::F32);
 
             Common::Vector3DF testVector(1.0f, 2.0f, 3.0f);
-            Support::CBitStream vectorStream(expectedStreamSize);
+            CBitStream vectorStream(expectedStreamSize);
             vectorStream.write(testVector);
 
             const Common::Vector3DF* readVector = vectorStream.top<Common::Vector3DF>();
@@ -141,7 +122,7 @@ namespace Kiaro
             Common::U32 expectedStreamSize = 3 * sizeof(Common::F32);
 
             Common::Vector3DF testVector(1.0f, 2.0f, 3.0f);
-            Support::CBitStream vectorStream(expectedStreamSize);
+            CBitStream vectorStream(expectedStreamSize);
             vectorStream.write(testVector);
 
             const Common::F32& readZ = *vectorStream.top<Common::F32>();
@@ -159,7 +140,7 @@ namespace Kiaro
 
         TEST(BitStream, String)
         {
-            Support::CBitStream stream(256);
+            CBitStream stream(256);
 
             PackStrings(stream);
 
