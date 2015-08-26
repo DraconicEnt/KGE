@@ -17,7 +17,7 @@ namespace Kiaro
             for (auto it = mDirtyNetworkedProperties.begin(); it != mDirtyNetworkedProperties.end(); it++)
             {
                 const size_t& propertyHash = *it;
-                const Support::Tuple<void*, PROPERTY_TYPE, size_t>& networkedPropertyInfo = mNetworkedProperties[propertyHash];
+                const std::pair<void*, PROPERTY_TYPE>& networkedPropertyInfo = mNetworkedProperties[propertyHash];
 
                 this->packProperty(out, propertyHash, networkedPropertyInfo);
             }
@@ -29,45 +29,45 @@ namespace Kiaro
         {
             for (auto it = mNetworkedProperties.begin(); it != mNetworkedProperties.end(); it++)
             {
-                std::pair<size_t, Support::Tuple<void*, PROPERTY_TYPE, size_t>> networkedPropertyInfo = *it;
+                std::pair<size_t, std::pair<void*, PROPERTY_TYPE>> networkedPropertyInfo = *it;
                 this->packProperty(out, networkedPropertyInfo.first, networkedPropertyInfo.second);
             }
 
             out.write<Common::U32>(mNetworkedProperties.size());
         }
 
-        void INetworkPersistable::packProperty(Support::CBitStream& out, const size_t& propertyHash, const Support::Tuple<void*, PROPERTY_TYPE, size_t>& property) const
+        void INetworkPersistable::packProperty(Support::CBitStream& out, const size_t& propertyHash, const std::pair<void*, PROPERTY_TYPE>& property) const
         {
             // Write the property hash
             // FIXME (Robert MacGregor#9): size_t Differences will cause breakage when networking two systems that have different sizeof(size_t)
 
             // Pack each type accordingly
-            switch(std::get<1>(property))
+            switch(property.second)
             {
                 case PROPERTY_F32:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::F32*>(std::get<0>(property));
+                    const Common::F32& value = *reinterpret_cast<Common::F32*>(property.first);
                     out.write<Common::F32>(value);
                     break;
                 }
 
                 case PROPERTY_F64:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::F64*>(std::get<0>(property));
+                    const Common::F32& value = *reinterpret_cast<Common::F64*>(property.first);
                     out.write<Common::F64>(value);
                     break;
                 }
 
                 case PROPERTY_U32:
                 {
-                    const Common::U32& value = *reinterpret_cast<Common::U32*>(std::get<0>(property));
+                    const Common::U32& value = *reinterpret_cast<Common::U32*>(property.first);
                     out.write<Common::U32>(value);
                     break;
                 }
 
                 case PROPERTY_U64:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::U32*>(std::get<0>(property));
+                    const Common::F32& value = *reinterpret_cast<Common::U32*>(property.first);
                     out.write<Common::U64>(value);
                     break;
                 }
@@ -107,13 +107,13 @@ namespace Kiaro
                     throw std::domain_error(exceptionMessage);
                 }
 
-                const Support::Tuple<void*, PROPERTY_TYPE, size_t>& propertyInformation = mNetworkedProperties[propertyHash];
+                const std::pair<void*, PROPERTY_TYPE>& propertyInformation = mNetworkedProperties[propertyHash];
 
-                switch(std::get<1>(propertyInformation))
+                switch(propertyInformation.second)
                 {
                     case PROPERTY_F32:
                     {
-                        Common::F32& out = *reinterpret_cast<Common::F32*>(std::get<0>(propertyInformation));
+                        Common::F32& out = *reinterpret_cast<Common::F32*>(propertyInformation.first);
                         out = *in.top<Common::F32>();
                         in.pop<Common::F32>();
 
@@ -122,7 +122,7 @@ namespace Kiaro
 
                     case PROPERTY_F64:
                     {
-                        Common::F64& out = *reinterpret_cast<Common::F64*>(std::get<0>(propertyInformation));
+                        Common::F64& out = *reinterpret_cast<Common::F64*>(propertyInformation.first);
                         out = *in.top<Common::F64>();
                         in.pop<Common::F64>();
 
@@ -131,7 +131,7 @@ namespace Kiaro
 
                     case PROPERTY_U32:
                     {
-                        Common::U32& out = *reinterpret_cast<Common::U32*>(std::get<0>(propertyInformation));
+                        Common::U32& out = *reinterpret_cast<Common::U32*>(propertyInformation.first);
                         out = *in.top<Common::U32>();
                         in.pop<Common::U32>();
 
@@ -140,7 +140,7 @@ namespace Kiaro
 
                     case PROPERTY_U64:
                     {
-                        Common::U64& out = *reinterpret_cast<Common::U64*>(std::get<0>(propertyInformation));
+                        Common::U64& out = *reinterpret_cast<Common::U64*>(propertyInformation.first);
                         out = *in.top<Common::U64>();
                         in.pop<Common::U64>();
 
