@@ -19,6 +19,50 @@ namespace Kiaro
     {
         static SSynchronousScheduler* sInstance = NULL;
 
+        CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring) : mInternalDeferredCaller(cachedDelegate)
+        {
+            mTriggerTimeMS = Support::FTime::getSimTimeMilliseconds() + waitTimeMS;
+
+            mRecurring = recurring;
+            mWaitTimeMS = waitTimeMS;
+            mCancelled = false;
+        }
+
+        bool CScheduledEvent::shouldDispatch(const Common::U64& currentSimTimeMS) NOTHROW
+        {
+            return currentSimTimeMS >= mTriggerTimeMS && !mCancelled;
+        }
+
+        void CScheduledEvent::setTriggerTimeMS(const Common::U64& triggerTime) NOTHROW
+        {
+            mTriggerTimeMS = triggerTime;
+        }
+
+        void CScheduledEvent::dispatch(void)
+        {
+            mInternalDeferredCaller->genericDispatch();
+        }
+
+        void CScheduledEvent::cancel(void) NOTHROW
+        {
+            mCancelled = true;
+        }
+
+        const bool& CScheduledEvent::isCancelled(void) NOTHROW
+        {
+            return mCancelled;
+        }
+
+        const bool& CScheduledEvent::isRecurring(void) NOTHROW
+        {
+            return mRecurring;
+        }
+
+        const Common::U64& CScheduledEvent::getWaitTimeMS(void) NOTHROW
+        {
+            return mWaitTimeMS;
+        }
+
         SSynchronousScheduler* SSynchronousScheduler::getPointer(void)
         {
             if (!sInstance)
@@ -35,9 +79,9 @@ namespace Kiaro
             sInstance = NULL;
         }
 
-        CScheduledEvent* SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller* cachedDelegate, const Common::U32& waitTimeMS, const bool& recurring)
+        CScheduledEvent* SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller* mInternalDeferredCaller, const Common::U32& waitTimeMS, const bool& recurring)
         {
-            CScheduledEvent* event = new CScheduledEvent(cachedDelegate, waitTimeMS, recurring);
+            CScheduledEvent* event = new CScheduledEvent(mInternalDeferredCaller, waitTimeMS, recurring);
             mScheduledEventSet.insert(event);
 
             return event;
