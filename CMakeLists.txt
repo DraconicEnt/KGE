@@ -72,7 +72,7 @@ ENDIF(UNIX)
 
 # Handle our build options
 IF (BUILD_ENGINE)
-    ADD_SUBDIRECTORY("components")
     ADD_SUBDIRECTORY("deps")
+    ADD_SUBDIRECTORY("components")
     ADD_SUBDIRECTORY("apps")
 ENDIF (BUILD_ENGINE)
