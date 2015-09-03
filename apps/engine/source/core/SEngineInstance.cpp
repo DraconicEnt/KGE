@@ -38,7 +38,7 @@
 #include <net/CIncomingClient.hpp>
 
 #include <support/FTime.hpp>
-#include <core/SSynchronousScheduler.hpp>
+#include <support/SSynchronousScheduler.hpp>
 
 #include <video/CSceneGraph.hpp>
 
@@ -164,7 +164,7 @@ namespace Kiaro
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
         mRunning(false),// mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)),
-        mLuaState(NULL), mCurrentScene(NULL), mActiveClient(NULL)
+        mLuaState(NULL), mCurrentScene(NULL), mActiveClient(NULL), mDisplay(NULL)
         {
 
         }
@@ -195,6 +195,14 @@ namespace Kiaro
 
             PHYSFS_deinit();
             enet_deinitialize();
+
+            if (mDisplay)
+            {
+                al_destroy_display(mDisplay);
+                mDisplay = NULL;
+            }
+
+            al_uninstall_system();
         }
 
         void SEngineInstance::networkUpdate(void)
@@ -300,59 +308,58 @@ namespace Kiaro
 
         Common::U32 SEngineInstance::initializeRenderer(void)
         {
-            // Create the Allegro event queue
-            mWindowEventQueue = al_create_event_queue();
-
-            // Handle Execution Flag
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
-
-            if (mEngineMode == Core::MODE_DEDICATED)
-                videoDriver = irr::video::EDT_NULL;
-
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
-            Common::S32 monitorCount = al_get_num_video_adapters();
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
+            irr::SIrrlichtCreationParameters creationParameters;
 
-            // Create the Allegro window and get its ID
-            al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
-
-            irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
-            mDisplay = al_create_display(resolution.Width, resolution.Height);
-
-            // TODO (Robert MacGregor#9): Use a preference for the desired screen
-            if (!mDisplay)
+            if (mEngineMode != Core::MODE_DEDICATED)
             {
-                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to create Allegro display!");
-                return 1;
+                Common::S32 monitorCount = al_get_num_video_adapters();
+                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
+
+                // Create the Allegro window and get its ID
+                al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
+
+                irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
+                mDisplay = al_create_display(resolution.Width, resolution.Height);
+
+                // TODO (Robert MacGregor#9): Use a preference for the desired screen
+                if (!mDisplay)
+                {
+                    Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to create Allegro display!");
+                    return 1;
+                }
+
+                mWindowEventQueue = al_create_event_queue();
+                al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
+
+                al_set_window_title(mDisplay, "Kiaro Game Engine");
+
+                #if defined(ENGINE_UNIX)
+                    XID windowID = al_get_x_window_id(mDisplay);
+                    creationParameters.WindowId = reinterpret_cast<void*>(windowID);
+                #elif defined(ENGINE_WIN)
+                    HWND windowHandle = al_get_win_window_handle(mDisplay);
+                    creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
+                #else
+                    NSWindow* windowHandle = al_osx_get_window(mDisplay);
+                    creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
+                #endif
             }
-
-            // If we got a good display, register some events with it
-            al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
-
-            al_set_window_title(mDisplay, "Kiaro Game Engine");
+            else
+                videoDriver = irr::video::EDT_NULL;
 
             // Setup the Irrlicht creation request
-            irr::SIrrlichtCreationParameters creationParameters;
             creationParameters.Bits = 32;
             creationParameters.IgnoreInput = false; // We will use Allegro for this
-
-            #if defined(ENGINE_UNIX)
-                XID windowID = al_get_x_window_id(mDisplay);
-                creationParameters.WindowId = (void*)windowID;
-            #elif defined(ENGINE_WIN)
-                HWND windowHandle = al_get_win_window_handle(mDisplay);
-                creationParameters.WindowId = (void*)windowHandle;
-            #else
-                NSWindow* windowHandle = al_osx_get_window(mDisplay);
-                creationParameters.WindowId = (void*)windowHandle;
-            #endif
+            creationParameters.DriverType = videoDriver;
 
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
             // Grab the scene manager and store it to reduce a function call
             mSceneManager = mIrrlichtDevice->getSceneManager();
-            mSceneManager->addCameraSceneNode();
+            mSceneManager->setActiveCamera(mSceneManager->addCameraSceneNode());
 
             // Initialize the main scene and set it
             // TODO (Robert MacGregor#9): Only initialize when running as a client.
@@ -424,7 +431,6 @@ namespace Kiaro
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
                     Core::Tasking::SAsynchronousTaskManager::getPointer()->tick();
-                    Input::SInputListener::getPointer()->update(deltaTimeSeconds);
 
                     // Pump a time pulse at the scheduler
                     Support::SSynchronousScheduler::getPointer()->update();
@@ -453,7 +459,11 @@ namespace Kiaro
 
                         mIrrlichtDevice->getVideoDriver()->endScene();
 
-                        this->processWindowEvents();
+                        if (mDisplay)
+                        {
+                            this->processWindowEvents();
+                            Input::SInputListener::getPointer()->update(deltaTimeSeconds);
+                        }
                     }
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);

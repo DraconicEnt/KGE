@@ -18,7 +18,7 @@
 
 #include <support/CCommandLineParser.hpp>
 #include <support/CMapDivision.hpp>
-#include <core/SSynchronousScheduler.hpp>
+#include <support/SSynchronousScheduler.hpp>
 
 using namespace Kiaro;
 
