@@ -42,7 +42,7 @@
 
 #include <video/CSceneGraph.hpp>
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 
 #include <core/COutgoingClient.hpp>
 
@@ -111,18 +111,18 @@ namespace Kiaro
 
             this->initializeFileSystem(argc, argv);
 
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
 
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
             {
                 mRunning = false;
 
-                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
+                Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
                 return -1;
             }
             else
-                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
+                Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
 
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
@@ -132,6 +132,7 @@ namespace Kiaro
                 return 1;
 
             // Init the taskers
+            Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
             Core::Tasking::SAsynchronousTaskManager* asyncTaskManager = Core::Tasking::SAsynchronousTaskManager::getPointer();
             asyncTaskManager->addTask(Core::Tasking::SAsynchronousSchedulerTask::getPointer());
 
@@ -143,10 +144,14 @@ namespace Kiaro
             if (!mRunning)
                 return 3;
 
-            this->initializeSound();
+            // Only init sound if we're not a dedicated server.
+            if (mEngineMode != Kiaro::Core::MODE_DEDICATED)
+                this->initializeSound();
+
             this->initializeNetwork();
 
-            Input::SInputListener* inputListener = Input::SInputListener::getPointer();
+            // Initialize the time pulses
+            this->initializeScheduledEvents();
 
             this->runGameLoop();
 
@@ -158,7 +163,7 @@ namespace Kiaro
             if (!mRunning)
                 return;
 
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
             mRunning = false;
         }
 
@@ -171,7 +176,7 @@ namespace Kiaro
 
         SEngineInstance::~SEngineInstance(void)
         {
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
 
             // TODO: Check the destroy order
          //   Net::SClient::destroy();
@@ -246,11 +251,11 @@ namespace Kiaro
                     guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
                     guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
 
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
+                    Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
                 }
                 catch (CEGUI::InvalidRequestException& e)
                 {
-                    Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the GUI System. Reason:\n%s", e.what());
+                    Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the GUI System. Reason:\n%s", e.what());
                     return 1;
                 }
             }
@@ -281,7 +286,7 @@ namespace Kiaro
             // Load up the main file
             if (luaL_dofile(mLuaState, "main.lua") >= 1)
             {
-                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to load main.lua. Reason: '%s'", luaL_checkstring(mLuaState, -1));
+                Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to load main.lua. Reason: '%s'", luaL_checkstring(mLuaState, -1));
                 return 2;
             }
 
@@ -302,7 +307,7 @@ namespace Kiaro
             }
             lua_call(mLuaState, 2, 0);
 
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized Lua.");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized Lua.");
             return 0;
         }
 
@@ -316,7 +321,7 @@ namespace Kiaro
             if (mEngineMode != Core::MODE_DEDICATED)
             {
                 Common::S32 monitorCount = al_get_num_video_adapters();
-                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
+                Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
 
                 // Create the Allegro window and get its ID
                 al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
@@ -327,7 +332,7 @@ namespace Kiaro
                 // TODO (Robert MacGregor#9): Use a preference for the desired screen
                 if (!mDisplay)
                 {
-                    Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to create Allegro display!");
+                    Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to create Allegro display!");
                     return 1;
                 }
 
@@ -366,8 +371,8 @@ namespace Kiaro
             mMainScene = new Video::CSceneGraph();
             this->setSceneGraph(mMainScene);
 
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
 
             return 0;
         }
@@ -377,7 +382,7 @@ namespace Kiaro
             // Catch if the netcode somehow doesn't initialize correctly.
             if (enet_initialize() < 0)
             {
-                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the network!");
+                Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the network!");
                 return 1;
             }
 
@@ -409,7 +414,7 @@ namespace Kiaro
                 }
             }
 
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "SEngineInstance: Initialized network.");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized network.");
             return 0;
         }
 
@@ -420,9 +425,6 @@ namespace Kiaro
 
             // Start the Loop
             Common::F32 deltaTimeSeconds = 0.0f;
-
-            // Setup and start the network time pulses
-            Support::SSynchronousScheduler::getPointer()->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
 
             while (mRunning && mIrrlichtDevice->run())
             {
@@ -460,17 +462,14 @@ namespace Kiaro
                         mIrrlichtDevice->getVideoDriver()->endScene();
 
                         if (mDisplay)
-                        {
                             this->processWindowEvents();
-                            Input::SInputListener::getPointer()->update(deltaTimeSeconds);
-                        }
                     }
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
                 }
                 catch(std::exception& e)
                 {
-                    Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
                     // Something is probably up, we should leave.
                 //    Net::SClient::destroy();
@@ -506,7 +505,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_DISPLAY_RESIZE:
                         {
                             if (!al_acknowledge_resize(mDisplay))
-                                Support::Logging::write(Support::Logging::MESSAGE_WARNING, "SEngineInstance: Failed to resize display!");
+                                Support::Console::write(Support::Console::MESSAGE_WARNING, "SEngineInstance: Failed to resize display!");
                             else
                             {
                                 // What is the new display dimensions?
@@ -533,12 +532,8 @@ namespace Kiaro
 
         Common::U32 SEngineInstance::initializeSound(void)
         {
-            // Don't initialize the sound engine if we're running a dedicated server
-            if (mEngineMode == Kiaro::Core::MODE_DEDICATED)
-                return 0;
-
             #ifndef ENGINE_BUILD_SOUNDENGINE
-                Support::Logging::write(Support::Logging::MESSAGE_WARNING, "SEngineInstance: Built without audio support. There will be no sound.");
+                Support::Console::write(Support::Console::MESSAGE_WARNING, "SEngineInstance: Built without audio support. There will be no sound.");
             #else
             #endif // ENGINE_BUILD_SOUNDENGINE
 
@@ -559,6 +554,22 @@ namespace Kiaro
             PHYSFS_freeList(searchPaths);
 
             // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
+        }
+
+        void SEngineInstance::initializeScheduledEvents(void)
+        {
+            Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+
+            // Clients get a handful of scheduled events that don't apply for dedicated servers
+            if (mEngineMode != MODE_DEDICATED)
+            {
+                Input::SInputListener* inputListener = Input::SInputListener::getPointer();
+
+                // Set up input sampling
+                syncScheduler->schedule<Input::SInputListener>(13, true, inputListener, &Input::SInputListener::update);
+            }
+
+            syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
         }
 
         void SEngineInstance::setSceneGraph(Video::CSceneGraph* graph)

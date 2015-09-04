@@ -2,7 +2,7 @@
  *  @file SSettingsRegistry.cpp
  */
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 #include <support/common.hpp>
 #include <support/String.hpp>
 
@@ -37,7 +37,7 @@ namespace Kiaro
 
             if (!config)
             {
-                Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
+                Console::write(Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
 
                 this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
                 this->setValue("Server::ListenPort", Common::U16(11595));
@@ -90,7 +90,7 @@ namespace Kiaro
                 this->setValue("System::WorkerThreadCount", workerThreadCount);
 
                 al_destroy_config(config);
-                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SSettingsRegistry: Loaded config.cfg.");
+                Console::write(Console::MESSAGE_INFO, "SSettingsRegistry: Loaded config.cfg.");
             }
         }
 
@@ -146,10 +146,10 @@ namespace Kiaro
                 al_save_config_file("config.cfg", config);
                 al_destroy_config(config);
 
-                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SSettingsRegistry: Wrote new configuration file.");
+                Console::write(Console::MESSAGE_INFO, "SSettingsRegistry: Wrote new configuration file.");
             }
             else
-                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SSettingsRegistry: Failed to acquire Allegro config handle!");
+                Console::write(Console::MESSAGE_FATAL, "SSettingsRegistry: Failed to acquire Allegro config handle!");
 
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); it++)
