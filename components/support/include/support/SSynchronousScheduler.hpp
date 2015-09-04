@@ -126,24 +126,69 @@ namespace Kiaro
 
             // Public Methods
             public:
+
+                /**
+                 *  @brief Schedules a call using a pointer to a class member method.
+                 *  @param waitTimeMS The time in milliseconds to wait relative to the current time.
+                 *  @param recurring An optional boolean that defaults to false which is used to control the recurring
+                 *  behavior of the scheduled event.
+                 *  @param method A pointer to the static method to be dispatching.
+                 *  @param params... All other parameters beyond the class method pointer will be used as parameters when the scheduled
+                 *  event is processed.
+                 *  @return A pointer to the created event.
+                 *  @warning If recurring is true, then the returned CScheduledEvent should be kept track of in almost all cases.
+                 */
                 template <typename returnType, typename... parameters>
                 CScheduledEvent* schedule(const Common::U32& waitTimeMS, const bool& recurring, EasyDelegate::StaticMethodPointer<returnType, parameters...> method, parameters... params)
                 {
                     return this->schedule(new EasyDelegate::DeferredStaticCaller<returnType, parameters...>(method, params...), waitTimeMS, recurring);
                 }
 
+                /**
+                 *  @brief Schedules a call using a pointer to a class member method.
+                 *  @param waitTimeMS The time in milliseconds to wait relative to the current time.
+                 *  @param recurring An optional boolean that defaults to false which is used to control the recurring
+                 *  behavior of the scheduled event.
+                 *  @param thisPointer A pointer to the object to be used as "this" when dispatching the deferred call internally.
+                 *  @param method A pointer to the class member method to be dispatching.
+                 *  @param params... All other parameters beyond the class method pointer will be used as parameters when the scheduled
+                 *  event is processed.
+                 *  @return A pointer to the created event.
+                 *  @warning If recurring is true, then the returned CScheduledEvent should be kept track of in almost all cases.
+                 *  @warning The thisPointer parameter must be guaranteed to be valid for the lifetime of the scheduled event.
+                 */
                 template <typename classType, typename returnType, typename... parameters>
                 CScheduledEvent* schedule(const Common::U32& waitTimeMS, const bool& recurring, classType* thisPointer, EasyDelegate::MemberMethodPointer<classType, returnType, parameters...> method, parameters... params)
                 {
                     return this->schedule(new EasyDelegate::DeferredMemberCaller<classType, returnType, parameters...>(method, thisPointer, params...), waitTimeMS, recurring);
                 }
 
-                CScheduledEvent* schedule(EasyDelegate::IDeferredCaller* cachedDelegate, const Common::U32 &waitTimeMS, const bool &recurring = false);
+                /**
+                 *  @brief Schedules a call using an IDeferredCaller pointer.
+                 *  @param deferredCaller A pointer to the deferred caller to schedule.
+                 *  @param waitTimeMS The time in milliseconds to wait relative to the current time.
+                 *  @param recurring An optional boolean that defaults to false which is used to control the recurring
+                 *  behavior of the scheduled event.
+                 *  @return A pointer to the created event.
+                 *  @warning If recurring is true, then the returned CScheduledEvent should be kept track of in almost all cases.
+                 */
+                CScheduledEvent* schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32& waitTimeMS, const bool& recurring = false);
 
+                /**
+                 *  @brief Sends an update time pulse to the SSynchronousScheduler singleton. Call this once
+                 *  per main loop iteration.
+                 */
                 void update(void);
 
+                /**
+                 *  @brief Static method to retrieve a pointer to the SSynchronousScheduler singleton.
+                 *  @return A pointer to the currently active SSynchronousScheduler singleton.
+                 */
                 static SSynchronousScheduler* getPointer(void);
 
+                /**
+                 *  @brief Static method used to destroy the SSynchronousScheduler singleton.
+                 */
                 static void destroy(void);
 
             // Private Methods
