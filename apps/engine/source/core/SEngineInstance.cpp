@@ -222,7 +222,7 @@ namespace Kiaro
                 server->update(0.0f);
         }
 
-        lua_State *SEngineInstance::getLuaState(void) { return mLuaState; }
+        lua_State* SEngineInstance::getLuaState(void) { return mLuaState; }
 
         int SEngineInstance::initializeGUI(void)
         {
