@@ -9,7 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 
 #include <net/IServer.hpp>
 #include <net/CIncomingClient.hpp>
@@ -23,7 +23,7 @@ namespace Kiaro
         IServer::IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
         mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "IServer: Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
+            Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
 
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
@@ -73,7 +73,7 @@ namespace Kiaro
             lua_call(lua, 0, 0);
             */
 
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "IServer: Deinitializing game server ...");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Deinitializing game server ...");
 
             // Disconnect everyone
             for (auto it = this->clientsBegin(); it != this->clientsEnd(); it++)
@@ -111,7 +111,7 @@ namespace Kiaro
                 {
                     case ENET_EVENT_TYPE_CONNECT:
                     {
-                        Support::Logging::write(Support::Logging::MESSAGE_INFO, "IServer: Received client connect challenge.");
+                        Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Received client connect challenge.");
 
                         CIncomingClient* client = new CIncomingClient(event.peer, this);
                         event.peer->data = client;
@@ -122,7 +122,7 @@ namespace Kiaro
 
                     case ENET_EVENT_TYPE_DISCONNECT:
                     {
-                        Support::Logging::write(Support::Logging::MESSAGE_INFO, "IServer: Received client disconnect.");
+                        Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Received client disconnect.");
 
                         CIncomingClient* disconnected = reinterpret_cast<CIncomingClient*>(event.peer->data);
                         onClientDisconnected(disconnected);
@@ -186,7 +186,7 @@ namespace Kiaro
 
                             default:
                             {
-                                Support::Logging::write(Support::Logging::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
+                                Support::Console::write(Support::Console::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
                                 break;
                             }
                         }
@@ -204,7 +204,7 @@ namespace Kiaro
                     Net::Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
 
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                     receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
                     Net::Messages::HandShake handShake;
@@ -212,7 +212,7 @@ namespace Kiaro
 
                     // At this point, the client has passed initial authentication
                     // TODO (Robert MacGregor#9): Make a proper challenge that isn't just version information.
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "IServer: Client passed initial authentication.");
+                    Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Client passed initial authentication.");
 
                     mPendingClientSet.erase(sender);
                     mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
