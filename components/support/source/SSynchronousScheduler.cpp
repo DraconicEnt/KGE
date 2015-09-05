@@ -11,15 +11,59 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <core/SSynchronousScheduler.hpp>
+#include <support/SSynchronousScheduler.hpp>
 
 namespace Kiaro
 {
     namespace Support
     {
-        static SSynchronousScheduler *sInstance = NULL;
+        static SSynchronousScheduler* sInstance = NULL;
 
-        SSynchronousScheduler *SSynchronousScheduler::getPointer(void)
+        CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring) : mInternalDeferredCaller(deferredCaller)
+        {
+            mTriggerTimeMS = Support::FTime::getSimTimeMilliseconds() + waitTimeMS;
+
+            mRecurring = recurring;
+            mWaitTimeMS = waitTimeMS;
+            mCancelled = false;
+        }
+
+        bool CScheduledEvent::shouldDispatch(const Common::U64& currentSimTimeMS)
+        {
+            return currentSimTimeMS >= mTriggerTimeMS && !mCancelled;
+        }
+
+        void CScheduledEvent::setTriggerTimeMS(const Common::U64& triggerTime)
+        {
+            mTriggerTimeMS = triggerTime;
+        }
+
+        void CScheduledEvent::dispatch(void)
+        {
+            mInternalDeferredCaller->genericDispatch();
+        }
+
+        void CScheduledEvent::cancel(void)
+        {
+            mCancelled = true;
+        }
+
+        const bool& CScheduledEvent::isCancelled(void)
+        {
+            return mCancelled;
+        }
+
+        const bool& CScheduledEvent::isRecurring(void)
+        {
+            return mRecurring;
+        }
+
+        const Common::U64& CScheduledEvent::getWaitTimeMS(void)
+        {
+            return mWaitTimeMS;
+        }
+
+        SSynchronousScheduler* SSynchronousScheduler::getPointer(void)
         {
             if (!sInstance)
                 sInstance = new SSynchronousScheduler;
@@ -35,9 +79,9 @@ namespace Kiaro
             sInstance = NULL;
         }
 
-        CScheduledEvent *SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller *cachedDelegate, const Common::U32 &waitTimeMS, const bool &recurring)
+        CScheduledEvent* SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32& waitTimeMS, const bool& recurring)
         {
-            CScheduledEvent *event = new CScheduledEvent(cachedDelegate, waitTimeMS, recurring);
+            CScheduledEvent* event = new CScheduledEvent(deferredCaller, waitTimeMS, recurring);
             mScheduledEventSet.insert(event);
 
             return event;
@@ -47,10 +91,10 @@ namespace Kiaro
         {
             const Common::U64 currentSimTimeMS = Support::FTime::getSimTimeMilliseconds();
 
-            for (std::set<CScheduledEvent *>::iterator iterator = mScheduledEventSet.begin(); iterator != mScheduledEventSet.end(); iterator++)
+            for (auto iterator = mScheduledEventSet.begin(); iterator != mScheduledEventSet.end(); iterator++)
             {
                 bool shouldRemoveCurrentEvent = false;
-                CScheduledEvent *currentEvent = *iterator;
+                CScheduledEvent* currentEvent = *iterator;
 
                 if (currentEvent->shouldDispatch(currentSimTimeMS))
                 {

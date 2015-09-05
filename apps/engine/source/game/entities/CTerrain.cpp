@@ -11,7 +11,7 @@
  *  @copyright (c) 2013 Draconic Entertainment
  */
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 #include <game/entities/CTerrain.hpp>
 #include <game/entities/types.hpp>
 
@@ -69,7 +69,7 @@ namespace Kiaro
 
             void CTerrain::instantiate(void)
             {
-                Support::Logging::write(Support::Logging::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
+                Support::Console::write(Support::Console::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
                 irr::IrrlichtDevice* irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
@@ -83,7 +83,7 @@ namespace Kiaro
                     mSceneNode = terrain;
                 }
                 else
-                    Support::Logging::write(Support::Logging::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
             }
 
             void CTerrain::setPosition(const Common::Vector3DF& position)

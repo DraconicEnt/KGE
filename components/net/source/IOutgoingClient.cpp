@@ -16,7 +16,7 @@
 
 #include <enet/enet.h>
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 
 //#include <core/Logging.hpp>
 //#include <video/CBulletDebugDrawer.hpp>
@@ -94,7 +94,7 @@ namespace Kiaro
 
         void IOutgoingClient::internalOnConnected(void)
         {
-            Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Established connection to remote host.");
+            Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Established connection to remote host.");
 
             // Dispatch our own handshake in response
             Net::Messages::HandShake handShake;
@@ -188,7 +188,7 @@ namespace Kiaro
                 return;
             }
 
-            Support::Logging::write(Support::Logging::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
+            Support::Console::write(Support::Console::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
 
             this->onConnectFailed();
             enet_peer_reset(mInternalPeer);
@@ -220,7 +220,7 @@ namespace Kiaro
                         Net::Messages::Disconnect disconnect;
                         disconnect.unpack(incomingStream);
 
-                        Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
+                        Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
                         this->disconnect();
 
                         break;
@@ -251,10 +251,10 @@ namespace Kiaro
                     Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
 
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                     receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Passed initial authentication.");
+                    Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Passed initial authentication.");
 
                     mIsConnected = true;
                     this->onConnected();
@@ -325,7 +325,7 @@ namespace Kiaro
                         mInternalPeer = NULL;
 
                         this->onDisconnected();
-                        Support::Logging::write(Support::Logging::MESSAGE_INFO, "IOutgoingClient: Disconnected from remote host.");
+                        Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Disconnected from remote host.");
 
                         break;
                     }

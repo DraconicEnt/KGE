@@ -16,7 +16,7 @@
 
 #include <net/INetworkPersistable.hpp>
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 
 namespace Kiaro
 {
@@ -51,7 +51,7 @@ namespace Kiaro
 
                 in >> mScopedCount;
 
-                Support::Logging::write(Support::Logging::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
+                Support::Console::write(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
 
                 for (Common::U32 iteration = 0; iteration < mScopedCount; iteration++)
                 {

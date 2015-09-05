@@ -216,6 +216,8 @@ namespace Kiaro
                  */
                 void initializeFileSystem(const Common::S32& argc, Common::C8* argv[]);
 
+                void initializeScheduledEvents(void);
+
             // Private Members
             private:
                 //! A boolean representing whether or not the engine is running

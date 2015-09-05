@@ -1,7 +1,7 @@
 /**
  */
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 #include <core/config.hpp>
 #include <support/SSettingsRegistry.hpp>
 
@@ -135,7 +135,7 @@ namespace Kiaro
             {
                 if (mPoolSize == 0)
                 {
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Using no asynchrnous workers; will delegate to the synchronous task manager.");
+                    Support::Console::write(Support::Console::MESSAGE_INFO, "SAsynchronousTaskManager: Using no asynchrnous workers; will delegate to the synchronous task manager.");
                     return;
                 }
 
@@ -150,7 +150,7 @@ namespace Kiaro
                     mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                 }
 
-                Support::Logging::write(Support::Logging::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
+                Support::Console::write(Support::Console::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
             }
 
             SAsynchronousTaskManager::~SAsynchronousTaskManager(void)

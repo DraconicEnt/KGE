@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace Support
     {
-        namespace Logging
+        namespace Console
         {
             enum MESSAGE_TYPE
             {

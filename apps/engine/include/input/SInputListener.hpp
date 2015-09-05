@@ -41,9 +41,7 @@ namespace Kiaro
                 static SInputListener *getPointer(void);
                 static void destroy(void);
 
-                void update(const Common::F32& deltaTimeSeconds);
-
-               // bool OnEvent(const irr::SEvent &event);
+                void update(void);
 
                 void setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderPointer responder);
 

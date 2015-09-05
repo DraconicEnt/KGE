@@ -14,7 +14,7 @@
 #include <game/MoveManager.hpp>
 #include <input/SInputListener.hpp>
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 
 namespace Kiaro
 {
@@ -63,7 +63,7 @@ namespace Kiaro
 
         }
 
-        void SInputListener::update(const Common::F32& deltaTimeSeconds)
+        void SInputListener::update(void)
         {
             // Update CEGUI's mouse
             ALLEGRO_MOUSE_STATE mouseState;

@@ -11,14 +11,14 @@
 
 #include <physfs.h>
 
-#include <support/Logging.hpp>
+#include <support/Console.hpp>
 #include <support/common.hpp>
 #include <support/support.hpp>
 #include <core/SEngineInstance.hpp>
 
 #include <support/CCommandLineParser.hpp>
 #include <support/CMapDivision.hpp>
-#include <core/SSynchronousScheduler.hpp>
+#include <support/SSynchronousScheduler.hpp>
 
 using namespace Kiaro;
 
@@ -30,9 +30,9 @@ using namespace Kiaro;
  */
 Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 {
-    Support::Logging::write(Support::Logging::MESSAGE_INFO, "------------------------------------------------");
-    Support::Logging::write(Support::Logging::MESSAGE_INFO, "Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
-    Support::Logging::write(Support::Logging::MESSAGE_INFO, "------------------------------------------------");
+    Support::Console::write(Support::Console::MESSAGE_INFO, "------------------------------------------------");
+    Support::Console::write(Support::Console::MESSAGE_INFO, "Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+    Support::Console::write(Support::Console::MESSAGE_INFO, "------------------------------------------------");
 
     // Create our parser as a pointer so we can destroy it when entering the engine
     Kiaro::Support::CommandLineParser commandLineParser(argc, argv);
@@ -49,7 +49,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         commandLineParser.displayHelp(argc, argv);
     // Print the version information?
     else if (commandLineParser.hasFlag("-v"))
-        Support::Logging::write(Support::Logging::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+        Support::Console::write(Support::Console::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
 
     // Run the thing?
     else if (commandLineParser.hasFlag("-game"))
@@ -58,7 +58,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 
         if (gameArguments.size() != 1)
         {
-            Support::Logging::write(Support::Logging::MESSAGE_FATAL, "No game specified.\n");
+            Support::Console::write(Support::Console::MESSAGE_FATAL, "No game specified.\n");
             commandLineParser.displayHelp(argc, argv);
 
             // FIXME (Robert MacGregor#9): Segfault upon exit?
@@ -71,7 +71,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Support::Vector<Support::String> addonList;
         if (commandLineParser.hasFlag("-addons") && commandLineParser.getFlagArgumentCount("-addons") == 0)
         {
-            Support::Logging::write(Support::Logging::MESSAGE_FATAL, "No addons specified.\n");
+            Support::Console::write(Support::Console::MESSAGE_FATAL, "No addons specified.\n");
 
             commandLineParser.displayHelp(argc, argv);
             return -2;
@@ -91,7 +91,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
             targetServerIP = commandLineParser.getFlagArguments("-server")[0];
             if (targetServerIP.empty())
             {
-                Support::Logging::write(Support::Logging::MESSAGE_FATAL, "No server specified.\n");
+                Support::Console::write(Support::Console::MESSAGE_FATAL, "No server specified.\n");
 
                 commandLineParser.displayHelp(argc, argv);
                 return -3;
@@ -111,7 +111,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Core::SEngineInstance::destroy();
     }
 
-    Support::Logging::write(Support::Logging::MESSAGE_INFO, "EngineMain: Exited successfully.");
+    Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Exited successfully.");
 
     return 0;
 }
