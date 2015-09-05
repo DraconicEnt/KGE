@@ -13,7 +13,7 @@ file(GLOB_RECURSE SUPPORT_INCLUDES "include/*.hpp")
 file(GLOB_RECURSE SUPPORT_SOURCES "source/*.cpp")
 
 # FIXME: Include dirs?
-INCLUDE_DIRECTORIES ("include/" "../engine/include" ${IRRLICHT_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES ("include/" "../engine/include" ${EASYDELEGATE_INCLUDE_DIRECTORY} ${IRRLICHT_INCLUDE_DIRS})
 ADD_LIBRARY (Support "STATIC" ${SUPPORT_SOURCES} ${SUPPORT_INCLUDES})
 
 # Ensure that the parent can see our includes
