@@ -38,6 +38,14 @@ namespace Kiaro
             mTriggerTimeMS = triggerTime;
         }
 
+        void CScheduledEvent::setWaitTimeMS(const Common::U64& waitTimeMS, const bool& refresh)
+        {
+            mWaitTimeMS = waitTimeMS;
+
+            if (refresh)
+                mTriggerTimeMS = Support::FTime::getSimTimeMilliseconds() + waitTimeMS;
+        }
+
         void CScheduledEvent::dispatch(void)
         {
             mInternalDeferredCaller->genericDispatch();

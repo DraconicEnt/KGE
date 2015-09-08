@@ -73,6 +73,8 @@ namespace Kiaro
                  */
                 void setTriggerTimeMS(const Common::U64& triggerTime) NOTHROW;
 
+                void setWaitTimeMS(const Common::U64& waitTimeMS, const bool& refresh) NOTHROW;
+
                 /**
                  *  @brief Dispatches the scheduled event, calling whatever code it is set
                  *  to call.
