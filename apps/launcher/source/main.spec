@@ -1,6 +1,7 @@
 # -*- mode: python -*-
+import os
 a = Analysis(['main.py'],
-             pathex=['/home/ragora/Desktop/KGE/apps/launcher/source'],
+             pathex=[os.getcwd()],
              hiddenimports=[],
              hookspath=None,
              runtime_hooks=None)
