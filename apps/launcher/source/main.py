@@ -56,7 +56,7 @@ class Application(object):
             error_log.close()
             info_log.close()
         except OSError:
-            print("FATAL: Unable to open engine executable.")
+            print("FATAL: Unable to open engine executable. Is the launcher in the root of a KGE installation?")
         
 if __name__ == "__main__":
     Application().main()
