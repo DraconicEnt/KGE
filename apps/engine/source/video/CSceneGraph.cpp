@@ -18,7 +18,7 @@ namespace Kiaro
     {
         CSceneGraph::CSceneGraph(void)
         {
-            mRoot = Core::SEngineInstance::getPointer()->getSceneManager()->addEmptySceneNode();
+           // mRoot = Core::SEngineInstance::getPointer()->getSceneManager()->addEmptySceneNode();
         }
 
         CSceneGraph::~CSceneGraph(void)

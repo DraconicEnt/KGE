@@ -102,10 +102,6 @@ namespace Kiaro
                  */
                 void setGame(const Support::String& gameName);
 
-                irr::IrrlichtDevice* getIrrlichtDevice(void);
-
-                irr::scene::ISceneManager* getSceneManager(void);
-
                 /**
                  *  @brief Tells the game engine to actually start and take control
                  *  flow away from the calling code.
@@ -126,8 +122,6 @@ namespace Kiaro
                  */
                 void kill(void);
 
-                void setSceneGraph(Video::CSceneGraph* graph);
-
                 /**
                  *  @brief Returns whether or not the engine is running as a dedicated server at the
                  *  time of this call.
@@ -146,11 +140,6 @@ namespace Kiaro
                 ~SEngineInstance(void);
 
                 void networkUpdate(void);
-
-                /**
-                 *  @brief A helper method used to dispatch window events.
-                 */
-                void processWindowEvents(void);
 
                 /**
                  *  @brief A helper method used to provide the actual main loop of the
@@ -225,19 +214,6 @@ namespace Kiaro
                 //! An enumeration representing the engine run status.
                 MODE_NAME mEngineMode;
 
-                //! A pointer to the Irrlicht renderer device.
-                irr::IrrlichtDevice* mIrrlichtDevice;
-                //! A pointer to the Irrlicht scene manager.
-                irr::scene::ISceneManager* mSceneManager;
-
-                /**
-                 *  @brief A pointer to the main scene graph that the engine will
-                 *  use to render the main game simulation.
-                 */
-                Video::CSceneGraph* mMainScene;
-
-                Video::CSceneGraph* mCurrentScene;
-
                 Common::C8* mTargetServerAddress;
                 Common::U16 mTargetServerPort;
 
@@ -249,12 +225,6 @@ namespace Kiaro
 
                 //! A pointer to the active outgoing client.
                 COutgoingClient* mActiveClient;
-
-                //! A pointer to the allegro display that we're using.
-                ALLEGRO_DISPLAY* mDisplay;
-
-                //! A pointer to the allegro queue for window events.
-                ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
         };
     } // End Namespace Engine
 } // End Namespace Kiaro

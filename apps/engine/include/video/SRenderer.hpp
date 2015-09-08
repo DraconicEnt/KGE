@@ -7,10 +7,17 @@
 
 #include <irrlicht.h>
 
+#include <allegro5/allegro.h>
+
 #include <support/common.hpp>
 
 namespace Kiaro
 {
+    namespace Support
+    {
+        class CScheduledEvent;
+    }
+
     namespace Video
     {
         class CSceneGraph;
@@ -19,14 +26,21 @@ namespace Kiaro
         {
             // Private Members
             private:
-                irr::IrrlichtDevice* mIrrlicht;
+                irr::IrrlichtDevice* mIrrlichtDevice;
                 irr::video::IVideoDriver* mVideo;
                 irr::scene::ISceneManager* mSceneManager;
 
                 CSceneGraph* mMainScene;
                 CSceneGraph* mCurrentScene;
 
-               // Common::ColorRGBA mClearColor;
+                ALLEGRO_DISPLAY* mDisplay;
+                ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
+
+                Support::CScheduledEvent* mTimePulse;
+
+            // Public Members
+            public:
+                Common::ColorRGBA mClearColor;
 
             // Public Methods
             public:
@@ -36,13 +50,16 @@ namespace Kiaro
                 void drawFrame(void);
 
                 void setSceneGraph(CSceneGraph* graph);
-               // void setClearColor(const Common::ColorRGBA& color);
-               // const Common::ColorRGBA& getClearColor(void);
 
             // Private Methods
             private:
                 SRenderer(void);
                 ~SRenderer(void);
+
+                int initializeGUI(void);
+                int initializeRenderer(void);
+
+                void processWindowEvents(void);
         };
     } // End NameSpace Videos
 } // End NameSpace Kiaro

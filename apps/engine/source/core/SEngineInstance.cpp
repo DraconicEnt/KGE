@@ -11,6 +11,8 @@
 
 #include <core/SEngineInstance.hpp>
 
+#include <video/SRenderer.hpp>
+
 #include <irrlicht.h>
 #include <lua.hpp>
 
@@ -92,16 +94,6 @@ namespace Kiaro
             return mEngineMode & Kiaro::Core::MODE_DEDICATED;
         }
 
-        irr::IrrlichtDevice* SEngineInstance::getIrrlichtDevice(void)
-        {
-            return mIrrlichtDevice;
-        }
-
-        irr::scene::ISceneManager* SEngineInstance::getSceneManager(void)
-        {
-            return mSceneManager;
-        }
-
         Kiaro::Common::S32 SEngineInstance::start(const Common::S32& argc, Common::C8* argv[])
         {
             mRunning = true;
@@ -167,9 +159,8 @@ namespace Kiaro
             mRunning = false;
         }
 
-        SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mIrrlichtDevice(NULL), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-        mRunning(false),// mClearColor(Kiaro::Common::ColorRGBA(255, 255, 0, 0)),
-        mLuaState(NULL), mCurrentScene(NULL), mActiveClient(NULL), mDisplay(NULL)
+        SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
+        mRunning(false), mLuaState(NULL), mActiveClient(NULL)
         {
 
         }
@@ -184,12 +175,6 @@ namespace Kiaro
             Input::SInputListener::destroy();
             Support::SSynchronousScheduler::destroy();
 
-            if (mIrrlichtDevice)
-            {
-                mIrrlichtDevice->drop();
-                mIrrlichtDevice = NULL;
-            }
-
             if (mLuaState)
             {
                 lua_close(mLuaState);
@@ -201,11 +186,7 @@ namespace Kiaro
             PHYSFS_deinit();
             enet_deinitialize();
 
-            if (mDisplay)
-            {
-                al_destroy_display(mDisplay);
-                mDisplay = NULL;
-            }
+            Video::SRenderer::destroy();
 
             al_uninstall_system();
         }
@@ -226,40 +207,6 @@ namespace Kiaro
 
         int SEngineInstance::initializeGUI(void)
         {
-            // Start up CEGUI (if we're a client)
-            if (mEngineMode == MODE_CLIENTCONNECT || mEngineMode == MODE_CLIENT)
-            {
-                try
-                {
-                    // We don't need the OS cursor
-                    mIrrlichtDevice->getCursorControl()->setVisible(false);
-
-                    CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
-                    FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
-                    CEGUI::System::create(renderer, static_cast<CEGUI::ResourceProvider*>(resourceProvider), NULL, NULL, NULL, "", "log.txt");
-
-                    resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
-                    resourceProvider->setResourceGroupDirectory("ui", "ui/");
-
-                    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
-                    CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
-
-                    // Set the defaults
-                    CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-                    guiContext.setDefaultFont( "DejaVuSans-10" );
-                    guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
-                    guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
-
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
-                }
-                catch (CEGUI::InvalidRequestException& e)
-                {
-                    Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the GUI System. Reason:\n%s", e.what());
-                    return 1;
-                }
-            }
-
             return 0;
         }
 
@@ -313,67 +260,7 @@ namespace Kiaro
 
         Common::U32 SEngineInstance::initializeRenderer(void)
         {
-            irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
-            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-
-            irr::SIrrlichtCreationParameters creationParameters;
-
-            if (mEngineMode != Core::MODE_DEDICATED)
-            {
-                Common::S32 monitorCount = al_get_num_video_adapters();
-                Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Detected %u monitor(s)", monitorCount);
-
-                // Create the Allegro window and get its ID
-                al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
-
-                irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
-                mDisplay = al_create_display(resolution.Width, resolution.Height);
-
-                // TODO (Robert MacGregor#9): Use a preference for the desired screen
-                if (!mDisplay)
-                {
-                    Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to create Allegro display!");
-                    return 1;
-                }
-
-                mWindowEventQueue = al_create_event_queue();
-                al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
-
-                al_set_window_title(mDisplay, "Kiaro Game Engine");
-
-                #if defined(ENGINE_UNIX)
-                    XID windowID = al_get_x_window_id(mDisplay);
-                    creationParameters.WindowId = reinterpret_cast<void*>(windowID);
-                #elif defined(ENGINE_WIN)
-                    HWND windowHandle = al_get_win_window_handle(mDisplay);
-                    creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
-                #else
-                    NSWindow* windowHandle = al_osx_get_window(mDisplay);
-                    creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
-                #endif
-            }
-            else
-                videoDriver = irr::video::EDT_NULL;
-
-            // Setup the Irrlicht creation request
-            creationParameters.Bits = 32;
-            creationParameters.IgnoreInput = false; // We will use Allegro for this
-            creationParameters.DriverType = videoDriver;
-
-            mIrrlichtDevice = irr::createDeviceEx(creationParameters);
-
-            // Grab the scene manager and store it to reduce a function call
-            mSceneManager = mIrrlichtDevice->getSceneManager();
-            mSceneManager->setActiveCamera(mSceneManager->addCameraSceneNode());
-
-            // Initialize the main scene and set it
-            // TODO (Robert MacGregor#9): Only initialize when running as a client.
-            mMainScene = new Video::CSceneGraph();
-            this->setSceneGraph(mMainScene);
-
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized renderer.");
-
+            Video::SRenderer* renderer = Video::SRenderer::getPointer();
             return 0;
         }
 
@@ -420,13 +307,10 @@ namespace Kiaro
 
         void SEngineInstance::runGameLoop(void)
         {
-            // What is our current display size?
-            irr::core::dimension2d<irr::u32> lastDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
-
             // Start the Loop
             Common::F32 deltaTimeSeconds = 0.0f;
 
-            while (mRunning && mIrrlichtDevice->run())
+            while (mRunning)
             {
                 try
                 {
@@ -439,31 +323,7 @@ namespace Kiaro
 
                     // The GUI, video and sound systems run independently of our network time pulse
                     if (mEngineMode == Core::MODE_CLIENT || mEngineMode == Core::MODE_CLIENTCONNECT)
-                    {
-                        irr::core::dimension2d<Common::U32> currentDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
-
-                        // Be sure to notify all the subsystems of our window resizing
-                        if (lastDisplaySize != currentDisplaySize)
-                        {
-                            CEGUI::Sizef newDisplaySize(currentDisplaySize.Width, currentDisplaySize.Height);
-                            CEGUI::System::getSingleton().notifyDisplaySizeChanged(newDisplaySize);
-
-                            lastDisplaySize = currentDisplaySize;
-                        }
-
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
-
-                        // Since we're a client, render the frame right after updating
-                        mIrrlichtDevice->getVideoDriver()->beginScene(true, true);
-                        mSceneManager->drawAll();
-
-                        CEGUI::System::getSingleton().renderAllGUIContexts();
-
-                        mIrrlichtDevice->getVideoDriver()->endScene();
-
-                        if (mDisplay)
-                            this->processWindowEvents();
-                    }
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
                 }
@@ -471,8 +331,9 @@ namespace Kiaro
                 {
                     Support::Console::write(Support::Console::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
-                    // Something is probably up, we should leave.
-                //    Net::SClient::destroy();
+                    // Something is probably up, we should leave if we have an active client.
+                    if (mActiveClient)
+                        mActiveClient->disconnect();
 
                     // Servers just drop off the client that it last processed
                     Game::SGameServer* server = Game::SGameServer::getPointer();
@@ -486,48 +347,6 @@ namespace Kiaro
                     }
                 }
             }
-        }
-
-        void SEngineInstance::processWindowEvents(void)
-        {
-            // Query for display events
-            ALLEGRO_EVENT windowEvent;
-
-            if (al_get_next_event(mWindowEventQueue, &windowEvent))
-                switch (windowEvent.type)
-                    {
-                        case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                        {
-                            this->kill();
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_RESIZE:
-                        {
-                            if (!al_acknowledge_resize(mDisplay))
-                                Support::Console::write(Support::Console::MESSAGE_WARNING, "SEngineInstance: Failed to resize display!");
-                            else
-                            {
-                                // What is the new display dimensions?
-                                Common::S32 displayWidth = al_get_display_width(mDisplay);
-                                Common::S32 displayHeight = al_get_display_height(mDisplay);
-
-                                mIrrlichtDevice->getVideoDriver()->OnResize(irr::core::dimension2d<Common::U32>(displayWidth, displayHeight));
-                            }
-
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
-                        {
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
-                        {
-                            break;
-                        }
-                    }
         }
 
         Common::U32 SEngineInstance::initializeSound(void)
@@ -564,21 +383,13 @@ namespace Kiaro
             if (mEngineMode != MODE_DEDICATED)
             {
                 Input::SInputListener* inputListener = Input::SInputListener::getPointer();
+                Video::SRenderer* renderer = Video::SRenderer::getPointer();
 
                 // Set up input sampling
-                syncScheduler->schedule<Input::SInputListener>(13, true, inputListener, &Input::SInputListener::update);
+                syncScheduler->schedule(13, true, inputListener, &Input::SInputListener::update);
             }
 
             syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
-        }
-
-        void SEngineInstance::setSceneGraph(Video::CSceneGraph* graph)
-        {
-            if (mCurrentScene)
-                mCurrentScene->setVisible(false);
-
-            mCurrentScene = graph;
-            mCurrentScene->setVisible(true);
         }
     } // End Namespace Engine
 } // End Namespace Kiaro

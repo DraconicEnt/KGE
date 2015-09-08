@@ -8,6 +8,7 @@ extern "C"
 {
     int lua_video_setresolution(lua_State *L)
     {
+        /*
         Kiaro::Core::SEngineInstance* engineCore = Kiaro::Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
@@ -26,11 +27,13 @@ extern "C"
         irr::IrrlichtDevice* device = engineCore->getIrrlichtDevice();
 
         std::cerr << "VideoLib: Method 'video.setResolution' is unimplemented. " << std::endl;
+        */
         return 0;
     }
 
     int lua_video_setfullscreen(lua_State *L)
     {
+        /*
         Kiaro::Core::SEngineInstance* engineCore = Kiaro::Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
@@ -43,11 +46,13 @@ extern "C"
         irr::IrrlichtDevice *device = engineCore->getIrrlichtDevice();
 
         std::cerr << "VideoLib: Method 'video.setResolution' is unimplemented. " << std::endl;
+        */
         return 0;
     }
 
     int lua_video_takescreenshot(lua_State *L)
     {
+        /*
         Kiaro::Core::SEngineInstance* engineCore = Kiaro::Core::SEngineInstance::getPointer();
 
         if (engineCore->isDedicated())
@@ -62,5 +67,6 @@ extern "C"
         video->writeImageToFile(video->createScreenShot(), fileName);
 
         std::cout << "VideoLib: Wrote screenshot to " << fileName << std::endl;
+        */
     }
 }

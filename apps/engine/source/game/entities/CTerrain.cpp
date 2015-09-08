@@ -72,18 +72,18 @@ namespace Kiaro
                 Support::Console::write(Support::Console::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
-                irr::IrrlichtDevice* irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
-                irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
+             //   irr::IrrlichtDevice* irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();
+              //  irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
 
-                if (terrain)
-                {
-                    terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-                    terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
+               // if (terrain)
+               // {
+                 //  terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+                  //  terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 
-                    mSceneNode = terrain;
-                }
-                else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
+                   // mSceneNode = terrain;
+               // }
+               // else
+                //    Support::Console::write(Support::Console::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
             }
 
             void CTerrain::setPosition(const Common::Vector3DF& position)
