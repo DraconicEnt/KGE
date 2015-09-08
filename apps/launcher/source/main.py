@@ -3,6 +3,8 @@
 """
 
 import re
+import os
+import sys
 from datetime import datetime
 import subprocess
 
@@ -17,6 +19,15 @@ class Application(object):
         # Attempt to open the logfile
         error_log = open("errorLog.txt", "w")
         info_log = open("infoLog.txt", "w")
+        
+        # Write the log header
+        system_name, node_name, release, version, machine = os.uname()
+        info_log.write("Begin System Info--------------------------\n")
+        info_log.write("System Name: %s\n" % system_name)
+        info_log.write("Release: %s\n" % release)
+        info_log.write("Machine Type: %s\n" % machine)
+        info_log.write("\n")
+        info_log.write("Begin Runtime Log--------------------------\n")
         
         try:
             self.process = subprocess.Popen(["./Engine", "-game", "template"], stdout=subprocess.PIPE, stderr=error_log)
