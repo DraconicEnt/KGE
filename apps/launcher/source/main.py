@@ -26,11 +26,19 @@ class Application(object):
         info_log.write("System Name: %s\n" % system_name)
         info_log.write("Release: %s\n" % release)
         info_log.write("Machine Type: %s\n" % machine)
+        
+        parameter_string = "./Engine"
+        for index in range(1, len(sys.argv)):
+            parameter_string = "%s %s" % (parameter_string, sys.argv[index])
+        info_log.write("Subprocess Parameters: %s\n" % parameter_string)
+        
         info_log.write("\n")
         info_log.write("Begin Runtime Log--------------------------\n")
         
         try:
-            self.process = subprocess.Popen(["./Engine", "-game", "template"], stdout=subprocess.PIPE, stderr=error_log)
+            arguments = ["./Engine"] + sys.argv
+            
+            self.process = subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=error_log)
             for stdout_line in iter(self.process.stdout.readline, b''):
                 stdout_line = stdout_line.rstrip()
                 
