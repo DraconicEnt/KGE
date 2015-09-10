@@ -118,10 +118,7 @@ namespace Kiaro
 
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
-            // TODO (Robert MacGregor#9): Return error codes for Lua, renderer, GUI and the netcode
-            mRunning = this->initializeLua(argc, argv) == 0 ? true : false;
-            if (!mRunning)
-                return 1;
+            // TODO (Robert MacGregor#9): Return error codes for the netcode
 
             // Init the taskers
             Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
@@ -175,12 +172,6 @@ namespace Kiaro
             Input::SInputListener::destroy();
             Support::SSynchronousScheduler::destroy();
 
-            if (mLuaState)
-            {
-                lua_close(mLuaState);
-                mLuaState = NULL;
-            }
-
             Support::SSettingsRegistry::destroy();
 
             PHYSFS_deinit();
@@ -207,54 +198,6 @@ namespace Kiaro
 
         int SEngineInstance::initializeGUI(void)
         {
-            return 0;
-        }
-
-        Common::U32 SEngineInstance::initializeLua(const Common::S32& argc, Common::C8* argv[])
-        {
-            // Initialize Lua
-            // FIXME (Robert MacGregor#9): Init and call our Lua main method within the try, catch
-            mLuaState = luaL_newstate();
-            luaL_checkversion(mLuaState);
-            lua_gc(mLuaState, LUA_GCSTOP, 0);
-            luaL_openlibs(mLuaState);
-            lua_gc(mLuaState, LUA_GCRESTART, 0);
-
-            // Now create the callback tables
-            lua_createtable(mLuaState, 0, 0);
-            lua_setglobal(mLuaState, "GameServer");
-            lua_createtable(mLuaState, 0, 0);
-            lua_setglobal(mLuaState, "GameClient");
-
-            // The game window is used for callbacks from the window
-            lua_createtable(mLuaState, 0, 0);
-            lua_setglobal(mLuaState, "GameWindow");
-
-            // Load up the main file
-            if (luaL_dofile(mLuaState, "main.lua") >= 1)
-            {
-                Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance.cpp: Failed to load main.lua. Reason: '%s'", luaL_checkstring(mLuaState, -1));
-                return 2;
-            }
-
-            // Call the main(argv) method
-            lua_getglobal(mLuaState, "main");
-
-            // Create the parameter table
-            lua_newtable(mLuaState);
-
-            // Push the command line table
-            lua_newtable(mLuaState);
-
-            for (Kiaro::Common::S32 iteration = 0; iteration < argc; iteration++)
-            {
-                lua_pushinteger(mLuaState, iteration + 1);
-                lua_pushstring(mLuaState, argv[iteration]);
-                lua_settable(mLuaState, -3);
-            }
-            lua_call(mLuaState, 2, 0);
-
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized Lua.");
             return 0;
         }
 
