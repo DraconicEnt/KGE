@@ -14,7 +14,6 @@
 #include <video/SRenderer.hpp>
 
 #include <irrlicht.h>
-#include <lua.hpp>
 
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Irrlicht/Renderer.h>
@@ -157,7 +156,7 @@ namespace Kiaro
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-        mRunning(false), mLuaState(NULL), mActiveClient(NULL)
+        mRunning(false), mActiveClient(NULL)
         {
 
         }
@@ -193,8 +192,6 @@ namespace Kiaro
             if (server)
                 server->update(0.0f);
         }
-
-        lua_State* SEngineInstance::getLuaState(void) { return mLuaState; }
 
         int SEngineInstance::initializeGUI(void)
         {

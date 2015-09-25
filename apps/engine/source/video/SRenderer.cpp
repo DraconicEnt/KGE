@@ -99,8 +99,15 @@ namespace Kiaro
             creationParameters.Bits = 32;
             creationParameters.IgnoreInput = false; // We will use Allegro for this
             creationParameters.DriverType = videoDriver;
+            creationParameters.DeviceType = irr::EIDT_SDL;
 
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
+
+            if (!mIrrlichtDevice)
+            {
+                Support::Console::write(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize Irrlicht! (Does your Irrlicht lib support SDL?)");
+                return 2;
+            }
 
             // Grab the scene manager and store it to reduce a function call
             mSceneManager = mIrrlichtDevice->getSceneManager();
@@ -116,7 +123,7 @@ namespace Kiaro
             mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(16, true, this, &SRenderer::drawFrame);
 
             Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Initialized renderer.");\
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Initialized renderer.");
 
             return 0;
         }
@@ -266,6 +273,8 @@ namespace Kiaro
             CEGUI::System::getSingleton().renderAllGUIContexts();
 
             mVideo->endScene();
+
+            al_flip_display();
 
             this->processWindowEvents();
         }

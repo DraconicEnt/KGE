@@ -14,7 +14,6 @@
 
 #include <allegro5/allegro.h>
 
-#include <lua.hpp>
 #include <irrlicht.h>
 
 #include <support/support.hpp>
@@ -130,8 +129,6 @@ namespace Kiaro
                  */
                 bool isDedicated(void);
 
-                lua_State* getLuaState(void);
-
             // Private Methods
             private:
                 //! Privately declared standard constructor to enforce singleton behavior.
@@ -216,9 +213,6 @@ namespace Kiaro
 
                 Common::C8* mTargetServerAddress;
                 Common::U16 mTargetServerPort;
-
-                //! A pointer to the Lua scripting engine instance.
-                lua_State* mLuaState;
 
                 //! The name of the currently running game name.
                 Support::String mGameName;
