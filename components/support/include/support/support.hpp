@@ -9,6 +9,8 @@
  *  @copyright (c) 2015 Draconic Entertainment
  */
 
+#include <irrlicht.h>
+
 #include <support/CBitStream.hpp>
 #include <support/CCommandLineParser.hpp>
 #include <support/CFileBitStream.hpp>
@@ -74,5 +76,12 @@ namespace Kiaro
         typedef std::string String;
 		//! A typedef to an std::wstring.
         typedef std::wstring WString;
+
+        //! A typedef to a 2D vector type that represents dimensions.
+        template <typename storedType>
+        using Dimension2D = irr::core::dimension2d<storedType>;
+
+        //! A typedef to a 2D vector that represents dimensions using an unsigned int.
+        typedef Dimension2D<Common::U32> Dimension2DU;
     }
 }
