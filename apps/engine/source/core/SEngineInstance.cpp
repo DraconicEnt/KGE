@@ -323,10 +323,9 @@ namespace Kiaro
             if (mEngineMode != MODE_DEDICATED)
             {
                 Input::SInputListener* inputListener = Input::SInputListener::getPointer();
-                Video::SRenderer* renderer = Video::SRenderer::getPointer();
 
                 // Set up input sampling
-                syncScheduler->schedule(13, true, inputListener, &Input::SInputListener::update);
+                syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
             }
 
             syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);

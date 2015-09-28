@@ -5,6 +5,7 @@
 #include <support/Console.hpp>
 #include <support/common.hpp>
 #include <support/String.hpp>
+#include <support/support.hpp>
 
 #include <support/SSettingsRegistry.hpp>
 
@@ -45,34 +46,78 @@ namespace Kiaro
 
                 this->setValue("Video::Fullscreen", true);
                 this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+                this->setValue("Video::ActiveFPS", Common::U16(60));
+                this->setValue("Video::InactiveFPS", Common::U16(15));
 
                 this->setValue("System::WorkerThreadCount", Common::U8(6));
             }
             else
             {
+                const std::regex numberRegex("[0-9]+", std::regex_constants::basic);
+                const std::regex resolutionRegex("[0-9]+x[0-9]+", std::regex_constants::basic);
+                const std::regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", std::regex_constants::basic);
+
                 // Listen port?
                 Common::U16 listenPort = 11595;
                 const Common::C8* listenPortConfig = al_get_config_value(config, "Server", "ListenPort");
-                if (listenPortConfig)
+                if (listenPortConfig && std::regex_match(listenPortConfig, numberRegex))
                     listenPort = atoi(listenPortConfig);
+                else
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenPort config ('%s')! Using default value.", listenPortConfig);
 
                 // Maximum client count?
                 Common::U32 maximumClientCount = 32;
+                // FIXME (Robert MacGregor#9): Force GCC 4.9 when compiling this?
                 const Common::C8* maximumClientCountConfig = al_get_config_value(config, "Server", "MaximumClientCount");
                 if (maximumClientCountConfig)
                     maximumClientCount = atoi(maximumClientCountConfig);
+                else
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", maximumClientCount);
 
                 // Listen Address?
                 const Common::C8* listenAddressConfig = al_get_config_value(config, "Server", "ListenAddress");
                 Support::String listenAddress = "0.0.0.0";
-                if (listenAddressConfig)
+                if (listenAddressConfig && std::regex_match(listenAddressConfig, addressRegex))
                     listenAddress = listenAddressConfig;
+                else
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenAddress config ('%s')! Using default value.", listenAddressConfig);
 
                 // Full screen?
                 bool fullScreen = true;
                 const Common::C8* fullscreenConfig = al_get_config_value(config, "Video", "Fullscreen");
                 if (fullscreenConfig)
                     fullScreen = atoi(fullscreenConfig);
+
+                // Active & inactive FPS?
+                Common::U16 activeFPS = 60;
+                const Common::C8* activeFPSConfig = al_get_config_value(config, "Video", "ActiveFPS");
+                if (activeFPSConfig)
+                    activeFPS = atoi(activeFPSConfig);
+
+                Common::U16 inactiveFPS = 15;
+                const Common::C8* inactiveFPSConfig = al_get_config_value(config, "Video", "InactiveFPS");
+                if (inactiveFPSConfig)
+                    inactiveFPS = atoi(inactiveFPSConfig);
+
+                // Resolution?
+                Support::Dimension2DU resolution(640, 480);
+                const Common::C8* resolutionConfig = al_get_config_value(config, "Video", "Resolution");
+                if (resolutionConfig)
+                {
+                    // Make sure the resolution follows the pattern we want and extract the width & height if so.
+                    if (std::regex_match(resolutionConfig, resolutionRegex))
+                    {
+                        const Support::String resolutionString = resolutionConfig;
+                        const size_t splitLocation = resolutionString.find("x");
+
+                        const Support::String widthString = resolutionString.substr(0, splitLocation);
+                        const Support::String heightString = resolutionString.substr(splitLocation + 1, resolutionString.length());
+
+                        resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
+                    }
+                    else
+                        Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", resolutionConfig);
+                }
 
                 // Worker thread count?
                 Common::U8 workerThreadCount = 6;
@@ -86,6 +131,8 @@ namespace Kiaro
 
                 this->setValue("Video::Fullscreen", fullScreen);
                 this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+                this->setValue("Video::ActiveFPS", activeFPS);
+                this->setValue("Video::InactiveFPS", inactiveFPS);
 
                 this->setValue("System::WorkerThreadCount", workerThreadCount);
 
@@ -132,9 +179,21 @@ namespace Kiaro
                 al_add_config_comment(config, "Video", "Fullscreen controls whether or not the engine will run full screen");
                 al_set_config_value(config, "Video", "Fullscreen", "1");
 
+                sprintf(tempBuffer, "%u", this->getValue<Common::U16>("Video::InactiveFPS"));
+                al_add_config_comment(config, "Video", "Inactive FPS determines what framerate the engine will render at when the window is inactive.");
+                al_add_config_comment(config, "Video", "Setting this to a high value does not guarantee that FPS to actually be achieved.");
+                al_add_config_comment(config, "Video", "This should generally be a low value to help system performance when the game isn't focused.");
+
+                al_set_config_value(config, "Video", "InactiveFPS", tempBuffer);
+
+                sprintf(tempBuffer, "%u", this->getValue<Common::U16>("Video::ActiveFPS"));
+                al_add_config_comment(config, "Video", "Active FPS determines what framerate the engine will render at when the window is active.");
+                al_add_config_comment(config, "Video", "Setting this to a high value does not guarantee that FPS to actually be achieved.");
+                al_set_config_value(config, "Video", "ActiveFPS", tempBuffer);
+
                 // Write system section----------------------
                 al_add_config_section(config, "System");
-                al_add_config_comment(config, "System", "System wide configuration");
+                al_add_config_comment(config, "System", "Core system configuration.");
 
                 // Worder Thread Count
                 sprintf(tempBuffer, "%u", this->getValue<Common::U8>("System::WorkerThreadCount"));

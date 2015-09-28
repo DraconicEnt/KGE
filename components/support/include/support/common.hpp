@@ -100,7 +100,6 @@ namespace Kiaro
             typedef irr::core::vector3df Vector3DF;
             typedef irr::video::SColor ColorRGBA;
         #endif
-
         //! A global hasher.
         static std::hash<std::string> string_hash;
     } // End NameSpace Common

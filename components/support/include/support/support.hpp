@@ -18,6 +18,7 @@
 #include <support/FEndian.hpp>
 #include <support/FTime.hpp>
 
+#include <regex>
 #include <atomic>
 #include <iostream>
 #include <set>
@@ -33,6 +34,7 @@
 #include <string>
 #include <stack>
 
+#include <support/Math.hpp>
 #include <support/Tuple.hpp>
 #include <support/UnorderedMap.hpp>
 #include <support/Vector.hpp>

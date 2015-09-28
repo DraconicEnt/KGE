@@ -123,7 +123,8 @@ namespace Kiaro
            // this->setSceneGraph(mMainScene);
 
             // Set up the renderer time pulse
-            mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(16, true, this, &SRenderer::drawFrame);
+            const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
+            mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
 
             Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
             Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Initialized renderer.");
@@ -246,8 +247,11 @@ namespace Kiaro
                         {
                             Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window unfocused.");
 
+                            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                            const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
+
                             // Adjust our framerate to something lower if the window isn't focused
-                            mTimePulse->setWaitTimeMS(64, true);
+                            mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
 
                             break;
                         }
@@ -256,7 +260,10 @@ namespace Kiaro
                         {
                             Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window focused.");
 
-                            mTimePulse->setWaitTimeMS(16, true);
+                            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                            const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
+
+                            mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
 
                             break;
                         }
