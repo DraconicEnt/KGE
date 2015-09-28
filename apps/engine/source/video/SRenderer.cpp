@@ -79,7 +79,9 @@ namespace Kiaro
                 mWindowEventQueue = al_create_event_queue();
                 al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
 
+                // TODO (Robert MacGregor#9): Rename to game name?
                 al_set_window_title(mDisplay, "Kiaro Game Engine");
+                al_set_new_window_title("Auxiliary Display ");
 
                 #if defined(ENGINE_UNIX)
                     XID windowID = al_get_x_window_id(mDisplay);
@@ -100,6 +102,7 @@ namespace Kiaro
             creationParameters.IgnoreInput = false; // We will use Allegro for this
             creationParameters.DriverType = videoDriver;
             creationParameters.DeviceType = irr::EIDT_SDL;
+            creationParameters.WindowSize = resolution;
 
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
@@ -128,7 +131,7 @@ namespace Kiaro
             return 0;
         }
 
-        SRenderer::SRenderer(void)
+        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0))
         {
             this->initializeRenderer();
             this->initializeGUI();
@@ -158,6 +161,16 @@ namespace Kiaro
             }
         }
 
+        void SRenderer::setResolution(const Support::Dimension2DU& resolution)
+        {
+            al_resize_display(mDisplay, resolution.Width, resolution.Height);
+
+            mIrrlichtDevice->getVideoDriver()->OnResize(resolution);
+            CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Sizef(resolution.Width, resolution.Height));
+
+            al_acknowledge_resize(mDisplay);
+        }
+
         int SRenderer::initializeGUI(void)
         {
             // Start up CEGUI (if we're a client)
@@ -170,7 +183,9 @@ namespace Kiaro
 
                     CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
                     FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
-                    CEGUI::System::create(renderer, static_cast<CEGUI::ResourceProvider*>(resourceProvider), NULL, NULL, NULL, "", "log.txt");
+
+
+                    CEGUI::System::create(renderer, resourceProvider, NULL, NULL, NULL, "", "log.txt");
 
                     resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
                     resourceProvider->setResourceGroupDirectory("ui", "ui/");
@@ -221,7 +236,7 @@ namespace Kiaro
                                 Common::S32 displayWidth = al_get_display_width(mDisplay);
                                 Common::S32 displayHeight = al_get_display_height(mDisplay);
 
-                                mIrrlichtDevice->getVideoDriver()->OnResize(irr::core::dimension2d<Common::U32>(displayWidth, displayHeight));
+                                this->setResolution(Support::Dimension2DU(displayWidth, displayHeight));
                             }
 
                             break;

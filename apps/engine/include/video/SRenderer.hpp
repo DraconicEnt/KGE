@@ -10,6 +10,7 @@
 #include <allegro5/allegro.h>
 
 #include <support/common.hpp>
+#include <support/support.hpp>
 
 namespace Kiaro
 {
@@ -50,6 +51,8 @@ namespace Kiaro
                 void drawFrame(void);
 
                 void setSceneGraph(CSceneGraph* graph);
+
+                void setResolution(const Support::Dimension2DU& resolution);
 
             // Private Methods
             private:
