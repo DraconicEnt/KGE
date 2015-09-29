@@ -32,82 +32,85 @@ namespace Kiaro
             }
         }
 
+        void SSettingsRegistry::setDefaultValues(void)
+        {
+            this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
+            this->setValue("Server::ListenPort", Common::U16(11595));
+            this->setValue("Server::MaximumClientCount", Common::U32(32));
+
+            this->setValue("Video::Fullscreen", true);
+            this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+            this->setValue("Video::ActiveFPS", Common::U16(60));
+            this->setValue("Video::InactiveFPS", Common::U16(15));
+
+            this->setValue("System::WorkerThreadCount", Common::U8(6));
+        }
+
         SSettingsRegistry::SSettingsRegistry(void)
         {
+            this->setDefaultValues();
+
             ALLEGRO_CONFIG* config = al_load_config_file("config.cfg");
 
             if (!config)
-            {
                 Console::write(Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
-
-                this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
-                this->setValue("Server::ListenPort", Common::U16(11595));
-                this->setValue("Server::MaximumClientCount", Common::U32(32));
-
-                this->setValue("Video::Fullscreen", true);
-                this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
-                this->setValue("Video::ActiveFPS", Common::U16(60));
-                this->setValue("Video::InactiveFPS", Common::U16(15));
-
-                this->setValue("System::WorkerThreadCount", Common::U8(6));
-            }
             else
             {
-                const std::regex numberRegex("[0-9]+", std::regex_constants::basic);
-                const std::regex resolutionRegex("[0-9]+x[0-9]+", std::regex_constants::basic);
-                const std::regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", std::regex_constants::basic);
+                const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
+                const Support::Regex resolutionRegex("[0-9]+x[0-9]+", Support::RegexConstants::Extended);
+                const Support::Regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", Support::RegexConstants::Extended);
 
                 // Listen port?
                 Common::U16 listenPort = 11595;
-                const Common::C8* listenPortConfig = al_get_config_value(config, "Server", "ListenPort");
-                if (listenPortConfig && std::regex_match(listenPortConfig, numberRegex))
-                    listenPort = atoi(listenPortConfig);
+                const Common::C8* configValue = al_get_config_value(config, "Server", "ListenPort");
+                if (configValue && Support::RegexMatch(configValue, numberRegex))
+                    listenPort = atoi(configValue);
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenPort config ('%s')! Using default value.", listenPortConfig);
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenPort config ('%s')! Using default value.", configValue);
 
                 // Maximum client count?
                 Common::U32 maximumClientCount = 32;
                 // FIXME (Robert MacGregor#9): Force GCC 4.9 when compiling this?
-                const Common::C8* maximumClientCountConfig = al_get_config_value(config, "Server", "MaximumClientCount");
-                if (maximumClientCountConfig)
-                    maximumClientCount = atoi(maximumClientCountConfig);
+                configValue = al_get_config_value(config, "Server", "MaximumClientCount");
+                if (configValue && Support::RegexMatch(configValue, numberRegex))
+                    maximumClientCount = atoi(configValue);
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", maximumClientCount);
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", configValue);
 
                 // Listen Address?
-                const Common::C8* listenAddressConfig = al_get_config_value(config, "Server", "ListenAddress");
+                configValue = al_get_config_value(config, "Server", "ListenAddress");
                 Support::String listenAddress = "0.0.0.0";
-                if (listenAddressConfig && std::regex_match(listenAddressConfig, addressRegex))
-                    listenAddress = listenAddressConfig;
+                if (configValue && Support::RegexMatch(configValue, addressRegex))
+                    listenAddress = configValue;
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenAddress config ('%s')! Using default value.", listenAddressConfig);
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenAddress config ('%s')! Using default value.", configValue);
 
                 // Full screen?
                 bool fullScreen = true;
-                const Common::C8* fullscreenConfig = al_get_config_value(config, "Video", "Fullscreen");
-                if (fullscreenConfig)
-                    fullScreen = atoi(fullscreenConfig);
+                configValue = al_get_config_value(config, "Video", "Fullscreen");
+                if (configValue)
+                    fullScreen = atoi(configValue);
 
                 // Active & inactive FPS?
                 Common::U16 activeFPS = 60;
-                const Common::C8* activeFPSConfig = al_get_config_value(config, "Video", "ActiveFPS");
-                if (activeFPSConfig)
-                    activeFPS = atoi(activeFPSConfig);
+                configValue = al_get_config_value(config, "Video", "ActiveFPS");
+                if (configValue)
+                    activeFPS = atoi(configValue);
 
                 Common::U16 inactiveFPS = 15;
-                const Common::C8* inactiveFPSConfig = al_get_config_value(config, "Video", "InactiveFPS");
-                if (inactiveFPSConfig)
-                    inactiveFPS = atoi(inactiveFPSConfig);
+                configValue = al_get_config_value(config, "Video", "InactiveFPS");
+                if (configValue)
+                    inactiveFPS = atoi(configValue);
 
                 // Resolution?
                 Support::Dimension2DU resolution(640, 480);
-                const Common::C8* resolutionConfig = al_get_config_value(config, "Video", "Resolution");
-                if (resolutionConfig)
+                configValue = al_get_config_value(config, "Video", "Resolution");
+                if (configValue)
                 {
                     // Make sure the resolution follows the pattern we want and extract the width & height if so.
-                    if (std::regex_match(resolutionConfig, resolutionRegex))
+                    if (Support::RegexMatch(configValue, resolutionRegex))
                     {
-                        const Support::String resolutionString = resolutionConfig;
+                        const Support::String resolutionString = configValue;
                         const size_t splitLocation = resolutionString.find("x");
 
                         const Support::String widthString = resolutionString.substr(0, splitLocation);
@@ -116,21 +119,21 @@ namespace Kiaro
                         resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
                     }
                     else
-                        Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", resolutionConfig);
+                        Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
                 }
 
                 // Worker thread count?
                 Common::U8 workerThreadCount = 6;
-                const Common::C8* workerThreadCountConfig = al_get_config_value(config, "System", "WorkerThreadCount");
-                if (workerThreadCountConfig)
-                    workerThreadCount = atoi(workerThreadCountConfig);
+                configValue = al_get_config_value(config, "System", "WorkerThreadCount");
+                if (configValue)
+                    workerThreadCount = atoi(configValue);
 
                 this->setValue("Server::ListenAddress", listenAddress);
                 this->setValue("Server::ListenPort", listenPort);
                 this->setValue("Server::MaximumClientCount", maximumClientCount);
 
                 this->setValue("Video::Fullscreen", fullScreen);
-                this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+                this->setValue("Video::Resolution", resolution);
                 this->setValue("Video::ActiveFPS", activeFPS);
                 this->setValue("Video::InactiveFPS", inactiveFPS);
 
@@ -175,7 +178,10 @@ namespace Kiaro
                 al_add_config_section(config, "Video");
                 al_add_config_comment(config, "Video", "Video output configuration");
                 al_add_config_comment(config, "Video", "Resolution controls the window resolution of the engine");
-                al_set_config_value(config, "Video", "Resolution", "640x480");
+
+                Support::Dimension2DU resolution = this->getValue<Support::Dimension2DU>("Video::Resolution");
+                sprintf(tempBuffer, "%ux%u", resolution.Width, resolution.Height);
+                al_set_config_value(config, "Video", "Resolution", tempBuffer);
                 al_add_config_comment(config, "Video", "Fullscreen controls whether or not the engine will run full screen");
                 al_set_config_value(config, "Video", "Fullscreen", "1");
 
@@ -208,7 +214,7 @@ namespace Kiaro
                 Console::write(Console::MESSAGE_INFO, "SSettingsRegistry: Wrote new configuration file.");
             }
             else
-                Console::write(Console::MESSAGE_FATAL, "SSettingsRegistry: Failed to acquire Allegro config handle!");
+                Console::write(Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to acquire Allegro config handle!");
 
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); it++)

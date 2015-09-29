@@ -18,7 +18,8 @@
 #include <support/FEndian.hpp>
 #include <support/FTime.hpp>
 
-#include <regex>
+#include <support/Regex.hpp>
+
 #include <atomic>
 #include <iostream>
 #include <set>

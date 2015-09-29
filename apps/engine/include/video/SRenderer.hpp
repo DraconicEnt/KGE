@@ -60,7 +60,7 @@ namespace Kiaro
                 ~SRenderer(void);
 
                 int initializeGUI(void);
-                int initializeRenderer(void);
+                int initializeRenderer(const Support::Dimension2DU& resolution);
 
                 void processWindowEvents(void);
         };

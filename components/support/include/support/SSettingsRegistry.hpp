@@ -28,6 +28,8 @@ namespace Kiaro
                 static SSettingsRegistry* getPointer(void);
                 static void destroy(void);
 
+                void setDefaultValues(void);
+
                 template <typename storedType>
                 storedType& getValue(const Support::String& name)
                 {
@@ -72,7 +74,7 @@ namespace Kiaro
                         throw std::logic_error("SSettingsRegistry: Property type mismatch!");
 
                     // Assign it
-                    storedType& oldPropertyValue = *((storedType*)(networkedPropertyInfo.first));
+                    storedType& oldPropertyValue = *(reinterpret_cast<storedType*>(networkedPropertyInfo.first));
                     oldPropertyValue = value;
                 }
 

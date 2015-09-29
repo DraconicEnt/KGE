@@ -16,6 +16,7 @@ ADD_DEFINITIONS(-DCMAKE_CONFIG=1)
 # Optional Settings
 OPTION(BUILD_UNITTESTS "Build unit tests in all of the software. (It requires GTest)" OFF)
 OPTION(ENGINE_UB "Use Unity builds when compiling the engine." OFF)
+OPTION(USE_BOOST_REGEX "Use boost::regex instead of std::regex." OFF)
 
 # Options to build specific parts of the engine
 OPTION(BUILD_ENGINE "Build the core game engine." ON)
@@ -30,6 +31,25 @@ FIND_PACKAGE(PhysFS REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
 FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog) 
 FIND_PACKAGE(PythonLibs REQUIRED)
+
+# GCC 4.9 implements std::regex, some versions prior implement a buggy version, so force a dep on boost::regex if we we're using < 4.9
+IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)    
+    STRING(SUBSTRING ${CMAKE_CXX_COMPILER_VERSION} 0 3 GCC_REGEX_REQUIREMENT)
+    STRING(COMPARE EQUAL "4.9" ${GCC_REGEX_REQUIREMENT} GCC_MEETS_REGEX_REQUIREMENT)
+    
+    IF (NOT GCC_MEETS_REGEX_REQUIREMENT)
+        IF (NOT USE_BOOST_REGEX)
+            MESSAGE(WARNING "Instructed to NOT use boost::regex (USE_BOOST_REGEX=OFF). However, you are using a GCC version that's older than 4.9. Overridding.")
+        ENDIF (NOT USE_BOOST_REGEX)
+        
+        SET(USE_BOOST_REGEX ON)
+    ENDIF(NOT GCC_MEETS_REGEX_REQUIREMENT)
+ENDIF(CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
+
+IF (USE_BOOST_REGEX)
+    FIND_PACKAGE(Boost REQUIRED COMPONENTS regex)
+    ADD_DEFINITIONS(-DENGINE_USE_BOOST_REGEX=1)
+ENDIF(USE_BOOST_REGEX)
 
 IF (BUILD_UNITTESTS)
     FIND_PACKAGE(GTest)

@@ -51,11 +51,9 @@ namespace Kiaro
             }
         }
 
-        int SRenderer::initializeRenderer(void)
+        int SRenderer::initializeRenderer(const Support::Dimension2DU& resolution)
         {
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
-            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-
             irr::SIrrlichtCreationParameters creationParameters;
 
           //  if (mEngineMode != Core::MODE_DEDICATED)
@@ -66,7 +64,6 @@ namespace Kiaro
                 // Create the Allegro window and get its ID
                 al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
 
-                irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
                 mDisplay = al_create_display(resolution.Width, resolution.Height);
 
                 // TODO (Robert MacGregor#9): Use a preference for the desired screen
@@ -104,6 +101,7 @@ namespace Kiaro
             creationParameters.DeviceType = irr::EIDT_SDL;
             creationParameters.WindowSize = resolution;
 
+            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Using %ux%u resolution.", resolution.Width, resolution.Height);
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
             if (!mIrrlichtDevice)
@@ -123,6 +121,7 @@ namespace Kiaro
            // this->setSceneGraph(mMainScene);
 
             // Set up the renderer time pulse
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
             const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
             mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
 
@@ -134,8 +133,13 @@ namespace Kiaro
 
         SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0))
         {
-            this->initializeRenderer();
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+            irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
+
+            this->initializeRenderer(resolution);
             this->initializeGUI();
+
+            this->setResolution(resolution);
         }
 
         void SRenderer::setSceneGraph(CSceneGraph* graph)
@@ -185,17 +189,18 @@ namespace Kiaro
                     CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
                     FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
 
-
                     CEGUI::System::create(renderer, resourceProvider, NULL, NULL, NULL, "", "log.txt");
 
                     resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
                     resourceProvider->setResourceGroupDirectory("ui", "ui/");
 
+                    CEGUI::System& cegui = CEGUI::System::getSingleton();
+
                     CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
                     CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
 
                     // Set the defaults
-                    CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+                    CEGUI::GUIContext& guiContext = cegui.getDefaultGUIContext();
 
                     guiContext.setDefaultFont( "DejaVuSans-10" );
                     guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
