@@ -5,6 +5,7 @@
 #  ALLEGRO_INCLUDE_DIRS - the Allegro include directory
 #  ALLEGRO_LIBRARIES - Link these to use Allegro
 #  ALLEGRO_DEFINITIONS - Compiler switches required for using Allegro
+#  ALLEGRO_VERSION_FIVE - Defines whether or not this is an Allegro5 installation.
 #
 #  Copyright (c) 2008 Olof Naessen <olof.naessen@gmail.com>
 #
@@ -52,6 +53,12 @@ else (ALLEGRO_LIBRARIES AND ALLEGRO_INCLUDE_DIRS)
   endif (ALLEGRO_INCLUDE_DIRS AND ALLEGRO_LIBRARIES)
 
   if (ALLEGRO_FOUND)
+    if (EXISTS "${ALLEGRO_INCLUDE_DIRS}/allegro5/allegro5.h")
+        SET(ALLEGRO_VERSION_FIVE 1)
+    ELSE()
+        SET(ALLEGRO_VERSION_FIVE 0)
+    ENDIF()
+    
     if (NOT Allegro_FIND_QUIETLY)
       message(STATUS "Found Allegro: ${ALLEGRO_LIBRARIES}")
     endif (NOT Allegro_FIND_QUIETLY)

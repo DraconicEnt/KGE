@@ -29,22 +29,27 @@ FIND_PACKAGE(Irrlicht REQUIRED)
 FIND_PACKAGE(Bullet REQUIRED)
 FIND_PACKAGE(PhysFS REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
-FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog) 
+FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog)
 FIND_PACKAGE(PythonLibs REQUIRED)
 
 # GCC 4.9 implements std::regex, some versions prior implement a buggy version, so force a dep on boost::regex if we we're using < 4.9
-IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)    
+IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
     STRING(SUBSTRING ${CMAKE_CXX_COMPILER_VERSION} 0 3 GCC_REGEX_REQUIREMENT)
     STRING(COMPARE EQUAL "4.9" ${GCC_REGEX_REQUIREMENT} GCC_MEETS_REGEX_REQUIREMENT)
-    
+
     IF (NOT GCC_MEETS_REGEX_REQUIREMENT)
         IF (NOT USE_BOOST_REGEX)
-            MESSAGE(WARNING "Instructed to NOT use boost::regex (USE_BOOST_REGEX=OFF). However, you are using a GCC version that's older than 4.9. Overridding.")
+            MESSAGE(WARNING "Instructed to NOT use boost::regex (USE_BOOST_REGEX=OFF). However, you are using a GCC version that's older than 4.9 which has std::regex bugs. Overridding.")
         ENDIF (NOT USE_BOOST_REGEX)
-        
+
         SET(USE_BOOST_REGEX ON)
     ENDIF(NOT GCC_MEETS_REGEX_REQUIREMENT)
 ENDIF(CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
+
+# We depend on Allegro5 here
+IF (NOT ALLEGRO_VERSION_FIVE)
+    MESSAGE(FATAL_ERROR "The Allegro installation found does not appear to be Allegro5.")
+ENDIF(NOT ALLEGRO_VERSION_FIVE)
 
 IF (USE_BOOST_REGEX)
     FIND_PACKAGE(Boost REQUIRED COMPONENTS regex)
@@ -68,7 +73,7 @@ ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
     # c++11 is necessary for GTest on Windows, apparently.
     SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
-    
+
     # To use std::thread and friends, we must pass -lpthread and -pthread to the compiler and Linker for GCC
     IF (NOT WIN32)
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lpthread -pthread")
