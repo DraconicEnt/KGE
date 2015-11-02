@@ -2,6 +2,8 @@
  *  @file SSettingsRegistry.cpp
  */
 
+#include <allegro5/allegro.h>
+
 #include <support/Console.hpp>
 #include <support/common.hpp>
 #include <support/String.hpp>
@@ -18,7 +20,7 @@ namespace Kiaro
         SSettingsRegistry* SSettingsRegistry::getPointer(void)
         {
             if (!sInstance)
-                sInstance = new SSettingsRegistry;
+                sInstance = new SSettingsRegistry();
 
             return sInstance;
         }
@@ -105,22 +107,19 @@ namespace Kiaro
                 // Resolution?
                 Support::Dimension2DU resolution(640, 480);
                 configValue = al_get_config_value(config, "Video", "Resolution");
-                if (configValue)
+                if (configValue && Support::RegexMatch(configValue, resolutionRegex))
                 {
                     // Make sure the resolution follows the pattern we want and extract the width & height if so.
-                    if (Support::RegexMatch(configValue, resolutionRegex))
-                    {
-                        const Support::String resolutionString = configValue;
-                        const size_t splitLocation = resolutionString.find("x");
+                    const Support::String resolutionString = configValue;
+                    const size_t splitLocation = resolutionString.find("x");
 
-                        const Support::String widthString = resolutionString.substr(0, splitLocation);
-                        const Support::String heightString = resolutionString.substr(splitLocation + 1, resolutionString.length());
+                    const Support::String widthString = resolutionString.substr(0, splitLocation);
+                    const Support::String heightString = resolutionString.substr(splitLocation + 1, resolutionString.length());
 
-                        resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
-                    }
-                    else
-                        Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
+                    resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
                 }
+                else
+                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
 
                 // Worker thread count?
                 Common::U8 workerThreadCount = 6;

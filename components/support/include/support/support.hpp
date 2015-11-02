@@ -43,6 +43,11 @@
 #include <support/UnorderedSet.hpp>
 #include <support/Map.hpp>
 
+// Ensure that we're building against an SDL-enabled Irrlicht
+#if !defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(NO_IRR_COMPILE_WITH_SDL_DEVICE_)
+    #error The engine must be built against an SDL device enabled Irrlicht build.
+#endif
+
 namespace Kiaro
 {
     namespace Support
