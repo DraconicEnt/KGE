@@ -31,7 +31,7 @@ using namespace Kiaro;
 Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 {
     Support::Console::write(Support::Console::MESSAGE_INFO, "------------------------------------------------");
-    Support::Console::write(Support::Console::MESSAGE_INFO, "Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+    Support::Console::writef(Support::Console::MESSAGE_INFO, "Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
     Support::Console::write(Support::Console::MESSAGE_INFO, "------------------------------------------------");
 
     // Create our parser as a pointer so we can destroy it when entering the engine
@@ -49,7 +49,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         commandLineParser.displayHelp(argc, argv);
     // Print the version information?
     else if (commandLineParser.hasFlag("-v"))
-        Support::Console::write(Support::Console::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+        Support::Console::writef(Support::Console::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
 
     // Run the thing?
     else if (commandLineParser.hasFlag("-game"))

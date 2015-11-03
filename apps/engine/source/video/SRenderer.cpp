@@ -59,7 +59,7 @@ namespace Kiaro
           //  if (mEngineMode != Core::MODE_DEDICATED)
           //  {
                 Common::S32 monitorCount = al_get_num_video_adapters();
-                Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Detected %u monitor(s)", monitorCount);
+                Support::Console::writef(Support::Console::MESSAGE_INFO, "SRenderer: Detected %u monitor(s)", monitorCount);
 
                 // Create the Allegro window and get its ID
                 al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
@@ -102,7 +102,7 @@ namespace Kiaro
             creationParameters.DeviceType = irr::EIDT_SDL;
             creationParameters.WindowSize = resolution;
 
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Using %ux%u resolution.", resolution.Width, resolution.Height);
+            Support::Console::writef(Support::Console::MESSAGE_INFO, "SRenderer: Using %ux%u resolution.", resolution.Width, resolution.Height);
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
             if (!mIrrlichtDevice)
@@ -126,7 +126,7 @@ namespace Kiaro
             const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
             mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
 
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
+            Support::Console::writef(Support::Console::MESSAGE_INFO, "SRenderer: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
             Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Initialized renderer.");
 
             return 0;
@@ -213,7 +213,7 @@ namespace Kiaro
                 }
                 catch (CEGUI::InvalidRequestException& e)
                 {
-                    Support::Console::write(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize the GUI System. Reason:\n%s", e.what());
+                    Support::Console::writef(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize the GUI System. Reason:\n%s", e.what());
                     return 1;
                 }
           //  }

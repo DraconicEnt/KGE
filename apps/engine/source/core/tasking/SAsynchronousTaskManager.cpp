@@ -150,7 +150,7 @@ namespace Kiaro
                     mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                 }
 
-                Support::Console::write(Support::Console::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
+                Support::Console::writef(Support::Console::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
             }
 
             SAsynchronousTaskManager::~SAsynchronousTaskManager(void)

@@ -69,7 +69,7 @@ namespace Kiaro
 
             void CTerrain::instantiate(void)
             {
-                Support::Console::write(Support::Console::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
+                Support::Console::writef(Support::Console::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
              //   irr::IrrlichtDevice* irrlichtDevice = Core::SEngineInstance::getPointer()->getIrrlichtDevice();

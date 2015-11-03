@@ -68,7 +68,7 @@ namespace Kiaro
                 if (configValue && Support::RegexMatch(configValue, numberRegex))
                     listenPort = atoi(configValue);
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenPort config ('%s')! Using default value.", configValue);
+                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenPort config ('%s')! Using default value.", configValue);
 
                 // Maximum client count?
                 Common::U32 maximumClientCount = 32;
@@ -77,7 +77,7 @@ namespace Kiaro
                 if (configValue && Support::RegexMatch(configValue, numberRegex))
                     maximumClientCount = atoi(configValue);
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", configValue);
+                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", configValue);
 
                 // Listen Address?
                 configValue = al_get_config_value(config, "Server", "ListenAddress");
@@ -85,7 +85,7 @@ namespace Kiaro
                 if (configValue && Support::RegexMatch(configValue, addressRegex))
                     listenAddress = configValue;
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenAddress config ('%s')! Using default value.", configValue);
+                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenAddress config ('%s')! Using default value.", configValue);
 
                 // Full screen?
                 bool fullScreen = true;
@@ -119,7 +119,7 @@ namespace Kiaro
                     resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
                 }
                 else
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
+                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
 
                 // Worker thread count?
                 Common::U8 workerThreadCount = 6;

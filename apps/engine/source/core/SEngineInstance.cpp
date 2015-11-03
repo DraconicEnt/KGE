@@ -102,18 +102,18 @@ namespace Kiaro
 
             this->initializeFileSystem(argc, argv);
 
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
+            Support::Console::writef(Support::Console::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
 
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
             {
                 mRunning = false;
 
-                Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
+                Support::Console::writef(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
                 return -1;
             }
             else
-                Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
+                Support::Console::writef(Support::Console::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
 
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
@@ -269,7 +269,7 @@ namespace Kiaro
                 }
                 catch(std::exception& e)
                 {
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
+                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
                     // Something is probably up, we should leave if we have an active client.
                     if (mActiveClient)

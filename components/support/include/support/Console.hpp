@@ -49,7 +49,7 @@ namespace Kiaro
             }
 
             template <typename... parameters>
-            static void write(const MESSAGE_TYPE& type, const Support::String& format, parameters... params)
+            static void writef(const MESSAGE_TYPE& type, const Support::String& format, parameters... params)
             {
                 // Call the responders first.
 
@@ -64,6 +64,12 @@ namespace Kiaro
                 }
 
                 puts("");
+            }
+
+            static void write(const MESSAGE_TYPE& type, const Support::String& output)
+            {
+                // Call the responders first.
+                puts(output.data());
             }
         }
     } // End NameSpace Core
