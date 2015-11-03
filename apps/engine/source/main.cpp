@@ -110,6 +110,8 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         // Release used memory when the start routine eventually returns
         Core::SEngineInstance::destroy();
     }
+    else
+        Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Nothing to do.");
 
     Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Exited successfully.");
 
