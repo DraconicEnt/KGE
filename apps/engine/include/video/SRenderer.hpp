@@ -25,38 +25,60 @@ namespace Kiaro
 
         class SRenderer
         {
+            // Public Members
+            public:
+                //! The color drawn that is drawn when there is pixel space without anything in it.
+                Common::ColorRGBA mClearColor;
+
             // Private Members
             private:
+                //! The Irrlichr context.
                 irr::IrrlichtDevice* mIrrlichtDevice;
+                //! Irrlicht's video driver.
                 irr::video::IVideoDriver* mVideo;
+                //! Irrlicht's scene manager.
                 irr::scene::ISceneManager* mSceneManager;
 
+                //! The primary scene used to render the main game.
                 CSceneGraph* mMainScene;
+                //! The scene to render.
                 CSceneGraph* mCurrentScene;
 
+                //! A pointer to the Allegro display we are using.
                 ALLEGRO_DISPLAY* mDisplay;
+                //! A pointer to the event queue for our Allegro display.
                 ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
 
                 Support::CScheduledEvent* mTimePulse;
 
-            // Public Members
-            public:
-                Common::ColorRGBA mClearColor;
-
             // Public Methods
             public:
+                /**
+                 *  @brief Returns a pointer to the current SRender instance, creating a new one
+                 *  if necessary.
+                 *  @return A pointer to the current SRender singleton instance.
+                 */
                 static SRenderer* getPointer(void);
+                //! Destroys the SRenderer singleton instance.
                 static void destroy(void);
 
+                //! Draws a single frame to the Allegro display.
                 void drawFrame(void);
 
+                /**
+                 *  @brief Sets the scene graph to render.
+                 *  @param graph A pointer to the scene graph to be rendering. If this is NULL,
+                 *  then no scene is rendered.
+                 */
                 void setSceneGraph(CSceneGraph* graph);
 
                 void setResolution(const Support::Dimension2DU& resolution);
 
             // Private Methods
             private:
+                //! Parameterless constructor.
                 SRenderer(void);
+                //! Standard destructor.
                 ~SRenderer(void);
 
                 int initializeGUI(void);

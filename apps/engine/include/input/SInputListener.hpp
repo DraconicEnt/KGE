@@ -32,9 +32,11 @@ namespace Kiaro
 
             // Private Members
             private:
-                 bool mKeyStates[256];
+                //! A simple 1D array representing the states of all buttons on the keyboard.
+                bool mKeyStates[256];
 
-                 Support::UnorderedMap<Common::C8, KeyResponderPointer> mKeyResponders;
+                //! A mapping of keycodes to responding method pointers.
+                Support::UnorderedMap<Common::C8, KeyResponderPointer> mKeyResponders;
 
             // Public Methods
             public:

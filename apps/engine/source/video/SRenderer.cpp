@@ -79,6 +79,7 @@ namespace Kiaro
                 // TODO (Robert MacGregor#9): Rename to game name?
                 al_set_window_title(mDisplay, "Kiaro Game Engine");
                 al_set_new_window_title("Auxiliary Display ");
+                al_hide_mouse_cursor(mDisplay);
 
                 #if defined(ENGINE_UNIX)
                     XID windowID = al_get_x_window_id(mDisplay);
@@ -148,7 +149,9 @@ namespace Kiaro
                 mCurrentScene->setVisible(false);
 
             mCurrentScene = graph;
-            mCurrentScene->setVisible(true);
+
+            if (mCurrentScene)
+                mCurrentScene->setVisible(true);
         }
 
         SRenderer::~SRenderer(void)
@@ -225,78 +228,63 @@ namespace Kiaro
 
             if (al_get_next_event(mWindowEventQueue, &windowEvent))
                 switch (windowEvent.type)
+                {
+                    case ALLEGRO_EVENT_DISPLAY_CLOSE:
                     {
-                        case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                        {
-                            Core::SEngineInstance::getPointer()->kill();
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_RESIZE:
-                        {
-                            if (!al_acknowledge_resize(mDisplay))
-                                Support::Console::write(Support::Console::MESSAGE_WARNING, "SRenderer: Failed to resize display!");
-                            else
-                            {
-                                // What is the new display dimensions?
-                                Common::S32 displayWidth = al_get_display_width(mDisplay);
-                                Common::S32 displayHeight = al_get_display_height(mDisplay);
-
-                                this->setResolution(Support::Dimension2DU(displayWidth, displayHeight));
-                            }
-
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
-                        {
-                            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window unfocused.");
-
-                            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-                            const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
-
-                            // Adjust our framerate to something lower if the window isn't focused
-                            mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
-
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
-                        {
-                            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window focused.");
-
-                            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-                            const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
-
-                            mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
-
-                            break;
-                        }
+                        Core::SEngineInstance::getPointer()->kill();
+                        break;
                     }
+
+                    case ALLEGRO_EVENT_DISPLAY_RESIZE:
+                    {
+                        if (!al_acknowledge_resize(mDisplay))
+                            Support::Console::write(Support::Console::MESSAGE_WARNING, "SRenderer: Failed to resize display!");
+                        else
+                        {
+                            // What is the new display dimensions?
+                            Common::S32 displayWidth = al_get_display_width(mDisplay);
+                            Common::S32 displayHeight = al_get_display_height(mDisplay);
+
+                            this->setResolution(Support::Dimension2DU(displayWidth, displayHeight));
+                        }
+
+                        break;
+                    }
+
+                    case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
+                    {
+                        Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window unfocused.");
+
+                        Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                        const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
+
+                        // Adjust our framerate to something lower if the window isn't focused
+                        mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
+
+                        break;
+                    }
+
+                    case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
+                    {
+                        Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window focused.");
+
+                        Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                        const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
+
+                        mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
+
+                        break;
+                    }
+                }
         }
 
         void SRenderer::drawFrame(void)
         {
-            // What is our current display size?
-          //  irr::core::dimension2d<irr::u32> lastDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
-
-                      //  irr::core::dimension2d<Common::U32> currentDisplaySize = mIrrlichtDevice->getVideoDriver()->getScreenSize();
-
-                        // Be sure to notify all the subsystems of our window resizing
-                       // if (lastDisplaySize != currentDisplaySize)
-                       // {
-                         //   CEGUI::Sizef newDisplaySize(currentDisplaySize.Width, currentDisplaySize.Height);
-                         //   CEGUI::System::getSingleton().notifyDisplaySizeChanged(newDisplaySize);
-
-                         //   lastDisplaySize = currentDisplaySize;
-                      //  }
-
-                             //                 if (mDisplay)
-                          // this->processWindowEvents();
-
             mVideo->beginScene(true, true, mClearColor);
 
-            mSceneManager->drawAll();
+            if (mCurrentScene)
+                mSceneManager->drawAll();
+
             CEGUI::System::getSingleton().renderAllGUIContexts();
 
             mVideo->endScene();

@@ -23,21 +23,22 @@ namespace Kiaro
         class CSceneGraph
         {
             public:
+                //! Parameterless constructor.
                 CSceneGraph(void);
+                //! Standard destructor.
                 ~CSceneGraph(void);
 
                 void add(irr::scene::ISceneNode *node);
 
                 bool isVisible(void);
-                void setVisible(const bool &visible);
+                void setVisible(const bool& visible);
 
                // const Kiaro::Common::ColorRGBA &getClearColor(void);
                // void setClearColor(const Kiaro::Common::ColorRGBA &color);
 
             private:
+                //! A pointer to the root scene node.
                 irr::scene::ISceneNode *mRoot;
-
-              // Kiaro::Common::ColorRGBA mClearColor;
         };
     } // End NameSpace Engine
 } // End NameSpace Kiaro
