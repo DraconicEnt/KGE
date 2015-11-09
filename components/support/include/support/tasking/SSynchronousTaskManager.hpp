@@ -1,4 +1,12 @@
 /**
+ *  @file SSynchronousTaskManager.hpp
+ *  @brief Include file declaring the Support::Tasking::SSynchrnousTaskManager singleton type.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_SSYNCHRONOUS_TASK_MANAGER_HPP_
@@ -6,7 +14,7 @@
 
 #include <support/common.hpp>
 
-#include <core/tasking/CTask.hpp>
+#include <core/tasking/ITask.hpp>
 #include <support/support.hpp>
 
 namespace Kiaro
@@ -23,8 +31,8 @@ namespace Kiaro
                     static void destroy(void);
 
                     void tick(const Common::F32 &deltaTime);
-                    bool addTask(CTask *task);
-                    bool removeTask(CTask *task);
+                    bool addTask(ITask *task);
+                    bool removeTask(ITask *task);
 
                 // Private Methods
                 private:
@@ -33,7 +41,7 @@ namespace Kiaro
 
                 // Private Members
                 private:
-                    Support::UnorderedSet<CTask *> mTaskList;
+                    Support::UnorderedSet<ITask *> mTaskList;
             };
         } // End NameSpace Tasking
     } // End NameSpace Engine

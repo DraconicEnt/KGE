@@ -32,25 +32,46 @@ namespace Kiaro
             COMPONENT_GRAVITY = 1,
         };
 
+        /**
+         *  @brief Base interface type for all behavior model components.
+         */
         class IComponent
         {
-            // Public Methods
-            public:
-                //! Standard destructor that calls ComponentBase::deinitialize before freeing the memory.
-                ~IComponent(void) { this->deinitialize(); }
-
-                virtual void initialize(void) = 0;
-                virtual void deinitialize(void) = 0;
-                virtual void tick(const Common::F32 &DeltaTimeSeconds) { }
-
             // Protected Members
             protected:
                 COMPONENT_NAME mComponentTypeIdentifier;
 
             // Private Members
             private:
-                //! A set of BehaviorModel instances that this ComponentBase belongs to.
+                //! A set of BehaviorModel instances that this IComponent belongs to.
                 std::set<CBehaviorModel*> mBehaviorModels;
+
+            // Public Methods
+            public:
+                //! Standard destructor.
+                ~IComponent(void) { this->deinitialize(); }
+
+                /**
+                 *  @brief Initializes the behavior model component
+                 *  with a given entity that uses behavior models. It
+                 *  basically performs all of the necessary logic to "bind"
+                 *  the component's effect to a given entity.
+                 */
+                virtual void initialize(void) = 0;
+
+                /**
+                 *  @brief Deinitializes the behavior model component with a given
+                 *  entity that it has been previously initialized with.
+                 */
+                virtual void deinitialize(void) = 0;
+
+                /**
+                 *  @brief Ticks the behavior model component logic by an arbitrary
+                 *  increment of seconds.
+                 *  @param deltaTimeSeconds The time in seconds that has passed for the
+                 *  ticking to fill in.
+                 */
+                virtual void tick(const Common::F32& deltaTimeSeconds) { }
         };
     } // End NameSpace CES
 } // End NameSpace Kiaro

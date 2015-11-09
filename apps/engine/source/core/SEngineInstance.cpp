@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #include <core/SEngineInstance.hpp>
@@ -51,7 +51,7 @@ namespace Kiaro
 {
     namespace Core
     {
-        static SEngineInstance* sInstance = NULL;
+        static SEngineInstance* sInstance = nullptr;
 
         SEngineInstance* SEngineInstance::getPointer(void)
         {
@@ -69,7 +69,7 @@ namespace Kiaro
                 delete sInstance;
             }
 
-            sInstance = NULL;
+            sInstance = nullptr;
         }
 
         void SEngineInstance::setMode(const MODE_NAME& mode)
@@ -105,7 +105,7 @@ namespace Kiaro
             Support::Console::writef(Support::Console::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
 
             // Add the game search path
-            if (PHYSFS_mount(mGameName.c_str(), NULL, 1) == 0)
+            if (PHYSFS_mount(mGameName.c_str(), nullptr, 1) == 0)
             {
                 mRunning = false;
 
@@ -156,7 +156,7 @@ namespace Kiaro
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-        mRunning(false), mActiveClient(NULL)
+        mRunning(false), mActiveClient(nullptr)
         {
 
         }

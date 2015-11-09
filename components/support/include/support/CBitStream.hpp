@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_SUPPORT_CBITSTREAM_H_
@@ -20,7 +20,6 @@
 #include <support/support.hpp>
 #include <support/common.hpp>
 
-//#include <core/ISerializable.hpp>
 namespace Kiaro
 {
     namespace Support

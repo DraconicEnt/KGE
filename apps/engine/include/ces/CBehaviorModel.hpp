@@ -23,6 +23,11 @@ namespace Kiaro
     {
         class IComponent;
 
+        /**
+         *  @brief A behavior model represents the overall behavior of some object in the game world
+         *  in a highly dynamic, reprogrammable fashion while also maintaining the ability to be
+         *  networked to arbitrary clients for clientside simulation.
+         */
         class CBehaviorModel : public Support::ISerializable
         {
             // Public Methods

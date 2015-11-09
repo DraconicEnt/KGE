@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #include <game/SEventManager.hpp>
@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace Core
     {
-        static SEventManager *sInstance = NULL;
+        static SEventManager *sInstance = nullptr;
 
         SEventManager *SEventManager::get(void)
         {

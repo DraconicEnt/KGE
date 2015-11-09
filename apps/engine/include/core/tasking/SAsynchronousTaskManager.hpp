@@ -44,7 +44,7 @@ namespace Kiaro
 
                 // Private Members
                 private:
-                    const Common::U8 mPoolSize;
+                    const size_t mPoolSize;
 
                     //! A set of tasks that were not handed off to a worker yet.
                     Kiaro::Support::Queue<Kiaro::Core::Tasking::CTask*> mScheduledTasks;

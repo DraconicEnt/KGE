@@ -1,6 +1,14 @@
 /**
  *  @file SRenderer.cpp
+ *  @brief Source file containing the implementation for the Video::SRenderer singleton type.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
+
 
 #include <video/SRenderer.hpp>
 
@@ -32,7 +40,7 @@ namespace Kiaro
 {
     namespace Video
     {
-        static SRenderer* sInstance = NULL;
+        static SRenderer* sInstance = nullptr;
 
         SRenderer* SRenderer::getPointer(void)
         {

@@ -1,5 +1,12 @@
 /**
  *  @file SSettingsRegistry.hpp
+ *  @brief Include file declaring the Support::SSettingsRegistry singleton type.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_CORE_SETTINGSREGISTRY_HPP_
@@ -15,6 +22,11 @@ namespace Kiaro
 {
     namespace Support
     {
+        /**
+         *  @brief The SSettingsRegistry is a singleton type in which setting names are paired with an associated value,
+         *  representing a central repository for operational parameters of the engine as a whole. This includes the
+         *  config file saving & loading components of the engine.
+         */
         class SSettingsRegistry
         {
             // Private Members
@@ -42,6 +54,15 @@ namespace Kiaro
                  */
                 void setDefaultValues(void);
 
+                /**
+                 *  @brief Gets a stored setting value by its name, returning it if there is such a setting
+                 *  desiginated by the given name.
+                 *  @param name The name of the setting to attempt a read on.
+                 *  @return The value of the named setting as whatever the requested type was, if the requested type
+                 *  is the same as the actual type it is stored as.
+                 *  @throw std::runtime_error Thrown when the requested setting does not exist or if the requested data
+                 *  type is not the same as the data type the setting is actually stored as.
+                 */
                 template <typename storedType>
                 storedType& getValue(const Support::String& name)
                 {
@@ -52,8 +73,12 @@ namespace Kiaro
                         Support::String exceptionText = "SSettingsRegistry: No such setting key: ";
                         exceptionText += name;
 
-                        throw std::out_of_range(exceptionText);
+                        throw std::runtime_error(exceptionText);
                     }
+
+                    // Is it the same type?
+                    if (mStoredProperties[mapIndex].second != typeid(storedType).hash_code())
+                        throw std::runtime_error("SSettingsRegistry: Property type mismatch in setting read!");
 
                     return *reinterpret_cast<storedType*>(mStoredProperties[mapIndex].first);
                 }
@@ -97,10 +122,10 @@ namespace Kiaro
 
                     // Is it the same type?
                     if (networkedPropertyInfo.second != typeid(value).hash_code())
-                        throw std::runtime_error("SSettingsRegistry: Property type mismatch!");
+                        throw std::runtime_error("SSettingsRegistry: Property type mismatch in setting write!");
 
                     // Assign it
-                    storedType& oldPropertyValue = *(reinterpret_cast<storedType*>(networkedPropertyInfo.first));
+                    storedType& oldPropertyValue = *reinterpret_cast<storedType*>(networkedPropertyInfo.first);
                     oldPropertyValue = value;
                 }
 

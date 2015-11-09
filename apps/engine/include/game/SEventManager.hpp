@@ -27,13 +27,6 @@ namespace Kiaro
     {
         class SEventManager
         {
-            // Public Methods
-            public:
-                static SEventManager *get(void);
-                static void destroy(void);
-
-                void clearEvents(void);
-
             // Public Typedefs
             public:
                 typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientConnectedEventType;
@@ -44,9 +37,18 @@ namespace Kiaro
                 const onClientConnectedEventType mOnClientConnectedEvent;
                 const onClientDisconnectedEventType mOnClientDisconnectedEvent;
 
+            // Public Methods
+            public:
+                static SEventManager* get(void);
+                static void destroy(void);
+
+                void clearEvents(void);
+
             // Private Methods
             private:
+                //! Parameter-less constructor.
                 SEventManager(void);
+                //! Standard destructor.
                 ~SEventManager(void);
         }; // End Class EventManager
     } // End NameSpace Support

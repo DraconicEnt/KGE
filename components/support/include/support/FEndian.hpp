@@ -1,14 +1,12 @@
 /**
- *  @file Utilities.hpp
- *  @brief Various support functionality for the engine.
+ *  @file FEndian.hpp
+ *  @brief Include file declaring various endian helper methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @version 0.0.0.0
- *  @date 3/19/2014
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #include <support/common.hpp>
@@ -23,10 +21,10 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against an integer, assigning the result
          *  to the address of the input.
-         *  @param from A Kiaro::Common::U32 to swap the endianness of.
-         *  @return A Kiaro::Common::U32 representing the result.
+         *  @param from A Common::U32 to swap the endianness of.
+         *  @return A Common::U32 representing the result.
          */
-        static inline void SwapEndianU32Ref(Kiaro::Common::U32 &from)
+        static inline void SwapEndianU32Ref(Common::U32& from)
         {
             #if ENGINE_INLINE_ASM<1
             from =	((255 & from) << 24) |			// First Byte to fourth position
@@ -55,12 +53,12 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against an integer, returning the
          *  result.
-         *  @param from A Kiaro::Common::U32 to swap the endianness of.
-         *  @return A Kiaro::Common::U32 representing the result.
+         *  @param from A Common::U32 to swap the endianness of.
+         *  @return A Common::U32 representing the result.
          */
-        static inline Kiaro::Common::U32 SwapEndianU32(const Kiaro::Common::U32 &from)
+        static inline Common::U32 SwapEndianU32(const Common::U32& from)
         {
-            Kiaro::Common::U32 result = from;
+            Common::U32 result = from;
             SwapEndianU32Ref(result);
 
             return result;
@@ -69,10 +67,10 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against a long integer, assigning the result
          *  to the address of the input.
-         *  @param from A Kiaro::Common::U64 to swap the endianness of.
-         *  @return A Kiaro::Common::U64 representing the result.
+         *  @param from A Common::U64 to swap the endianness of.
+         *  @return A Common::U64 representing the result.
          */
-        static inline void SwapEndianU64Ref(Kiaro::Common::U64 &from)
+        static inline void SwapEndianU64Ref(Common::U64& from)
         {
             #if ENGINE_INLINE_ASM<1
             from =  ((255 & from) << 56) |						// First Byte to eighth position
@@ -105,12 +103,12 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against a long integer, returning the
          *  result.
-         *  @param from A Kiaro::Common::U64 to swap the endianness of.
-         *  @return A Kiaro::Common::U64 representing the result.
+         *  @param from A Common::U64 to swap the endianness of.
+         *  @return A Common::U64 representing the result.
          */
-        static inline Kiaro::Common::U64 SwapEndianU64(const Kiaro::Common::U64 &from)
+        static inline Common::U64 SwapEndianU64(const Common::U64& from)
         {
-            Kiaro::Common::U64 result = from;
+            Common::U64 result = from;
             SwapEndianU64Ref(result);
 
             return result;
@@ -119,9 +117,9 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against a short integer, assinging the
          *  result to the address of the input.
-         *  @param from A Kiaro::Common::U16 to swap the endianness of.
+         *  @param from A Common::U16 to swap the endianness of.
          */
-        static inline void SwapEndianU16Ref(Kiaro::Common::U16 &from)
+        static inline void SwapEndianU16Ref(Kiaro::Common::U16& from)
         {
             #if ENGINE_INLINE_ASM<1
             from =  ((255 & from) << 8) |	// First Byte to second position
@@ -148,12 +146,12 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against a short integer, returning the
          *  result.
-         *  @param from A Kiaro::Common::U16 to swap the endianness of.
-         *  @return A Kiaro::Common::U16 representing the result.
+         *  @param from A Common::U16 to swap the endianness of.
+         *  @return A Common::U16 representing the result.
          */
-        static inline Kiaro::Common::U16 SwapEndianU16(const Kiaro::Common::U16 &from)
+        static inline Common::U16 SwapEndianU16(const Common::U16& from)
         {
-            Kiaro::Common::U16 result = from;
+            Common::U16 result = from;
             SwapEndianU16Ref(result);
 
             return result;
@@ -162,22 +160,22 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap against a single precision float,
          *  assigning the result to the address of the input.
-         *  @param from A Kiaro::Common::F32 to swap the endianness of.
+         *  @param from A Common::F32 to swap the endianness of.
          */
-        static inline void SwapEndianF32Ref(Kiaro::Common::F32 &from)
+        static inline void SwapEndianF32Ref(Common::F32& from)
         {
-            SwapEndianU32Ref(*(Kiaro::Common::U32*)&from);
+            SwapEndianU32Ref(*reinterpret_cast<Common::U32*>(&from));
         }
 
         /**
          *  @brief Performs an endian swap against a single precision float,
          *  returning the result.
          *  @param from A Kiaro::Common::F32 to swap the endianness of.
-         *  @return A Kiaro::Common::F32 representing the result.
+         *  @return A Common::F32 representing the result.
          */
-        static inline Kiaro::Common::F32 SwapEndianF32(const Kiaro::Common::F32 &from)
+        static inline Kiaro::Common::F32 SwapEndianF32(const Common::F32& from)
         {
-            Kiaro::Common::F32 result = from;
+            Common::F32 result = from;
             SwapEndianF32Ref(result);
 
             return result;
@@ -186,23 +184,22 @@ namespace Kiaro
         /**
          *  @brief Performs an endian swap operation against arbitrary data.
          *  @param from A pointer to the data to endian swap.
-         *  @param size A Kiaro::Common::U32 representing the size of the input data to
+         *  @param size A Common::U32 representing the size of the input data to
          *  swap endianness.
          */
-        static inline void SwapEndianArbitrary(void *from, const Kiaro::Common::U32 &size)
+        static inline void SwapEndianArbitrary(void* from, const Common::U32& size)
         {
-            Kiaro::Common::U8 *array = (Kiaro::Common::U8*)from;
+            Common::U8* array = reinterpret_cast<Common::U8*>(from);
 
             // Create a copy of the array to read from
-            Kiaro::Common::U8 *copy_from = (Kiaro::Common::U8*)malloc(size);
+            Common::U8 *copy_from = reinterpret_cast<Common::U8*>(malloc(size));
             memcpy(copy_from, from, size);
 
-            for (Kiaro::Common::U32 i = 0; i < size; i++)
+            for (Common::U32 i = 0; i < size; i++)
                 array[i] = copy_from[size - i];
 
             free(copy_from);
         }
     }
 }
-
 #endif // _INCLUDE_KIARO_SUPPORT_FENDIAN_HPP_

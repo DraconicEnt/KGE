@@ -14,7 +14,7 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SAsynchronousTaskManager* sInstance = NULL;
+            static SAsynchronousTaskManager* sInstance = nullptr;
 
             static void workerThreadLogic(WorkerContext* context)
             {

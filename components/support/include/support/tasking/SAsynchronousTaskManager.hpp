@@ -1,4 +1,12 @@
 /**
+ *  @file SAsynchronousTaskManager.hpp
+ *  @brief Include file declaring the Support::Tasking::SAsynchrnousTaskManager singleton type.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_SASYNCHRONOUSTASKMANAGER_HPP_
@@ -16,9 +24,9 @@ namespace Kiaro
         {
             typedef struct
             {
-                Kiaro::Support::Thread *mThread;
-                Kiaro::Core::Tasking::CTask *mTask;
-                Kiaro::Support::Atomic<bool> mIsComplete;
+                Support::Thread *mThread;
+                Core::Tasking::ITask *mTask;
+                Support::Atomic<bool> mIsComplete;
 
             } WorkerContext;
 
@@ -31,11 +39,11 @@ namespace Kiaro
 
                     void tick(void);
 
-                    bool addTask(Kiaro::Core::Tasking::CTask *task);
-                    bool removeTask(Kiaro::Core::Tasking::CTask *task);
+                    bool addTask(Core::Tasking::ITask *task);
+                    bool removeTask(Core::Tasking::ITask *task);
 
                     const size_t getIdleWorkerCount(void);
-                    const size_t &getWorkerPoolSize(void);
+                    const size_t& getWorkerPoolSize(void);
 
                 // Private Methods
                 private:
@@ -47,13 +55,13 @@ namespace Kiaro
                     const Common::U8 mPoolSize;
 
                     //! A set of tasks that were not handed off to a worker yet.
-                    Kiaro::Support::Queue<Kiaro::Core::Tasking::CTask*> mScheduledTasks;
+                    Support::Queue<Kiaro::Core::Tasking::ITask*> mScheduledTasks;
 
                     //! A set of workers that are not doing anything.
-                    Kiaro::Support::UnorderedSet<WorkerContext*> mIdleWorkers;
+                    Support::UnorderedSet<WorkerContext*> mIdleWorkers;
 
                     //! A set of workers that are doing some thing.
-                    Kiaro::Support::UnorderedSet<WorkerContext*> mActiveWorkers;
+                    Support::UnorderedSet<WorkerContext*> mActiveWorkers;
             };
         } // End NameSpace Tasking
     } // End NameSpace Engine

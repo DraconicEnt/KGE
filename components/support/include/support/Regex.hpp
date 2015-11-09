@@ -1,3 +1,15 @@
+/**
+ *  @file Regex.hpp
+ *  @brief Include file declaring various regular expression types and methods. It also
+ *  resolves at compile-time whether or not to use Boost's regex functionality or those provided
+ *  by the STL since C++11.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
+ */
 
 #ifndef _INCLUDE_SUPPORT_REGEX_HPP_
 #define _INCLUDE_SUPPORT_REGEX_HPP_

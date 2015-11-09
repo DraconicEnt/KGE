@@ -24,6 +24,10 @@ namespace Kiaro
     {
         class Entity;
 
+        /**
+         *  @brief A gravity component to be attached to a behavior model which enables the pull
+         *  of gravity against any entity using the behavior model it is attached to.
+         */
         class CComponentGravity : public IComponent
         {
             // Public Methods

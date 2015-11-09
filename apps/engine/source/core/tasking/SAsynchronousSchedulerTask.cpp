@@ -9,7 +9,7 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SAsynchronousSchedulerTask* sInstance = NULL;
+            static SAsynchronousSchedulerTask* sInstance = nullptr;
 
             SAsynchronousSchedulerTask* SAsynchronousSchedulerTask::getPointer(void)
             {

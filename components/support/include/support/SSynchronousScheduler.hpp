@@ -5,13 +5,13 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
+ *  @author Robert MacGregor
  *  @ref http://stackoverflow.com/questions/7858817/unpacking-a-tuple-to-call-a-matching-function-pointer
  *
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @copyright (c) 2015 Draconic Entity
  */
 
-#include <tuple> // std::tuple
+#include <support/Tuple.hpp>
 
 #include <easydelegate/easydelegate.hpp>
 
@@ -73,6 +73,9 @@ namespace Kiaro
                  */
                 void setTriggerTimeMS(const Common::U64& triggerTime) NOTHROW;
 
+                /**
+                 *  @brief
+                 */
                 void setWaitTimeMS(const Common::U64& waitTimeMS, const bool& refresh) NOTHROW;
 
                 /**
@@ -128,7 +131,6 @@ namespace Kiaro
 
             // Public Methods
             public:
-
                 /**
                  *  @brief Schedules a call using a pointer to a class member method.
                  *  @param waitTimeMS The time in milliseconds to wait relative to the current time.

@@ -82,7 +82,7 @@ namespace Kiaro
 {
     namespace FileSystem
     {
-        static SResourceProvider *sInstance = NULL;
+        static SResourceProvider* sInstance = nullptr;
 
         SResourceProvider *SResourceProvider::getPointer(void)
         {
@@ -97,7 +97,7 @@ namespace Kiaro
             if (sInstance)
             {
                 delete sInstance;
-                sInstance = NULL;
+                sInstance = nullptr;
             }
         }
 

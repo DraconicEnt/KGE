@@ -1,3 +1,13 @@
+/**
+ *  @file SSynchronousSchedulerTask.hpp
+ *  @brief Include file declaring the Support::Tasking::SAsynchronousScheduler singleton type.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
+ */
 
 #ifndef _INCLUDE_KIARO_ENGINE_TASKER_SASYNCHRONOUSSCHEDULERTASK_HPP_
 #define _INCLUDE_KIARO_ENGINE_TASKER_SASYNCHRONOUSSCHEDULERTASK_HPP_
@@ -16,7 +26,7 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            class SAsynchronousSchedulerTask : public CTask
+            class SAsynchronousSchedulerTask : public ITask
             {
                 // Public Methods
                 public:
@@ -30,7 +40,6 @@ namespace Kiaro
                     void deinitialize(void);
 
 
-
                 // Private Methods
                 private:
                     SAsynchronousSchedulerTask(void);
@@ -42,7 +51,7 @@ namespace Kiaro
 
                 // Private Members
                 private:
-                    Support::UnorderedSet<EasyDelegate::IDeferredCaller *> mScheduledTasks;
+                    Support::UnorderedSet<EasyDelegate::IDeferredCaller*> mScheduledTasks;
             };
         } // End NameSpace Tasking
     } // End Namespace Engine

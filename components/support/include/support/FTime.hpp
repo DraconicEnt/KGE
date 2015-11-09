@@ -1,12 +1,12 @@
 /**
- *  @file Time.hpp
- *  @brief Include file defining timing functionality.
+ *  @file FTime.hpp
+ *  @brief Include file declaring timing functionality.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_SUPPORT_TIME_HPP_

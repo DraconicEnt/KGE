@@ -13,7 +13,7 @@ namespace Kiaro
 {
     namespace Game
     {
-        static SGameServer* sInstance = NULL;
+        static SGameServer* sInstance = nullptr;
 
         void SGameServer::initialize(void)
         {
