@@ -37,18 +37,20 @@ namespace Kiaro
             if (sInstance)
             {
                 delete sInstance;
-                sInstance = NULL;
+                sInstance = nullptr;
             }
         }
 
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
-
+            mSimulation = new Phys::CSimulation();
         }
 
         SGameServer::~SGameServer(void)
         {
             // FIXME (Robert MacGregor#9): Call IServer destructor?
+            delete mSimulation;
+            mSimulation = nullptr;
         }
 
         void SGameServer::setGamemode(IGameMode* game)

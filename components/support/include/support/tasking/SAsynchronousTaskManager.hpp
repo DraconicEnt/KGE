@@ -12,50 +12,72 @@
 #ifndef _INCLUDE_SASYNCHRONOUSTASKMANAGER_HPP_
 #define _INCLUDE_SASYNCHRONOUSTASKMANAGER_HPP_
 
-#include <core/tasking/CTask.hpp>
+#include <support/tasking/ITask.hpp>
 
 #include <support/support.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Tasking
         {
             typedef struct
             {
-                Support::Thread *mThread;
-                Core::Tasking::ITask *mTask;
+                Support::Thread* mThread;
+                Tasking::ITask* mTask;
                 Support::Atomic<bool> mIsComplete;
 
             } WorkerContext;
 
+            /**
+             *  @brief A asynchrnous task manager singleton that allows for the execution of ITask
+             *  derivatives in the context of their own thread by assigning the task context to an available
+             *  worker thread. If none are available, the task is stowed until a worker becomes available.
+             */
             class SAsynchronousTaskManager
             {
                 // Public Methods
                 public:
-                    static SAsynchronousTaskManager *getPointer(void);
+                    /**
+                     *  @brief Returns a pointer to the asynchrnous task manager instance, allocating a new
+                     *  one if necessary.
+                     *  @return A pointer to the current asynchrnous task manager instance.
+                     */
+                    static SAsynchronousTaskManager* getPointer(void);
+                    //! Destroys the current asynchronous task manager instance if there is one.
                     static void destroy(void);
 
                     void tick(void);
 
-                    bool addTask(Core::Tasking::ITask *task);
-                    bool removeTask(Core::Tasking::ITask *task);
+                    /**
+                     *  @brief Adds a new task to the asynchronous task manager for execution.
+                     *  @param task A pointer to the task.
+                     *  @return True if the task was successfully added for asynchronous processing. False if
+                     *  it was delegated to the synchronous task manager because the asynchronous task manager
+                     *  was created with no workers.
+                     *  @throw std::runtime_error Thrown when a NULL task was attempted to be added.
+                     */
+                    bool addTask(Support::Tasking::ITask* task);
+                    bool removeTask(Support::Tasking::ITask* task);
 
                     const size_t getIdleWorkerCount(void);
                     const size_t& getWorkerPoolSize(void);
 
                 // Private Methods
                 private:
+                    //! Parameter-less constructor.
                     SAsynchronousTaskManager(void);
+                    //! Standard destructor.
                     ~SAsynchronousTaskManager(void);
 
                 // Private Members
                 private:
+                    //! The number of workers this asynchronous task manager is handling.
                     const Common::U8 mPoolSize;
 
                     //! A set of tasks that were not handed off to a worker yet.
-                    Support::Queue<Kiaro::Core::Tasking::ITask*> mScheduledTasks;
+                    Support::Queue<Support::Tasking::ITask*> mScheduledTasks;
 
                     //! A set of workers that are not doing anything.
                     Support::UnorderedSet<WorkerContext*> mIdleWorkers;

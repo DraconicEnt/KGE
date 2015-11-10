@@ -8,7 +8,7 @@
 
 #include <support/support.hpp>
 
-#include <core/tasking/CTask.hpp>
+#include <support/tasking/ITask.hpp>
 
 namespace Kiaro
 {
@@ -16,7 +16,7 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            class SAsynchronousSchedulerTask : public CTask
+            class SAsynchronousSchedulerTask : public Support::Tasking::ITask
             {
                 // Public Methods
                 public:

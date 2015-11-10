@@ -55,7 +55,7 @@ namespace Kiaro
             if (sInstance)
             {
                 delete sInstance;
-                sInstance = NULL;
+                sInstance = nullptr;
             }
         }
 
@@ -167,13 +167,13 @@ namespace Kiaro
             if (mIrrlichtDevice)
             {
                 mIrrlichtDevice->drop();
-                mIrrlichtDevice = NULL;
+                mIrrlichtDevice = nullptr;
             }
 
             if (mDisplay)
             {
                 al_destroy_display(mDisplay);
-                mDisplay = NULL;
+                mDisplay = nullptr;
             }
         }
 
@@ -200,7 +200,7 @@ namespace Kiaro
                     CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
                     FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
 
-                    CEGUI::System::create(renderer, resourceProvider, NULL, NULL, NULL, "", "log.txt");
+                    CEGUI::System::create(renderer, resourceProvider, nullptr, nullptr, nullptr, "", "log.txt");
 
                     resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
                     resourceProvider->setResourceGroupDirectory("ui", "ui/");

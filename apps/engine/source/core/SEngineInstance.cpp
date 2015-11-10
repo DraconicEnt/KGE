@@ -27,8 +27,8 @@
 #endif
 
 #include <core/config.hpp>
-#include <core/tasking/SAsynchronousTaskManager.hpp>
-#include <core/tasking/SAsynchronousSchedulerTask.hpp>
+#include <support/tasking/SAsynchronousTaskManager.hpp>
+#include <support/tasking/SAsynchronousSchedulerTask.hpp>
 #include <filesystem/SResourceProvider.hpp>
 #include <input/SInputListener.hpp>
 #include <support/SSettingsRegistry.hpp>
@@ -121,8 +121,8 @@ namespace Kiaro
 
             // Init the taskers
             Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
-            Core::Tasking::SAsynchronousTaskManager* asyncTaskManager = Core::Tasking::SAsynchronousTaskManager::getPointer();
-            asyncTaskManager->addTask(Core::Tasking::SAsynchronousSchedulerTask::getPointer());
+            Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
+            asyncTaskManager->addTask(Support::Tasking::SAsynchronousSchedulerTask::getPointer());
 
             mRunning = this->initializeRenderer() == 0 ? true : false;
             if (!mRunning)
@@ -256,7 +256,7 @@ namespace Kiaro
                 {
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
-                    Core::Tasking::SAsynchronousTaskManager::getPointer()->tick();
+                    Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
 
                     // Pump a time pulse at the scheduler
                     Support::SSynchronousScheduler::getPointer()->update();

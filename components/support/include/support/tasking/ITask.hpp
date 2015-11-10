@@ -17,7 +17,7 @@
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Tasking
         {

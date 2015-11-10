@@ -18,11 +18,11 @@
 
 #include <support/support.hpp>
 
-#include <core/tasking/CTask.hpp>
+#include <support/tasking/ITask.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Tasking
         {

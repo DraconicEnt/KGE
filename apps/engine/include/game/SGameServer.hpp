@@ -4,6 +4,8 @@
 #ifndef _INCLUDE_GAME_SGAMESERVER_HPP_
 #define _INCLUDE_GAME_SGAMESERVER_HPP_
 
+#include <phys/CSimulation.hpp>
+
 #include <net/IServer.hpp>
 
 namespace Kiaro
@@ -28,6 +30,7 @@ namespace Kiaro
                 ~SGameServer(void);
 
                 Game::IGameMode* mCurrentGamemode;
+                Phys::CSimulation* mSimulation;
         };
     } // End NameSpace Game
 } // End NameSpace Kiaro

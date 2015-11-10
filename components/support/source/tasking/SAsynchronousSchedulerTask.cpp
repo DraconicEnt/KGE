@@ -1,11 +1,11 @@
 /**
  */
 
-#include <core/tasking/SAsynchronousSchedulerTask.hpp>
+#include <support/tasking/SAsynchronousSchedulerTask.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Tasking
         {
@@ -33,7 +33,7 @@ namespace Kiaro
 
             }
 
-            bool SAsynchronousSchedulerTask::tick(const Kiaro::Common::F32& deltaTime)
+            bool SAsynchronousSchedulerTask::tick(const Common::F32& deltaTime)
             {
                 mMutex.lock();
 

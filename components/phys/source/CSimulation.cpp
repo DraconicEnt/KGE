@@ -1,13 +1,13 @@
 /**
  */
 
-#include <phys/CWorld.hpp>
+#include <phys/CSimulation.hpp>
 
 namespace Kiaro
 {
     namespace Phys
     {
-        CWorld::CWorld(void)
+        CSimulation::CSimulation(void)
         {
             mBroadphase = new btDbvtBroadphase();
             mCollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -19,28 +19,28 @@ namespace Kiaro
             //mPhysicalWorld->setDebugDrawer(mPhysicalDebugger);
         }
 
-        CWorld::~CWorld(void)
+        CSimulation::~CSimulation(void)
         {
             delete mPhysicalWorld;
-            mPhysicalWorld = NULL;
+            mPhysicalWorld = nullptr;
 
             delete mConstraintSolver;
-            mConstraintSolver = NULL;
+            mConstraintSolver = nullptr;
 
             delete mBroadphase;
-            mBroadphase = NULL;
+            mBroadphase = nullptr;
 
             delete mCollisionDispatcher;
-            mCollisionDispatcher = NULL;
+            mCollisionDispatcher = nullptr;
 
             delete mCollisionConfiguration;
-            mCollisionConfiguration = NULL;
+            mCollisionConfiguration = nullptr;
 
           //  delete mPhysicalDebugger;
            // mPhysicalDebugger = NULL;
         }
 
-        void CWorld::update(const Common::F32& deltaTimeSeconds)
+        void CSimulation::update(const Common::F32& deltaTimeSeconds)
         {
 
         }

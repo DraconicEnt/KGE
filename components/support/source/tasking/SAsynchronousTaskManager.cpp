@@ -2,15 +2,15 @@
  */
 
 #include <support/Console.hpp>
-#include <core/config.hpp>
+//#include <core/config.hpp>
 #include <support/SSettingsRegistry.hpp>
 
-#include <core/tasking/SSynchronousTaskManager.hpp>
-#include <core/tasking/SAsynchronousTaskManager.hpp>
+#include <support/tasking/SSynchronousTaskManager.hpp>
+#include <support/tasking/SAsynchronousTaskManager.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Tasking
         {
@@ -28,7 +28,7 @@ namespace Kiaro
                     if (context->mIsComplete || !context->mTask)
                     {
                         // Nothing to do, just sleep for a moment before restarting the loop.
-                        std::this_thread::sleep_for(std::chrono::milliseconds(WORKER_SLEEP_TIME_MS));
+                        std::this_thread::sleep_for(std::chrono::milliseconds(32));
                         continue;
                     }
 
@@ -62,7 +62,7 @@ namespace Kiaro
                     WorkerContext* currentWorker = *mIdleWorkers.begin();
                     mIdleWorkers.erase(currentWorker);
 
-                    CTask* currentTask = mScheduledTasks.front();
+                    ITask* currentTask = mScheduledTasks.front();
                     mScheduledTasks.pop();
 
                     currentWorker->mTask = currentTask;
@@ -98,13 +98,10 @@ namespace Kiaro
                 return mPoolSize;
             }
 
-            bool SAsynchronousTaskManager::addTask(CTask* task)
+            bool SAsynchronousTaskManager::addTask(ITask* task)
             {
                 if (!task)
-                {
                     throw std::runtime_error("SAsynchronousTaskManager: Cannot add a NULL task.");
-                    return false;
-                }
 
                 // Config demands that we don't do anything asynchronously, so we delegate to the synchronous tasker
                 if (mPoolSize == 0)
@@ -117,18 +114,23 @@ namespace Kiaro
                 return true;
             }
 
-            bool SAsynchronousTaskManager::removeTask(CTask *task)
+            bool SAsynchronousTaskManager::removeTask(ITask *task)
             {
                 if (!task)
-                {
                     throw std::runtime_error("SAsynchronousTaskManager: Cannot remove a NULL task.");
-                    return false;
+
+                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
+                {
+                    WorkerContext* worker = *it;
+
+                    if (worker->mTask == task)
+                    {
+                        worker->mIsComplete = true;
+                        worker->mTask = nullptr;
+                        return true;
+                    }
                 }
-
-                // TODO (Robert MacGregor#9): Find and halt the thread safely.
-
-               // return mScheduledTasks.erase(task) != 0;
-               return false;
+                return false;
             }
 
             SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
@@ -142,7 +144,7 @@ namespace Kiaro
                 for (Common::U8 iteration = 0; iteration < mPoolSize; iteration++)
                 {
                     WorkerContext* currentWorker = new WorkerContext();
-                    currentWorker->mTask = NULL;
+                    currentWorker->mTask = nullptr;
                     currentWorker->mIsComplete = true;
                     currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
                     currentWorker->mThread->detach();

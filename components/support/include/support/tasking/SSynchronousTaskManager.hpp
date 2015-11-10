@@ -14,12 +14,12 @@
 
 #include <support/common.hpp>
 
-#include <core/tasking/ITask.hpp>
+#include <support/tasking/ITask.hpp>
 #include <support/support.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Support
     {
         namespace Tasking
         {

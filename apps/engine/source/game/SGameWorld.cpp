@@ -19,9 +19,9 @@ namespace Kiaro
 {
     namespace Game
     {
-        SGameWorld *sInstance = nullptr;
+        SGameWorld* sInstance = nullptr;
 
-        SGameWorld *SGameWorld::getPointer(void)
+        SGameWorld* SGameWorld::getPointer(void)
         {
             if (!sInstance)
                 sInstance = new SGameWorld;
