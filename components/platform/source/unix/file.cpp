@@ -3,7 +3,7 @@
 
 #include <sys/mman.h>
 
-#include <support/String.hpp>
+#include <platform/file.hpp>
 
 namespace Kiaro
 {
@@ -11,20 +11,16 @@ namespace Kiaro
     {
         namespace File
         {
-            static MemoryMapppedFile* OpenMemoryMap(const Support::String& filepath);
+            MemoryMappedFile::MemoryMappedFile(const Support::String& filepath)
             {
-                FILE* handle = fopen(filepath.data(), "r");
-                void* address = mmap(NULL, 0, PROT_READ, MAP_PRIVATE, handle, 0);
-
-                MemoryMappedFile* result = new MemoryMappedFile();
-                result->handle = handle;
-                result->address = address;
+                this->handle = fopen(filepath.data(), "r");
+                this->address = mmap(NULL, 0, PROT_READ, MAP_PRIVATE, fileno(handle), 0);
             }
 
-            static void CloseMemoryMap(MemoryMappedFile* mapped);
+            MemoryMappedFile::~MemoryMappedFile(void)
             {
-                munmap(mapped->address, 0);
-                fclose(mapped->handle);
+                munmap(this->address, 0);
+                fclose(this->handle);
             }
         }
     }
