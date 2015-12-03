@@ -6,6 +6,28 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(KiaroSDK)
 
+# Accept an app name
+IF (NOT DEFINED KGE_APP_NAME)
+    MESSAGE(FATAL_ERROR "KGE_APP_NAME must be defined. (Perhaps try passing -DKGE_APP_NAME=<Your App Name>?)")
+ENDIF (NOT DEFINED KGE_APP_NAME)
+
+# We can optionally define the template, but we will default to basic.
+IF (NOT DEFINED KGE_TEMPLATE_NAME)
+    MESSAGE(WARNING "KGE_TEMPLATE_NAME not defined. Defaulting to 'basic'.")
+    
+    SET(KGE_TEMPLATE_NAME "basic")
+ELSE (NOT DEFINED KGE_TEMPLATE_NAME)
+    STRING(TOLOWER ${KGE_TEMPLATE_NAME} KGE_TEMPLATE_NAME)
+ENDIF (NOT DEFINED KGE_TEMPLATE_NAME)
+
+# We can optionally define an author, but the default is "Your Name / Company Name"
+IF (NOT DEFINED KGE_AUTHOR_NAME)
+    MESSAGE(WARNING "KGE_AUTHOR_NAME not defined. Defaulting to 'Your Name / Company Name'.")
+    
+    SET(KGE_AUTHOR_NAME "Your Name / Company Name")
+ENDIF(NOT DEFINED KGE_AUTHOR_NAME)
+SET(KGE_APP_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${KGE_APP_NAME})
+
 # Preprocessor Definitions
 SET(KIARO_VERSION_MAJOR 0)
 SET(KIARO_VERSION_MINOR 0)
@@ -31,6 +53,7 @@ FIND_PACKAGE(PhysFS REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
 FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog)
 FIND_PACKAGE(PythonLibs REQUIRED)
+FIND_PACKAGE(PythonInterp REQUIRED)
 
 # GCC 4.9 implements std::regex, some versions prior implement a buggy version, so force a dep on boost::regex if we we're using < 4.9
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
