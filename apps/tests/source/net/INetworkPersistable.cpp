@@ -111,6 +111,7 @@ namespace Kiaro
             clientEntity.addNetworkedProperty("uint", clientInt);
 
             // Unpack into it
+            stream.setPointer(0);
             clientEntity.unpack(stream);
 
             // Make sure the values are correct

@@ -60,76 +60,56 @@ namespace Kiaro
                 delete[] mMemoryBlock;
         }
 
-        template <>
-        void CBitStream::write(const Common::C8* string)
+        void CBitStream::writeString(const Common::C8* string)
         {
             const size_t stringLength = strlen(string) + 1; // Account for the NULL as well
+            
+            // Write off the string length so we can properly unpack later
+            this->write<size_t>(stringLength);
 
-            if (mPointer >= mTotalSize || mTotalSize - mPointer < stringLength)
-                throw std::overflow_error("Stack Overflow");
+            //if (mPointer >= mTotalSize || mTotalSize - mPointer < stringLength)
+            //    throw std::overflow_error("Stack Overflow");
 
             memcpy(&mMemoryBlock[mPointer], string, stringLength);
             mPointer += stringLength;
-
-            // Write off the string length so we can properly unpack later
-            this->write<size_t>(stringLength);
         }
 
-        template <>
-        Common::C8* CBitStream::extract(void)
+        void CBitStream::writeString(std::string string)
+        {
+            this->writeString(string.data());
+        }
+
+        const Common::C8* CBitStream::popString(void)
+        {
+            const size_t& totalBytes = this->pop<size_t>();
+
+            //if (mPointer <= 0 || mPointer < totalBytes)
+              //  throw std::underflow_error("Stack Underflow");
+
+            const Common::C8* result = reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
+            
+            mPointer += totalBytes;
+            return result;
+        }
+
+        const Common::C8* CBitStream::topString(void)
         {
             // Read the string length off
-            const size_t& stringLength = *this->top<size_t>();
-            this->pop<size_t>();
-
-            // Set the pointer
-            mPointer -= stringLength;
-
-            // Allocate a new block with an extra byte for NULL termination
-            Common::C8* newBlock = new Common::C8[stringLength + 1];
-            memset(newBlock, 0x00, stringLength + 1);
-            memcpy(newBlock, &mMemoryBlock[mPointer], stringLength);
-
-            // Return the result
-            return newBlock;
-        }
-
-        template <>
-        void CBitStream::write<std::string>(std::string string)
-        {
-            this->write(string.data());
-        }
-
-        template <>
-        void CBitStream::pop<const Common::C8*>(void)
-        {
-            const size_t totalBytes = (*this->top<size_t>()) + sizeof(size_t);
-
-            if (mPointer <= 0 || mPointer < totalBytes)
-                throw std::underflow_error("Stack Underflow");
-
-            mPointer -= totalBytes;
-        }
-
-        template <>
-        const Common::C8* CBitStream::top(void) const
-        {
-            // Read the string length off
-            const size_t totalBytes = (*this->top<size_t>()) + sizeof(size_t);
+            const size_t& totalBytes = this->pop<size_t>();
 
             // First off, is there enough memory in the buffer?
-            if (totalBytes > mPointer)
-                throw std::underflow_error("Stack Underflow");
+         //   if (totalBytes > mPointer)
+            //    throw std::underflow_error("Stack Underflow");
 
             // Ensure that the string is properly terminated
-            if (mMemoryBlock[(mPointer - sizeof(size_t)) - 1] != 0x00)
-                throw std::logic_error("Attempted to unpack an improperly terminated string");
+           // if (mMemoryBlock[(mPointer - sizeof(size_t)) - 1] != 0x00)
+            //    throw std::logic_error("Attempted to unpack an improperly terminated string");
 
             // Return the result
-            return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer - totalBytes]);
+           return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
         }
 
-        size_t CBitStream::getWrittenLength(void)
+        const size_t& CBitStream::getPointer(void)
         {
             return mPointer;
         }
@@ -165,11 +145,25 @@ namespace Kiaro
             // Update our pointer and size.
             mMemoryBlock = newBlock;
             mTotalSize = newSize;
+            
+            // We definitely own this block now
+            mOwnsMemoryBlock = true;
+        }
+        
+        template <>
+        void CBitStream::write(const Common::Vector3DF& input)
+        {
+            //if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType))
+            //    throw std::overflow_error("Stack Overflow");
+
+            this->write(input.X);
+            this->write(input.Y);
+            this->write(input.Z);
         }
 
         bool CBitStream::isFull(void) const
         {
-            return !this->isEmpty();
+            return mTotalSize == mPointer;
         }
 
         bool CBitStream::isEmpty(void) const

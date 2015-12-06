@@ -142,7 +142,7 @@ namespace Kiaro
             // TODO: Packet Size Query
             Support::CBitStream outStream(packet);
 
-            ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getWrittenLength(), packetFlag);
+            ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getPointer(), packetFlag);
             enet_peer_send(mInternalPeer, 0, enetPacket);
         }
 
@@ -220,7 +220,7 @@ namespace Kiaro
                         Net::Messages::Disconnect disconnect;
                         disconnect.unpack(incomingStream);
 
-                        Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
+                        Support::Console::writef(Support::Console::MESSAGE_INFO, "IOutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
                         this->disconnect();
 
                         break;
@@ -251,7 +251,7 @@ namespace Kiaro
                     Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
 
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    Support::Console::writef(Support::Console::MESSAGE_INFO, "IOutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                     receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
                     Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Passed initial authentication.");

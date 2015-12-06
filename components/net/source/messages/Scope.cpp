@@ -46,12 +46,12 @@ namespace Kiaro
 
             void Scope::unpack(Support::CBitStream& in)
             {
-                if (in.getWrittenLength() < this->getMinimumPacketPayloadLength())
+                if (in.getPointer() < this->getMinimumPacketPayloadLength())
                     throw std::underflow_error("Unable to unpack Scope packet; too small of a payload!");
 
                 in >> mScopedCount;
 
-                Support::Console::write(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
+                Support::Console::writef(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
 
                 for (Common::U32 iteration = 0; iteration < mScopedCount; iteration++)
                 {

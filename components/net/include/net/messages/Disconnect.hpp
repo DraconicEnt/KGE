@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
@@ -43,7 +43,7 @@ namespace Kiaro
 
                     void unpack(Support::CBitStream &in)
                     {
-                        if (in.getWrittenLength() <= getMinimumPacketPayloadLength())
+                        if (in.getPointer() <= getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
 
                         in >> mReason;

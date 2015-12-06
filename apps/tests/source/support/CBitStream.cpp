@@ -43,7 +43,7 @@ namespace Kiaro
         inline void PackStrings(Support::CBitStream& out)
         {
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
-                out.write(sStringList[iteration].data());
+                out.writeString(sStringList[iteration].data());
         }
 
         TEST(BitStream, Floats)
@@ -52,16 +52,14 @@ namespace Kiaro
 
             CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
+            floatStream.setPointer(0);
 
             // Check if our BitStream size is correct
             //EXPECT_EQ(expectedStreamSize, floatStream.getSize());
 
             // Now make sure we can unpack the data correctly
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
-            {
-                EXPECT_EQ(sFloatList[(sFloatCount - 1) - iteration], *floatStream.top<Common::F32>());
-                floatStream.pop<Common::F32>();
-            }
+                EXPECT_EQ(sFloatList[iteration], floatStream.pop<Common::F32>());
         }
 
         TEST(BitStream, MemoryBlock)
@@ -72,13 +70,11 @@ namespace Kiaro
             PackFloats(floatStream);
 
             // We wil have a memory block to use from the float stream
-            CBitStream blockStream(floatStream.getBlock(), floatStream.getWrittenLength());
+            CBitStream blockStream(floatStream.getBlock(), floatStream.getPointer());
+            blockStream.setPointer(0);
 
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
-            {
-                EXPECT_EQ(sFloatList[(sFloatCount - 1) - iteration], *blockStream.top<Common::F32>());
-                blockStream.pop<Common::F32>();
-            }
+                EXPECT_EQ(sFloatList[iteration], blockStream.pop<Common::F32>());
         }
 
         TEST(BitStream, BufferOverflow)
@@ -109,12 +105,13 @@ namespace Kiaro
             CBitStream vectorStream(expectedStreamSize);
             vectorStream.write(testVector);
 
-            const Common::Vector3DF* readVector = vectorStream.top<Common::Vector3DF>();
+            vectorStream.setPointer(0);
+            const Common::Vector3DF& readVector = vectorStream.pop<Common::Vector3DF>();
 
             // Are the components correct?
-            EXPECT_EQ(1.0f, readVector->X);
-            EXPECT_EQ(2.0f, readVector->Y);
-            EXPECT_EQ(3.0f, readVector->Z);
+            EXPECT_EQ(1.0f, readVector.X);
+            EXPECT_EQ(2.0f, readVector.Y);
+            EXPECT_EQ(3.0f, readVector.Z);
         }
 
         TEST(BitStream, VectorToFloat)
@@ -125,13 +122,11 @@ namespace Kiaro
             CBitStream vectorStream(expectedStreamSize);
             vectorStream.write(testVector);
 
-            const Common::F32& readZ = *vectorStream.top<Common::F32>();
-            vectorStream.pop<Common::F32>();
-            const Common::F32& readY = *vectorStream.top<Common::F32>();
-            vectorStream.pop<Common::F32>();
-            const Common::F32& readX = *vectorStream.top<Common::F32>();
-            vectorStream.pop<Common::F32>();
-
+            vectorStream.setPointer(0);
+            const Common::F32& readX = vectorStream.pop<Common::F32>();
+            const Common::F32& readY = vectorStream.pop<Common::F32>();
+            const Common::F32& readZ = vectorStream.pop<Common::F32>();
+            
             // Are the components correct?
             EXPECT_EQ(1.0f, readX);
             EXPECT_EQ(2.0f, readY);
@@ -148,13 +143,11 @@ namespace Kiaro
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
                 writtenBytes += sStringList[iteration].length() + sizeof(size_t) + 1;
 
-            EXPECT_EQ(stream.getWrittenLength(), writtenBytes);
+            EXPECT_EQ(stream.getPointer(), writtenBytes);
+            stream.setPointer(0);
 
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
-            {
-                EXPECT_FALSE(strcmp(sStringList[(sStringCount - 1) - iteration].data(), stream.top<const Common::C8>()));
-                stream.pop<const Common::C8*>();
-            }
+                EXPECT_FALSE(strcmp(sStringList[iteration].data(), stream.popString()));
         }
     } // End Namespace Support
 } // End namespace Kiaro

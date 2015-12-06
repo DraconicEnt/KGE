@@ -23,7 +23,7 @@ namespace Kiaro
         IServer::IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
         mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
-            Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
+            Support::Console::writef(Support::Console::MESSAGE_INFO, "IServer: Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
 
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
@@ -186,7 +186,7 @@ namespace Kiaro
 
                             default:
                             {
-                                Support::Console::write(Support::Console::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
+                                Support::Console::writef(Support::Console::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
                                 break;
                             }
                         }
@@ -204,7 +204,7 @@ namespace Kiaro
                     Net::Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
 
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    Support::Console::writef(Support::Console::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                     receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
                     Net::Messages::HandShake handShake;
