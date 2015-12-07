@@ -45,10 +45,13 @@ namespace Kiaro
                 sLogResponders[MESSAGE_INFO].insert(sLogResponders[MESSAGE_INFO].end(), ConsoleListener);
                 sLogResponders[MESSAGE_ERROR].insert(sLogResponders[MESSAGE_INFO].end(), ConsoleListener);
 
-                WriteLog(MESSAGE_INFO);
+                for (Common::U32 iteration = 0; iteration < 10; iteration++)
+                {
+                    WriteLog(MESSAGE_INFO);
 
-                EXPECT_EQ(sLogCounts[MESSAGE_INFO], 1);
-                EXPECT_EQ(sLogCounts[MESSAGE_ERROR], 0);
+                    EXPECT_EQ(sLogCounts[MESSAGE_INFO], iteration + 1);
+                    EXPECT_EQ(sLogCounts[MESSAGE_ERROR], 0);
+                }
 
                 sLogResponders.clear();
                 sLogCounts.clear();
