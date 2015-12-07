@@ -17,6 +17,9 @@
 
 #include <support/common.hpp>
 
+#include <support/UnorderedSet.hpp>
+#include <support/UnorderedMap.hpp>
+
 #include <support/String.hpp>
 
 namespace Kiaro
@@ -43,7 +46,14 @@ namespace Kiaro
                 MESSAGE_DEBUG = 5,
             };
 
-            typedef void (*LogResponder)(const MESSAGE_TYPE& type, const Support::String& message);
+            /**
+             *  @brief A typedef for a pointer to a log responder method.
+             *  @param type The message type that has been emitted.
+             *  @param message The message string that has been emitted.
+             */
+            typedef void (*LogResponderPointer)(const MESSAGE_TYPE& type, const Support::String& message);
+
+            extern Support::UnorderedMap<Common::U8, Support::UnorderedSet<LogResponderPointer>> sLogResponders;
 
             inline const Common::C8* messageTypeText(const MESSAGE_TYPE& type)
             {
@@ -68,6 +78,11 @@ namespace Kiaro
             static void writef(const MESSAGE_TYPE& type, const Support::String& format, parameters... params)
             {
                 // Call the responders first.
+                Common::C8 buffer[256];
+                sprintf(buffer, format.data(), params...);
+
+                for (auto it = sLogResponders[type].begin(); it != sLogResponders[type].end(); it++)
+                    (*it)(type, buffer);
 
                 printf("(%s) ", messageTypeText(type));
 
@@ -82,10 +97,55 @@ namespace Kiaro
                 puts("");
             }
 
+            /**
+             *  @brief Helper method to write a warning to the game console.
+             *  @param format The string to format given parameters.
+             */
+            template <typename... parameters>
+            static void warningf(const Support::String& format, parameters... params)
+            {
+                writef(MESSAGE_WARNING, format.c_str(), params...);
+            }
+
+            /**
+             *  @brief Helper method to write a error to the game console.
+             *  @param format The string to format given parameters.
+             */
+            template <typename... parameters>
+            static void errorf(const Support::String& format, parameters... params)
+            {
+                writef(MESSAGE_ERROR, format.c_str(), params...);
+            }
+
+            /**
+             *  @brief Helper method to write a info string to the game console.
+             *  @param format The string to format given parameters.
+             */
+            template <typename... parameters>
+            static void infof(const Support::String& format, parameters... params)
+            {
+                writef(MESSAGE_INFO, format.c_str(), params...);
+            }
+
             static void write(const MESSAGE_TYPE& type, const Support::String& output)
             {
                 // Call the responders first.
                 puts(output.data());
+            }
+
+            static void info(const Support::String& output)
+            {
+                Console::write(MESSAGE_INFO, output);
+            }
+
+            static void error(const Support::String& output)
+            {
+                Console::write(MESSAGE_ERROR, output);
+            }
+
+            static void warning(const Support::String& output)
+            {
+                Console::write(MESSAGE_WARNING, output);
             }
         }
     } // End NameSpace Core
