@@ -107,6 +107,7 @@ namespace Kiaro
             creationParameters.Bits = 32;
             creationParameters.IgnoreInput = false; // We will use Allegro for this
             creationParameters.DriverType = videoDriver;
+            // We should be using SDL with this as the GLX routines used in the X implementation are not supported by NVidia drivers
             creationParameters.DeviceType = irr::EIDT_SDL;
             creationParameters.WindowSize = resolution;
 
