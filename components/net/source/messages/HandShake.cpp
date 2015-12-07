@@ -39,7 +39,7 @@ namespace Kiaro
                 if (in.getPointer() < this->getMinimumPacketPayloadLength())
                     throw std::underflow_error("Unable to unpack HandShake packet; too small of a payload!");
 
-                in >> mProtocolVersion >> mVersionBuild >> mVersionRevision >> mVersionMinor >> mVersionMajor;
+                in >> mVersionMajor >> mVersionMinor >> mVersionRevision >> mVersionBuild >> mProtocolVersion;
             }
 
             Common::U32 HandShake::getMinimumPacketPayloadLength(void)

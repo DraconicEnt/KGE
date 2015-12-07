@@ -38,6 +38,29 @@ namespace Kiaro
         //! The CIncomingClient class is a handle for a remote host that has connected to the game server.
         class CIncomingClient
         {
+            // Public Members
+            public:
+                bool mIsConnected;
+                
+            // Private Members
+            private:
+                //! A pointer to the internally used ENet peer.
+                ENetPeer* mInternalClient;
+
+                //! A boolean representing whether or not this CIncomingClient has the opposite endianness.
+                bool mIsOppositeEndian;
+
+                /**
+                 *  @brief What stage is this client currently operating in?
+                 *  @warning This value can very easily go out of sync between the client and server
+                 *  because of packet loss and network latency. All netcode that causes stage transitions
+                 *  will need to account for these situations accordingly. If this value were to go be
+                 *  desynchronized, it is extremely likely that an out of stage error is going to be raised
+                 *  on either end, causing a client disconnect.
+                 */
+                STAGE_NAME mCurrentConnectionStage;
+            
+            // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an ENetPeer object pointer.
@@ -99,23 +122,6 @@ namespace Kiaro
                  *  @see mCurrentConnectionStage
                  */
                 const STAGE_NAME& getConnectionStage(void);
-
-            private:
-                //! A pointer to the internally used ENet peer.
-                ENetPeer* mInternalClient;
-
-                //! A boolean representing whether or not this CIncomingClient has the opposite endianness.
-                bool mIsOppositeEndian;
-
-                /**
-                 *  @brief What stage is this client currently operating in?
-                 *  @warning This value can very easily go out of sync between the client and server
-                 *  because of packet loss and network latency. All netcode that causes stage transitions
-                 *  will need to account for these situations accordingly. If this value were to go be
-                 *  desynchronized, it is extremely likely that an out of stage error is going to be raised
-                 *  on either end, causing a client disconnect.
-                 */
-                STAGE_NAME mCurrentConnectionStage;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

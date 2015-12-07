@@ -34,8 +34,8 @@ namespace Kiaro
 
             void IMessage::unpack(Support::CBitStream& in)
             {
-                in >> mID;
                 in >> mType;
+                in >> mID;
             }
 
             const Common::U32& IMessage::getType(void) const { return mType; }

@@ -126,6 +126,7 @@ namespace Kiaro
 
                         CIncomingClient* disconnected = reinterpret_cast<CIncomingClient*>(event.peer->data);
                         onClientDisconnected(disconnected);
+                        disconnected->mIsConnected = false;
 
                         // TODO (Robert MacGregor#9): Delete from the correct set
                         mConnectedClientSet.erase(disconnected);

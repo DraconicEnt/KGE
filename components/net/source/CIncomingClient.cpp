@@ -20,14 +20,15 @@ namespace Kiaro
     namespace Net
     {
         CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
-        mCurrentConnectionStage(STAGE_AUTHENTICATION)
+        mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true)
         {
 
         }
 
         CIncomingClient::~CIncomingClient(void)
         {
-            this->disconnect("Destroyed net handle.");
+            if (mIsConnected)
+                this->disconnect("Destroyed net handle.");
         }
 
         void CIncomingClient::send(Messages::IMessage* packet, const bool& reliable)

@@ -36,10 +36,10 @@ namespace Kiaro
 
             void Scope::packEverything(Support::CBitStream& out) const
             {
+                out << static_cast<Common::U32>(mScoped.size());
+                
                 for (auto it = mScoped.begin(); it != mScoped.end(); it++)
                     (*it)->packEverything(out);
-
-                out << static_cast<Common::U32>(mScoped.size());
 
                 IMessage::packEverything(out);
             }
