@@ -21,7 +21,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        class CIncomingClient;
+        class IIncomingClient;
 
         namespace Messages
         {
@@ -29,7 +29,7 @@ namespace Kiaro
             {
                 // Public Methods
                 public:
-                    ExecuteRPC(Support::CBitStream* in = NULL, CIncomingClient* sender = NULL) : IMessage(TYPE_EXECUTERPC, in, sender)
+                    ExecuteRPC(Support::CBitStream* in = NULL, IIncomingClient* sender = NULL) : IMessage(TYPE_EXECUTERPC, in, sender)
                     {
 
                     }

@@ -9,6 +9,8 @@
 
 #include <game/entities/entities.hpp>
 
+#include <game/CGameClient.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -39,6 +41,12 @@ namespace Kiaro
                 delete sInstance;
                 sInstance = nullptr;
             }
+        }
+
+        Net::IIncomingClient* onReceiveClientChallenge(Net::RemoteHostContext client)
+        {
+            CGameClient* incoming = new CGameClient(client);
+            return incoming;
         }
 
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)

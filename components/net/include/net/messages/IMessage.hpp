@@ -20,7 +20,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        class CIncomingClient;
+        class IIncomingClient;
 
         namespace Messages
         {
@@ -35,7 +35,7 @@ namespace Kiaro
                     static const Common::U8 sAcceptedStage = 0;
 
                     //! A pointer to a Client instance that sent the data. If this is NULL, then the origin was a Server.
-                    CIncomingClient* mSender;
+                    IIncomingClient* mSender;
 
                 // Private Members
                 private:
@@ -48,7 +48,7 @@ namespace Kiaro
                      *  @brief Constructor that accepts a received netpacket from the underlaying networking subsystem.
                      *  @param received A packet from the internal networking subsystem to construct the class from.
                      */
-                    IMessage(const Common::U32& packetType = 0, Support::CBitStream* received = NULL, CIncomingClient* sender = NULL);
+                    IMessage(const Common::U32& packetType = 0, Support::CBitStream* received = NULL, IIncomingClient* sender = NULL);
 
                     virtual void packEverything(Support::CBitStream& out) const;
 

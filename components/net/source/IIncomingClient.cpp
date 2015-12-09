@@ -1,6 +1,6 @@
 /**
- *  @file CIncomingClient.cpp
- *  @brief Source code file defining logic for the Net::CIncomingClient class.
+ *  @file IIncomingClient.cpp
+ *  @brief Source code file defining logic for the Net::IIncomingClient class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -9,7 +9,7 @@
  *  @copyright (c) 2014 Draconic Entertainment
  */
 
-#include <net/CIncomingClient.hpp>
+#include <net/IIncomingClient.hpp>
 
 #include <net/messages/messages.hpp>
 
@@ -19,19 +19,19 @@ namespace Kiaro
 {
     namespace Net
     {
-        CIncomingClient::CIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
+        IIncomingClient::IIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
         mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true)
         {
 
         }
 
-        CIncomingClient::~CIncomingClient(void)
+        IIncomingClient::~IIncomingClient(void)
         {
             if (mIsConnected)
                 this->disconnect("Destroyed net handle.");
         }
 
-        void CIncomingClient::send(Messages::IMessage* packet, const bool& reliable)
+        void IIncomingClient::send(Messages::IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
@@ -45,12 +45,12 @@ namespace Kiaro
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
 
-        bool CIncomingClient::getIsOppositeEndian(void)
+        bool IIncomingClient::getIsOppositeEndian(void)
         {
             return mIsOppositeEndian;
         }
 
-        void CIncomingClient::disconnect(const Support::String& reason)
+        void IIncomingClient::disconnect(const Support::String& reason)
         {
             Net::Messages::Disconnect disconnect;
             disconnect.mReason = reason;
@@ -59,17 +59,17 @@ namespace Kiaro
             enet_peer_disconnect_later(mInternalClient, 0);
         }
 
-        const Common::U16& CIncomingClient::getPort(void)
+        const Common::U16& IIncomingClient::getPort(void)
         {
             return mInternalClient->address.port;
         }
 
-        const Common::U32& CIncomingClient::getIPAddress(void)
+        const Common::U32& IIncomingClient::getIPAddress(void)
         {
             return mInternalClient->address.host;
         }
 
-        Support::String CIncomingClient::getIPAddressString(void)
+        Support::String IIncomingClient::getIPAddressString(void)
         {
             // TODO (Robert MacGregor#9): Make sure that the STL handles this correctly?
             Common::C8 temporaryBuffer[18];
@@ -78,12 +78,12 @@ namespace Kiaro
             return temporaryBuffer;
         }
 
-        void CIncomingClient::setConnectionStage(const STAGE_NAME& in)
+        void IIncomingClient::setConnectionStage(const STAGE_NAME& in)
         {
             mCurrentConnectionStage = in;
         }
 
-        const STAGE_NAME& CIncomingClient::getConnectionStage(void)
+        const STAGE_NAME& IIncomingClient::getConnectionStage(void)
         {
             return mCurrentConnectionStage;
         }

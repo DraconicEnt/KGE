@@ -9,8 +9,8 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
-#ifndef _INCLUDE_NET_CINCOMINGCLIENT_HPP_
-#define _INCLUDE_NET_CINCOMINGCLIENT_HPP_
+#ifndef _INCLUDE_NET_IINCOMINGCLIENT_HPP_
+#define _INCLUDE_NET_IINCOMINGCLIENT_HPP_
 
 #include <enet/enet.h>
 
@@ -35,13 +35,13 @@ namespace Kiaro
             class IMessage;
         }
 
-        //! The CIncomingClient class is a handle for a remote host that has connected to the game server.
-        class CIncomingClient
+        //! The IIncomingClient class is a handle for a remote host that has connected to the game server.
+        class IIncomingClient
         {
             // Public Members
             public:
                 bool mIsConnected;
-                
+
             // Private Members
             private:
                 //! A pointer to the internally used ENet peer.
@@ -59,20 +59,20 @@ namespace Kiaro
                  *  on either end, causing a client disconnect.
                  */
                 STAGE_NAME mCurrentConnectionStage;
-            
+
             // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an ENetPeer object pointer.
                  *  @param connecting A Peer object that is connecting.
                  */
-                CIncomingClient(ENetPeer *connecting, Net::IServer *server);
+                IIncomingClient(ENetPeer *connecting, Net::IServer *server);
 
                 //! Standard destructor.
-                ~CIncomingClient(void);
+                ~IIncomingClient(void);
 
                 /**
-                 *  @brief Sends a message to the given CIncomingClient.
+                 *  @brief Sends a message to the given IIncomingClient.
                  *  @param message A pointer to the message to be sent.
                  *  @param reliable A boolean representing whether or not the
                  *  message should be sent reliably.

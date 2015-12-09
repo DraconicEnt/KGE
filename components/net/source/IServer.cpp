@@ -5,14 +5,14 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #include <support/Console.hpp>
 
 #include <net/IServer.hpp>
-#include <net/CIncomingClient.hpp>
+#include <net/IIncomingClient.hpp>
 
 #include <net/messages/messages.hpp>
 
@@ -113,10 +113,11 @@ namespace Kiaro
                     {
                         Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Received client connect challenge.");
 
-                        CIncomingClient* client = new CIncomingClient(event.peer, this);
+                        IIncomingClient* client = this->onReceiveClientChallenge(event.peer);
                         event.peer->data = client;
 
                         mPendingClientSet.insert(mPendingClientSet.end(), client);
+
                         break;
                     }
 
@@ -124,12 +125,13 @@ namespace Kiaro
                     {
                         Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Received client disconnect.");
 
-                        CIncomingClient* disconnected = reinterpret_cast<CIncomingClient*>(event.peer->data);
+                        IIncomingClient* disconnected = reinterpret_cast<IIncomingClient*>(event.peer->data);
                         onClientDisconnected(disconnected);
                         disconnected->mIsConnected = false;
 
                         // TODO (Robert MacGregor#9): Delete from the correct set
                         mConnectedClientSet.erase(disconnected);
+
                         delete disconnected;
 
                         break;
@@ -143,7 +145,7 @@ namespace Kiaro
                             throw std::runtime_error("IServer: Invalid ENet peer data on packet receive!");
                         }
 
-                        CIncomingClient* sender = reinterpret_cast<CIncomingClient*>(event.peer->data);
+                        IIncomingClient* sender = reinterpret_cast<IIncomingClient*>(event.peer->data);
 
                         mLastPacketSender = sender;
 
@@ -161,7 +163,7 @@ namespace Kiaro
                 }
         }
 
-        void IServer::processPacket(Support::CBitStream& incomingStream, Net::CIncomingClient* sender)
+        void IServer::processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
             // The packet whose payload is in incomingStream can contain multiple messages.
             // TODO: Alleviate DoS issues with a hard max on message counts
@@ -196,7 +198,7 @@ namespace Kiaro
             }
         }
 
-        void IServer::processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::CIncomingClient* sender)
+        void IServer::processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
             switch(header.getType())
             {
@@ -215,10 +217,11 @@ namespace Kiaro
                     // TODO (Robert MacGregor#9): Make a proper challenge that isn't just version information.
                     Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Client passed initial authentication.");
 
-                    mPendingClientSet.erase(sender);
-                    mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
+                    //mPendingClientSet.erase(sender);
+                    //mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
 
-                    sender->setConnectionStage(Net::STAGE_LOADING);
+                    //sender->setConnectionStage(Net::STAGE_LOADING);
+
                     this->onClientConnected(sender);
 
                     break;
@@ -238,7 +241,7 @@ namespace Kiaro
             }
         }
 
-        void IServer::onClientConnected(CIncomingClient* client)
+        void IServer::onClientConnected(IIncomingClient* client)
         {
 
             // Call the Lua callback
@@ -265,7 +268,7 @@ namespace Kiaro
             //client->send(&scope, true);
         }
 
-        void IServer::onClientDisconnected(CIncomingClient* client)
+        void IServer::onClientDisconnected(IIncomingClient* client)
         {
             /*
             lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
@@ -280,9 +283,9 @@ namespace Kiaro
             //Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received disconnection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
         }
 
-        CIncomingClient* IServer::getLastPacketSender(void)
+        IIncomingClient* IServer::getLastPacketSender(void)
         {
-            CIncomingClient* result = mLastPacketSender;
+            IIncomingClient* result = mLastPacketSender;
             mLastPacketSender = NULL;
 
             return result;

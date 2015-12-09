@@ -5,13 +5,13 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #include <stdexcept>
 
-#include <net/CIncomingClient.hpp>
+#include <net/IIncomingClient.hpp>
 #include <net/messages/Scope.hpp>
 
 #include <net/INetworkPersistable.hpp>
@@ -24,7 +24,7 @@ namespace Kiaro
     {
         namespace Messages
         {
-            Scope::Scope(Support::CBitStream* in, CIncomingClient* sender) : IMessage(TYPE_SCOPE, in, sender), mScopedCount(0)
+            Scope::Scope(Support::CBitStream* in, IIncomingClient* sender) : IMessage(TYPE_SCOPE, in, sender), mScopedCount(0)
             {
 
             }
@@ -37,7 +37,7 @@ namespace Kiaro
             void Scope::packEverything(Support::CBitStream& out) const
             {
                 out << static_cast<Common::U32>(mScoped.size());
-                
+
                 for (auto it = mScoped.begin(); it != mScoped.end(); it++)
                     (*it)->packEverything(out);
 

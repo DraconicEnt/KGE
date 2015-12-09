@@ -29,15 +29,17 @@ namespace Kiaro
             class IMessage;
         }
 
-        class CIncomingClient;
+        class IIncomingClient;
+
+        typedef ENetPeer* RemoteHostContext;
 
         //! Server class that remote hosts connect to.
         class IServer
         {
             // Public Typedefs
             public:
-                typedef Support::UnorderedSet<CIncomingClient*>::iterator clientIterator;
-                typedef Support::UnorderedSet<CIncomingClient*>::const_iterator clientConstIterator;
+                typedef Support::UnorderedSet<IIncomingClient*>::iterator clientIterator;
+                typedef Support::UnorderedSet<IIncomingClient*>::const_iterator clientConstIterator;
 
             // Public Methods
             public:
@@ -59,13 +61,15 @@ namespace Kiaro
 
                 virtual void update(const Common::F32& deltaTimeSeconds);
 
+                virtual IIncomingClient* onReceiveClientChallenge(RemoteHostContext client) = 0;
+
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
                  *  network subsystem accepting a remote host connection.
                  *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the incoming connection.
                  */
-                void onClientConnected(Net::CIncomingClient* client);
+                virtual void onClientConnected(IIncomingClient* client);
 
                 /**
                  *  @brief Callback function that is called upon the server's underlaying
@@ -73,9 +77,9 @@ namespace Kiaro
                  *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
                  *  the disconnected client.
                  */
-                void onClientDisconnected(Net::CIncomingClient* client);
+                virtual void onClientDisconnected(Net::IIncomingClient* client);
 
-                Net::CIncomingClient* getLastPacketSender(void);
+                Net::IIncomingClient* getLastPacketSender(void);
 
                 Common::U32 getClientCount(void);
 
@@ -103,12 +107,12 @@ namespace Kiaro
 
             // Private Methods
             private:
-                void processPacket(Support::CBitStream& incomingStream, Net::CIncomingClient* sender);
-                void processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::CIncomingClient* sender);
+                void processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
+                void processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
 
             // Private Members
             private:
-                Net::CIncomingClient* mLastPacketSender;
+                Net::IIncomingClient* mLastPacketSender;
 
                 bool mIsRunning;
 
@@ -122,9 +126,9 @@ namespace Kiaro
                 Common::U32 mMaximumClientCount;
 
                 //! An unordered set of all clients that passed the authentication stage and are now technically playing.
-                Support::UnorderedSet<CIncomingClient*> mConnectedClientSet;
+                Support::UnorderedSet<IIncomingClient*> mConnectedClientSet;
                 //! An unordered set of all clients waiting to pass the authentication stage.
-                Support::UnorderedSet<CIncomingClient*> mPendingClientSet;
+                Support::UnorderedSet<IIncomingClient*> mPendingClientSet;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

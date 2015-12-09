@@ -22,7 +22,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        class CIncomingClient;
+        class IIncomingClient;
         class INetworkPersistable;
 
         namespace Messages
@@ -44,7 +44,7 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    Scope(Support::CBitStream* in = NULL, Net::CIncomingClient* sender = NULL);
+                    Scope(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
                     void add(const Net::INetworkPersistable* entity);
 
                     virtual void packEverything(Support::CBitStream& out) const;

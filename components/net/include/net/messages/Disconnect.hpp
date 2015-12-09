@@ -21,7 +21,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        class CIncomingClient;
+        class IIncomingClient;
 
         namespace Messages
         {
@@ -29,7 +29,7 @@ namespace Kiaro
             {
                 // Public Methods
                 public:
-                    Disconnect(Support::CBitStream *in = NULL, CIncomingClient *sender = NULL) : IMessage(TYPE_DISCONNECT, in, sender)
+                    Disconnect(Support::CBitStream *in = NULL, IIncomingClient* sender = NULL) : IMessage(TYPE_DISCONNECT, in, sender)
                     {
 
                     }

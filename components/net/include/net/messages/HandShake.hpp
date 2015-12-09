@@ -22,7 +22,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        class CIncomingClient;
+        class IIncomingClient;
 
         namespace Messages
         {
@@ -43,7 +43,7 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    HandShake(Support::CBitStream* in = NULL, CIncomingClient* sender = NULL);
+                    HandShake(Support::CBitStream* in = NULL, IIncomingClient* sender = NULL);
                     virtual void packEverything(Support::CBitStream& out) const;
 
                     void unpack(Support::CBitStream& in);

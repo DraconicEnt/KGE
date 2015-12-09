@@ -21,7 +21,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        class CIncomingClient;
+        class IIncomingClient;
         class NetworkedEntity;
 
         namespace Messages
@@ -30,7 +30,7 @@ namespace Kiaro
             {
                 // Public Methods
                 public:
-                    SimCommit(Support::CBitStream* in = NULL, CIncomingClient* sender = NULL);
+                    SimCommit(Support::CBitStream* in = NULL, IIncomingClient* sender = NULL);
 
                     virtual void packEverything(Support::CBitStream& out) const;
                     virtual void unpack(Support::CBitStream& in);

@@ -5,14 +5,14 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #include <stdexcept>
 
 #include <net/messages/HandShake.hpp>
-#include <net/CIncomingClient.hpp>
+#include <net/IIncomingClient.hpp>
 
 namespace Kiaro
 {
@@ -20,7 +20,7 @@ namespace Kiaro
     {
         namespace Messages
         {
-            HandShake::HandShake(Support::CBitStream* in, CIncomingClient* sender) : IMessage(TYPE_HANDSHAKE, in, sender),
+            HandShake::HandShake(Support::CBitStream* in, IIncomingClient* sender) : IMessage(TYPE_HANDSHAKE, in, sender),
             mVersionMajor(VERSION::MAJOR), mVersionMinor(VERSION::MINOR), mVersionRevision(VERSION::REVISION),
             mVersionBuild(VERSION::BUILD), mProtocolVersion(VERSION::PROTOCOL)
             {

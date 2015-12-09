@@ -36,7 +36,7 @@
 #include <game/SGameServer.hpp>
 
 #include <net/IOutgoingClient.hpp>
-#include <net/CIncomingClient.hpp>
+#include <net/IIncomingClient.hpp>
 
 #include <support/FTime.hpp>
 #include <support/SSynchronousScheduler.hpp>
@@ -279,7 +279,7 @@ namespace Kiaro
                     Game::SGameServer* server = Game::SGameServer::getPointer();
                     if (server)
                     {
-                        Net::CIncomingClient* lastClient = server->getLastPacketSender();
+                        Net::IIncomingClient* lastClient = server->getLastPacketSender();
 
                         // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
                         if (lastClient)

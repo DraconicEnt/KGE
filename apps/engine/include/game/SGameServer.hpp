@@ -25,6 +25,8 @@ namespace Kiaro
 
                 virtual void update(const Common::F32& deltaTimeSeconds);
 
+                Net::IIncomingClient* onReceiveClientChallenge(Net::RemoteHostContext client);
+
             private:
                 SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
                 ~SGameServer(void);
