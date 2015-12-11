@@ -43,7 +43,7 @@ namespace Kiaro
             }
         }
 
-        Net::IIncomingClient* onReceiveClientChallenge(Net::RemoteHostContext client)
+        Net::IIncomingClient* SGameServer::onReceiveClientChallenge(Net::RemoteHostContext client)
         {
             CGameClient* incoming = new CGameClient(client);
             return incoming;
