@@ -19,6 +19,8 @@ namespace Kiaro
     namespace Support
     {
         typedef std::string String;
+        
+        static std::hash<std::string> getHashCode;
     } // End NameSpace Support
 } // End NameSpace Kiaro
 #endif // _INCLUDE_SUPPORT_STRING_HPP_

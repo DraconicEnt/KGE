@@ -66,7 +66,7 @@ namespace Kiaro
                 template <typename storedType>
                 storedType& getValue(const Support::String& name)
                 {
-                    size_t mapIndex = Common::string_hash(name);
+                    size_t mapIndex = Support::getHashCode(name);
 
                     if (mStoredProperties.count(mapIndex) == 0)
                     {
@@ -100,7 +100,7 @@ namespace Kiaro
                 template <typename storedType>
                 void setValue(const Support::String& name, storedType value)
                 {
-                    size_t mapIndex = Common::string_hash(name);
+                    size_t mapIndex = Support::getHashCode(name);
 
                     // Does an entry exist?
                     if (mStoredProperties.count(mapIndex) == 0)

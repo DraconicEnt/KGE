@@ -71,7 +71,7 @@ namespace Kiaro
 
             // We wil have a memory block to use from the float stream
             CBitStream blockStream(floatStream.getBlock(), floatStream.getPointer());
-
+            
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
                 EXPECT_EQ(sFloatList[iteration], blockStream.pop<Common::F32>());
         }

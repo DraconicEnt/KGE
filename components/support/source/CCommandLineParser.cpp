@@ -27,7 +27,7 @@ namespace Kiaro
 				if (argv[iteration][0] == '-')
 				{
 					currentFlagName = argv[iteration];
-					currentFlagHash = Common::string_hash(currentFlagName);
+					currentFlagHash = Support::getHashCode(currentFlagName);
 
 					mFlags.insert(std::make_pair(currentFlagHash, Support::Vector<Support::String>()));
 				}
@@ -40,7 +40,7 @@ namespace Kiaro
 
         bool CommandLineParser::hasFlag(const Common::C8 *flag)
         {
-			size_t flagHash = Common::string_hash(flag);
+			size_t flagHash = Support::getHashCode(flag);
 
 			try
 			{
@@ -61,7 +61,7 @@ namespace Kiaro
             if (!this->hasFlag(targetFlag))
                 return Support::Vector<Support::String>();
 
-            size_t flagHash = Common::string_hash(targetFlag);
+            size_t flagHash = Support::getHashCode(targetFlag);
 
             return mFlags[flagHash];
         }
@@ -71,7 +71,7 @@ namespace Kiaro
             if (!hasFlag(targetFlag))
                 return 0;
 
-            size_t flagHash = Common::string_hash(targetFlag);
+            size_t flagHash = Support::getHashCode(targetFlag);
 			return mFlags[flagHash].size();
         }
 
@@ -80,7 +80,7 @@ namespace Kiaro
             if (flagName.length() >= mCurrentLongestFlagLength)
                 mCurrentLongestFlagLength = flagName.length();
 
-            const size_t flagNameHash = Common::string_hash(flagName);
+            const size_t flagNameHash = Support::getHashCode(flagName);
             mFlagDescriptions.insert(std::make_pair(flagNameHash, std::make_pair(flagName, description)));
         }
 

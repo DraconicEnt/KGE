@@ -13,6 +13,10 @@
 #define _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
 
 #include <support/Stack.hpp>
+#include <support/Deque.hpp>
+#include <support/UnorderedMap.hpp>
+#include <support/String.hpp>
+
 #include <support/common.hpp>
 
 namespace Kiaro
@@ -29,17 +33,17 @@ namespace Kiaro
         {
             // Private Members
             private:
-                //! A set of all active entities in the game server.
-                Entities::IEntity* mEntities[4096];
-
-                //! A set of all entities that receive a logic tick.
-                Entities::IEntity* mUpdatedEntities[4096];
-                //!
-                Entities::IEntity* mNetworkedEntities[4096];
+                Support::Deque<Entities::IEntity*> mEntities;
 
                 Entities::CSky* mSky;
 
                 Support::Stack<Common::U32> mAvailableIDs;
+                
+                Support::UnorderedMap<size_t, Entities::IEntity*> mNameDictionary;
+                
+            // Private Methods
+            private:
+                void repopulateIDStack(void);
 
             // Public Methods
             public:
@@ -48,8 +52,8 @@ namespace Kiaro
 
                 bool addEntity(Entities::IEntity* entity);
                 bool destroyEntitiy(const Common::U32& identifier);
-
-                const Entities::IEntity* const* getEntities(void) const;
+                
+                Entities::IEntity* getEntity(const Support::String& name);
 
                 //const Support::Set<Entities::IEntity*>& getEntities(void);
                // const Support::Set<Entities::IEntity*>& getUpdatedEntities(void);
@@ -68,4 +72,4 @@ namespace Kiaro
         };
     } // End Namespace Game
 } // End Namespace Kiaro
-#endif // _INCLUDE_KIARO_ENGINE_ENTITYGROUPINGSINGLETON_HPP_
+#endif // _INCLUDE_GAME_SGAMEWORLD_HPP_

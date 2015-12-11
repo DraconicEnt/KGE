@@ -34,7 +34,7 @@ namespace Kiaro
             if (sInstance)
                 delete sInstance;
 
-            sInstance = NULL;
+            sInstance = nullptr;
         }
 
         bool SGameWorld::addEntity(Entities::IEntity* entity)
@@ -52,11 +52,11 @@ namespace Kiaro
 
             const Common::U32 hintMask = entity->getHintMask();
 
-            if (!(hintMask & Entities::NO_THINKING))
-                mUpdatedEntities[identifier] = entity;
+          //  if (!(hintMask & Entities::NO_THINKING))
+            //    mUpdatedEntities[identifier] = entity;
 
-            if (!(hintMask & Entities::NO_UPDATING))
-                mNetworkedEntities[identifier] = entity;
+          //  if (!(hintMask & Entities::NO_UPDATING))
+           //     mNetworkedEntities[identifier] = entity;
 
             // New sky?
             if (entity->getTypeMask() == Entities::ENTITY_SKY)
@@ -72,26 +72,37 @@ namespace Kiaro
             mAvailableIDs.pop();
             return true;
         }
+        
+        void SGameWorld::repopulateIDStack(void)
+        {
+            mAvailableIDs = Support::Stack<Common::U32>();
+            
+            for (Common::S32 iteration = 4095; iteration >= 0; iteration--)
+                mAvailableIDs.push(iteration);
+        }
+        
+        Entities::IEntity* SGameWorld::getEntity(const Support::String& name)
+        {
+            const size_t nameHash = Support::getHashCode(name);
+            
+            auto it = mNameDictionary.find(nameHash);
+            if (it == mNameDictionary.end())
+                return nullptr;
+            
+            return (*it).second;
+        }
 
         bool SGameWorld::destroyEntitiy(const Common::U32& identifier)
         {
-            if (mEntities[identifier])
-            {
-                delete mEntities[identifier];
-                mEntities[identifier] = NULL;
-                mUpdatedEntities[identifier] = NULL;
-                mNetworkedEntities[identifier] = NULL;
-
-                mAvailableIDs.push(identifier);
-                return true;
-            }
+            if (identifier >= mEntities.size())
+                return false;
+                
+            delete mEntities[identifier];
+            mEntities[identifier] = nullptr;
+            
+            mAvailableIDs.push(identifier);
 
             return false;
-        }
-
-        const Entities::IEntity* const* SGameWorld::getEntities(void) const
-        {
-            return mEntities;
         }
 
 /*
@@ -108,9 +119,14 @@ namespace Kiaro
 
         void SGameWorld::update(const Common::F32& deltaTimeSeconds)
         {
-            for (Common::U32 iteration = 0; iteration < 4096; iteration++)
-                if (mUpdatedEntities[iteration])
-                    mUpdatedEntities[iteration]->update(deltaTimeSeconds);
+            // FIXME: Implement bitmask checking for updated entities
+            for (auto it = mEntities.begin(); it != mEntities.end(); it++)
+            {
+                Entities::IEntity* entity = *it;
+                
+                if (entity)
+                    entity->update(deltaTimeSeconds);
+            }
         }
 
         const Entities::CSky* SGameWorld::getSky(void)
@@ -122,28 +138,19 @@ namespace Kiaro
         {
             // Destroy any existing entities and reset the ID tracker
             mAvailableIDs = Support::Stack<Common::U32>();
-
-            for (Common::U32 iteration = 0; iteration < 4096; iteration++)
-            {
-                mAvailableIDs.push(iteration);
-
-                if (mEntities[iteration])
-                    delete mEntities[iteration];
-
-                mEntities[iteration] = NULL;
-                mUpdatedEntities[iteration] = NULL;
-                mNetworkedEntities[iteration] = NULL;
-            }
+            mNameDictionary.clear();
+            
+            for (auto it = mEntities.begin(); it != mEntities.end(); it++)
+                delete *it;
+                
+            this->repopulateIDStack();
+                
+            mEntities.clear();
         }
 
-        SGameWorld::SGameWorld(void) : mSky(NULL)
+        SGameWorld::SGameWorld(void) : mSky(nullptr)
         {
-            // Initialize the pointer arrays to NULL
-            memset(mEntities, 0x00, sizeof(Entities::IEntity*) * 4096);
-            memset(mUpdatedEntities, 0x00, sizeof(Entities::IEntity*) * 4096);
-            memset(mNetworkedEntities, 0x00, sizeof(Entities::IEntity*) * 4096);
-
-            this->clear();
+            this->repopulateIDStack();
         }
 
         SGameWorld::~SGameWorld(void) { }
