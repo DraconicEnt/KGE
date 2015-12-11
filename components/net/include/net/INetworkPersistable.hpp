@@ -103,7 +103,7 @@ namespace Kiaro
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
                     constexpr PROPERTY_TYPE typeIdentifier = TypeIDResolver<propertyType>::value;
-                    mNetworkedProperties[Common::string_hash(name)] = std::make_pair(&propertyValue, typeIdentifier);
+                    mNetworkedProperties[Support::getHashCode(name)] = std::make_pair(&propertyValue, typeIdentifier);
                 }
 
                 /**
@@ -119,7 +119,7 @@ namespace Kiaro
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
-                    size_t mapIndex = Common::string_hash(name);
+                    size_t mapIndex = Support::getHashCode(name);
                     this->setNetworkedPropertyValue<propertyType>(mapIndex, newValue);
                 }
 
@@ -161,7 +161,7 @@ namespace Kiaro
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
-                    std::pair<void*, PROPERTY_TYPE> networkedPropertyInfo = mNetworkedProperties[Common::string_hash(name)];
+                    std::pair<void*, PROPERTY_TYPE> networkedPropertyInfo = mNetworkedProperties[Support::getHashCode(name)];
 
                     // Is it the same type?
                     if (networkedPropertyInfo.second != TypeIDResolver<propertyType>::value)
