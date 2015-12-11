@@ -1,6 +1,6 @@
 MESSAGE(STATUS "Configuring apps ...")
 
-ADD_SUBDIRECTORY("engine")
+ADD_SUBDIRECTORY("main")
 
 IF(BUILD_UNITTESTS)
     ADD_SUBDIRECTORY("tests")
