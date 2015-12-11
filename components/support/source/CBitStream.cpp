@@ -26,7 +26,7 @@ namespace Kiaro
         }
 
         CBitStream::CBitStream(void* initializer, const size_t &initializerLength) : mMemoryBlock((Common::U8*)initializer), mTotalSize(initializerLength),
-        mPointer(initializerLength), mOwnsMemoryBlock(false)
+        mPointer(0), mOwnsMemoryBlock(false)
         {
 
         }
