@@ -53,7 +53,7 @@ namespace Kiaro
             };
 
             class IEntity : public Net::INetworkPersistable
-            {
+            {                
                 // Public Methods
                 public:
                     /**
@@ -70,13 +70,17 @@ namespace Kiaro
                      *  @brief Gets the type mask of this object.
                      *  @return A Kiaro::Common::U32 representing the typemask.
                      */
-                    Common::U32 getTypeMask(void) const;
+                    const Common::U32& getTypeMask(void) const;
 
-                    Common::U32 getNetID(void) const;
+                    const Common::U32& getNetID(void) const;
 
-                    Common::U32 getHintMask(void) const;
+                    const Common::U32& getHintMask(void) const;
 
                     void setNetID(const Common::U32& identifier);
+                    
+                    const Common::U32& getID(void);
+                    
+                    void setName(const Support::String& name);
 
                     virtual void instantiate(void) = 0;
                     virtual void update(const Common::F32& deltaTimeSeconds) = 0;
@@ -92,6 +96,7 @@ namespace Kiaro
                     ENTITY_TYPE mType;
                     Common::U32 mHintMask;
                     Common::U32 mNetID;
+                    const Common::U32 mID;
 
                     Support::Set<CES::IComponent*> mComponents;
 

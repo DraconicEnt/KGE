@@ -31,6 +31,8 @@ namespace Kiaro
 
         class SGameWorld
         {
+            friend class Entities::IEntity;
+            
             // Private Members
             private:
                 Support::Deque<Entities::IEntity*> mEntities;
@@ -40,6 +42,12 @@ namespace Kiaro
                 Support::Stack<Common::U32> mAvailableIDs;
                 
                 Support::UnorderedMap<size_t, Entities::IEntity*> mNameDictionary;
+                
+            // Protected Methods
+            protected:
+                void setNameEntry(Entities::IEntity* entity, const Support::String& name);
+                
+                Common::U32 getNextEntityID(void);
                 
             // Private Methods
             private:

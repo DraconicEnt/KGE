@@ -36,13 +36,33 @@ namespace Kiaro
 
             sInstance = nullptr;
         }
+        
+        void SGameWorld::setNameEntry(Entities::IEntity* entity, const Support::String& name)
+        {
+            assert(!name.empty());
+            
+            auto it = mNameDictionary.find(Support::getHashCode(name));
+            
+            if (it != mNameDictionary.end())
+                mNameDictionary.erase(it);
+                
+            mNameDictionary[Support::getHashCode(name)] = entity;
+        }
+        
+        Common::U32 SGameWorld::getNextEntityID(void)
+        {
+            Common::U32 result = mAvailableIDs.top();
+            mAvailableIDs.pop();
+            
+            return result;
+        }
 
         bool SGameWorld::addEntity(Entities::IEntity* entity)
         {
             if (mAvailableIDs.empty())
                 return false;
 
-            const Common::U32& identifier = mAvailableIDs.top();
+            const Common::U32& identifier = entity->getID();
 
             // Paranoia check
             if (identifier >= 4096)

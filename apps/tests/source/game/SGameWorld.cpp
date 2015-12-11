@@ -13,15 +13,75 @@
 
 #include <support/UnorderedMap.hpp>
 
+#include <game/entities/IEntity.hpp>
 #include <game/SGameWorld.hpp>
 
 namespace Kiaro
 {
     namespace Game
     {
-        TEST(SGameWorld, Listener)
+        extern SGameWorld* sInstance;
+        
+        class TestEntity : public Entities::IEntity
+        {
+            public:
+                TestEntity(void) : IEntity(Entities::ENTITY_NULL, Entities::NO_THINKING)
+                {
+                    instantiate();
+                }
+
+                TestEntity(Support::CBitStream& in) : IEntity(Entities::ENTITY_NULL, Entities::NO_THINKING)
+                {
+                    this->unpack(in);
+                }
+
+                ~TestEntity(void)
+                {
+
+                }
+
+                void packEverything(Support::CBitStream& out) const
+                {
+
+                }
+
+                void unpack(Support::CBitStream& in)
+                {
+
+                }
+
+                void instantiate(void)
+                {
+
+                }
+
+                void update(const Common::F32& deltaTimeSeconds)
+                {
+
+                }
+        };
+        
+        TEST(SGameWorld, SingletonConstructor)
         {
             SGameWorld* world = SGameWorld::getPointer();
+            
+            EXPECT_TRUE(sInstance);
+            
+            SGameWorld::destroy();
+            
+            EXPECT_FALSE(sInstance);
+        }
+        
+        TEST(SGameWorld, NameLookup)
+        {
+            SGameWorld* world = SGameWorld::getPointer();
+            
+            EXPECT_NO_THROW(EXPECT_FALSE(world->getEntity("someEntity")));
+            
+            TestEntity* entity = new TestEntity();            
+            entity->setName("someEntity");
+            
+            EXPECT_NO_THROW(EXPECT_TRUE(world->getEntity("someEntity")));
             
             SGameWorld::destroy();
         }
