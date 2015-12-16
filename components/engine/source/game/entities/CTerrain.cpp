@@ -27,7 +27,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN, NO_THINKING | NO_SCOPING),
+            CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
             mTerrainFile(terrainFile), mSceneNode(nullptr)
             {
                 instantiate();

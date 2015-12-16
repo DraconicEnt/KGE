@@ -24,7 +24,7 @@ namespace Kiaro
         SGameWorld* SGameWorld::getPointer(void)
         {
             if (!sInstance)
-                sInstance = new SGameWorld;
+                sInstance = new SGameWorld();
 
             return sInstance;
         }
@@ -40,9 +40,9 @@ namespace Kiaro
         void SGameWorld::setNameEntry(Entities::IEntity* entity, const Support::String& name)
         {
             assert(!name.empty());
+            assert(entity);
             
             auto it = mNameDictionary.find(Support::getHashCode(name));
-            
             if (it != mNameDictionary.end())
                 mNameDictionary.erase(it);
                 
@@ -70,22 +70,16 @@ namespace Kiaro
 
             mEntities[identifier] = entity;
 
-            const Common::U32 hintMask = entity->getHintMask();
-
-          //  if (!(hintMask & Entities::NO_THINKING))
-            //    mUpdatedEntities[identifier] = entity;
-
-          //  if (!(hintMask & Entities::NO_UPDATING))
-           //     mNetworkedEntities[identifier] = entity;
+            const Common::U32& flagMask = entity->mFlags;
 
             // New sky?
-            if (entity->getTypeMask() == Entities::ENTITY_SKY)
+            if (entity->getTypeMask() & Entities::ENTITY_SKY)
             {
                 // FIXME (Robert MacGregor#9): Properly replace the sky entity
                 if (mSky)
                     Support::Console::write(Support::Console::MESSAGE_ERROR, "SGameWorld: Overwrote an old instance of the sky!");
 
-                mSky = (Entities::CSky*)entity;
+                mSky = reinterpret_cast<Entities::CSky*>(entity);
             }
 
             entity->setNetID(identifier);
@@ -112,7 +106,7 @@ namespace Kiaro
             return (*it).second;
         }
 
-        bool SGameWorld::destroyEntitiy(const Common::U32& identifier)
+        bool SGameWorld::removeEntity(const Common::U32& identifier)
         {
             if (identifier >= mEntities.size())
                 return false;
@@ -124,18 +118,11 @@ namespace Kiaro
 
             return false;
         }
-
-/*
-        const Support::Set<Game::Entities::IEntity* >& SGameWorld::getUpdatedEntities(void)
+        
+        bool SGameWorld::removeEntity(Entities::IEntity* entity)
         {
-            return mUpdatedEntities;
+            return this->removeEntity(entity->getID());
         }
-
-        const Support::Set<Game::Entities::IEntity* >& SGameWorld::getNetworkedEntities(void)
-        {
-            return mNetworkedEntities;
-        }
-*/
 
         void SGameWorld::update(const Common::F32& deltaTimeSeconds)
         {
@@ -144,7 +131,7 @@ namespace Kiaro
             {
                 Entities::IEntity* entity = *it;
                 
-                if (entity)
+                if (entity && entity->mFlags & Entities::FLAG_UPDATING)
                     entity->update(deltaTimeSeconds);
             }
         }
@@ -164,7 +151,6 @@ namespace Kiaro
                 delete *it;
                 
             this->repopulateIDStack();
-                
             mEntities.clear();
         }
 

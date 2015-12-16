@@ -22,7 +22,7 @@ namespace Kiaro
         namespace Entities
         {
             IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : mType(typeMask),
-            mHintMask(hintMask), mNetID(0), mID(Game::SGameWorld::getPointer()->getNextEntityID())
+            mFlags(hintMask), mNetID(0), mID(Game::SGameWorld::getPointer()->getNextEntityID())
             {
                 Game::SGameWorld::getPointer()->addEntity(this);
             }
@@ -36,8 +36,6 @@ namespace Kiaro
 
             const Common::U32& IEntity::getNetID(void) const { return mNetID; }
 
-            const Common::U32& IEntity::getHintMask(void) const { return mHintMask; }
-            
             const Common::U32& IEntity::getID(void)
             {
                 return mID;

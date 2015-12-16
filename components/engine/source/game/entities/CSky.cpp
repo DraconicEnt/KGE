@@ -25,7 +25,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, NO_THINKING) //, mColor(0, 0, 0, 0)
+            CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, FLAG_STATIC) //, mColor(0, 0, 0, 0)
             {
                 instantiate();
 

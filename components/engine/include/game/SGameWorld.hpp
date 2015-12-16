@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
@@ -39,6 +39,7 @@ namespace Kiaro
 
                 Entities::CSky* mSky;
 
+                //! A stack of available object ID's arranged in the order we need them to be in when popping them.
                 Support::Stack<Common::U32> mAvailableIDs;
                 
                 Support::UnorderedMap<size_t, Entities::IEntity*> mNameDictionary;
@@ -59,13 +60,10 @@ namespace Kiaro
                 static void destroy(void);
 
                 bool addEntity(Entities::IEntity* entity);
-                bool destroyEntitiy(const Common::U32& identifier);
+                bool removeEntity(Entities::IEntity* entity);
+                bool removeEntity(const Common::U32& identifier);
                 
                 Entities::IEntity* getEntity(const Support::String& name);
-
-                //const Support::Set<Entities::IEntity*>& getEntities(void);
-               // const Support::Set<Entities::IEntity*>& getUpdatedEntities(void);
-               // const Support::Set<Entities::IEntity*>& getNetworkedEntities(void);
 
                 void update(const Common::F32& deltaTimeSeconds);
                 void clear(void);

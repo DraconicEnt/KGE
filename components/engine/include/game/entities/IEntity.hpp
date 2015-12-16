@@ -38,18 +38,18 @@ namespace Kiaro
             typedef Common::U32 EntityHintMask;
 
             /**
-             *  @brief Enumerations representing
+             *  @brief Enumerations representing various bit flags that may be set on an entity's flag set.
              */
-            enum HINT_NAME
+            enum FLAG_NAME
             {
-                //! A hint that tells the engine that this object does not need automated net updating. It may be pushing updates on its own.
-                NO_UPDATING = 1,
-                //! A hint that tells the engine that this object does not need update pulses.
-                NO_THINKING = 2,
-                //! A hint that tells the engine that this object is not scoped.
-                NO_SCOPING = 3,
-                //! A hint that tells the engine that this object very rarely updates within any context.
-                IS_STATIC = 4,
+                //! A flag that tells the engine that this object needs automated net updating.
+                FLAG_UPDATING = 1,
+                //! A flag that tells the engine that this object needs update pulses.
+                FLAG_THINKING = 2,
+                //! A flag that tells the engine that this object is not scoped. This means it's networked to everyone at all times.
+                FLAG_SCOPING = 4,
+                //! A flag that tells the engine that this object very rarely updates within any context. This essentially disables differential networking.
+                FLAG_STATIC = 8,
             };
 
             class IEntity : public Net::INetworkPersistable
@@ -74,8 +74,6 @@ namespace Kiaro
 
                     const Common::U32& getNetID(void) const;
 
-                    const Common::U32& getHintMask(void) const;
-
                     void setNetID(const Common::U32& identifier);
                     
                     const Common::U32& getID(void);
@@ -91,10 +89,13 @@ namespace Kiaro
 
                     //virtual void setPosition(const Common::Vector3DF& position) = 0;
 
+                // Public Members
+                public:
+                    const Common::U8 mFlags;
+                    
                 // Protected Members
                 protected:
                     ENTITY_TYPE mType;
-                    Common::U32 mHintMask;
                     Common::U32 mNetID;
                     const Common::U32 mID;
 
