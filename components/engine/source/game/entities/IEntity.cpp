@@ -21,25 +21,20 @@ namespace Kiaro
     {
         namespace Entities
         {
-            IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : mType(typeMask),
-            mFlags(hintMask), mNetID(0), mID(Game::SGameWorld::getPointer()->getNextEntityID())
+            IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : IEngineObject(), mType(typeMask),
+            mFlags(hintMask), mNetID(0)
             {
                 Game::SGameWorld::getPointer()->addEntity(this);
             }
 
             IEntity::~IEntity(void)
             {
-
+                
             }
 
             const Common::U32& IEntity::getTypeMask(void) const { return mType; }
 
             const Common::U32& IEntity::getNetID(void) const { return mNetID; }
-
-            const Common::U32& IEntity::getID(void)
-            {
-                return mID;
-            }
 
             void IEntity::packDeltas(Support::CBitStream& out)
             {
@@ -65,12 +60,6 @@ namespace Kiaro
             void IEntity::instantiate(void)
             {
                 Game::SGameWorld::getPointer()->addEntity(this);
-            }
-            
-            void IEntity::setName(const Support::String& name)
-            {
-                mName = name;
-                SGameWorld::getPointer()->setNameEntry(this, name);
             }
         } // End Namespace Entities
     } // End Namespace Game

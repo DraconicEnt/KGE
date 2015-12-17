@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2013 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_ENTITYBASE_HPP_
@@ -19,6 +19,7 @@
 
 #include <support/common.hpp>
 
+#include <game/IEngineObject.hpp>
 #include <core/SEngineInstance.hpp>
 #include <filesystem/CFileReader.hpp>
 #include <net/INetworkPersistable.hpp>
@@ -52,7 +53,7 @@ namespace Kiaro
                 FLAG_STATIC = 8,
             };
 
-            class IEntity : public Net::INetworkPersistable
+            class IEntity : public Net::INetworkPersistable, public Game::IEngineObject
             {                
                 // Public Methods
                 public:
@@ -75,10 +76,6 @@ namespace Kiaro
                     const Common::U32& getNetID(void) const;
 
                     void setNetID(const Common::U32& identifier);
-                    
-                    const Common::U32& getID(void);
-                    
-                    void setName(const Support::String& name);
 
                     virtual void instantiate(void) = 0;
                     virtual void update(const Common::F32& deltaTimeSeconds) = 0;
@@ -97,11 +94,8 @@ namespace Kiaro
                 protected:
                     ENTITY_TYPE mType;
                     Common::U32 mNetID;
-                    const Common::U32 mID;
 
                     Support::Set<CES::IComponent*> mComponents;
-
-                    Support::String mName;
             };
         } // End Namespace Entities
     } // End Namespace Game

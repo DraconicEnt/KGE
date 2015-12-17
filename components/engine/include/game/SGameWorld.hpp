@@ -12,9 +12,8 @@
 #ifndef _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
 #define _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
 
-#include <support/Stack.hpp>
-#include <support/Deque.hpp>
-#include <support/UnorderedMap.hpp>
+#include <support/CBitStream.hpp>
+#include <support/UnorderedSet.hpp>
 #include <support/String.hpp>
 
 #include <support/common.hpp>
@@ -23,51 +22,47 @@ namespace Kiaro
 {
     namespace Game
     {
+        class IGameMode;
+        
         namespace Entities
         {
             class IEntity;
             class CSky;
         } // End NameSpace Entities
 
-        class SGameWorld
+        class SGameWorld : public Support::ISerializable
         {
             friend class Entities::IEntity;
             
             // Private Members
             private:
-                Support::Deque<Entities::IEntity*> mEntities;
+                Support::UnorderedSet<Entities::IEntity*> mEntities;
 
                 Entities::CSky* mSky;
-
-                //! A stack of available object ID's arranged in the order we need them to be in when popping them.
-                Support::Stack<Common::U32> mAvailableIDs;
                 
-                Support::UnorderedMap<size_t, Entities::IEntity*> mNameDictionary;
-                
-            // Protected Methods
-            protected:
-                void setNameEntry(Entities::IEntity* entity, const Support::String& name);
-                
-                Common::U32 getNextEntityID(void);
-                
-            // Private Methods
-            private:
-                void repopulateIDStack(void);
+                IGameMode* mGameMode;
 
             // Public Methods
             public:
                 static SGameWorld* getPointer(void);
                 static void destroy(void);
-
-                bool addEntity(Entities::IEntity* entity);
-                bool removeEntity(Entities::IEntity* entity);
-                bool removeEntity(const Common::U32& identifier);
                 
-                Entities::IEntity* getEntity(const Support::String& name);
+                void addEntity(Entities::IEntity* entity);
+                void removeEntity(Entities::IEntity* entity);
+                void removeEntity(const Common::U32& id);
+                
+                Entities::IEntity* getEntity(const Common::U32& id) const;
+                Entities::IEntity* getEntity(const Support::String& name) const;
 
                 void update(const Common::F32& deltaTimeSeconds);
                 void clear(void);
                 const Entities::CSky* getSky(void);
+                
+                void packEverything(Support::CBitStream& out) const;
+                void unpack(Support::CBitStream& in);
+                
+                void setGameMode(IGameMode* game);
+                IGameMode* getGameMode(void);
 
             // Private Methods
             private:

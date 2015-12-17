@@ -8,6 +8,11 @@ namespace Kiaro
 {
     namespace Game
     {
+        CScriptedGame::CScriptedGame(void) : IGameMode("Scripted Game")
+        {
+        
+        }
+        
         void CScriptedGame::setup(void)
         {
 

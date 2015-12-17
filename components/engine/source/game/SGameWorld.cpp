@@ -13,115 +13,30 @@
 #include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 
+#include <game/IGameMode.hpp>
 #include <game/SGameWorld.hpp>
+#include <game/SObjectRegistry.hpp>
 
 namespace Kiaro
 {
     namespace Game
     {
-        SGameWorld* sInstance = nullptr;
+        SGameWorld* sGameWorld = nullptr;
 
         SGameWorld* SGameWorld::getPointer(void)
         {
-            if (!sInstance)
-                sInstance = new SGameWorld();
+            if (!sGameWorld)
+                sGameWorld = new SGameWorld();
 
-            return sInstance;
+            return sGameWorld;
         }
 
         void SGameWorld::destroy(void)
         {
-            if (sInstance)
-                delete sInstance;
+            if (sGameWorld)
+                delete sGameWorld;
 
-            sInstance = nullptr;
-        }
-        
-        void SGameWorld::setNameEntry(Entities::IEntity* entity, const Support::String& name)
-        {
-            assert(!name.empty());
-            assert(entity);
-            
-            auto it = mNameDictionary.find(Support::getHashCode(name));
-            if (it != mNameDictionary.end())
-                mNameDictionary.erase(it);
-                
-            mNameDictionary[Support::getHashCode(name)] = entity;
-        }
-        
-        Common::U32 SGameWorld::getNextEntityID(void)
-        {
-            Common::U32 result = mAvailableIDs.top();
-            mAvailableIDs.pop();
-            
-            return result;
-        }
-
-        bool SGameWorld::addEntity(Entities::IEntity* entity)
-        {
-            if (mAvailableIDs.empty())
-                return false;
-
-            const Common::U32& identifier = entity->getID();
-
-            // Paranoia check
-            if (identifier >= 4096)
-                throw std::out_of_range("SGameworld: Got invalid entity identifier!");
-
-            mEntities[identifier] = entity;
-
-            const Common::U32& flagMask = entity->mFlags;
-
-            // New sky?
-            if (entity->getTypeMask() & Entities::ENTITY_SKY)
-            {
-                // FIXME (Robert MacGregor#9): Properly replace the sky entity
-                if (mSky)
-                    Support::Console::write(Support::Console::MESSAGE_ERROR, "SGameWorld: Overwrote an old instance of the sky!");
-
-                mSky = reinterpret_cast<Entities::CSky*>(entity);
-            }
-
-            entity->setNetID(identifier);
-            mAvailableIDs.pop();
-            return true;
-        }
-        
-        void SGameWorld::repopulateIDStack(void)
-        {
-            mAvailableIDs = Support::Stack<Common::U32>();
-            
-            for (Common::S32 iteration = 4095; iteration >= 0; iteration--)
-                mAvailableIDs.push(iteration);
-        }
-        
-        Entities::IEntity* SGameWorld::getEntity(const Support::String& name)
-        {
-            const size_t nameHash = Support::getHashCode(name);
-            
-            auto it = mNameDictionary.find(nameHash);
-            if (it == mNameDictionary.end())
-                return nullptr;
-            
-            return (*it).second;
-        }
-
-        bool SGameWorld::removeEntity(const Common::U32& identifier)
-        {
-            if (identifier >= mEntities.size())
-                return false;
-                
-            delete mEntities[identifier];
-            mEntities[identifier] = nullptr;
-            
-            mAvailableIDs.push(identifier);
-
-            return false;
-        }
-        
-        bool SGameWorld::removeEntity(Entities::IEntity* entity)
-        {
-            return this->removeEntity(entity->getID());
+            sGameWorld = nullptr;
         }
 
         void SGameWorld::update(const Common::F32& deltaTimeSeconds)
@@ -144,19 +59,82 @@ namespace Kiaro
         void SGameWorld::clear(void)
         {
             // Destroy any existing entities and reset the ID tracker
-            mAvailableIDs = Support::Stack<Common::U32>();
-            mNameDictionary.clear();
-            
             for (auto it = mEntities.begin(); it != mEntities.end(); it++)
                 delete *it;
                 
-            this->repopulateIDStack();
             mEntities.clear();
         }
-
-        SGameWorld::SGameWorld(void) : mSky(nullptr)
+        
+        void SGameWorld::addEntity(Entities::IEntity* entity)
         {
-            this->repopulateIDStack();
+            assert(dynamic_cast<Entities::IEntity*>(entity));
+            
+            auto it = mEntities.find(entity);
+            
+            if (it == mEntities.end())
+                mEntities.insert(mEntities.end(), entity);
+                
+            SObjectRegistry::getPointer()->addObject(entity);
+        }
+        
+        void SGameWorld::removeEntity(Entities::IEntity* entity)
+        {
+            assert(entity);
+            
+            mEntities.erase(entity);
+            SObjectRegistry::getPointer()->removeObject(entity);
+        }
+        
+        void SGameWorld::removeEntity(const Common::U32& id)
+        {
+            Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(id));
+            mEntities.erase(erased);
+        }
+        
+        Entities::IEntity* SGameWorld::getEntity(const Common::U32& id) const
+        {
+            // FIXME: Type Check without using dynamic_cast
+            Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(id));
+            return result;
+        }
+        
+        Entities::IEntity* SGameWorld::getEntity(const Support::String& name) const
+        {
+            // FIXME: Type Check without using dynamic_cast
+            Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(name));
+            return result;
+        }
+        
+        void SGameWorld::packEverything(Support::CBitStream& out) const
+        {
+            for (auto it = mEntities.begin(); it != mEntities.end(); it++)
+                (*it)->packEverything(out);
+        }
+        
+        void SGameWorld::unpack(Support::CBitStream& in)
+        {
+        
+        }
+        
+        void SGameWorld::setGameMode(IGameMode* game)
+        {
+            if (mGameMode)
+                mGameMode->tearDown();
+            
+            mGameMode = game;
+            
+            if (mGameMode)
+                mGameMode->setup();
+        }
+        
+        IGameMode* SGameWorld::getGameMode(void)
+        {
+            return mGameMode;
+        }
+
+        SGameWorld::SGameWorld(void) : mSky(nullptr), mGameMode(nullptr)
+        {
+
         }
 
         SGameWorld::~SGameWorld(void) { }
