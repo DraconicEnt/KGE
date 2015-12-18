@@ -8,6 +8,8 @@
 
 #include <net/IServer.hpp>
 
+#include <support/SSynchronousScheduler.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -23,9 +25,10 @@ namespace Kiaro
 
                 void setGamemode(IGameMode* game);
 
-                virtual void update(const Common::F32& deltaTimeSeconds);
+                virtual void update(void);
 
                 Net::IIncomingClient* onReceiveClientChallenge(Net::RemoteHostContext client);
+                
 
             private:
                 SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
@@ -33,6 +36,8 @@ namespace Kiaro
 
                 Game::IGameMode* mCurrentGamemode;
                 Phys::CSimulation* mSimulation;
+                
+                Support::CScheduledEvent* mUpdatePulse;
         };
     } // End NameSpace Game
 } // End NameSpace Kiaro

@@ -189,8 +189,8 @@ namespace Kiaro
            //     mActiveClient->update();
 
             Game::SGameServer* server = Game::SGameServer::getPointer();
-            if (server)
-                server->update(0.0f);
+           // if (server)
+           //     server->update(0.0f);
         }
 
         int SEngineInstance::initializeGUI(void)

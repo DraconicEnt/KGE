@@ -54,6 +54,9 @@ namespace Kiaro
             mSimulation = new Phys::CSimulation();
             
             Entities::CTerrain* terrain = new Entities::CTerrain("textures/terrain-heightmap.bmp");
+            
+            // Add our update to the scheduler
+            mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
         }
 
         SGameServer::~SGameServer(void)
@@ -77,9 +80,9 @@ namespace Kiaro
                 mCurrentGamemode->setup();
         }
 
-        void SGameServer::update(const Common::F32& deltaTimeSeconds)
+        void SGameServer::update(void)
         {
-            Net::IServer::update(deltaTimeSeconds);
+            Net::IServer::update(0);
 
             //mCurrentGamemode->
         }
