@@ -35,7 +35,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mIsConnected(false), mInternalPeer(NULL), mInternalHost(NULL)
+        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mIsConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr)
         {
         /*
             mEntityGroup = Game::SGameWorld::getPointer();
@@ -58,13 +58,13 @@ namespace Kiaro
             if (mInternalPeer)
             {
                 enet_peer_reset(mInternalPeer);
-                mInternalPeer = NULL;
+                mInternalPeer = nullptr;
             }
 
             if (mInternalHost)
             {
                 enet_host_destroy(mInternalHost);
-                mInternalHost = NULL;
+                mInternalHost = nullptr;
             }
 
 /*
@@ -168,7 +168,7 @@ namespace Kiaro
             enet_address_set_host(&enetAddress, hostName.c_str());
             enetAddress.port = targetPort;
 
-            mInternalHost = enet_host_create(NULL /* create a client host */,
+            mInternalHost = enet_host_create(nullptr /* create a client host */,
                             1 /* only allow 1 outgoing connection */,
                             2 /* allow up 2 channels to be used, 0 and 1 */,
                             57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
@@ -185,6 +185,10 @@ namespace Kiaro
 
                 //this->address = enet_address.host;
                 mPort = targetPort;
+                
+                // Add our update to the scheduler
+                mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &IOutgoingClient::update);
+                
                 return;
             }
 
@@ -196,6 +200,11 @@ namespace Kiaro
 
         void IOutgoingClient::disconnect(void)
         {
+            if (mUpdatePulse)
+                mUpdatePulse->cancel();
+                
+            mUpdatePulse = nullptr;
+                
             if (!mIsConnected)
                 return;
 
@@ -312,7 +321,7 @@ namespace Kiaro
         {
             if (!mIsConnected && !mInternalPeer)
                 return;
-
+            
             ENetEvent event;
             while (mInternalHost && enet_host_service(mInternalHost, &event, 0) > 0)
                 switch(event.type)
@@ -320,9 +329,9 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_DISCONNECT:
                     {
                         enet_host_destroy(mInternalHost);
-                        mInternalHost = NULL;
+                        mInternalHost = nullptr;
                         enet_peer_reset(mInternalPeer);
-                        mInternalPeer = NULL;
+                        mInternalPeer = nullptr;
 
                         this->onDisconnected();
                         Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Disconnected from remote host.");
