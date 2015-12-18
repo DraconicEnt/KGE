@@ -11,7 +11,6 @@
 
 #include <allegro5/allegro.h>
 
-#include <game/MoveManager.hpp>
 #include <input/SInputListener.hpp>
 
 #include <support/Console.hpp>
@@ -25,7 +24,7 @@ namespace Kiaro
         SInputListener* SInputListener::getPointer(void)
         {
             if (!sInstance)
-                sInstance = new SInputListener;
+                sInstance = new SInputListener();
 
             return sInstance;
         }
@@ -35,7 +34,7 @@ namespace Kiaro
             if (sInstance)
                 delete sInstance;
 
-            sInstance = NULL;
+            sInstance = nullptr;
         }
 
         void SInputListener::setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderPointer responder)

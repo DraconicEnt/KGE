@@ -52,6 +52,8 @@ namespace Kiaro
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
             mSimulation = new Phys::CSimulation();
+            
+            Entities::CTerrain* terrain = new Entities::CTerrain("textures/terrain-heightmap.bmp");
         }
 
         SGameServer::~SGameServer(void)

@@ -73,6 +73,8 @@ namespace Kiaro
                 void setSceneGraph(CSceneGraph* graph);
 
                 void setResolution(const Support::Dimension2DU& resolution);
+                
+                irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
 
             // Private Methods
             private:

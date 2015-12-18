@@ -187,6 +187,11 @@ namespace Kiaro
 
             al_acknowledge_resize(mDisplay);
         }
+        
+        irr::IrrlichtDevice* SRenderer::getIrrlichtDevice(void) const
+        {
+            return mIrrlichtDevice;
+        }
 
         int SRenderer::initializeGUI(void)
         {

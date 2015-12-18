@@ -185,8 +185,8 @@ namespace Kiaro
         {
             // FIXME (Robert MacGregor#9): Pass in the time delta
   //          Net::SClient* client = Net::SClient::getPointer();
-            if (mActiveClient)
-                mActiveClient->update();
+           // if (mActiveClient)
+           //     mActiveClient->update();
 
             Game::SGameServer* server = Game::SGameServer::getPointer();
             if (server)

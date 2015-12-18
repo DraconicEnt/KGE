@@ -27,8 +27,11 @@ namespace Kiaro
         }
 
         irr::s32 FileReadObject::read(void* buffer, irr::u32 sizeToRead)
-        {
-            return PHYSFS_read(mFileHandle, buffer, sizeToRead, 1);
+        {   
+            irr::s32 result = PHYSFS_read(mFileHandle, buffer, sizeToRead, 1);
+            result = result == 1 ? sizeToRead : 0;
+
+            return result;
         }
 
         bool FileReadObject::seek(long finalPos, bool relativeMovement)
@@ -36,7 +39,7 @@ namespace Kiaro
             if (relativeMovement)
                 finalPos += PHYSFS_tell(mFileHandle);
 
-            return PHYSFS_seek(mFileHandle, finalPos);
+            return PHYSFS_seek(mFileHandle, finalPos) != 0;
         }
 
         long FileReadObject::getSize() const
