@@ -17,7 +17,7 @@ namespace Kiaro
             // TODO (Robert MacGregor#9): Handle AI-disconnect call?
         }
 
-        void CGameAIClient::send(Net::Messages::IMessage* packet, const bool& reliable)
+        void CGameAIClient::send(Net::IMessage* packet, const bool& reliable)
         {
             // TODO (Robert MacGregor#9): Handle AI-packet sends?
         }

@@ -44,6 +44,8 @@ namespace Kiaro
             // Private Members
             private:
                 const Support::String mFileName;
+                const irr::io::path mIrrlichtPath;
+                
                 PHYSFS_File *mFileHandle;
         };
     } // End Namespace Game

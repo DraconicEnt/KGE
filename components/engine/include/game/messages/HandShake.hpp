@@ -15,18 +15,21 @@
 #include <stdexcept>
 
 #include <support/common.hpp>
-#include <net/messages/types.hpp>
-#include <net/messages/IMessage.hpp>
+#include <game/messages/types.hpp>
+#include <net/IMessage.hpp>
 
 namespace Kiaro
 {
     namespace Net
     {
         class IIncomingClient;
-
+    }
+    
+    namespace Game
+    {
         namespace Messages
         {
-            class HandShake : public IMessage
+            class HandShake : public Net::IMessage
             {
                 // Private Members
                 public:
@@ -43,7 +46,7 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    HandShake(Support::CBitStream* in = NULL, IIncomingClient* sender = NULL);
+                    HandShake(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
                     virtual void packEverything(Support::CBitStream& out) const;
 
                     void unpack(Support::CBitStream& in);

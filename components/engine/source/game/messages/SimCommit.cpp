@@ -11,16 +11,16 @@
 
 #include <stdexcept>
 
-#include <net/messages/IMessage.hpp>
-#include <net/messages/SimCommit.hpp>
+#include <net/IMessage.hpp>
+#include <game/messages/SimCommit.hpp>
 
 namespace Kiaro
 {
-    namespace Net
+    namespace Game
     {
         namespace Messages
         {
-            SimCommit::SimCommit(Support::CBitStream* in, IIncomingClient* sender) : IMessage(TYPE_SIMCOMMIT, in, sender)
+            SimCommit::SimCommit(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(TYPE_SIMCOMMIT, in, sender)
             {
 
             }

@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace FileSystem
     {
-        FileReadObject::FileReadObject(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data()))
+        FileReadObject::FileReadObject(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data())), mIrrlichtPath(filename.data())
         {
             if (!mFileHandle)
                 throw std::logic_error(PHYSFS_getLastError());
@@ -28,10 +28,7 @@ namespace Kiaro
 
         irr::s32 FileReadObject::read(void* buffer, irr::u32 sizeToRead)
         {   
-            irr::s32 result = PHYSFS_read(mFileHandle, buffer, sizeToRead, 1);
-            result = result == 1 ? sizeToRead : 0;
-
-            return result;
+            return PHYSFS_read(mFileHandle, buffer, 1, sizeToRead);
         }
 
         bool FileReadObject::seek(long finalPos, bool relativeMovement)
@@ -54,7 +51,7 @@ namespace Kiaro
 
         const irr::io::path &FileReadObject::getFileName() const
         {
-            return mFileName.c_str();
+            return mIrrlichtPath;
         }
     } // End Namespace Engine
 } // End Namespace Kiaro

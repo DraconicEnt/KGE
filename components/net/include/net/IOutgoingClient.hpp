@@ -16,11 +16,11 @@
 //#include <btBulletDynamicsCommon.h>
 
 //#include <game/SGameWorld.hpp>
-
-#include <net/messages/IMessage.hpp>
 #include <net/IServer.hpp>
 
 #include <support/CBitStream.hpp>
+
+#include <support/SSynchronousScheduler.hpp>
 
 namespace Kiaro
 {
@@ -29,13 +29,10 @@ namespace Kiaro
         class CBitStream;
     } // End NameSpace Support
 
-    namespace Messages
-    {
-        class IMessage;
-    } // End NameSpace Messages
-
     namespace Net
     {
+        class IMessage;
+        
         /**
          *  @brief The IOutgoingClient type is an interface type used for representing outgoing clients
          *  connecting to a remote host somewhere.
@@ -104,14 +101,16 @@ namespace Kiaro
 
                 void update(void);
 
-                void send(Messages::IMessage* packet, const bool& reliable);
+                void send(IMessage* packet, const bool& reliable);
 
                 const bool& isConnected(void);
 
                 void dispatch(void);
+                
+                virtual void onReceivePacket(Support::CBitStream& in) = 0;
 
             // Private Methods
-            private:
+            protected:
                 /**
                  *  @brief An internally called method used to process packet payloads specified in a CBitStream.
                  *  @param incomingStream A CBitStream indexing the packet payload to use.
@@ -123,20 +122,22 @@ namespace Kiaro
                  *  respect to stage zero.
                  *  @param incomingStream A CBitStream indexing the packet payload to use.
                  */
-                void processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream);
+                virtual void processStageZero(const IMessage& header, Support::CBitStream& incomingStream) = 0;
 
                 /**
                  *  @brief An internally called method used to process packet payloads specified in a CBitStream in
                  *  respect to stage two.
                  *  @param incomingStream A CBitStream indexing the packet payload to use.
                  */
-                void processStageTwo(const Messages::IMessage& header, Support::CBitStream& incomingStream);
+                virtual void processStageTwo(const IMessage& header, Support::CBitStream& incomingStream) = 0;
 
                 //! Internally called method when the IOutgoingClient connected to a remote host.
                 void internalOnConnected(void);
 
             // Private Members
-            private:
+            protected:
+                Support::CScheduledEvent* mUpdatePulse;
+                
                 bool mIsOppositeEndian;
 
                // btBroadphaseInterface* mBroadphase;

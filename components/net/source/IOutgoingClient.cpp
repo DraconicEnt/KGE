@@ -29,7 +29,8 @@
 
 #include <support/CBitStream.hpp>
 
-#include <net/messages/messages.hpp>
+#include <net/IMessage.hpp>
+#include <net/stages.hpp>
 
 namespace Kiaro
 {
@@ -92,23 +93,6 @@ namespace Kiaro
             */
         }
 
-        void IOutgoingClient::internalOnConnected(void)
-        {
-            Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Established connection to remote host.");
-
-            // Dispatch our own handshake in response
-            Net::Messages::HandShake handShake;
-
-            this->send(&handShake, true);
-
-            //lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
-
-            //EasyLua::pushObject(lua, "GameClient", "onConnected");
-
-            //if (lua_pcall(lua, 0, 0, 0))
-             //   Core::Logging::write(Core::Logging::MESSAGE_ERROR, "SClient: %s", lua_tostring(lua, -1));
-        }
-
 /*
         void IOutgoingClient::onDisconnected(void)
         {
@@ -133,7 +117,7 @@ namespace Kiaro
         }
         */
 
-        void IOutgoingClient::send(Messages::IMessage* packet, const bool& reliable)
+        void IOutgoingClient::send(IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
             if (reliable)
@@ -144,6 +128,13 @@ namespace Kiaro
 
             ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getPointer(), packetFlag);
             enet_peer_send(mInternalPeer, 0, enetPacket);
+        }
+        
+        void IOutgoingClient::processPacket(Support::CBitStream& incomingStream)
+        {
+            assert(!incomingStream.isEmpty());
+            
+            this->onReceivePacket(incomingStream);
         }
 
         void IOutgoingClient::connect(const Support::String& hostName, const Common::U16& targetPort, const Common::U32& wait)
@@ -179,9 +170,12 @@ namespace Kiaro
             ENetEvent event;
             if (enet_host_service(mInternalHost, &event, wait) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
             {
-                mCurrentStage = 0;
+                mCurrentStage = STAGE_AUTHENTICATION;
 
-                this->internalOnConnected();
+                mIsConnected = true;
+              //  this->internalOnConnected();
+              
+                this->onConnected();
 
                 //this->address = enet_address.host;
                 mPort = targetPort;
@@ -214,114 +208,11 @@ namespace Kiaro
             enet_peer_disconnect_later(mInternalPeer, 0);
         }
 
-        void IOutgoingClient::processPacket(Support::CBitStream& incomingStream)
-        {
-            while (!incomingStream.isEmpty())
-            {
-                Messages::IMessage basePacket;
-                basePacket.unpack(incomingStream);
-
-                switch (basePacket.getType())
-                {
-                    // Stageless messages
-                    case Net::Messages::TYPE_DISCONNECT:
-                    {
-                        Net::Messages::Disconnect disconnect;
-                        disconnect.unpack(incomingStream);
-
-                        Support::Console::writef(Support::Console::MESSAGE_INFO, "IOutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
-                        this->disconnect();
-
-                        break;
-                    }
-
-                    // Either it's an unknown message or it's a staged message
-                    default:
-                    {
-                        switch (mCurrentStage)
-                        {
-                            case 0:
-                            {
-                                this->processStageZero(basePacket, incomingStream);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        void IOutgoingClient::processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream)
-        {
-            switch (header.getType())
-            {
-                case Messages::TYPE_HANDSHAKE:
-                {
-                    Messages::HandShake receivedHandshake;
-                    receivedHandshake.unpack(incomingStream);
-
-                    Support::Console::writef(Support::Console::MESSAGE_INFO, "IOutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Passed initial authentication.");
-
-                    mIsConnected = true;
-                    this->onConnected();
-
-                    mCurrentStage = 1;
-
-                    break;
-                }
-
-                // Out of stage packet or unknown type
-                default:
-                {
-                    Support::String exceptionText = "IOutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: ";
-                    exceptionText += header.getType();
-
-                    throw std::out_of_range(exceptionText);
-                    break;
-                }
-            }
-        }
-
-        void IOutgoingClient::processStageTwo(const Messages::IMessage& header, Support::CBitStream& incomingStream)
-        {
-            switch (header.getType())
-            {
-                case Net::Messages::TYPE_SCOPE:
-                {
-                    Net::Messages::Scope receivedScope;
-                    receivedScope.unpack(incomingStream);
-
-                    break;
-                }
-
-                case Net::Messages::TYPE_SIMCOMMIT:
-                {
-                    Net::Messages::SimCommit receivedCommit;
-                    receivedCommit.unpack(incomingStream);
-
-                    break;
-                }
-
-                // Out of stage packet or unknown type
-                default:
-                {
-                    Support::String exceptionText = "IOutgoingClient: Out of stage or unknown message type encountered at stage 2 processing: ";
-                    exceptionText += header.getType();
-
-                    throw std::out_of_range(exceptionText);
-                    break;
-                }
-            }
-        }
-
         void IOutgoingClient::update(void)
         {
             if (!mIsConnected && !mInternalPeer)
                 return;
-            
+
             ENetEvent event;
             while (mInternalHost && enet_host_service(mInternalHost, &event, 0) > 0)
                 switch(event.type)
@@ -348,7 +239,7 @@ namespace Kiaro
                             break;
                         }
 
-                        Support::CBitStream incomingStream(event.packet->dataLength, event.packet->data);
+                        Support::CBitStream incomingStream(event.packet->data, event.packet->dataLength);
                         this->processPacket(incomingStream);
                         enet_packet_destroy(event.packet);
 

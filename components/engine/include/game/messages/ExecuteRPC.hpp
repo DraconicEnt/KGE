@@ -1,5 +1,5 @@
 /**
- *  @file Disconnect.hpp
+ *  @file ExecuteRPC.hpp
  *  @brief The common include file for the Kiaro application defining things such as error values.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -9,44 +9,46 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
-#ifndef _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
-#define _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
+#ifndef _INCLUDE_KIARO_GAME_MESSAGES_EXECUTERPC_HPP_
+#define _INCLUDE_KIARO_GAME_MESSAGES_EXECUTERPC_HPP_
 
 #include <stdexcept>
 
-#include <net/messages/types.hpp>
-#include <net/messages/IMessage.hpp>
+#include <game/messages/types.hpp>
+#include <net/IMessage.hpp>
 
 namespace Kiaro
 {
     namespace Net
     {
         class IIncomingClient;
-
+    }
+    
+    namespace Game
+    {
         namespace Messages
         {
-            class Disconnect : public IMessage
+            class ExecuteRPC : public Net::IMessage
             {
                 // Public Methods
                 public:
-                    Disconnect(Support::CBitStream *in = NULL, IIncomingClient* sender = NULL) : IMessage(TYPE_DISCONNECT, in, sender)
+                    ExecuteRPC(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL) : IMessage(TYPE_EXECUTERPC, in, sender)
                     {
 
                     }
 
                     virtual void packEverything(Support::CBitStream& out) const
                     {
-                        out << mReason;
-
                         IMessage::packEverything(out);
+                        out << mName;
                     }
 
                     void unpack(Support::CBitStream &in)
                     {
                         if (in.getPointer() <= getMinimumPacketPayloadLength())
-                            throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
+                            throw std::underflow_error("Unable to unpack ExecuteRPC packet; too small of a payload!");
 
-                        in >> mReason;
+                        in >> mName;
                     }
 
                     Common::U32 getMinimumPacketPayloadLength(void)
@@ -56,14 +58,15 @@ namespace Kiaro
 
                     size_t getRequiredMemory(void)
                     {
-                        return mReason.length();
+                        return mName.length();
                     }
 
                 // Public Members
                 public:
-                    Support::String mReason;
+                    Support::String mName;
             };
         } // End NameSpace Packets
     } // End NameSpace Game
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
+

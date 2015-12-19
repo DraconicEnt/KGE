@@ -138,5 +138,15 @@ namespace Kiaro
         }
 
         SGameWorld::~SGameWorld(void) { }
+        
+        SGameWorld::iterator SGameWorld::begin(void)
+        {
+            return mEntities.begin();
+        }
+        
+        SGameWorld::const_iterator SGameWorld::end(void)
+        {
+            return mEntities.end();
+        }
     } // End Namespace Engine
 } // End Namespace Kiaro

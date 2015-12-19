@@ -13,8 +13,8 @@
 #define _INCLUDE_NET_MESSAGES_SCOPE_HPP_
 
 #include <support/common.hpp>
-#include <net/messages/types.hpp>
-#include <net/messages/IMessage.hpp>
+#include <game/messages/types.hpp>
+#include <net/IMessage.hpp>
 
 #include <support/UnorderedSet.hpp>
 
@@ -24,7 +24,10 @@ namespace Kiaro
     {
         class IIncomingClient;
         class INetworkPersistable;
-
+    }
+    
+    namespace Game
+    {
         namespace Messages
         {
             /**
@@ -32,7 +35,7 @@ namespace Kiaro
              *  that a specific thing exists and that they should create the clientside representation of it
              *  given the parameters packed in the message payload.
              */
-            class Scope : public IMessage
+            class Scope : public Net::IMessage
             {
                 // Private Members
                 private:

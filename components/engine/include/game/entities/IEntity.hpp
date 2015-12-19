@@ -77,12 +77,14 @@ namespace Kiaro
 
                     void setNetID(const Common::U32& identifier);
 
-                    virtual void instantiate(void) = 0;
+                    virtual void registerEntity(void) = 0;
                     virtual void update(const Common::F32& deltaTimeSeconds) = 0;
 
                     virtual void packDeltas(Support::CBitStream& out);
                     virtual void packEverything(Support::CBitStream& out) const;
                     virtual void unpack(Support::CBitStream& in);
+                    
+                    const ENTITY_TYPE& getType(void) const;
 
                     //virtual void setPosition(const Common::Vector3DF& position) = 0;
 

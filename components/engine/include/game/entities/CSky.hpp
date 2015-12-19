@@ -44,7 +44,7 @@ namespace Kiaro
                     virtual void extractFrom(Support::CBitStream &in);
                     virtual void packInitialization(Support::CBitStream &out);
                     virtual void unpackInitialization(Support::CBitStream &in);
-                    virtual void instantiate(void);
+                    virtual void registerEntity(void);
                     virtual void update(const Common::F32 &deltaTimeSeconds);
 
                     size_t getRequiredMemory(void)

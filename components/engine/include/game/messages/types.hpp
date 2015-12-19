@@ -14,7 +14,7 @@
 
 namespace Kiaro
 {
-    namespace Net
+    namespace Game
     {
         namespace Messages
         {

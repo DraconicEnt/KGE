@@ -252,8 +252,10 @@ namespace Kiaro
 
             while (mRunning)
             {
+                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 try
                 {
+                #endif
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
                     Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
@@ -266,6 +268,8 @@ namespace Kiaro
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
+                    
+                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 }
                 catch(std::exception& e)
                 {
@@ -286,6 +290,7 @@ namespace Kiaro
                             lastClient->disconnect("Internal Exception");
                     }
                 }
+                #endif
             }
         }
 

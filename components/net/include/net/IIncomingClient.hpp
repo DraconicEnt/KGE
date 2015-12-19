@@ -29,11 +29,7 @@ namespace Kiaro
     namespace Net
     {
         class IServer;
-
-        namespace Messages
-        {
-            class IMessage;
-        }
+        class IMessage;
 
         //! The IIncomingClient class is a handle for a remote host that has connected to the game server.
         class IIncomingClient
@@ -77,12 +73,12 @@ namespace Kiaro
                  *  @param reliable A boolean representing whether or not the
                  *  message should be sent reliably.
                  */
-                void send(Messages::IMessage* message, const bool& reliable) NOTHROW;
+                void send(IMessage* message, const bool& reliable) NOTHROW;
 
                 bool getIsOppositeEndian(void) NOTHROW;
 
                 //! Disconnects this client from the server.
-                void disconnect(const Support::String& reason) NOTHROW;
+                virtual void disconnect(const Support::String& reason);
 
                 /**
                  *  @brief Get the port number that this CIncomingClient is connecting on.

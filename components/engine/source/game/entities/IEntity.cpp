@@ -24,7 +24,7 @@ namespace Kiaro
             IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : IEngineObject(), mType(typeMask),
             mFlags(hintMask), mNetID(0)
             {
-                Game::SGameWorld::getPointer()->addEntity(this);
+
             }
 
             IEntity::~IEntity(void)
@@ -40,6 +40,11 @@ namespace Kiaro
             {
 
             }
+            
+            const ENTITY_TYPE& IEntity::getType(void) const
+            {
+                return mType;
+            }
 
             void IEntity::packEverything(Support::CBitStream& out) const
             {
@@ -49,7 +54,7 @@ namespace Kiaro
 
             void IEntity::unpack(Support::CBitStream &in)
             {
-                in >> mNetID >> mType;
+                in >> mType >> mNetID;
             }
 
             void IEntity::setNetID(const Common::U32& identifier)
@@ -57,7 +62,7 @@ namespace Kiaro
                 mNetID = identifier;
             }
 
-            void IEntity::instantiate(void)
+            void IEntity::registerEntity(void)
             {
                 Game::SGameWorld::getPointer()->addEntity(this);
             }

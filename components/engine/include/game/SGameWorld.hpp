@@ -41,6 +41,11 @@ namespace Kiaro
                 Entities::CSky* mSky;
                 
                 IGameMode* mGameMode;
+                
+            // Public Members
+            public:
+                typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
+                typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
 
             // Public Methods
             public:
@@ -63,6 +68,9 @@ namespace Kiaro
                 
                 void setGameMode(IGameMode* game);
                 IGameMode* getGameMode(void);
+                
+                iterator begin(void);
+                const_iterator end(void);
 
             // Private Methods
             private:

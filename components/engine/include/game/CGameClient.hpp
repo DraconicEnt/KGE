@@ -29,6 +29,8 @@ namespace Kiaro
                 
                 void setControlObject(IControllable* object);
                 IControllable* getControlObject(void) const NOTHROW;
+                
+                void disconnect(const Support::String& reason);
         };
     } // End NameSpace Game
 } // End NameSpace Kiaro

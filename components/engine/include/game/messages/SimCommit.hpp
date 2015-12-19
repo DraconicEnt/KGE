@@ -14,8 +14,8 @@
 
 #include <stdexcept>
 
-#include <net/messages/types.hpp>
-#include <net/messages/IMessage.hpp>
+#include <game/messages/types.hpp>
+#include <net/IMessage.hpp>
 
 namespace Kiaro
 {
@@ -23,14 +23,17 @@ namespace Kiaro
     {
         class IIncomingClient;
         class NetworkedEntity;
-
+    }
+    
+    namespace Game
+    {
         namespace Messages
         {
-            class SimCommit : public IMessage
+            class SimCommit : public Net::IMessage
             {
                 // Public Methods
                 public:
-                    SimCommit(Support::CBitStream* in = NULL, IIncomingClient* sender = NULL);
+                    SimCommit(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
 
                     virtual void packEverything(Support::CBitStream& out) const;
                     virtual void unpack(Support::CBitStream& in);

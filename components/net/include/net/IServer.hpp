@@ -24,11 +24,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        namespace Messages
-        {
-            class IMessage;
-        }
-
+        class IMessage;
         class IIncomingClient;
 
         typedef ENetPeer* RemoteHostContext;
@@ -48,7 +44,7 @@ namespace Kiaro
                  */
                 void stop(void);
 
-                void globalSend(Messages::IMessage* packet, const bool &reliable);
+                void globalSend(IMessage* packet, const bool &reliable);
 
                 /**
                  *  @brief Returns the current running status of the server.
@@ -87,6 +83,8 @@ namespace Kiaro
                 clientIterator clientsBegin(void) { return mConnectedClientSet.begin(); }
 
                 clientConstIterator clientsEnd(void) { return mConnectedClientSet.end(); }
+                
+                virtual void onReceivePacket(Support::CBitStream& in, Net::IIncomingClient* sender) = 0;
 
             // Protected Methods
             protected:
@@ -106,12 +104,12 @@ namespace Kiaro
                 ~IServer(void);
 
             // Private Methods
-            private:
+            protected:
                 void processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
-                void processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
+                virtual void processStageZero(const IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender) = 0;
 
             // Private Members
-            private:
+            protected:
                 Net::IIncomingClient* mLastPacketSender;
 
                 bool mIsRunning;

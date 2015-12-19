@@ -11,7 +11,7 @@
 
 #include <net/IIncomingClient.hpp>
 
-#include <net/messages/messages.hpp>
+#include <net/IMessage.hpp>
 
 #include <support/CBitStream.hpp>
 
@@ -31,7 +31,7 @@ namespace Kiaro
                 this->disconnect("Destroyed net handle.");
         }
 
-        void IIncomingClient::send(Messages::IMessage* packet, const bool& reliable)
+        void IIncomingClient::send(IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
@@ -52,10 +52,6 @@ namespace Kiaro
 
         void IIncomingClient::disconnect(const Support::String& reason)
         {
-            Net::Messages::Disconnect disconnect;
-            disconnect.mReason = reason;
-
-            this->send(&disconnect, true);
             enet_peer_disconnect_later(mInternalClient, 0);
         }
 

@@ -32,7 +32,7 @@ namespace Kiaro
             CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
             mTerrainFile(terrainFile), mSceneNode(nullptr)
             {
-                instantiate();
+
             }
 
             CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
@@ -47,33 +47,32 @@ namespace Kiaro
 
             void CTerrain::packEverything(Support::CBitStream& out) const
             {
+                assert(mSceneNode);
+                
+                IEntity::packEverything(out);
+                                
                 const Common::Vector3DF& position = mSceneNode->getPosition();
 
+                out.writeString(mTerrainFile);
                 out << position.X << position.Y << position.Z;
-                out.write(mTerrainFile);
-
-                IEntity::packEverything(out);
             }
 
             void CTerrain::unpack(Support::CBitStream& in)
             {
-                mTerrainFile = in.top<const Common::C8>();
-                in.pop<const Common::C8*>();
-
-                instantiate();
-
+                mTerrainFile = in.popString();
+                
                 Common::Vector3DF position;
-                in >> position;
+                in >> position.X >> position.Y >> position.Z;
+
+                this->registerEntity();
 
                 if (mSceneNode)
                     mSceneNode->setPosition(position);
             }
 
-            void CTerrain::instantiate(void)
+            void CTerrain::registerEntity(void)
             {
                 Support::Console::writef(Support::Console::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
-                
-                /*
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
                 irr::IrrlichtDevice* irrlichtDevice = Video::SRenderer::getPointer()->getIrrlichtDevice();
@@ -88,7 +87,6 @@ namespace Kiaro
                 }
                 else
                     Support::Console::writef(Support::Console::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
-                    */
             }
 
             void CTerrain::setPosition(const Common::Vector3DF& position)

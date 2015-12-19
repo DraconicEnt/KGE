@@ -36,6 +36,13 @@ namespace Kiaro
                  *  when a connection to a remote host has failed.
                  */
                 virtual void onConnectFailed(void);
+                
+            protected:
+                void processPacket(Support::CBitStream& incomingStream);
+                void processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream);
+                void processStageTwo(const Net::IMessage& header, Support::CBitStream& incomingStream);
+                
+                void onReceivePacket(Support::CBitStream& incomingStream);
         };
     } // End NameSpace Core
 } // End NameSpace Kiaro

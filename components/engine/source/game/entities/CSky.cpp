@@ -27,8 +27,6 @@ namespace Kiaro
         {
             CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, FLAG_STATIC) //, mColor(0, 0, 0, 0)
             {
-                instantiate();
-
                // addNetworkedProperty("color", mColor);
             }
 
@@ -72,9 +70,9 @@ namespace Kiaro
 
             }
 
-            void CSky::instantiate(void)
+            void CSky::registerEntity(void)
             {
-                IEntity::instantiate();
+                IEntity::registerEntity();
             }
 
             void CSky::update(const Common::F32& deltaTimeSeconds)

@@ -14,7 +14,8 @@
 #include <net/IServer.hpp>
 #include <net/IIncomingClient.hpp>
 
-#include <net/messages/messages.hpp>
+#include <game/messages/messages.hpp>
+#include <game/SGameWorld.hpp>
 
 namespace Kiaro
 {
@@ -93,7 +94,7 @@ namespace Kiaro
            // Support::CMapDivision::Destroy();
         }
 
-        void IServer::globalSend(Messages::IMessage* packet, const bool& reliable)
+        void IServer::globalSend(IMessage* packet, const bool& reliable)
         {
             for (auto it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
                 (*it)->send(packet, reliable);
@@ -153,7 +154,7 @@ namespace Kiaro
                         this->processPacket(incomingStream, sender);
                         enet_packet_destroy(event.packet);
 
-                        mLastPacketSender = NULL;
+                        mLastPacketSender = nullptr;
 
                         break;
                     }
@@ -165,80 +166,9 @@ namespace Kiaro
 
         void IServer::processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
-            // The packet whose payload is in incomingStream can contain multiple messages.
-            // TODO: Alleviate DoS issues with a hard max on message counts
-            while (!incomingStream.isEmpty())
-            {
-                Messages::IMessage basePacket;
-                basePacket.unpack(incomingStream);
-
-                switch (basePacket.getType())
-                {
-                    // Stageless messages
-
-                    // If it's not any stageless message, then drop into the appropriate stage handler
-                    default:
-                    {
-                        switch (sender->getConnectionStage())
-                        {
-                            case STAGE_AUTHENTICATION:
-                            {
-                                this->processStageZero(basePacket, incomingStream, sender);
-                                break;
-                            }
-
-                            default:
-                            {
-                                Support::Console::writef(Support::Console::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        void IServer::processStageZero(const Messages::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
-        {
-            switch(header.getType())
-            {
-                case Net::Messages::TYPE_HANDSHAKE:
-                {
-                    Net::Messages::HandShake receivedHandshake;
-                    receivedHandshake.unpack(incomingStream);
-
-                    Support::Console::writef(Support::Console::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-
-                    Net::Messages::HandShake handShake;
-                    sender->send(&handShake, true);
-
-                    // At this point, the client has passed initial authentication
-                    // TODO (Robert MacGregor#9): Make a proper challenge that isn't just version information.
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Client passed initial authentication.");
-
-                    //mPendingClientSet.erase(sender);
-                    //mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
-
-                    //sender->setConnectionStage(Net::STAGE_LOADING);
-
-                    this->onClientConnected(sender);
-
-                    break;
-                }
-
-                // Out of stage message or a totally unknown message type
-                default:
-                {
-                    // TODO (Robert MacGregor#9): IP Address
-                    Support::String exceptionText = "IServer: Out of stage or unknown message type encountered at stage 0 processing: ";
-                    exceptionText += header.getType();
-                    exceptionText += " for client <ADD IDENTIFIER> ";
-
-                    throw std::out_of_range(exceptionText);
-                    break;
-                }
-            }
+            assert(!incomingStream.isEmpty());
+            
+            this->onReceivePacket(incomingStream, sender);
         }
 
         void IServer::onClientConnected(IIncomingClient* client)
@@ -286,7 +216,7 @@ namespace Kiaro
         IIncomingClient* IServer::getLastPacketSender(void)
         {
             IIncomingClient* result = mLastPacketSender;
-            mLastPacketSender = NULL;
+            mLastPacketSender = nullptr;
 
             return result;
         }

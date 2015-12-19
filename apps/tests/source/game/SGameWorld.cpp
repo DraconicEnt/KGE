@@ -28,7 +28,7 @@ namespace Kiaro
             public:
                 TestEntity(void) : IEntity(Entities::ENTITY_NULL, Entities::FLAG_THINKING | Entities::FLAG_UPDATING)
                 {
-                    instantiate();
+                    this->registerEntity();
                 }
 
                 TestEntity(Support::CBitStream& in) : IEntity(Entities::ENTITY_NULL, Entities::FLAG_THINKING | Entities::FLAG_UPDATING)
@@ -51,7 +51,7 @@ namespace Kiaro
 
                 }
 
-                void instantiate(void)
+                void registerEntity(void)
                 {
 
                 }
