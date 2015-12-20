@@ -55,7 +55,7 @@ namespace Kiaro
             ALLEGRO_CONFIG* config = al_load_config_file("config.cfg");
 
             if (!config)
-                Console::write(Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to load config.cfg, using default values.");
+                CONSOLE_ERROR("Failed to load config.cfg, using default values.");
             else
             {
                 const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
@@ -68,7 +68,7 @@ namespace Kiaro
                 if (configValue && Support::RegexMatch(configValue, numberRegex))
                     listenPort = atoi(configValue);
                 else
-                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenPort config ('%s')! Using default value.", configValue);
+                    CONSOLE_ERRORF("Failed to parse Server::ListenPort config ('%s')! Using default value.", configValue);
 
                 // Maximum client count?
                 Common::U32 maximumClientCount = 32;
@@ -77,7 +77,7 @@ namespace Kiaro
                 if (configValue && Support::RegexMatch(configValue, numberRegex))
                     maximumClientCount = atoi(configValue);
                 else
-                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", configValue);
+                    CONSOLE_ERRORF("Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", configValue);
 
                 // Listen Address?
                 configValue = al_get_config_value(config, "Server", "ListenAddress");
@@ -85,7 +85,7 @@ namespace Kiaro
                 if (configValue && Support::RegexMatch(configValue, addressRegex))
                     listenAddress = configValue;
                 else
-                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Server::ListenAddress config ('%s')! Using default value.", configValue);
+                    CONSOLE_ERRORF("Failed to parse Server::ListenAddress config ('%s')! Using default value.", configValue);
 
                 // Full screen?
                 bool fullScreen = true;
@@ -119,7 +119,7 @@ namespace Kiaro
                     resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
                 }
                 else
-                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
+                    CONSOLE_ERRORF("Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
 
                 // Worker thread count?
                 Common::U8 workerThreadCount = 6;
@@ -139,7 +139,7 @@ namespace Kiaro
                 this->setValue("System::WorkerThreadCount", workerThreadCount);
 
                 al_destroy_config(config);
-                Console::write(Console::MESSAGE_INFO, "SSettingsRegistry: Loaded config.cfg.");
+                CONSOLE_INFO("SSettingsRegistry: Loaded config.cfg.");
             }
         }
 

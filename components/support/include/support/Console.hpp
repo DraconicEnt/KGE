@@ -135,8 +135,11 @@ namespace Kiaro
 
             static void write(const MESSAGE_TYPE& type, const Support::String& output)
             {
-                // Call the responders first.
-                puts(output.data());
+                for (auto it = sLogResponders[type].begin(); it != sLogResponders[type].end(); it++)
+                    (*it)(type, output.data());
+                         
+                printf("(%s) %s", messageTypeText(type), output.data());
+                puts("");
             }
 
             static void info(const Support::String& output)

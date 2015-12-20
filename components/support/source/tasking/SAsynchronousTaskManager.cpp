@@ -137,7 +137,7 @@ namespace Kiaro
             {
                 if (mPoolSize == 0)
                 {
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "SAsynchronousTaskManager: Using no asynchrnous workers; will delegate to the synchronous task manager.");
+                    CONSOLE_INFO("Using no asynchrnous workers; will delegate to the synchronous task manager.");
                     return;
                 }
 
@@ -152,7 +152,7 @@ namespace Kiaro
                     mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                 }
 
-                Support::Console::writef(Support::Console::MESSAGE_INFO, "SAsynchronousTaskManager: Initialized with %u workers.", mPoolSize);
+                CONSOLE_INFOF("Initialized with %u workers.", mPoolSize);
             }
 
             SAsynchronousTaskManager::~SAsynchronousTaskManager(void)
