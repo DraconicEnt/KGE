@@ -163,17 +163,22 @@ namespace Kiaro
 
         bool CBitStream::isFull(void) const
         {
-            return mTotalSize == mPointer;
+            return mTotalSize >= mPointer;
         }
 
         bool CBitStream::isEmpty(void) const
         {
-            return !mPointer;
+            return mPointer >= mTotalSize;
         }
 
         void CBitStream::write(const ISerializable *in)
         {
             in->packEverything(*this);
+        }
+        
+        const size_t& CBitStream::getSize(void) const
+        {
+            return mTotalSize;
         }
     } // End Namespace Support
 } // End namespace Kiaro

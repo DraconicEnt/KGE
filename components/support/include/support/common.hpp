@@ -51,6 +51,9 @@ namespace Kiaro
     namespace Common
     {
         #define _ENGINE_USE_IRRLICHT_TYPES_ 1
+        #define _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ 0
+        
+        #define ENGINE_ASSERT_TRUE(x) assert(x)
 
         #if defined(_MSC_VER) || (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)
             //#define NOTHROW __declspec(nothrow)

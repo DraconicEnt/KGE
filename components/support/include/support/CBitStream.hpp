@@ -212,6 +212,8 @@ namespace Kiaro
                  *  @param pointer The new pointer value to use.
                  */
                 void setPointer(const size_t& pointer);
+                
+                const size_t& getSize(void) const;
         };
 
         /**

@@ -11,6 +11,9 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
+#ifndef _INCLUDE_SUPPORT_SSYNCHRONOUSSCHEDULER_HPP_
+#define _INCLUDE_SUPPORT_SSYNCHRONOUSSCHEDULER_HPP_
+
 #include <support/Tuple.hpp>
 
 #include <easydelegate/easydelegate.hpp>
@@ -204,3 +207,4 @@ namespace Kiaro
         };
     } // End NameSpace Support
 } // End NameSpace Kiaro
+#endif // _INCLUDE_SUPPORT_SSYNCHRONOUSSCHEDULER_HPP_

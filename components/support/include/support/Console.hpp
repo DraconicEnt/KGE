@@ -147,6 +147,14 @@ namespace Kiaro
             {
                 Console::write(MESSAGE_WARNING, output);
             }
+            
+            #define QUOTE_IMPL(T) #T
+            #define QUOTE(T) QUOTE_IMPL(T)
+
+            #define ASSEMBLE_OUTPUT(format) __FILE__:__LINE__:: format
+            #define CONSOLE_ERROR(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            #define CONSOLE_INFO(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            #define CONSOLE_WARNING(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
         }
     } // End NameSpace Core
 } // End NameSpace Kiaro
