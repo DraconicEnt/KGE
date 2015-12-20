@@ -116,6 +116,12 @@ namespace Kiaro
             {
                 writef(MESSAGE_ERROR, format.c_str(), params...);
             }
+            
+            template <typename... parameters>
+            static void debugf(const Support::String& format, parameters... params)
+            {
+                writef(MESSAGE_DEBUG, format.c_str(), params...);
+            }
 
             /**
              *  @brief Helper method to write a info string to the game console.
@@ -148,6 +154,11 @@ namespace Kiaro
                 Console::write(MESSAGE_WARNING, output);
             }
             
+            static void debug(const Support::String& output)
+            {
+                Console::write(MESSAGE_DEBUG, output);
+            }
+            
             #define QUOTE_IMPL(T) #T
             #define QUOTE(T) QUOTE_IMPL(T)
 
@@ -155,6 +166,7 @@ namespace Kiaro
             #define CONSOLE_ERROR(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
             #define CONSOLE_INFO(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
             #define CONSOLE_WARNING(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            #define CONSOLE_DEBUG(format, ...) Support::Console::debugf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
         }
     } // End NameSpace Core
 } // End NameSpace Kiaro
