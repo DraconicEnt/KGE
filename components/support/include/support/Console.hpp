@@ -74,6 +74,12 @@ namespace Kiaro
                 return "UNKNOWN";
             }
 
+            /**
+             *  @brief Writes a formatted message to the console as the given message type.
+             *  @param type The message type to write as.
+             *  @param format The string to format given the varible length parameter list.
+             *  @param params The variable length parameter list to format the format string with.
+             */
             template <typename... parameters>
             static void writef(const MESSAGE_TYPE& type, const Support::String& format, parameters... params)
             {
@@ -98,8 +104,9 @@ namespace Kiaro
             }
 
             /**
-             *  @brief Helper method to write a warning to the game console.
-             *  @param format The string to format given parameters.
+             *  @brief Helper method to write a warning message to the game console.
+             *  @param format The string to format given the varible length parameter list.
+             *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
             static void warningf(const Support::String& format, parameters... params)
@@ -108,8 +115,9 @@ namespace Kiaro
             }
 
             /**
-             *  @brief Helper method to write a error to the game console.
-             *  @param format The string to format given parameters.
+             *  @brief Helper method to write an error message to the game console.
+             *  @param format The string to format given the varible length parameter list.
+             *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
             static void errorf(const Support::String& format, parameters... params)
@@ -117,6 +125,11 @@ namespace Kiaro
                 writef(MESSAGE_ERROR, format.c_str(), params...);
             }
             
+            /**
+             *  @brief Helper method to write a debug message to the game console.
+             *  @param format The string to format given the varible length parameter list.
+             *  @param params The variable length parameter list to format the format string with.
+             */
             template <typename... parameters>
             static void debugf(const Support::String& format, parameters... params)
             {
@@ -124,8 +137,9 @@ namespace Kiaro
             }
 
             /**
-             *  @brief Helper method to write a info string to the game console.
-             *  @param format The string to format given parameters.
+             *  @brief Helper method to write an info string to the game console.
+             *  @param format The string to format given the varible length parameter list.
+             *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
             static void infof(const Support::String& format, parameters... params)
@@ -133,6 +147,11 @@ namespace Kiaro
                 writef(MESSAGE_INFO, format.c_str(), params...);
             }
 
+            /**
+             *  @brief Writes an unformatted message to the console as the given message type.
+             *  @param type The message type to write as.
+             *  @param output The string to write to the console.
+             */
             static void write(const MESSAGE_TYPE& type, const Support::String& output)
             {
                 for (auto it = sLogResponders[type].begin(); it != sLogResponders[type].end(); it++)
@@ -142,24 +161,40 @@ namespace Kiaro
                 puts("");
             }
 
+            /**
+             *  @brief Helper method to write an unformatted info message to the console.
+             *  @param output The string to write to the console.
+             */
             static void info(const Support::String& output)
             {
-                Console::write(MESSAGE_INFO, output);
-            }
-
-            static void error(const Support::String& output)
-            {
-                Console::write(MESSAGE_ERROR, output);
-            }
-
-            static void warning(const Support::String& output)
-            {
-                Console::write(MESSAGE_WARNING, output);
+                write(MESSAGE_INFO, output);
             }
             
+            /**
+             *  @brief Helper method to write an unformatted error message to the console.
+             *  @param output The string to write to the console.
+             */
+            static void error(const Support::String& output)
+            {
+                write(MESSAGE_ERROR, output);
+            }
+
+            /**
+             *  @brief Helper method to write an unformatted warning message to the console.
+             *  @param output The string to write to the console.
+             */
+            static void warning(const Support::String& output)
+            {
+                write(MESSAGE_WARNING, output);
+            }
+        
+            /**
+             *  @brief Helper method to write an unformatted debug message to the console.
+             *  @param output The string to write to the console.
+             */
             static void debug(const Support::String& output)
             {
-                Console::write(MESSAGE_DEBUG, output);
+                write(MESSAGE_DEBUG, output);
             }
             
             #define QUOTE_IMPL(T) #T
