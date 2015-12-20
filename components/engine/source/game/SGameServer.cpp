@@ -87,7 +87,6 @@ namespace Kiaro
             Game::Messages::Scope scope;
             
             Game::SGameWorld* world = Game::SGameWorld::getPointer();
-            
             for (auto it = world->begin(); it != world->end(); it++)
             {
                 Entities::IEntity* entity = *it;
@@ -128,7 +127,7 @@ namespace Kiaro
             {
                 Net::IMessage basePacket;
                 basePacket.unpack(incomingStream);
-                
+                                
                 switch (basePacket.getType())
                 {
                     // Stageless messages
@@ -143,10 +142,15 @@ namespace Kiaro
                                 this->processStageZero(basePacket, incomingStream, sender);
                                 break;
                             }
+                            
+                            case Net::STAGE_LOADING:
+                            {
+                                Support::Console::error("Unimplemented");
+                            }
 
                             default:
                             {
-                                Support::Console::writef(Support::Console::MESSAGE_ERROR, "IServer: Unknown client stage: %u", sender->getConnectionStage());
+                                CONSOLE_ERRORF("Unknown client stage: %u", sender->getConnectionStage());
                                 break;
                             }
                         }
@@ -164,7 +168,7 @@ namespace Kiaro
                     Game::Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
 
-                    Support::Console::writef(Support::Console::MESSAGE_INFO, "IServer: Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    CONSOLE_INFOF("Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                     receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
                     Game::Messages::HandShake handShake;
@@ -172,22 +176,21 @@ namespace Kiaro
 
                     // At this point, the client has passed initial authentication
                     // TODO (Robert MacGregor#9): Make a proper challenge that isn't just version information.
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Client passed initial authentication.");
+                    CONSOLE_INFO("Client passed initial authentication.");
 
                     mPendingClientSet.erase(sender);
                     mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
                     sender->setConnectionStage(Net::STAGE_LOADING);
 
                     this->onClientConnected(sender);
-                    
                     break;
                 }
 
-                // Out of stage message or a totally unknown message type
+                // Out of stage message or a totally unknown message type                                                                                                                                                                           
                 default:
                 {
                     // TODO (Robert MacGregor#9): IP Address
-                    Support::String exceptionText = "IServer: Out of stage or unknown message type encountered at stage 0 processing: ";
+                    Support::String exceptionText = "SGameServer: Out of stage or unknown message type encountered at stage 0 processing: ";
                     exceptionText += header.getType();
                     exceptionText += " for client <ADD IDENTIFIER> ";
 

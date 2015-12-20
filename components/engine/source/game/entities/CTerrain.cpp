@@ -50,7 +50,7 @@ namespace Kiaro
                 assert(mSceneNode);
                 
                 IEntity::packEverything(out);
-                                
+                
                 const Common::Vector3DF& position = mSceneNode->getPosition();
 
                 out.writeString(mTerrainFile);
@@ -72,7 +72,7 @@ namespace Kiaro
 
             void CTerrain::registerEntity(void)
             {
-                Support::Console::writef(Support::Console::MESSAGE_INFO, "CTerrain: Building with file '%s' ...", mTerrainFile.data());
+                CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
                 FileSystem::FileReadObject fileHandle(mTerrainFile);
 
                 irr::IrrlichtDevice* irrlichtDevice = Video::SRenderer::getPointer()->getIrrlichtDevice();
@@ -84,9 +84,11 @@ namespace Kiaro
                     terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 
                     mSceneNode = terrain;
+                    
+                    IEntity::registerEntity();
                 }
                 else
-                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "CTerrain: Failed to instantiate using '%s'", mTerrainFile.data());
+                    CONSOLE_ERROR("Failed to instantiate using terrain file '%s'", mTerrainFile.data());
             }
 
             void CTerrain::setPosition(const Common::Vector3DF& position)

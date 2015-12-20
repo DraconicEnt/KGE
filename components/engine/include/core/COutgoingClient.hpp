@@ -37,6 +37,8 @@ namespace Kiaro
                  */
                 virtual void onConnectFailed(void);
                 
+                void onAuthenticated(void);
+                                
             protected:
                 void processPacket(Support::CBitStream& incomingStream);
                 void processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream);

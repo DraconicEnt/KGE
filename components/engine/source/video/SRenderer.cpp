@@ -67,7 +67,7 @@ namespace Kiaro
           //  if (mEngineMode != Core::MODE_DEDICATED)
           //  {
                 Common::S32 monitorCount = al_get_num_video_adapters();
-                Support::Console::writef(Support::Console::MESSAGE_INFO, "SRenderer: Detected %u monitor(s)", monitorCount);
+                CONSOLE_INFOF("Detected %u monitor(s)", monitorCount);
 
                 // Create the Allegro window and get its ID
                 al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
@@ -111,7 +111,7 @@ namespace Kiaro
             creationParameters.DeviceType = irr::EIDT_SDL;
             creationParameters.WindowSize = resolution;
 
-            Support::Console::writef(Support::Console::MESSAGE_INFO, "SRenderer: Using %ux%u resolution.", resolution.Width, resolution.Height);
+            CONSOLE_INFOF("Using %ux%u resolution.", resolution.Width, resolution.Height);
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
             if (!mIrrlichtDevice)
@@ -135,8 +135,8 @@ namespace Kiaro
             const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
             mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
 
-            Support::Console::writef(Support::Console::MESSAGE_INFO, "SRenderer: Irrlicht version is %s.", mIrrlichtDevice->getVersion());
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Initialized renderer.");
+            CONSOLE_INFOF("Irrlicht version is %s.", mIrrlichtDevice->getVersion());
+            CONSOLE_INFO("Initialized renderer.");
 
             return 0;
         }
@@ -223,7 +223,7 @@ namespace Kiaro
                     guiContext.getMouseCursor().setDefaultImage( "TaharezLook/MouseArrow" );
                     guiContext.getMouseCursor().setImage(guiContext.getMouseCursor().getDefaultImage());
 
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized the GUI system.");
+                    CONSOLE_INFO("Initialized the GUI system.");
                 }
                 catch (CEGUI::InvalidRequestException& e)
                 {
@@ -252,7 +252,7 @@ namespace Kiaro
                     case ALLEGRO_EVENT_DISPLAY_RESIZE:
                     {
                         if (!al_acknowledge_resize(mDisplay))
-                            Support::Console::write(Support::Console::MESSAGE_WARNING, "SRenderer: Failed to resize display!");
+                            CONSOLE_WARNING("Failed to resize display!");
                         else
                         {
                             // What is the new display dimensions?
@@ -267,7 +267,7 @@ namespace Kiaro
 
                     case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
                     {
-                        Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window unfocused.");
+                        CONSOLE_INFO("Window unfocused.");
 
                         Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                         const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
@@ -280,7 +280,7 @@ namespace Kiaro
 
                     case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
                     {
-                        Support::Console::write(Support::Console::MESSAGE_INFO, "SRenderer: Window focused.");
+                        CONSOLE_INFO("Window focused.");
 
                         Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                         const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");

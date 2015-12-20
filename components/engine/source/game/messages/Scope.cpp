@@ -53,7 +53,7 @@ namespace Kiaro
 
                 in >> mScopedCount;
 
-                Support::Console::writef(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
+                CONSOLE_DEBUG(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
 
                 for (Common::U32 iteration = 0; iteration < mScopedCount; iteration++)
                 {
@@ -67,9 +67,7 @@ namespace Kiaro
                     {
                         case Game::Entities::ENTITY_TERRAIN:
                         {
-                            Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);
-                            terrain->registerEntity();
-                            
+                            Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);                            
                             break;
                         }
 
@@ -87,7 +85,7 @@ namespace Kiaro
 
             Common::U32 Scope::getMinimumPacketPayloadLength(void)
             {
-                return (sizeof(Common::U32) * 2) + (sizeof(Common::U8) * 3);
+                return sizeof(Common::U32) * 3;
             }
 
             size_t Scope::getRequiredMemory(void)
