@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace Support
     {
-        static SSettingsRegistry* sInstance = NULL;
+        static SSettingsRegistry* sInstance = nullptr;
 
         SSettingsRegistry* SSettingsRegistry::getPointer(void)
         {
@@ -210,10 +210,10 @@ namespace Kiaro
                 al_save_config_file("config.cfg", config);
                 al_destroy_config(config);
 
-                Console::write(Console::MESSAGE_INFO, "SSettingsRegistry: Wrote new configuration file.");
+                CONSOLE_INFO("Wrote new configuration file.");
             }
             else
-                Console::write(Console::MESSAGE_ERROR, "SSettingsRegistry: Failed to acquire Allegro config handle!");
+                CONSOLE_ERROR("Failed to acquire Allegro config handle!");
 
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); it++)
