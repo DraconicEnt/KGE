@@ -31,6 +31,12 @@ namespace Kiaro
                 const Support::String& getName(void);
                 
                 void setName(const Support::String& name);
+                
+                template <class objectType, typename... parameters>
+                static objectType* construct(parameters... params)
+                {
+                    return new objectType(params...);
+                }
         };
     }
 }
