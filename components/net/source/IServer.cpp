@@ -14,9 +14,6 @@
 #include <net/IServer.hpp>
 #include <net/IIncomingClient.hpp>
 
-#include <game/messages/messages.hpp>
-#include <game/SGameWorld.hpp>
-
 namespace Kiaro
 {
     namespace Net
@@ -167,7 +164,7 @@ namespace Kiaro
         void IServer::processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
             assert(!incomingStream.isEmpty());
-            
+
             this->onReceivePacket(incomingStream, sender);
         }
 
