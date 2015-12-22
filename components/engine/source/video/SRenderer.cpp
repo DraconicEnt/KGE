@@ -9,7 +9,6 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
-
 #include <video/SRenderer.hpp>
 
 #include <filesystem/SResourceProvider.hpp>
@@ -64,8 +63,8 @@ namespace Kiaro
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
             irr::SIrrlichtCreationParameters creationParameters;
 
-          //  if (mEngineMode != Core::MODE_DEDICATED)
-          //  {
+            if (mHasDisplay)
+            {
                 Common::S32 monitorCount = al_get_num_video_adapters();
                 CONSOLE_INFOF("Detected %u monitor(s)", monitorCount);
 
@@ -99,9 +98,9 @@ namespace Kiaro
                     NSWindow* windowHandle = al_osx_get_window(mDisplay);
                     creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
                 #endif
-          //  }
-          //  else
-           //     videoDriver = irr::video::EDT_NULL;
+            }
+            else
+                videoDriver = irr::video::EDT_NULL;
 
             // Setup the Irrlicht creation request
             creationParameters.Bits = 32;
@@ -133,7 +132,9 @@ namespace Kiaro
             // Set up the renderer time pulse
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
             const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
-            mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
+
+            if (mHasDisplay)
+                mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
 
             CONSOLE_INFOF("Irrlicht version is %s.", mIrrlichtDevice->getVersion());
             CONSOLE_INFO("Initialized renderer.");
@@ -141,15 +142,18 @@ namespace Kiaro
             return 0;
         }
 
-        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0))
+        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
         {
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
             irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
 
             this->initializeRenderer(resolution);
-            this->initializeGUI();
 
-            this->setResolution(resolution);
+            if (mHasDisplay)
+            {
+                this->initializeGUI();
+                this->setResolution(resolution);
+            }
         }
 
         void SRenderer::setSceneGraph(CSceneGraph* graph)
@@ -187,7 +191,7 @@ namespace Kiaro
 
             al_acknowledge_resize(mDisplay);
         }
-        
+
         irr::IrrlichtDevice* SRenderer::getIrrlichtDevice(void) const
         {
             return mIrrlichtDevice;
@@ -196,8 +200,8 @@ namespace Kiaro
         int SRenderer::initializeGUI(void)
         {
             // Start up CEGUI (if we're a client)
-          //  if (mEngineMode == MODE_CLIENTCONNECT || mEngineMode == MODE_CLIENT)
-           // {
+            if (mHasDisplay)
+            {
                 try
                 {
                     // We don't need the OS cursor
@@ -230,7 +234,7 @@ namespace Kiaro
                     Support::Console::writef(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize the GUI System. Reason:\n%s", e.what());
                     return 1;
                 }
-          //  }
+            }
 
             return 0;
         }

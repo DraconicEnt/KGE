@@ -102,7 +102,7 @@ namespace Kiaro
 
             this->initializeFileSystem(argc, argv);
 
-            Support::Console::writef(Support::Console::MESSAGE_INFO, "SEngineInstance: Running game '%s'", mGameName.data());
+            CONSOLE_INFOF("Running game '%s'", mGameName.data());
 
             // Add the game search path
             if (PHYSFS_mount(mGameName.c_str(), nullptr, 1) == 0)
@@ -113,7 +113,7 @@ namespace Kiaro
                 return -1;
             }
             else
-                Support::Console::writef(Support::Console::MESSAGE_INFO, "SEngineInstance: Mounted game directory '%s' successfully.", mGameName.data());
+                CONSOLE_INFOF("Mounted game directory '%s' successfully.", mGameName.data());
 
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
@@ -151,7 +151,7 @@ namespace Kiaro
             if (!mRunning)
                 return;
 
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Killed via kill()");
+            CONSOLE_INFO("Killed via kill()");
             mRunning = false;
         }
 
@@ -163,7 +163,7 @@ namespace Kiaro
 
         SEngineInstance::~SEngineInstance(void)
         {
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Deinitializing ...");
+            CONSOLE_INFO("Deinitializing ...");
 
             // TODO: Check the destroy order
          //   Net::SClient::destroy();
@@ -241,7 +241,7 @@ namespace Kiaro
                 }
             }
 
-            Support::Console::write(Support::Console::MESSAGE_INFO, "SEngineInstance: Initialized network.");
+            CONSOLE_INFO("Initialized network.");
             return 0;
         }
 
@@ -268,12 +268,12 @@ namespace Kiaro
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
-                    
+
                 #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 }
                 catch(std::exception& e)
                 {
-                    Support::Console::writef(Support::Console::MESSAGE_ERROR, "SEngineInstance: An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
+                    CONSOLE_ERRORF("An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
 
                     // Something is probably up, we should leave if we have an active client.
                     if (mActiveClient)
@@ -297,7 +297,7 @@ namespace Kiaro
         Common::U32 SEngineInstance::initializeSound(void)
         {
             #ifndef ENGINE_BUILD_SOUNDENGINE
-                Support::Console::write(Support::Console::MESSAGE_WARNING, "SEngineInstance: Built without audio support. There will be no sound.");
+                CONSOLE_WARNING("Built without audio support. There will be no sound.");
             #else
             #endif // ENGINE_BUILD_SOUNDENGINE
 
@@ -308,7 +308,7 @@ namespace Kiaro
         {
             // Initialize the file system
             PHYSFS_init(argv[0]);
-            PHYSFS_setSaneConfig("Draconic Entertainment", "KGE", "ZIP", 0, 0);
+            PHYSFS_setSaneConfig("Draconic Entity", "KGE", "ZIP", 0, 0);
 
             // Remove the search path that points to the same directory as the executable
             // TODO (Robert MacGregor#9): Research this.

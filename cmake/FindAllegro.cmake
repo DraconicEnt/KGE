@@ -53,8 +53,24 @@ else (ALLEGRO_LIBRARIES AND ALLEGRO_INCLUDE_DIRS)
   endif (ALLEGRO_INCLUDE_DIRS AND ALLEGRO_LIBRARIES)
 
   if (ALLEGRO_FOUND)
+    # Does our include dir desiginate allegro5?
+    # We determine this by checking if we can see the base.h relative to this dir
+    FILE(READ ${ALLEGRO_INCLUDE_DIR}/base.h BASE_CONTENTS)
+
+    IF (DEFINED BASE_CONTENTS)
+    	GET_FILENAME_COMPONENT(ALLEGRO_INCLUDE_DIR ${ALLEGRO_INCLUDE_DIR} DIRECTORY)
+
+	  set(ALLEGRO_INCLUDE_DIRS
+	    ${ALLEGRO_INCLUDE_DIR}
+  )
+    ENDIF (DEFINED BASE_CONTENTS)
+
     # Add a check For 5.1.12
     FILE(READ ${ALLEGRO_INCLUDE_DIR}/allegro5/base.h BASE_CONTENTS)
+
+    IF (NOT DEFINED BASE_CONTENTS)
+   	 MESSAGE(FATAL_ERROR "Could not open allegro5/base.h!")
+    ENDIF (NOT DEFINED BASE_CONTENTS)
 
     # Look for the sub & wip versions
     STRING(REGEX MATCH "ALLEGRO_SUB_VERSION +[0-9]+" ALLEGRO_SUB_VERSION ${BASE_CONTENTS})

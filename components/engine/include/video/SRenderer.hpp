@@ -30,6 +30,8 @@ namespace Kiaro
                 //! The color drawn that is drawn when there is pixel space without anything in it.
                 Common::ColorRGBA mClearColor;
 
+                const bool mHasDisplay;
+
             // Private Members
             private:
                 //! The Irrlichr context.
@@ -73,7 +75,7 @@ namespace Kiaro
                 void setSceneGraph(CSceneGraph* graph);
 
                 void setResolution(const Support::Dimension2DU& resolution);
-                
+
                 irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
 
             // Private Methods
