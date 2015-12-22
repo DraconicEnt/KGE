@@ -55,15 +55,13 @@ else (ALLEGRO_LIBRARIES AND ALLEGRO_INCLUDE_DIRS)
   if (ALLEGRO_FOUND)
     # Does our include dir desiginate allegro5?
     # We determine this by checking if we can see the base.h relative to this dir
-    FILE(READ ${ALLEGRO_INCLUDE_DIR}/base.h BASE_CONTENTS)
-
-    IF (DEFINED BASE_CONTENTS)
+    IF (EXISTS ${ALLEGRO_INCLUDE_DIR}/base.h )
     	GET_FILENAME_COMPONENT(ALLEGRO_INCLUDE_DIR ${ALLEGRO_INCLUDE_DIR} DIRECTORY)
 
 	  set(ALLEGRO_INCLUDE_DIRS
 	    ${ALLEGRO_INCLUDE_DIR}
-  )
-    ENDIF (DEFINED BASE_CONTENTS)
+    )
+    ENDIF (EXISTS ${ALLEGRO_INCLUDE_DIR}/base.h )
 
     # Add a check For 5.1.12
     FILE(READ ${ALLEGRO_INCLUDE_DIR}/allegro5/base.h BASE_CONTENTS)
