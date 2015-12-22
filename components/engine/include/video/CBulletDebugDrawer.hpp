@@ -1,12 +1,12 @@
 /**
  *  @file CBulletDebugDrawer.hpp
- *  @brief Source code associated with the Kiaro::EngineInstance singleton class.
+ *  @brief Include file declaring the CBulletDebugDrawer class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2015 Draconic Entity
  */
 
 #ifndef _INCLUDE_ENGINE_CBULLETDEBUGDRAWER_HPP_
@@ -21,11 +21,15 @@ namespace Kiaro
 {
     namespace Video
     {
+        /**
+         *  @brief The CBulletDebugDrawer is a interface class to Bullet for rendering debug information about
+         *  the physical simulation to the scene.
+         */
         class CBulletDebugDrawer : public btIDebugDraw
         {
             // Public Methods
             public:
-                CBulletDebugDrawer(irr::IrrlichtDevice *irrlicht);
+                CBulletDebugDrawer(irr::IrrlichtDevice* irrlicht);
 
                 virtual void drawLine(const btVector3& from,const btVector3& to,const btVector3& color);
                 virtual void drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,btScalar distance, Kiaro::Common::S32 lifeTime,const btVector3& color);
@@ -37,7 +41,7 @@ namespace Kiaro
             // Private Members
             private:
                 Common::S32 mDebugMode;
-                irr::IrrlichtDevice *mIrrlicht;
+                irr::IrrlichtDevice* mIrrlicht;
         };
     } // End NameSpace Engine
 } // End NameSpace Kiaro

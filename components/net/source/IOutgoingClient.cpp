@@ -36,7 +36,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mIsConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr)
+        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr)
         {
         /*
             mEntityGroup = Game::SGameWorld::getPointer();
@@ -117,6 +117,11 @@ namespace Kiaro
         }
         */
 
+        const bool& IOutgoingClient::isOppositeEndian(void) const noexcept
+        {
+            return mOppositeEndian;
+        }
+
         void IOutgoingClient::send(IMessage* packet, const bool& reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
@@ -129,12 +134,17 @@ namespace Kiaro
             ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getPointer(), packetFlag);
             enet_peer_send(mInternalPeer, 0, enetPacket);
         }
-        
+
         void IOutgoingClient::processPacket(Support::CBitStream& incomingStream)
         {
             assert(!incomingStream.isEmpty());
-            
+
             this->onReceivePacket(incomingStream);
+        }
+
+        const Common::U16& IOutgoingClient::getPort(void) const noexcept
+        {
+            return mPort;
         }
 
         void IOutgoingClient::connect(const Support::String& hostName, const Common::U16& targetPort, const Common::U32& wait)
@@ -172,17 +182,17 @@ namespace Kiaro
             {
                 mCurrentStage = STAGE_AUTHENTICATION;
 
-                mIsConnected = true;
+                mConnected = true;
               //  this->internalOnConnected();
-              
+
                 this->onConnected();
 
                 //this->address = enet_address.host;
                 mPort = targetPort;
-                
+
                 // Add our update to the scheduler
                 mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &IOutgoingClient::update);
-                
+
                 return;
             }
 
@@ -196,21 +206,21 @@ namespace Kiaro
         {
             if (mUpdatePulse)
                 mUpdatePulse->cancel();
-                
+
             mUpdatePulse = nullptr;
-                
-            if (!mIsConnected)
+
+            if (!mConnected)
                 return;
 
            // Game::MoveManager::reset();
 
-            mIsConnected = false;
+            mConnected = false;
             enet_peer_disconnect_later(mInternalPeer, 0);
         }
 
         void IOutgoingClient::update(void)
         {
-            if (!mIsConnected && !mInternalPeer)
+            if (!mConnected && !mInternalPeer)
                 return;
 
             ENetEvent event;
@@ -225,7 +235,7 @@ namespace Kiaro
                         mInternalPeer = nullptr;
 
                         this->onDisconnected();
-                        Support::Console::write(Support::Console::MESSAGE_INFO, "IOutgoingClient: Disconnected from remote host.");
+                        CONSOLE_INFO("Disconnected from remote host.");
 
                         break;
                     }
@@ -233,7 +243,7 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_RECEIVE:
                     {
                         // We're disconnecting, so just destroy anything we receive in the meantime.
-                        if (!mIsConnected)
+                        if (!mConnected)
                         {
                             enet_packet_destroy(event.packet);
                             break;
@@ -255,7 +265,7 @@ namespace Kiaro
 
         const bool& IOutgoingClient::isConnected(void)
         {
-            return mIsConnected;
+            return mConnected;
         }
 
         void IOutgoingClient::dispatch(void)

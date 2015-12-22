@@ -32,7 +32,7 @@ namespace Kiaro
     namespace Net
     {
         class IMessage;
-        
+
         /**
          *  @brief The IOutgoingClient type is an interface type used for representing outgoing clients
          *  connecting to a remote host somewhere.
@@ -76,7 +76,7 @@ namespace Kiaro
                  */
                 //virtual void onReceivePacket(Support::CBitStream& incomingStream) = 0;
 
-                bool getIsOppositeEndian(void) { return mIsOppositeEndian; }
+                const bool& isOppositeEndian(void) const noexcept;
 
                 /**
                  *  @brief Signals to the IOutgoingClient from the remote host the next chance it gets.
@@ -97,7 +97,7 @@ namespace Kiaro
                  *  @return A Common::U16 representing the port number that the IOutgoingClient is connected to
                  *  on the remote host.
                  */
-                Common::U16 getPort(void);
+                const Common::U16& getPort(void) const noexcept;
 
                 void update(void);
 
@@ -106,7 +106,7 @@ namespace Kiaro
                 const bool& isConnected(void);
 
                 void dispatch(void);
-                
+
                 virtual void onReceivePacket(Support::CBitStream& in) = 0;
 
             // Private Methods
@@ -137,8 +137,8 @@ namespace Kiaro
             // Private Members
             protected:
                 Support::CScheduledEvent* mUpdatePulse;
-                
-                bool mIsOppositeEndian;
+
+                bool mOppositeEndian;
 
                // btBroadphaseInterface* mBroadphase;
                // btCollisionDispatcher* mCollisionDispatcher;
@@ -160,7 +160,7 @@ namespace Kiaro
                  */
                 Common::U8 mCurrentStage;
 
-                bool mIsConnected;
+                bool mConnected;
 
                 //Game::SGameWorld* mEntityGroup;
 

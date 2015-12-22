@@ -23,6 +23,10 @@ namespace Kiaro
     {
         class CSceneGraph;
 
+        /**
+         *  @brief The SRenderer is a singleton used to control the core aspects of graphical output of the engine.
+         *  It provides an interface for windowing as well as code to deal with window events such as resizing.
+         */
         class SRenderer
         {
             // Public Members
@@ -30,6 +34,7 @@ namespace Kiaro
                 //! The color drawn that is drawn when there is pixel space without anything in it.
                 Common::ColorRGBA mClearColor;
 
+                //! A boolean representing whether or not the renderer has a display. It won't have a display in dedicated mode.
                 const bool mHasDisplay;
 
             // Private Members
@@ -51,6 +56,7 @@ namespace Kiaro
                 //! A pointer to the event queue for our Allegro display.
                 ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
 
+                //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
                 Support::CScheduledEvent* mTimePulse;
 
             // Public Methods
@@ -74,8 +80,16 @@ namespace Kiaro
                  */
                 void setSceneGraph(CSceneGraph* graph);
 
+                /**
+                 *  @brief Sets the resolution of the display, if there is one.
+                 *  @param resolution The new resolution to use.
+                 */
                 void setResolution(const Support::Dimension2DU& resolution);
 
+                /**
+                 *  @brief Returns the pointer to the internally used Irrlicht device.
+                 *  @return A pointer to the internally used Irrlicht device.
+                 */
                 irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
 
             // Private Methods
@@ -85,11 +99,23 @@ namespace Kiaro
                 //! Standard destructor.
                 ~SRenderer(void);
 
-                int initializeGUI(void);
-                int initializeRenderer(const Support::Dimension2DU& resolution);
+                /**
+                 *  @brief Initializes the GUI subsystem and returns a status code.
+                 *  @return A Common::S32 representing the status code of GUI initialization.
+                 *  @retval 0 for success. Anything else for failure.
+                 */
+                Common::S32 initializeGUI(void);
 
+                /**
+                 *  @brief Initializes the renderer itself and returns a status code.
+                 *  @return A Common::S32 representing the status code of renderer initialization.
+                 *  @retval 0 for success. Anything else for failure.
+                 */
+                Common::S32 initializeRenderer(const Support::Dimension2DU& resolution);
+
+                //! Process all pending events for the game window, such as window resizing.
                 void processWindowEvents(void);
         };
-    } // End NameSpace Videos
+    } // End NameSpace Video
 } // End NameSpace Kiaro
 #endif // _INCLUDE_VIDEO_SRENDERER_HPP_

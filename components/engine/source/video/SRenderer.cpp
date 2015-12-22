@@ -58,7 +58,7 @@ namespace Kiaro
             }
         }
 
-        int SRenderer::initializeRenderer(const Support::Dimension2DU& resolution)
+        Common::S32 SRenderer::initializeRenderer(const Support::Dimension2DU& resolution)
         {
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
             irr::SIrrlichtCreationParameters creationParameters;
@@ -197,7 +197,7 @@ namespace Kiaro
             return mIrrlichtDevice;
         }
 
-        int SRenderer::initializeGUI(void)
+        Common::S32 SRenderer::initializeGUI(void)
         {
             // Start up CEGUI (if we're a client)
             if (mHasDisplay)

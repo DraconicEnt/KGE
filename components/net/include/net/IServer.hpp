@@ -27,22 +27,54 @@ namespace Kiaro
         class IMessage;
         class IIncomingClient;
 
+        //! A typedef to the internally used remote client objects.
         typedef ENetPeer* RemoteHostContext;
 
-        //! Server class that remote hosts connect to.
+        /**
+         *  @brief The IServer is an interface class for game servers to derive from and implement. The interface
+         *  coding itself handles the internals of networking code, thusly leaving the message protocol up to the
+         *  class extending it.
+         */
         class IServer
         {
-            // Public Typedefs
+            // Public Members
             public:
+                //! An iterator typedef used to iterate over all connected clients in the IServer.
                 typedef Support::UnorderedSet<IIncomingClient*>::iterator clientIterator;
+                //! An iterator typedef used to iterate over all connected clients in the IServer.
                 typedef Support::UnorderedSet<IIncomingClient*>::const_iterator clientConstIterator;
+
+                //! The port number that we're listening on.
+                const Common::U16 mListenPort;
+                //! The address that we're listening on.
+                const Support::String mListenAddress;
+
+            // Protected Members
+            protected:
+                //! The last client the server has processed packet payloads from.
+                Net::IIncomingClient* mLastPacketSender;
+
+                //! A boolean representing whether or not the this server is running.
+                bool mRunning;
+
+                Common::U32 mMaximumClientCount;
+
+                //! An unordered set of all clients that passed the authentication stage and are now technically playing.
+                Support::UnorderedSet<IIncomingClient*> mConnectedClientSet;
+                //! An unordered set of all clients waiting to pass the authentication stage.
+                Support::UnorderedSet<IIncomingClient*> mPendingClientSet;
+
+            // Private Members
+            private:
+                //! The internally used E-Net host object that represents our server.
+                ENetHost* mInternalHost;
 
             // Public Methods
             public:
                 /**
                  *  @brief Signals the server to stop running.
                  */
-                void stop(void);
+                void stop(void) noexcept;
 
                 void globalSend(IMessage* packet, const bool &reliable);
 
@@ -50,7 +82,7 @@ namespace Kiaro
                  *  @brief Returns the current running status of the server.
                  *  @return A boolean representing whether or not the server is running.
                  */
-                bool isRunning(void);
+                const bool& isRunning(void) const noexcept;
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
@@ -75,15 +107,15 @@ namespace Kiaro
                  */
                 virtual void onClientDisconnected(Net::IIncomingClient* client);
 
-                Net::IIncomingClient* getLastPacketSender(void);
+                Net::IIncomingClient* getLastPacketSender(void) noexcept;
 
-                Common::U32 getClientCount(void);
+                Common::U32 getClientCount(void) const noexcept;
 
                // Kiaro::Network::IncomingClientBase *GetLastPacketSender(void);
                 clientIterator clientsBegin(void) { return mConnectedClientSet.begin(); }
 
                 clientConstIterator clientsEnd(void) { return mConnectedClientSet.end(); }
-                
+
                 virtual void onReceivePacket(Support::CBitStream& in, Net::IIncomingClient* sender) = 0;
 
             // Protected Methods
@@ -107,26 +139,6 @@ namespace Kiaro
             protected:
                 void processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
                 virtual void processStageZero(const IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender) = 0;
-
-            // Private Members
-            protected:
-                Net::IIncomingClient* mLastPacketSender;
-
-                bool mIsRunning;
-
-                ENetHost* mInternalHost;
-
-                //! The Port number that we're listening on.
-                const Common::U16 mListenPort;
-                //! The Address that we're listening on.
-                const Support::String mListenAddress;
-
-                Common::U32 mMaximumClientCount;
-
-                //! An unordered set of all clients that passed the authentication stage and are now technically playing.
-                Support::UnorderedSet<IIncomingClient*> mConnectedClientSet;
-                //! An unordered set of all clients waiting to pass the authentication stage.
-                Support::UnorderedSet<IIncomingClient*> mPendingClientSet;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

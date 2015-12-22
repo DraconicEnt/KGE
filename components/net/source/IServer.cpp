@@ -19,9 +19,9 @@ namespace Kiaro
     namespace Net
     {
         IServer::IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
-        mLastPacketSender(NULL), mIsRunning(true), mInternalHost(NULL), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
+        mLastPacketSender(NULL), mRunning(true), mInternalHost(NULL), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
-            Support::Console::writef(Support::Console::MESSAGE_INFO, "IServer: Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
+            CONSOLE_INFOF("Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
 
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
@@ -31,47 +31,15 @@ namespace Kiaro
             mInternalHost = enet_host_create(&enetAddress, maximumClientCount + 1, 2, 0, 0);
             if (!mInternalHost)
             {
-                mIsRunning = false;
+                mRunning = false;
 
                 throw std::runtime_error("IServer: Failed to create ENet host!");
             }
-
-            // Setup some more of the Lua implements
-            /*
-            lua_State* luaState = Core::SEngineInstance::getPointer()->getLuaState();
-
-            lua_getglobal(luaState, "GameServer");
-            lua_pushstring(luaState, "listenPort");
-            lua_pushnumber(luaState, listenPort);
-            lua_settable(luaState, -3);
-
-            lua_pushstring(luaState, "listenAddress");
-            lua_pushstring(luaState, listenAddress.c_str());
-            lua_settable(luaState, -3);
-
-            // The table "GameServer" is left so we chop it off
-            lua_pop(luaState, -1);
-            */
-
-            // Create the map division
-            //Support::CMapDivision::Get(12);
-
-           // mEntityGroup = Game::SGameWorld::getPointer();
-
-            // Create an init a gamemode
         }
 
         IServer::~IServer(void)
         {
-            // Call the server shutdown sequence in Lua
-            /*
-            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
-            lua_getglobal(lua, "GameServer");
-            lua_getfield(lua, -1, "onShutdown");
-            lua_call(lua, 0, 0);
-            */
-
-            Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Deinitializing game server ...");
+            CONSOLE_INFO("Deinitializing game server ...");
 
             // Disconnect everyone
             for (auto it = this->clientsBegin(); it != this->clientsEnd(); it++)
@@ -86,9 +54,7 @@ namespace Kiaro
                 mInternalHost = NULL;
             }
 
-            mIsRunning = false;
-
-           // Support::CMapDivision::Destroy();
+            mRunning = false;
         }
 
         void IServer::globalSend(IMessage* packet, const bool& reliable)
@@ -109,7 +75,7 @@ namespace Kiaro
                 {
                     case ENET_EVENT_TYPE_CONNECT:
                     {
-                        Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Received client connect challenge.");
+                        CONSOLE_INFO("Received client connect challenge.");
 
                         IIncomingClient* client = this->onReceiveClientChallenge(event.peer);
                         event.peer->data = client;
@@ -121,7 +87,7 @@ namespace Kiaro
 
                     case ENET_EVENT_TYPE_DISCONNECT:
                     {
-                        Support::Console::write(Support::Console::MESSAGE_INFO, "IServer: Received client disconnect.");
+                        CONSOLE_INFO("Received client disconnect.");
 
                         IIncomingClient* disconnected = reinterpret_cast<IIncomingClient*>(event.peer->data);
                         onClientDisconnected(disconnected);
@@ -170,17 +136,6 @@ namespace Kiaro
 
         void IServer::onClientConnected(IIncomingClient* client)
         {
-
-            // Call the Lua callback
-            /*
-            lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
-            lua_getglobal(lua, "GameServer");
-            lua_getfield(lua, -1, "onClientConnected");
-
-            lua_pushclient(lua, client);
-            lua_call(lua, 1, 0);
-            */
-
           //  Core::SEventManager::get()->mOnClientConnectedEvent.invoke(client);
             //Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received remote connection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
 
@@ -197,20 +152,11 @@ namespace Kiaro
 
         void IServer::onClientDisconnected(IIncomingClient* client)
         {
-            /*
-            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
-            lua_getglobal(lua, "GameServer");
-            lua_getfield(lua, -1, "onClientDisconnected");
-
-            lua_pushclient(lua, client);
-            lua_call(lua, 1, 0);
-            */
-
          //   Core::SEventManager::get()->mOnClientDisconnectedEvent.invoke(client);
             //Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received disconnection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
         }
 
-        IIncomingClient* IServer::getLastPacketSender(void)
+        IIncomingClient* IServer::getLastPacketSender(void) noexcept
         {
             IIncomingClient* result = mLastPacketSender;
             mLastPacketSender = nullptr;
@@ -218,16 +164,18 @@ namespace Kiaro
             return result;
         }
 
-        void IServer::stop(void) { mIsRunning = false; }
+        void IServer::stop(void) noexcept { mRunning = false; }
 
-        Common::U32 IServer::getClientCount(void)
+        Common::U32 IServer::getClientCount(void) const noexcept
         {
             return mConnectedClientSet.size();
         }
 
+        const bool& IServer::isRunning(void) const noexcept { return mRunning; }
+
         void IServer::dispatch(void)
         {
-            if (mIsRunning)
+            if (mRunning)
                 enet_host_flush(mInternalHost);
         }
     } // End Namespace Game

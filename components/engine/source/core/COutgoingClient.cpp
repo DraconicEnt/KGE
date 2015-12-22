@@ -18,7 +18,7 @@ namespace Kiaro
     {
         void COutgoingClient::onConnected(void)
         {
-            Support::Console::write(Support::Console::MESSAGE_INFO, "COutgoingClient: Established connection to remote host.");
+            CONSOLE_INFO("Established connection to remote host.");
 
             // Dispatch our own handshake in response
             Game::Messages::HandShake handShake;
@@ -35,7 +35,7 @@ namespace Kiaro
         {
 
         }
-        
+
         void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
         {
             while (!incomingStream.isEmpty())
@@ -51,7 +51,7 @@ namespace Kiaro
                         Game::Messages::Disconnect disconnect;
                         disconnect.unpack(incomingStream);
 
-                        Support::Console::writef(Support::Console::MESSAGE_INFO, "COutgoingClient: Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
+                        CONSOLE_INFOF("Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
                         this->disconnect();
 
                         break;
@@ -67,13 +67,13 @@ namespace Kiaro
                                 this->processStageZero(basePacket, incomingStream);
                                 break;
                             }
-                            
+
                             case Net::STAGE_LOADING:
                             {
                                 this->processStageTwo(basePacket, incomingStream);
                                 break;
                             }
-                            
+
                             default:
                             {
                                 Support::String exceptionText = "COutgoingClient:  Encountered unknown stage type: ";
@@ -87,10 +87,10 @@ namespace Kiaro
                 }
             }
         }
-        
+
         void COutgoingClient::onAuthenticated(void)
         {
-        
+
         }
 
         void COutgoingClient::processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream)
@@ -102,12 +102,12 @@ namespace Kiaro
                     Game::Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
 
-                    Support::Console::writef(Support::Console::MESSAGE_INFO, "COutgoingClient: Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                    CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                     receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
-                    Support::Console::write(Support::Console::MESSAGE_INFO, "COutgoingClient: Passed initial authentication.");
+                    CONSOLE_INFO("Passed initial authentication.");
 
-                    mIsConnected = true;
+                    mConnected = true;
                     this->onAuthenticated();
 
                     mCurrentStage = Net::STAGE_LOADING;
