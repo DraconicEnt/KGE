@@ -112,5 +112,18 @@ namespace Kiaro
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
                 EXPECT_FALSE(strcmp(sStringList[iteration].data(), stream.popString()));
         }
+        
+        TEST(BitStream, InvalidString)
+        {
+            CBitStream stream(256);
+            
+            char payload[8];
+            for (Common::U32 iteration = 0; iteration < 8; iteration++)
+                payload[iteration] = 0x52;
+                
+            stream.writeString(payload);
+            
+            EXPECT_THROW(stream.popString(), std::runtime_error);
+        }
     } // End Namespace Support
 } // End namespace Kiaro
