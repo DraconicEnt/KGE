@@ -11,6 +11,7 @@
 
 #include <allegro5/allegro.h>
 
+#include <core/SEngineInstance.hpp>
 #include <input/SInputListener.hpp>
 
 #include <support/Console.hpp>
@@ -48,251 +49,245 @@ namespace Kiaro
             mKeyResponders[key] = responder;
         }
 
-        SInputListener::SInputListener(void)
-        {
-            // Ensure that the key states all exist
-            for (Common::U8 iteration = 0; iteration <= 254; iteration++)
-                mKeyStates[iteration] = false;
-
-            mKeyStates[255] = false;
+        SInputListener::SInputListener(void) : mTyping(false), mInput(nullptr)
+        {            
+            al_install_mouse();
+            al_install_keyboard();
+            al_install_joystick();
+            
+            mInput = al_create_event_queue();
+            al_register_event_source(mInput, al_get_keyboard_event_source());
+            al_register_event_source(mInput, al_get_joystick_event_source());
+            
+            CONSOLE_INFO("Initialized."); 
+            this->scanJoysticks();
         }
 
         SInputListener::~SInputListener(void)
         {
-
+            al_uninstall_mouse();
+            al_uninstall_keyboard();
+            al_uninstall_joystick();
+            
+            al_destroy_event_queue(mInput);
         }
-
-        void SInputListener::update(void)
-        {
-            // Update CEGUI's mouse
-            ALLEGRO_MOUSE_STATE mouseState;
-            al_get_mouse_state(&mouseState);
-
-            CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-            guiContext.injectMousePosition(mouseState.x, mouseState.y);
-
-            // TODO (Robert MacGregor#9): Mouse Events & Key Events should be implemented if CEGUI ever works
-        }
-
-        /*
-        static inline CEGUI::Key::Scan irrlichtKeyToCEGUI(const irr::EKEY_CODE& code)
+        
+        static inline CEGUI::Key::Scan AllegroKeyToCEGUI(const Common::U32& code)
         {
             switch(code)
             {
-                case irr::EKEY_CODE::KEY_KEY_A:
+                case ALLEGRO_KEY_A:
                     return CEGUI::Key::Scan::A;
-                case irr::EKEY_CODE::KEY_KEY_B:
+                case ALLEGRO_KEY_B:
                     return CEGUI::Key::Scan::B;
-                case irr::EKEY_CODE::KEY_KEY_C:
+                case ALLEGRO_KEY_C:
                     return CEGUI::Key::Scan::C;
-                case irr::EKEY_CODE::KEY_KEY_D:
+                case ALLEGRO_KEY_D:
                     return CEGUI::Key::Scan::D;
-                case irr::EKEY_CODE::KEY_KEY_E:
+                case ALLEGRO_KEY_E:
                     return CEGUI::Key::Scan::E;
-                case irr::EKEY_CODE::KEY_KEY_F:
+                case ALLEGRO_KEY_F:
                     return CEGUI::Key::Scan::F;
-                case irr::EKEY_CODE::KEY_KEY_G:
+                case ALLEGRO_KEY_G:
                     return CEGUI::Key::Scan::G;
-                case irr::EKEY_CODE::KEY_KEY_H:
+                case ALLEGRO_KEY_H:
                     return CEGUI::Key::Scan::H;
-                case irr::EKEY_CODE::KEY_KEY_I:
+                case ALLEGRO_KEY_I:
                     return CEGUI::Key::Scan::I;
-                case irr::EKEY_CODE::KEY_KEY_J:
+                case ALLEGRO_KEY_J:
                     return CEGUI::Key::Scan::J;
-                case irr::EKEY_CODE::KEY_KEY_K:
+                case ALLEGRO_KEY_K:
                     return CEGUI::Key::Scan::K;
-                case irr::EKEY_CODE::KEY_KEY_L:
+                case ALLEGRO_KEY_L:
                     return CEGUI::Key::Scan::L;
-                case irr::EKEY_CODE::KEY_KEY_M:
+                case ALLEGRO_KEY_M:
                     return CEGUI::Key::Scan::M;
-                case irr::EKEY_CODE::KEY_KEY_N:
+                case ALLEGRO_KEY_N:
                     return CEGUI::Key::Scan::N;
-                case irr::EKEY_CODE::KEY_KEY_O:
+                case ALLEGRO_KEY_O:
                     return CEGUI::Key::Scan::O;
-                case irr::EKEY_CODE::KEY_KEY_P:
+                case ALLEGRO_KEY_P:
                     return CEGUI::Key::Scan::P;
-                case irr::EKEY_CODE::KEY_KEY_Q:
+                case ALLEGRO_KEY_Q:
                     return CEGUI::Key::Scan::Q;
-                case irr::EKEY_CODE::KEY_KEY_R:
+                case ALLEGRO_KEY_R:
                     return CEGUI::Key::Scan::R;
-                case irr::EKEY_CODE::KEY_KEY_S:
+                case ALLEGRO_KEY_S:
                     return CEGUI::Key::Scan::S;
-                case irr::EKEY_CODE::KEY_KEY_T:
+                case ALLEGRO_KEY_T:
                     return CEGUI::Key::Scan::T;
-                case irr::EKEY_CODE::KEY_KEY_U:
+                case ALLEGRO_KEY_U:
                     return CEGUI::Key::Scan::U;
-                case irr::EKEY_CODE::KEY_KEY_V:
+                case ALLEGRO_KEY_V:
                     return CEGUI::Key::Scan::V;
-                case irr::EKEY_CODE::KEY_KEY_W:
+                case ALLEGRO_KEY_W:
                     return CEGUI::Key::Scan::W;
-                case irr::EKEY_CODE::KEY_KEY_X:
+                case ALLEGRO_KEY_X:
                     return CEGUI::Key::Scan::X;
-                case irr::EKEY_CODE::KEY_KEY_Y:
+                case ALLEGRO_KEY_Y:
                     return CEGUI::Key::Scan::Y;
-                case irr::EKEY_CODE::KEY_KEY_Z:
+                case ALLEGRO_KEY_Z:
                     return CEGUI::Key::Scan::Z;
 
-                case irr::EKEY_CODE::KEY_KEY_0:
+                case ALLEGRO_KEY_0:
                     return CEGUI::Key::Scan::Zero;
-                case irr::EKEY_CODE::KEY_KEY_1:
+                case ALLEGRO_KEY_1:
                     return CEGUI::Key::Scan::One;
-                case irr::EKEY_CODE::KEY_KEY_2:
+                case ALLEGRO_KEY_2:
                     return CEGUI::Key::Scan::Two;
-                case irr::EKEY_CODE::KEY_KEY_3:
+                case ALLEGRO_KEY_3:
                     return CEGUI::Key::Scan::Three;
-                case irr::EKEY_CODE::KEY_KEY_4:
+                case ALLEGRO_KEY_4:
                     return CEGUI::Key::Scan::Four;
-                case irr::EKEY_CODE::KEY_KEY_5:
+                case ALLEGRO_KEY_5:
                     return CEGUI::Key::Scan::Five;
-                case irr::EKEY_CODE::KEY_KEY_6:
+                case ALLEGRO_KEY_6:
                     return CEGUI::Key::Scan::Six;
-                case irr::EKEY_CODE::KEY_KEY_7:
+                case ALLEGRO_KEY_7:
                     return CEGUI::Key::Scan::Seven;
-                case irr::EKEY_CODE::KEY_KEY_8:
+                case ALLEGRO_KEY_8:
                     return CEGUI::Key::Scan::Eight;
-                case irr::EKEY_CODE::KEY_KEY_9:
+                case ALLEGRO_KEY_9:
                     return CEGUI::Key::Scan::Nine;
 
-                case irr::EKEY_CODE::KEY_MINUS:
+                case ALLEGRO_KEY_MINUS:
                     return CEGUI::Key::Scan::Minus;
-                case irr::EKEY_CODE::KEY_PLUS:
-                    return CEGUI::Key::Scan::Add;
-
-                case irr::EKEY_CODE::KEY_TAB:
+                    
+                case ALLEGRO_KEY_TAB:
                     return CEGUI::Key::Scan::Tab;
 
-                case irr::EKEY_CODE::KEY_ESCAPE:
+                case ALLEGRO_KEY_ESCAPE:
                     return CEGUI::Key::Scan::Escape;
-                case irr::EKEY_CODE::KEY_F1:
+                case ALLEGRO_KEY_F1:
                     return CEGUI::Key::Scan::F1;
-                case irr::EKEY_CODE::KEY_F2:
+                case ALLEGRO_KEY_F2:
                     return CEGUI::Key::Scan::F2;
-                case irr::EKEY_CODE::KEY_F3:
+                case ALLEGRO_KEY_F3:
                     return CEGUI::Key::Scan::F3;
-                case irr::EKEY_CODE::KEY_F4:
+                case ALLEGRO_KEY_F4:
                     return CEGUI::Key::Scan::F4;
-                case irr::EKEY_CODE::KEY_F5:
+                case ALLEGRO_KEY_F5:
                     return CEGUI::Key::Scan::F5;
-                case irr::EKEY_CODE::KEY_F6:
+                case ALLEGRO_KEY_F6:
                     return CEGUI::Key::Scan::F6;
-                case irr::EKEY_CODE::KEY_F7:
+                case ALLEGRO_KEY_F7:
                     return CEGUI::Key::Scan::F7;
-                case irr::EKEY_CODE::KEY_F8:
+                case ALLEGRO_KEY_F8:
                     return CEGUI::Key::Scan::F8;
-                case irr::EKEY_CODE::KEY_F9:
+                case ALLEGRO_KEY_F9:
                     return CEGUI::Key::Scan::F9;
-                case irr::EKEY_CODE::KEY_F10:
+                case ALLEGRO_KEY_F10:
                     return CEGUI::Key::Scan::F10;
-                case irr::EKEY_CODE::KEY_F11:
+                case ALLEGRO_KEY_F11:
                     return CEGUI::Key::Scan::F11;
-                case irr::EKEY_CODE::KEY_F12:
+                case ALLEGRO_KEY_F12:
                     return CEGUI::Key::Scan::F12;
 
-                case irr::EKEY_CODE::KEY_UP:
+                case ALLEGRO_KEY_UP:
                     return CEGUI::Key::Scan::ArrowUp;
-                case irr::EKEY_CODE::KEY_DOWN:
+                case ALLEGRO_KEY_DOWN:
                     return CEGUI::Key::Scan::ArrowDown;
-                case irr::EKEY_CODE::KEY_LEFT:
+                case ALLEGRO_KEY_LEFT:
                     return CEGUI::Key::Scan::ArrowLeft;
-                case irr::EKEY_CODE::KEY_RIGHT:
+                case ALLEGRO_KEY_RIGHT:
                     return CEGUI::Key::Scan::ArrowRight;
 
-                case irr::EKEY_CODE::KEY_:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
-                    return CEGUI::Key::Scan::Space;
-                case irr::EKEY_CODE::KEY_SPACE:
+                case ALLEGRO_KEY_SPACE:
                     return CEGUI::Key::Scan::Space;
 
             }
 
             return CEGUI::Key::Scan::Unknown;
         }
-
-        bool SInputListener::OnEvent(const irr::SEvent& event)
+        
+        void SInputListener::scanJoysticks(void)
         {
-            switch(event.EventType)
+            al_reconfigure_joysticks();
+            
+            const Common::U32 joystickCount = al_get_num_joysticks();
+            CONSOLE_INFOF("%u joysticks detected.", joystickCount);
+            
+            for (Common::U32 joystickID = 0; joystickID < joystickCount; joystickID++)
             {
-                // Keyboard input
-                case irr::EET_KEY_INPUT_EVENT:
+                ALLEGRO_JOYSTICK* joystick = al_get_joystick(joystickID);
+                const Common::U32 stickCount = al_get_joystick_num_sticks(joystick);
+                const Common::U32 buttonCount = al_get_joystick_num_buttons(joystick);
+                
+                CONSOLE_DEBUGF("Joystick %u ------------", joystickID);
+                CONSOLE_DEBUGF("  Name: %s", al_get_joystick_name(joystick));
+                CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
+                CONSOLE_DEBUGF("  Button Count: %u", buttonCount);
+                
+                for (Common::U32 buttonID = 0; buttonID < buttonCount; buttonID++)
                 {
-                    const CEGUI::Key::Scan key = irrlichtKeyToCEGUI(event.KeyInput.Key);
-
-                    CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-                    if (event.KeyInput.PressedDown)
-                    {
-                        guiContext.injectKeyDown(key);
-
-                        if (mKeyResponders.count(key) && !mKeyStates[key])
-                            mKeyResponders[key](true);
-
-                        mKeyStates[key] = true;
-                    }
-                    else
-                    {
-                        guiContext.injectKeyUp(key);
-
-                        if (mKeyResponders.count(key) && mKeyStates[key])
-                            mKeyResponders[key](false);
-
-                        mKeyStates[key] = false;
-                    }
-
-                    break;
+                    CONSOLE_DEBUGF("  Button %u -----------", buttonID);
+                    CONSOLE_DEBUGF("    Name: %s", al_get_joystick_button_name(joystick, buttonID));
                 }
-
-                // Mouse Input
-                case irr::EET_MOUSE_INPUT_EVENT:
+                
+                for (Common::U32 stickID = 0; stickID < stickCount; stickID++)
                 {
-                    CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-                    switch(event.MouseInput.Event)
-                    {
-                        case irr::EMIE_MOUSE_MOVED:
-                        {
-                            guiContext.injectMousePosition(event.MouseInput.X, event.MouseInput.Y);
-                            return true;
-                        }
-
-                        case irr::EMIE_LMOUSE_PRESSED_DOWN:
-                        {
-                            guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
-                            return true;
-                        }
-
-                        case irr::EMIE_LMOUSE_LEFT_UP:
-                        {
-                            guiContext.injectMouseButtonUp(CEGUI::MouseButton::LeftButton);
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                // Logging
-                case irr::EET_LOG_TEXT_EVENT:
-                {
-                    Support::Logging::write(Support::Logging::MESSAGE_INFO, "SInputListener: %s", event.LogEvent.Text);
-                    return true;
+                    CONSOLE_DEBUGF("  Stick %u -----------", stickID);
+                    CONSOLE_DEBUGF("    Name: %s", al_get_joystick_stick_name(joystick, stickID));
                 }
             }
-
-            return false;
         }
-        */
+
+        void SInputListener::update(void)
+        {
+            ALLEGRO_MOUSE_STATE mouseState;
+            al_get_mouse_state(&mouseState);
+            
+            ALLEGRO_KEYBOARD_STATE keyboardState;
+            al_get_keyboard_state(&keyboardState);
+
+            CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+            guiContext.injectMousePosition(mouseState.x, mouseState.y);
+            
+            // Process keyboard events
+            while (!al_is_event_queue_empty(mInput))
+            {
+                ALLEGRO_EVENT event;
+                
+                if (al_get_next_event(mInput, &event))
+                {
+                
+                    switch (event.type)
+                    {
+                        case ALLEGRO_EVENT_KEY_UP:
+                        case ALLEGRO_EVENT_KEY_DOWN:
+                        {
+                            // Responding to regular key events?
+                            if (!mTyping && event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
+                            {
+                                auto it = mKeyResponders.find(AllegroKeyToCEGUI(event.keyboard.keycode));
+                                
+                                if (it != mKeyResponders.end())
+                                    if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
+                                        (*it).second(true);
+                                    else
+                                        (*it).second(false);
+                                        
+                                return;
+                            }
+                            
+                            // We'll just shove keyboard input into CEGUI, then.
+                            if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
+                                guiContext.injectKeyDown(AllegroKeyToCEGUI(event.keyboard.keycode));
+                            else
+                                guiContext.injectKeyUp(AllegroKeyToCEGUI(event.keyboard.keycode));
+                        
+                            break;
+                        }
+                                                
+                        case ALLEGRO_EVENT_JOYSTICK_CONFIGURATION:
+                        {
+                            CONSOLE_INFO("Detected change in joystick configuration.");
+                            this->scanJoysticks();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     } // End Namespace Game
 } // End Namespace Kiaro

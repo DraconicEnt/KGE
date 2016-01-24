@@ -28,15 +28,16 @@ namespace Kiaro
         {
             // Public Members
             public:
-                typedef void (*KeyResponderPointer)(bool state);
+                typedef void (*KeyResponderPointer)(const bool& state);
+                
+                bool mTyping;
 
             // Private Members
             private:
-                //! A simple 1D array representing the states of all buttons on the keyboard.
-                bool mKeyStates[256];
-
                 //! A mapping of keycodes to responding method pointers.
                 Support::UnorderedMap<Common::C8, KeyResponderPointer> mKeyResponders;
+                
+                ALLEGRO_EVENT_QUEUE* mInput;
 
             // Public Methods
             public:
@@ -46,6 +47,8 @@ namespace Kiaro
                 void update(void);
 
                 void setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderPointer responder);
+                
+                void scanJoysticks(void);
 
             // Private Methods
             private:

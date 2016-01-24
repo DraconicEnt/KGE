@@ -98,7 +98,6 @@ namespace Kiaro
             mRunning = true;
 
             al_init();
-            al_install_mouse();
 
             this->initializeFileSystem(argc, argv);
 
