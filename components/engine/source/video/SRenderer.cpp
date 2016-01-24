@@ -295,6 +295,11 @@ namespace Kiaro
                     }
                 }
         }
+        
+        ALLEGRO_DISPLAY* SRenderer::getDisplay(void)
+        {
+            return mDisplay;
+        }
 
         void SRenderer::drawFrame(void)
         {

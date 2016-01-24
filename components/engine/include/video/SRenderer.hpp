@@ -91,6 +91,8 @@ namespace Kiaro
                  *  @return A pointer to the internally used Irrlicht device.
                  */
                 irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
+                
+                ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
 
             // Private Methods
             private:

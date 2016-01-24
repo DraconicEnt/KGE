@@ -11,9 +11,9 @@
 
 #include <allegro5/allegro.h>
 
-#include <core/SEngineInstance.hpp>
 #include <input/SInputListener.hpp>
 
+#include <video/SRenderer.hpp>
 #include <support/Console.hpp>
 
 namespace Kiaro
@@ -38,7 +38,7 @@ namespace Kiaro
             sInstance = nullptr;
         }
 
-        void SInputListener::setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderPointer responder)
+        void SInputListener::setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderDelegate* responder)
         {
             if (!responder)
             {
@@ -49,17 +49,16 @@ namespace Kiaro
             mKeyResponders[key] = responder;
         }
 
-        SInputListener::SInputListener(void) : mTyping(false), mInput(nullptr)
+        SInputListener::SInputListener(void) : mTyping(false), mInputQueue(al_create_event_queue())
         {            
             al_install_mouse();
             al_install_keyboard();
             al_install_joystick();
             
-            mInput = al_create_event_queue();
-            al_register_event_source(mInput, al_get_keyboard_event_source());
-            al_register_event_source(mInput, al_get_joystick_event_source());
+            al_register_event_source(mInputQueue, al_get_keyboard_event_source());
+            al_register_event_source(mInputQueue, al_get_joystick_event_source());
             
-            CONSOLE_INFO("Initialized."); 
+            CONSOLE_INFO("Initialized input subsystem."); 
             this->scanJoysticks();
         }
 
@@ -69,7 +68,7 @@ namespace Kiaro
             al_uninstall_keyboard();
             al_uninstall_joystick();
             
-            al_destroy_event_queue(mInput);
+            al_destroy_event_queue(mInputQueue);
         }
         
         static inline CEGUI::Key::Scan AllegroKeyToCEGUI(const Common::U32& code)
@@ -190,7 +189,7 @@ namespace Kiaro
                 case ALLEGRO_KEY_LEFT:
                     return CEGUI::Key::Scan::ArrowLeft;
                 case ALLEGRO_KEY_RIGHT:
-                    return CEGUI::Key::Scan::ArrowRight;
+                    return CEGUI::Key::Scan::ArrowRight; 
 
                 case ALLEGRO_KEY_SPACE:
                     return CEGUI::Key::Scan::Space;
@@ -231,6 +230,19 @@ namespace Kiaro
                 }
             }
         }
+        
+        void SInputListener::setMouseCaptureEnabled(const bool& enabled)
+        {
+            Video::SRenderer* renderer = Video::SRenderer::getPointer();
+            
+            if (renderer->mHasDisplay)
+            {
+                const bool result = enabled ? al_grab_mouse(renderer->getDisplay()) : al_ungrab_mouse();
+                
+                if (!result)
+                    CONSOLE_ERROR("Failed to change mouse capture status.");
+            }            
+        }
 
         void SInputListener::update(void)
         {
@@ -244,11 +256,11 @@ namespace Kiaro
             guiContext.injectMousePosition(mouseState.x, mouseState.y);
             
             // Process keyboard events
-            while (!al_is_event_queue_empty(mInput))
+            while (!al_is_event_queue_empty(mInputQueue))
             {
                 ALLEGRO_EVENT event;
                 
-                if (al_get_next_event(mInput, &event))
+                if (al_get_next_event(mInputQueue, &event))
                 {
                 
                     switch (event.type)
@@ -263,9 +275,9 @@ namespace Kiaro
                                 
                                 if (it != mKeyResponders.end())
                                     if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
-                                        (*it).second(true);
+                                        (*it).second->invoke(true);
                                     else
-                                        (*it).second(false);
+                                        (*it).second->invoke(false);
                                         
                                 return;
                             }
