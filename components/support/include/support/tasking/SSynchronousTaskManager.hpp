@@ -16,6 +16,7 @@
 
 #include <support/tasking/ITask.hpp>
 #include <support/support.hpp>
+#include <support/ISingleton.hpp>
 
 namespace Kiaro
 {
@@ -23,19 +24,14 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            class SSynchronousTaskManager
+            class SSynchronousTaskManager : public Support::ISingleton<SSynchronousTaskManager>
             {
                 // Public Methods
                 public:
-                    static SSynchronousTaskManager *getPointer(void);
-                    static void destroy(void);
-
                     void tick(const Common::F32 &deltaTime);
                     bool addTask(ITask *task);
                     bool removeTask(ITask *task);
 
-                // Private Methods
-                private:
                     SSynchronousTaskManager(void);
                     ~SSynchronousTaskManager(void);
 

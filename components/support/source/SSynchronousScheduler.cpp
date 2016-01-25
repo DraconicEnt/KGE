@@ -71,22 +71,6 @@ namespace Kiaro
             return mWaitTimeMS;
         }
 
-        SSynchronousScheduler* SSynchronousScheduler::getPointer(void)
-        {
-            if (!sInstance)
-                sInstance = new SSynchronousScheduler;
-
-            return sInstance;
-        }
-
-        void SSynchronousScheduler::destroy(void)
-        {
-            if (sInstance)
-                delete sInstance;
-
-            sInstance = NULL;
-        }
-
         CScheduledEvent* SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32& waitTimeMS, const bool& recurring)
         {
             CScheduledEvent* event = new CScheduledEvent(deferredCaller, waitTimeMS, recurring);

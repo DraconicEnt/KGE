@@ -20,12 +20,13 @@
 
 #include <support/UnorderedMap.hpp>
 #include <easydelegate/easydelegate.hpp>
+#include <support/ISingleton.hpp>
 
 namespace Kiaro
 {
     namespace Input
     {
-        class SInputListener
+        class SInputListener : public Support::ISingleton<SInputListener>
         {
             // Public Members
             public:
@@ -45,8 +46,8 @@ namespace Kiaro
 
             // Public Methods
             public:
-                static SInputListener *getPointer(void);
-                static void destroy(void);
+                SInputListener(void);
+                ~SInputListener(void);
 
                 //! Updating the input subsystem allows for it to process keyboard, joystick and other user input events.
                 void update(void);
@@ -62,13 +63,6 @@ namespace Kiaro
                  *  @note Does nothing if there is no active game window -- IE: Dedicated servers.
                  */
                 void setMouseCaptureEnabled(const bool& enabled);
-
-            // Private Methods
-            private:
-                //! Standard constructor.
-                SInputListener(void);
-                //! Standard destructor.
-                ~SInputListener(void);
         };
     } // End Namespace Game
 } // End Namespace Kiaro

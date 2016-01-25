@@ -18,7 +18,7 @@
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
-{
+{    
     namespace CES
     {
         class IComponent;

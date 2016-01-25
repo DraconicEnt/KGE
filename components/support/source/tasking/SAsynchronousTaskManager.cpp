@@ -14,8 +14,6 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SAsynchronousTaskManager* sInstance = nullptr;
-
             static void workerThreadLogic(WorkerContext* context)
             {
                 // TODO (Robert MacGregor #9): Detect thread error?
@@ -35,24 +33,40 @@ namespace Kiaro
                     context->mIsComplete = context->mTask->tick(0.00f);
                 }
             }
-
-            SAsynchronousTaskManager* SAsynchronousTaskManager::getPointer(void)
+            
+            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
             {
-                if (!sInstance)
-                    sInstance = new SAsynchronousTaskManager();
-
-                return sInstance;
-            }
-
-            void SAsynchronousTaskManager::destroy(void)
-            {
-                if (sInstance)
+                if (mPoolSize == 0)
                 {
-                    delete sInstance;
-                    sInstance = NULL;
+                    CONSOLE_INFO("Using no asynchrnous workers; will delegate to the synchronous task manager.");
+                    return;
                 }
+
+                for (Common::U8 iteration = 0; iteration < mPoolSize; iteration++)
+                {
+                    WorkerContext* currentWorker = new WorkerContext();
+                    currentWorker->mTask = nullptr;
+                    currentWorker->mIsComplete = true;
+                    currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
+                    currentWorker->mThread->detach();
+
+                    mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
+                }
+
+                CONSOLE_INFOF("Initialized with %u workers.", mPoolSize);
             }
 
+            SAsynchronousTaskManager::~SAsynchronousTaskManager(void)
+            {
+                // Kill any active workers
+                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
+                    delete (*it);
+
+                // Kill inactive workers
+                for (auto it = mIdleWorkers.begin(); it != mIdleWorkers.end(); it++)
+                    delete (*it);
+            }
+            
             void SAsynchronousTaskManager::tick(void)
             {
                 // If we've got any scheduled tasks, hand it off to some idle worker
@@ -131,39 +145,6 @@ namespace Kiaro
                     }
                 }
                 return false;
-            }
-
-            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
-            {
-                if (mPoolSize == 0)
-                {
-                    CONSOLE_INFO("Using no asynchrnous workers; will delegate to the synchronous task manager.");
-                    return;
-                }
-
-                for (Common::U8 iteration = 0; iteration < mPoolSize; iteration++)
-                {
-                    WorkerContext* currentWorker = new WorkerContext();
-                    currentWorker->mTask = nullptr;
-                    currentWorker->mIsComplete = true;
-                    currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
-                    currentWorker->mThread->detach();
-
-                    mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
-                }
-
-                CONSOLE_INFOF("Initialized with %u workers.", mPoolSize);
-            }
-
-            SAsynchronousTaskManager::~SAsynchronousTaskManager(void)
-            {
-                // Kill any active workers
-                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
-                    delete (*it);
-
-                // Kill inactive workers
-                for (auto it = mIdleWorkers.begin(); it != mIdleWorkers.end(); it++)
-                    delete (*it);
             }
         } // End NameSpace Tasking
     } // End NameSpace Engine

@@ -39,22 +39,32 @@ namespace Kiaro
 {
     namespace Video
     {
-        static SRenderer* sInstance = nullptr;
-
-        SRenderer* SRenderer::getPointer(void)
+        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
         {
-            if (!sInstance)
-                sInstance = new SRenderer;
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+            irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
 
-            return sInstance;
-        }
+            this->initializeRenderer(resolution);
 
-        void SRenderer::destroy(void)
-        {
-            if (sInstance)
+            if (mHasDisplay)
             {
-                delete sInstance;
-                sInstance = nullptr;
+                this->initializeGUI();
+                this->setResolution(resolution);
+            }
+        }
+        
+        SRenderer::~SRenderer(void)
+        {
+            if (mIrrlichtDevice)
+            {
+                mIrrlichtDevice->drop();
+                mIrrlichtDevice = nullptr;
+            }
+
+            if (mDisplay)
+            {
+                al_destroy_display(mDisplay);
+                mDisplay = nullptr;
             }
         }
 
@@ -65,7 +75,7 @@ namespace Kiaro
 
             if (mHasDisplay)
             {
-                Common::S32 monitorCount = al_get_num_video_adapters();
+                const Common::S32 monitorCount = al_get_num_video_adapters();
                 CONSOLE_INFOF("Detected %u monitor(s)", monitorCount);
 
                 // Create the Allegro window and get its ID
@@ -124,38 +134,21 @@ namespace Kiaro
             mVideo = mIrrlichtDevice->getVideoDriver();
             mSceneManager->setActiveCamera(mSceneManager->addCameraSceneNode());
 
-            // Initialize the main scene and set it
-            // TODO (Robert MacGregor#9): Only initialize when running as a client.
-           // mMainScene = new Video::CSceneGraph();
-           // this->setSceneGraph(mMainScene);
-
             // Set up the renderer time pulse
-            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-            const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
-
             if (mHasDisplay)
+            {
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
+                
                 mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
+            }
 
             CONSOLE_INFOF("Irrlicht version is %s.", mIrrlichtDevice->getVersion());
             CONSOLE_INFO("Initialized renderer.");
 
             return 0;
         }
-
-        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
-        {
-            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-            irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
-
-            this->initializeRenderer(resolution);
-
-            if (mHasDisplay)
-            {
-                this->initializeGUI();
-                this->setResolution(resolution);
-            }
-        }
-
+        
         void SRenderer::setSceneGraph(CSceneGraph* graph)
         {
             if (mCurrentScene)
@@ -165,21 +158,6 @@ namespace Kiaro
 
             if (mCurrentScene)
                 mCurrentScene->setVisible(true);
-        }
-
-        SRenderer::~SRenderer(void)
-        {
-            if (mIrrlichtDevice)
-            {
-                mIrrlichtDevice->drop();
-                mIrrlichtDevice = nullptr;
-            }
-
-            if (mDisplay)
-            {
-                al_destroy_display(mDisplay);
-                mDisplay = nullptr;
-            }
         }
 
         void SRenderer::setResolution(const Support::Dimension2DU& resolution)
@@ -276,7 +254,6 @@ namespace Kiaro
                         Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                         const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
 
-                        // Adjust our framerate to something lower if the window isn't focused
                         mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
 
                         break;
@@ -309,7 +286,6 @@ namespace Kiaro
                 mSceneManager->drawAll();
 
             CEGUI::System::getSingleton().renderAllGUIContexts();
-
             mVideo->endScene();
 
             al_flip_display();

@@ -20,24 +20,6 @@ namespace Kiaro
 {
     namespace Input
     {
-        static SInputListener* sInstance = nullptr;
-
-        SInputListener* SInputListener::getPointer(void)
-        {
-            if (!sInstance)
-                sInstance = new SInputListener();
-
-            return sInstance;
-        }
-
-        void SInputListener::destroy(void)
-        {
-            if (sInstance)
-                delete sInstance;
-
-            sInstance = nullptr;
-        }
-
         void SInputListener::setKeyResponder(const CEGUI::Key::Scan& key, KeyResponderDelegate* responder)
         {
             if (!responder)

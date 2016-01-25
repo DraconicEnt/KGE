@@ -15,6 +15,7 @@
 #include <support/tasking/ITask.hpp>
 
 #include <support/support.hpp>
+#include <support/ISingleton.hpp>
 
 namespace Kiaro
 {
@@ -35,19 +36,10 @@ namespace Kiaro
              *  derivatives in the context of their own thread by assigning the task context to an available
              *  worker thread. If none are available, the task is stowed until a worker becomes available.
              */
-            class SAsynchronousTaskManager
+            class SAsynchronousTaskManager : public Support::ISingleton<SAsynchronousTaskManager>
             {
                 // Public Methods
                 public:
-                    /**
-                     *  @brief Returns a pointer to the asynchrnous task manager instance, allocating a new
-                     *  one if necessary.
-                     *  @return A pointer to the current asynchrnous task manager instance.
-                     */
-                    static SAsynchronousTaskManager* getPointer(void);
-                    //! Destroys the current asynchronous task manager instance if there is one.
-                    static void destroy(void);
-
                     void tick(void);
 
                     /**
@@ -64,8 +56,6 @@ namespace Kiaro
                     const size_t getIdleWorkerCount(void);
                     const size_t& getWorkerPoolSize(void);
 
-                // Private Methods
-                private:
                     //! Parameter-less constructor.
                     SAsynchronousTaskManager(void);
                     //! Standard destructor.

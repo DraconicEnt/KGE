@@ -11,6 +11,7 @@
 
 #include <support/common.hpp>
 #include <support/support.hpp>
+#include <support/ISingleton.hpp>
 
 namespace Kiaro
 {
@@ -27,7 +28,7 @@ namespace Kiaro
          *  @brief The SRenderer is a singleton used to control the core aspects of graphical output of the engine.
          *  It provides an interface for windowing as well as code to deal with window events such as resizing.
          */
-        class SRenderer
+        class SRenderer : public Support::ISingleton<SRenderer>
         {
             // Public Members
             public:
@@ -61,15 +62,9 @@ namespace Kiaro
 
             // Public Methods
             public:
-                /**
-                 *  @brief Returns a pointer to the current SRender instance, creating a new one
-                 *  if necessary.
-                 *  @return A pointer to the current SRender singleton instance.
-                 */
-                static SRenderer* getPointer(void);
-                //! Destroys the SRenderer singleton instance.
-                static void destroy(void);
-
+                SRenderer(void);
+                ~SRenderer(void);
+                
                 //! Draws a single frame to the Allegro display.
                 void drawFrame(void);
 
@@ -96,11 +91,6 @@ namespace Kiaro
 
             // Private Methods
             private:
-                //! Parameterless constructor.
-                SRenderer(void);
-                //! Standard destructor.
-                ~SRenderer(void);
-
                 /**
                  *  @brief Initializes the GUI subsystem and returns a status code.
                  *  @return A Common::S32 representing the status code of GUI initialization.

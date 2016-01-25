@@ -22,7 +22,7 @@
 
 #include <support/support.hpp>
 #include <support/common.hpp>
-
+#include <support/ISingleton.hpp>
 #include <support/UnorderedSet.hpp>
 
 namespace Kiaro
@@ -125,7 +125,7 @@ namespace Kiaro
          *  of the main thread, hence the name SSynchronousScheduler. In contrast, there is the SAsynchronousScheduler
          *  for accurate timings.
          */
-        class SSynchronousScheduler
+        class SSynchronousScheduler : public ISingleton<SSynchronousScheduler>
         {
             // Private Members
             private:
@@ -186,24 +186,6 @@ namespace Kiaro
                  *  per main loop iteration.
                  */
                 void update(void);
-
-                /**
-                 *  @brief Static method to retrieve a pointer to the SSynchronousScheduler singleton.
-                 *  @return A pointer to the currently active SSynchronousScheduler singleton.
-                 */
-                static SSynchronousScheduler* getPointer(void);
-
-                /**
-                 *  @brief Static method used to destroy the SSynchronousScheduler singleton.
-                 */
-                static void destroy(void);
-
-            // Private Methods
-            private:
-                //! Standard Constructor.
-                SSynchronousScheduler(void) { }
-                //! Standard Destructor.
-                ~SSynchronousScheduler(void) { }
         };
     } // End NameSpace Support
 } // End NameSpace Kiaro

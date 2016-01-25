@@ -15,25 +15,6 @@ namespace Kiaro
 {
     namespace Support
     {
-        static SSettingsRegistry* sInstance = nullptr;
-
-        SSettingsRegistry* SSettingsRegistry::getPointer(void)
-        {
-            if (!sInstance)
-                sInstance = new SSettingsRegistry();
-
-            return sInstance;
-        }
-
-        void SSettingsRegistry::destroy(void)
-        {
-            if (sInstance)
-            {
-                delete sInstance;
-                sInstance = NULL;
-            }
-        }
-
         void SSettingsRegistry::setDefaultValues(void)
         {
             this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));

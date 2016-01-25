@@ -10,25 +10,6 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SSynchronousTaskManager* sInstance = nullptr;
-
-            SSynchronousTaskManager* SSynchronousTaskManager::getPointer(void)
-            {
-                if (!sInstance)
-                    sInstance = new SSynchronousTaskManager;
-
-                return sInstance;
-            }
-
-            void SSynchronousTaskManager::destroy(void)
-            {
-                if (sInstance)
-                {
-                    delete sInstance;
-                    sInstance = NULL;
-                }
-            }
-
             void SSynchronousTaskManager::tick(const Common::F32& deltaTime)
             {
                 for (auto it = mTaskList.begin(); it != mTaskList.end(); it++)

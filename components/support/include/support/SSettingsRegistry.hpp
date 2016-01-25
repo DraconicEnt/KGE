@@ -17,6 +17,7 @@
 #include <support/String.hpp>
 #include <support/UnorderedMap.hpp>
 #include <support/Tuple.hpp>
+#include <support/ISingleton.hpp>
 
 namespace Kiaro
 {
@@ -27,7 +28,7 @@ namespace Kiaro
          *  representing a central repository for operational parameters of the engine as a whole. This includes the
          *  config file saving & loading components of the engine.
          */
-        class SSettingsRegistry
+        class SSettingsRegistry : public Support::ISingleton<SSettingsRegistry>
         {
             // Private Members
             private:
@@ -41,9 +42,9 @@ namespace Kiaro
                  *  necessary before returning.
                  *  @return A pointer to the SSettingsRegistry instance.
                  */
-                static SSettingsRegistry* getPointer(void);
+               // static SSettingsRegistry* getPointer(void);
                 //! Destroys the singleton instance, if available.
-                static void destroy(void);
+               // static void destroy(void);
 
                 /**
                  *  @brief Initializes and sets defaults for all of the settings kept in the settings
@@ -130,7 +131,7 @@ namespace Kiaro
                 }
 
             // Private Methods
-            private:
+            public:
                 //! Parameter-less constructor.
                 SSettingsRegistry(void);
                 //! Standard destructor.

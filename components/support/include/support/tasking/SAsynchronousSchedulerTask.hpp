@@ -15,9 +15,7 @@
 #include <easydelegate/easydelegate.hpp>
 
 #include <support/common.hpp>
-
 #include <support/support.hpp>
-
 #include <support/tasking/ITask.hpp>
 
 namespace Kiaro
