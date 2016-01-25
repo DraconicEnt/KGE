@@ -1,12 +1,12 @@
 /**
  *  @file SAsynchronousTaskManager.hpp
- *  @brief Include file declaring the Support::Tasking::SAsynchrnousTaskManager singleton type.
+ *  @brief Include file declaring the Support::Tasking::SAsynchronousTaskManager singleton type.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_SASYNCHRONOUSTASKMANAGER_HPP_

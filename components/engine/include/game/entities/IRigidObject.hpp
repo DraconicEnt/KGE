@@ -8,7 +8,7 @@
  *  @author Draconic Entertainment
  *  @version 0.1.0
  *  @date 12/23/2013
- *  @copyright (c) 2013 Draconic Entertainment
+ *  @copyright (c) 2016 Draconic Entertainment
  */
 
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_RIGIDOBJECTBASE_HPP_

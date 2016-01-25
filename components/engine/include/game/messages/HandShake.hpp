@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_GAME_MESSAGES_HANDSHAKE_HPP_

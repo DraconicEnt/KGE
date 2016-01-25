@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_SUPPORT_TIME_HPP_

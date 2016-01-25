@@ -1,7 +1,14 @@
 /**
  *  @file COutgoingClient.hpp
+ *  @brief Include file declaring the COutgoingClient class.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
-
+ 
 #ifndef _INCLUDE_CORE_COUTGOINGCLIENT_HPP_
 #define _INCLUDE_CORE_COUTGOINGCLIENT_HPP_
 

@@ -8,7 +8,7 @@
  *  @author Robert MacGregor
  *  @ref http://stackoverflow.com/questions/7858817/unpacking-a-tuple-to-call-a-matching-function-pointer
  *
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_SUPPORT_SSYNCHRONOUSSCHEDULER_HPP_

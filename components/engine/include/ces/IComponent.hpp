@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @copyright (c) 2016 Draconic Entertainment
  */
 
 #ifndef _INCLUDE_KIARO_CES_COMPONENTBASE_H_
