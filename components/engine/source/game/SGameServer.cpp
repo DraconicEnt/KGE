@@ -57,10 +57,7 @@ namespace Kiaro
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
             mSimulation = new Phys::CSimulation();
-            
-            Entities::CTerrain* terrain = new Entities::CTerrain("textures/terrain-heightmap.bmp");
-            terrain->registerEntity();
-            
+                        
             // Add our update to the scheduler
             mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
         }
