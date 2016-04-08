@@ -47,21 +47,16 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
     // Should we display the help info?
     if (commandLineParser.hasFlag("-h"))
         commandLineParser.displayHelp(argc, argv);
-    // Print the version information?
     else if (commandLineParser.hasFlag("-v"))
         Support::Console::writef(Support::Console::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
-
-    // Run the thing?
     else if (commandLineParser.hasFlag("-game"))
     {
-        const Support::Vector<Support::String> gameArguments = commandLineParser.getFlagArguments("-game");
+        const Support::Vector<Support::String>& gameArguments = commandLineParser.getFlagArguments("-game");
 
         if (gameArguments.size() != 1)
         {
             Support::Console::write(Support::Console::MESSAGE_FATAL, "No game specified.\n");
             commandLineParser.displayHelp(argc, argv);
-
-            // FIXME (Robert MacGregor#9): Segfault upon exit?
             return -1;
         }
 
@@ -114,6 +109,5 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Nothing to do.");
 
     Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Exited successfully.");
-
     return 0;
 }

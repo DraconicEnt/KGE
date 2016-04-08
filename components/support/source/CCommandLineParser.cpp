@@ -15,13 +15,11 @@ namespace Kiaro
 {
     namespace Support
     {
-        CommandLineParser::CommandLineParser(Common::S32 argc, Common::C8 **argv) : mCurrentLongestFlagLength(0)
+        CommandLineParser::CommandLineParser(Common::S32 argc, Common::C8** argv) : mArgv(argv), mArgc(argc),
+        mCurrentLongestFlagLength(0)
         {
-            mArgv = argv;
-            mArgc = argc;
-
            	size_t currentFlagHash = 0;
-			const Common::C8 *currentFlagName = NULL;
+			const Common::C8* currentFlagName = NULL;
 
             for (size_t iteration = 1; iteration < argc; iteration++)
 				if (argv[iteration][0] == '-')
@@ -38,35 +36,22 @@ namespace Kiaro
 
         CommandLineParser::~CommandLineParser(void) { }
 
-        bool CommandLineParser::hasFlag(const Common::C8 *flag)
+        bool CommandLineParser::hasFlag(const Common::C8* flag) const
         {
 			size_t flagHash = Support::getHashCode(flag);
-
-			try
-			{
-				// NOTE (Robert MacGregor#1): Testing the existence of our flag by purposely raising an exception
-				mFlags.at(flagHash);
-				return true;
-			}
-			catch (const std::out_of_range &e)
-			{
-				return false;
-			}
-
-			return false;
+			return mFlags.find(flagHash) != mFlags.end();
         }
 
-        Support::Vector<Support::String> CommandLineParser::getFlagArguments(const Common::C8 *targetFlag)
+        Support::Vector<Support::String> CommandLineParser::getFlagArguments(const Common::C8* targetFlag)
         {
             if (!this->hasFlag(targetFlag))
                 return Support::Vector<Support::String>();
 
             size_t flagHash = Support::getHashCode(targetFlag);
-
             return mFlags[flagHash];
         }
 
-        size_t CommandLineParser::getFlagArgumentCount(const Common::C8 *targetFlag)
+        size_t CommandLineParser::getFlagArgumentCount(const Common::C8* targetFlag)
         {
             if (!hasFlag(targetFlag))
                 return 0;
@@ -75,16 +60,16 @@ namespace Kiaro
 			return mFlags[flagHash].size();
         }
 
-        void CommandLineParser::setFlagDescription(const Support::String &flagName, const Support::String &description)
+        void CommandLineParser::setFlagDescription(const Support::String& flagName, const Support::String& description)
         {
             if (flagName.length() >= mCurrentLongestFlagLength)
                 mCurrentLongestFlagLength = flagName.length();
 
             const size_t flagNameHash = Support::getHashCode(flagName);
-            mFlagDescriptions.insert(std::make_pair(flagNameHash, std::make_pair(flagName, description)));
+            mFlagDescriptions.insert({flagNameHash, {flagName, description}});
         }
 
-        void CommandLineParser::displayHelp(const Common::S32 &argc, Common::C8 *argv[])
+        void CommandLineParser::displayHelp(const Common::S32& argc, Common::C8* argv[])
         {
             std::cout << "You may run " << argv[0] << " with:" << std::endl;
 

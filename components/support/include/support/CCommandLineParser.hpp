@@ -50,7 +50,7 @@ namespace Kiaro
                  *  @param flag A Kiaro::String representing the flag name to test for.
                  *  @return A boolean representing whether or not the CommandLineParser had the flag.
                  */
-                bool hasFlag(const Common::C8* flagName);
+                bool hasFlag(const Common::C8* flagName) const;
 
                 /**
                  *  @brief Returns a Support::Vector containg all arguments for the given flag name.
