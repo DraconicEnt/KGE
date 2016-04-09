@@ -13,7 +13,7 @@ namespace Kiaro
         namespace File
         {
             MemoryMappedFile::MemoryMappedFile(const Support::String& filepath, const ACCESS_MODE& mode) : mAddress(nullptr),
-            mLength(0), mFilePath(filepath), mAccessMode(mode), mOffset(0)
+            mLength(0), mFilePath(filepath), mAccessMode(mode), mOffset(0), mHandle(nullptr)
             {
 
             }

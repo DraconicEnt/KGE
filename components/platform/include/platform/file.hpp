@@ -14,6 +14,7 @@ namespace Kiaro
     {
         namespace File
         {
+            //! File access mode.
             enum ACCESS_MODE
             {
                 READ = 1,
@@ -21,6 +22,11 @@ namespace Kiaro
                 APPEND = 4,
             };
 
+            /**
+             *  @brief Determines whether or not a file by the given name exists.
+             *  @param filename The path to the file to check.
+             *  @return A boolean representing whether or not that file exists.
+             */
             static bool exists(const Support::String& filename)
             {
                 FILE* handle = fopen(filename.data(), "r");
@@ -44,9 +50,13 @@ namespace Kiaro
                     //! The length of the mapped memory space.
                     size_t mLength;
 
+                    //! The file that this memory is mapped to.
                     const Support::String mFilePath;
+
+                    //! The access mode bitmask in use for this.
                     const ACCESS_MODE mAccessMode;
 
+                    //! The offset into the file to map out.
                     size_t mOffset;
 
                 public:
@@ -59,6 +69,9 @@ namespace Kiaro
                     //! Standard destructor.
                     ~MemoryMappedFile(void);
 
+                    /**
+                     *  @brief Opens up the file to be mapped into memory.
+                     */
                     void open(void);
                     void close(void);
 

@@ -16,6 +16,8 @@ namespace Kiaro
         {
             void MemoryMappedFile::open(void)
             {
+                this->close();
+
                 if (File::exists(mFilePath))
                     mHandle = fopen(mFilePath.data(), "r+");
                 else
@@ -30,12 +32,11 @@ namespace Kiaro
 
                 mLength = mLength == 0 ? fileLength : mLength;
 
-                char nullBytes[1] = { 0x00 };
+                const char nullBytes = 0x00;
                 if (fileLength < mLength)
                 {
-                    fwrite(nullBytes, 1, mLength - fileLength, mHandle);
-                    fclose(mHandle);
-                    mHandle = fopen(mFilePath.data(), "r+");
+                    fwrite(&nullBytes, 1, mLength - fileLength, mHandle);
+                    fflush(mHandle);
                 }
 
                 int protection = 0;
@@ -45,6 +46,12 @@ namespace Kiaro
                     protection |= PROT_READ;
 
                 mAddress = mmap(nullptr, mLength, protection, MAP_SHARED, fileno(mHandle), mOffset);
+
+                if (!mAddress)
+                {
+                    this->close();
+                    throw std::runtime_error("Unable to obtain mapped memory from kernel!");
+                }
             }
 
             void MemoryMappedFile::close(void)
