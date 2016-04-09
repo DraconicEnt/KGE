@@ -14,7 +14,7 @@
 
 #include <support/tasking/ITask.hpp>
 
-#include <support/support.hpp>
+#include <support/types.hpp>
 #include <support/ISingleton.hpp>
 
 namespace Kiaro

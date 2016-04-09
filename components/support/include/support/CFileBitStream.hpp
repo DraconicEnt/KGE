@@ -12,7 +12,6 @@
 #ifndef _INCLUDE_SUPPORT_FILEBITSTREAM_HPP_
 #define _INCLUDE_SUPPORT_FILEBITSTREAM_HPP_
 
-#include <support/support.hpp>
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
@@ -27,32 +26,12 @@ namespace Kiaro
             BITSTREAM_APPEND = 4,
         };
 
-        class FileBitStream
+        class CFileBitStream
         {
             // Public Members
             public:
-                FileBitStream(const Support::String &fileName, const BITSTREAM_MODE &fileMode);
-                ~FileBitStream(void);
-
-                template <typename returnType>
-                returnType copy(void)
-                {
-                    if (mFileHandle)
-                    {
-                        returnType result;
-                        const size_t outDataLength = sizeof(returnType);
-
-                        //if (outDataLength > mDataPointer)
-                        //    throw std::out_of_range("FileBitStream: Attempted to read out of range");
-
-                        //mDataPointer -= outDataLength;
-                        PHYSFS_read(mFileHandle, &result, outDataLength, 1);
-
-                        return result;
-                    }
-
-                    throw std::logic_error("FileBitStream: Attempted to copy without a file handle!");
-                }
+                CFileBitStream(const Support::String &fileName, const BITSTREAM_MODE &fileMode);
+                ~CFileBitStream(void);
 
             // Private Members
             private:

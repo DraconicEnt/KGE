@@ -17,8 +17,8 @@
 
 #include <physfs.h>
 
-#include <support/support.hpp>
 #include <support/common.hpp>
+#include <support/String.hpp>
 
 namespace Kiaro
 {
@@ -46,7 +46,7 @@ namespace Kiaro
 
                 //! A boolean representing whether or not this bit stream owns the memory block pointed to by mMemoryBlock.
                 bool mOwnsMemoryBlock;
-                
+
             // Public methods
             public:
                 /**
@@ -91,19 +91,19 @@ namespace Kiaro
                  *  @param in A pointer to the input ISerializable object to pack.
                  */
                 void write(const ISerializable* in);
-                
+
                 void writeString(std::string string);
-                
+
                 void writeString(const Common::C8* string);
-                
+
                 const Common::C8* topString(void);
-                
+
                 const Common::C8* popString(void);
 
                 /**
                  *  @brief Returns a reference to the next primitive value in the stream while also making
-                 *  it the new top of the stream. 
-                 *  @details Data that that was once previously at the top is untouched as the internal state is just a 
+                 *  it the new top of the stream.
+                 *  @details Data that that was once previously at the top is untouched as the internal state is just a
                  *  pointer into the memory block that's advanced for each pop and write.
                  */
                 template <typename outType>
@@ -120,7 +120,7 @@ namespace Kiaro
                 /**
                  *  @brief Returns a reference to what is currently at the top of the stream without modifiying the
                  *  internal stream state.
-                 *  @return A reference to an arbitrary primitive value desiginated by the template parameter read 
+                 *  @return A reference to an arbitrary primitive value desiginated by the template parameter read
                  *  from the top of the stream.
                  */
                 template <typename outType>
@@ -200,19 +200,19 @@ namespace Kiaro
                  *  @return A reference to the internally stored stream index pointer.
                  */
                 const size_t& getPointer(void);
-                
+
                 /**
                  *  @brief Returns a pointer to the internal memory block that this bit stream is using.
                  *  @return A pointer to the internal memory block.
                  */
                 void* getBlock(void);
-                
+
                 /**
                  *  @brief Sets the current location of the stream pointer.
                  *  @param pointer The new pointer value to use.
                  */
                 void setPointer(const size_t& pointer);
-                
+
                 const size_t& getSize(void) const;
         };
 
@@ -226,17 +226,17 @@ namespace Kiaro
             public:
                 //! Parameter-less constructor.
                 ISerializable(void) { }
-                
+
                 /**
                  *  @brief Constructor accepting an input bit stream.
-                 * 
+                 *
                  *  @details When constructed in this manner, the ISerializableObject is to unpack a full set of instantiation data from
                  *  the stream which is promptly written to the appropriate member fields. This would be the full set of data that is initially
                  *  sent to a remote client to notify about the existence of a given game object.
                  *  @param in The input bit stream.
                  */
                 ISerializable(Support::CBitStream& in) { this->unpack(in); }
-                
+
                 virtual void packEverything(Support::CBitStream& out) const = 0;
 
                 virtual void unpack(Support::CBitStream& in) { }

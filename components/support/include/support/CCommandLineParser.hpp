@@ -16,7 +16,7 @@
 #include <support/Vector.hpp>
 #include <support/UnorderedMap.hpp> // std::unordered_map
 
-#include <support/support.hpp>
+#include <support/types.hpp>
 #include <support/common.hpp>
 
 namespace Kiaro
