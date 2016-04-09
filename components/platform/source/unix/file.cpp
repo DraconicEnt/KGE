@@ -14,12 +14,6 @@ namespace Kiaro
     {
         namespace File
         {
-            MemoryMappedFile::MemoryMappedFile(const Support::String& filepath, const ACCESS_MODE& mode) : mAddress(nullptr),
-            mLength(0), mFilePath(filepath), mAccessMode(mode), mOffset(0)
-            {
-
-            }
-
             void MemoryMappedFile::open(void)
             {
                 if (File::exists(mFilePath))
@@ -63,11 +57,6 @@ namespace Kiaro
 
                 mHandle = nullptr;
                 mAddress = nullptr;
-            }
-
-            MemoryMappedFile::~MemoryMappedFile(void)
-            {
-                this->close();
             }
         }
     }
