@@ -60,10 +60,23 @@ namespace Kiaro
                 delete[] mMemoryBlock;
         }
 
-        void CBitStream::writeString(const Common::C8* string)
+        void CBitStream::writeString(const Common::C8* string, const size_t& length)
         {
+            // FIXME: The check below may cause a SIGSEGV if we're out on the heap
+
+            // Is it properly NULL terminated?
+            if (string[length] != 0x00)
+                throw std::runtime_error("Attempted to write bad string!");
+
             const size_t stringLength = strlen(string) + 1; // Account for the NULL as well
-            
+
+            if (stringLength - 1 != length)
+                throw std::runtime_error("Attempted to write a bad string!");
+
+            // Will the string fit?
+            if (mTotalSize - mPointer < stringLength + sizeof(size_t))
+                throw std::runtime_error("Cannot fit string into bit stream buffer!");
+
             // Write off the string length so we can properly unpack later
             this->write<size_t>(stringLength);
 
@@ -74,9 +87,9 @@ namespace Kiaro
             mPointer += stringLength;
         }
 
-        void CBitStream::writeString(std::string string)
+        void CBitStream::writeString(const std::string& string)
         {
-            this->writeString(string.data());
+            this->writeString(string.data(), string.length());
         }
 
         const Common::C8* CBitStream::popString(void)
@@ -87,7 +100,7 @@ namespace Kiaro
               //  throw std::underflow_error("Stack Underflow");
 
             const Common::C8* result = reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
-            
+
             mPointer += totalBytes;
             return result;
         }
@@ -145,11 +158,11 @@ namespace Kiaro
             // Update our pointer and size.
             mMemoryBlock = newBlock;
             mTotalSize = newSize;
-            
+
             // We definitely own this block now
             mOwnsMemoryBlock = true;
         }
-        
+
         template <>
         void CBitStream::write(const Common::Vector3DF& input)
         {
@@ -175,7 +188,7 @@ namespace Kiaro
         {
             in->packEverything(*this);
         }
-        
+
         const size_t& CBitStream::getSize(void) const
         {
             return mTotalSize;

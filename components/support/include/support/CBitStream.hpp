@@ -92,9 +92,9 @@ namespace Kiaro
                  */
                 void write(const ISerializable* in);
 
-                void writeString(std::string string);
+                void writeString(const std::string& string);
 
-                void writeString(const Common::C8* string);
+                void writeString(const Common::C8* string, const size_t& length);
 
                 const Common::C8* topString(void);
 

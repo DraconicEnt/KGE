@@ -71,7 +71,7 @@ namespace Kiaro
 
             // We wil have a memory block to use from the float stream
             CBitStream blockStream(floatStream.getBlock(), floatStream.getPointer());
-            
+
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
                 EXPECT_EQ(sFloatList[iteration], blockStream.pop<Common::F32>());
         }
@@ -112,18 +112,26 @@ namespace Kiaro
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
                 EXPECT_FALSE(strcmp(sStringList[iteration].data(), stream.popString()));
         }
-        
+
         TEST(BitStream, InvalidString)
         {
             CBitStream stream(256);
-            
+
             char payload[8];
-            for (Common::U32 iteration = 0; iteration < 8; iteration++)
-                payload[iteration] = 0x52;
-                
-            stream.writeString(payload);
-            
-            EXPECT_THROW(stream.popString(), std::runtime_error);
+            memset(payload, 0x58, 8);
+            payload[5] = 0x00;
+
+            // String isn't properly NULL terminated to be of this length
+            EXPECT_THROW(stream.writeString(payload, 8), std::runtime_error);
+            EXPECT_NO_THROW(stream.writeString(payload, 5));
+            EXPECT_EQ(6 + sizeof(size_t), stream.getPointer());
+        }
+
+        TEST(BitStream, LongString)
+        {
+            CBitStream stream(8);
+            const char* payload = "This string is too long to fit into our bit stream memory.";
+            EXPECT_THROW(stream.writeString(payload), std::runtime_error);
         }
     } // End Namespace Support
 } // End namespace Kiaro
