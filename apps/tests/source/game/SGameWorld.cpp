@@ -60,6 +60,11 @@ namespace Kiaro
                 {
 
                 }
+
+                size_t getRequiredMemory(void) const
+                {
+                    return 5;
+                }
         };
 
         class TestObject : public Game::IEngineObject

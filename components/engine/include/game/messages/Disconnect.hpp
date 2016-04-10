@@ -23,7 +23,7 @@ namespace Kiaro
     {
         class IIncomingClient;
     }
-    
+
     namespace Game
     {
         namespace Messages
@@ -56,7 +56,7 @@ namespace Kiaro
                         return sizeof(Common::U32);
                     }
 
-                    size_t getRequiredMemory(void)
+                    size_t getRequiredMemory(void) const
                     {
                         return mReason.length();
                     }

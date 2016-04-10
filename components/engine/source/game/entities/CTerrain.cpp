@@ -48,9 +48,9 @@ namespace Kiaro
             void CTerrain::packEverything(Support::CBitStream& out) const
             {
                 assert(mSceneNode);
-                
+
                 IEntity::packEverything(out);
-                
+
                 const Common::Vector3DF& position = mSceneNode->getPosition();
 
                 out.writeString(mTerrainFile);
@@ -60,7 +60,7 @@ namespace Kiaro
             void CTerrain::unpack(Support::CBitStream& in)
             {
                 mTerrainFile = in.popString();
-                
+
                 Common::Vector3DF position;
                 in >> position.X >> position.Y >> position.Z;
 
@@ -84,7 +84,7 @@ namespace Kiaro
                     terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 
                     mSceneNode = terrain;
-                    
+
                     IEntity::registerEntity();
                 }
                 else
@@ -99,6 +99,11 @@ namespace Kiaro
             void CTerrain::update(const Common::F32& deltaTimeSeconds)
             {
 
+            }
+
+            size_t CTerrain::getRequiredMemory(void) const
+            {
+                return sizeof(Common::F32) * 3;
             }
         } // End Namespace Entities
     } // End Namespace Game

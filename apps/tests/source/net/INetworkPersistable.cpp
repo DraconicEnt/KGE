@@ -12,9 +12,18 @@ namespace Kiaro
 {
     namespace Net
     {
+        class TestEntity : public Net::INetworkPersistable
+        {
+            public:
+                size_t getRequiredMemory(void) const
+                {
+                    return 2;
+                }
+        };
+
         TEST(INetworkPersistable, PropertyLocations)
         {
-            Net::INetworkPersistable networkedEntity;
+            TestEntity networkedEntity;
 
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
@@ -38,7 +47,7 @@ namespace Kiaro
 
         TEST(INetworkPersistable, IndirectPropertyWrite)
         {
-            Net::INetworkPersistable networkedEntity;
+            TestEntity networkedEntity;
 
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
@@ -54,7 +63,7 @@ namespace Kiaro
 
         TEST(INetworkPersistable, ReadTypes)
         {
-            Net::INetworkPersistable networkedEntity;
+            TestEntity networkedEntity;
 
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
@@ -70,7 +79,7 @@ namespace Kiaro
 
         TEST(INetworkPersistable, WriteTypes)
         {
-            Net::INetworkPersistable networkedEntity;
+            TestEntity networkedEntity;
 
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
@@ -90,8 +99,8 @@ namespace Kiaro
 
         TEST(INetworkPersistable, PackUnpack)
         {
-            Net::INetworkPersistable serverEntity;
-            Net::INetworkPersistable clientEntity;
+            TestEntity serverEntity;
+            TestEntity clientEntity;
 
             // A couple of networked values
             Common::F32 serverFloat = 3.14f;

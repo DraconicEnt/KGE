@@ -23,7 +23,7 @@ namespace Kiaro
     namespace Game
     {
         class IGameMode;
-        
+
         namespace Entities
         {
             class IEntity;
@@ -33,15 +33,15 @@ namespace Kiaro
         class SGameWorld : public Support::ISerializable
         {
             friend class Entities::IEntity;
-            
+
             // Private Members
             private:
                 Support::UnorderedSet<Entities::IEntity*> mEntities;
 
                 Entities::CSky* mSky;
-                
+
                 IGameMode* mGameMode;
-                
+
             // Public Members
             public:
                 typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
@@ -51,24 +51,25 @@ namespace Kiaro
             public:
                 static SGameWorld* getPointer(void);
                 static void destroy(void);
-                
+
                 void addEntity(Entities::IEntity* entity);
                 void removeEntity(Entities::IEntity* entity);
                 void removeEntity(const Common::U32& id);
-                
+
                 Entities::IEntity* getEntity(const Common::U32& id) const;
                 Entities::IEntity* getEntity(const Support::String& name) const;
 
                 void update(const Common::F32& deltaTimeSeconds);
                 void clear(void);
                 const Entities::CSky* getSky(void);
-                
+                size_t getRequiredMemory(void) const;
+
                 void packEverything(Support::CBitStream& out) const;
                 void unpack(Support::CBitStream& in);
-                
+
                 void setGameMode(IGameMode* game);
                 IGameMode* getGameMode(void);
-                
+
                 iterator begin(void);
                 const_iterator end(void);
 

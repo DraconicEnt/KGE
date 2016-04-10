@@ -24,7 +24,7 @@ namespace Kiaro
     {
         class IIncomingClient;
     }
-    
+
     namespace Game
     {
         namespace Messages
@@ -53,7 +53,7 @@ namespace Kiaro
 
                     Common::U32 getMinimumPacketPayloadLength(void);
 
-                    size_t getRequiredMemory(void);
+                    size_t getRequiredMemory(void) const;
             };
         } // End NameSpace Messages
     } // End NameSpace Game

@@ -217,7 +217,7 @@ namespace Kiaro
         };
 
         /**
-         *  @brief An interface class representing a non-primitive type that may be packed and unpacked from an arbitraryt
+         *  @brief An interface class representing a non-primitive type that may be packed and unpacked from an arbitrary
          *  bit stream.
          */
         class ISerializable
@@ -230,18 +230,34 @@ namespace Kiaro
                 /**
                  *  @brief Constructor accepting an input bit stream.
                  *
-                 *  @details When constructed in this manner, the ISerializableObject is to unpack a full set of instantiation data from
+                 *  @details When constructed in this manner, the ISerializable is to unpack a full set of instantiation data from
                  *  the stream which is promptly written to the appropriate member fields. This would be the full set of data that is initially
                  *  sent to a remote client to notify about the existence of a given game object.
                  *  @param in The input bit stream.
                  */
                 ISerializable(Support::CBitStream& in) { this->unpack(in); }
 
+                /**
+                 *  @brief Packs all data about this ISerializable into the CBitStream. This is usually required for
+                 *  new instantiations of objects.
+                 *  @param out The CBitStream to write into.
+                 */
                 virtual void packEverything(Support::CBitStream& out) const = 0;
 
-                virtual void unpack(Support::CBitStream& in) { }
+                /**
+                 *  @brief Unpacks a payload from the current position in the input bit stream for this
+                 *  ISerializable object.
+                 *  @param in The input CBitStream to unpack from.
+                 */
+                virtual void unpack(Support::CBitStream& in) = 0;
 
-                virtual size_t getRequiredMemory(void) const { }
+                /**
+                 *  @brief Returns the total number of bytes required to pack this ISerializable object
+                 *  into a CBitStream.
+                 *  @return The number of bytes required to have left in a CBitStream to be able to pack
+                 *  this ISerializable.
+                 */
+                virtual size_t getRequiredMemory(void) const = 0;
         };
     } // End NameSpace Support
 } // End nameSpace Kiaro

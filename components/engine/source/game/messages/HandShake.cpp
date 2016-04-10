@@ -46,7 +46,7 @@ namespace Kiaro
                 return (sizeof(Common::U32) * 2) + (sizeof(Common::U8) * 3);
             }
 
-            size_t HandShake::getRequiredMemory(void)
+            size_t HandShake::getRequiredMemory(void) const
             {
                 return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 2) + IMessage::getRequiredMemory();
             }
