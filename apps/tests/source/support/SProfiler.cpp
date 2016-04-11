@@ -28,6 +28,13 @@ namespace Kiaro
                 Support::SProfiler::destroy();
             }
 
+            TEST(SProfiler, BrokenBegin)
+            {
+                EXPECT_NO_THROW(PROFILER_BEGIN(TestScope));
+                EXPECT_THROW(PROFILER_BEGIN(TestScope), std::runtime_error);
+                Support::SProfiler::destroy();
+            }
+
             TEST(SProfiler, Measure)
             {
                 EXPECT_NO_THROW(PROFILER_BEGIN(TestScope));
