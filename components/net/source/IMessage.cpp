@@ -45,7 +45,7 @@ namespace Kiaro
             return sizeof(Common::U32) * 2;
         }
 
-        size_t IMessage::getRequiredMemory(void)
+        size_t IMessage::getRequiredMemory(void) const
         {
             return sizeof(Common::U32) * 2;
         }
