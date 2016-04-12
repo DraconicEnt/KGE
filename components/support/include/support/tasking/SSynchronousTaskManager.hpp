@@ -24,20 +24,47 @@ namespace Kiaro
     {
         namespace Tasking
         {
+            /**
+             *  @brief A task processor implementation that dispatches tasks within the context of the
+             *  main thread.
+             */
             class SSynchronousTaskManager : public Support::ISingleton<SSynchronousTaskManager>
             {
-                // Public Methods
-                public:
-                    void tick(const Common::F32 &deltaTime);
-                    bool addTask(ITask *task);
-                    bool removeTask(ITask *task);
-
-                    SSynchronousTaskManager(void);
-                    ~SSynchronousTaskManager(void);
-
                 // Private Members
                 private:
+                    //! A set of tasks to process.
                     Support::UnorderedSet<ITask *> mTaskList;
+
+                // Public Methods
+                public:
+                    /**
+                     *  @brief Ticks all tasks along, taking into consideration time passage where
+                     *  necessary.
+                     *  @param deltaTime The amount of time in seconds that has passed.
+                     */
+                    void tick(const Common::F32 &deltaTime);
+
+                    /**
+                     *  @brief Adds a new task to the task manager.
+                     *  @param task The task to add.
+                     *  @return A boolean representing whether or not the task was added successfully.
+                     *  @throw std::runtime_error Thrown when the input task is null.
+                     */
+                    bool addTask(ITask *task);
+
+                    /**
+                     *  @brief Removes a task from the task manager.
+                     *  @param task The task to remove.
+                     *  @return A boolean representing whether or not the task was added successfully.
+                     *  @throw std::runtime_error Thrown when the input task is null.
+                     */
+                    bool removeTask(ITask *task);
+
+                    //! Parameter-less constructor.
+                    SSynchronousTaskManager(void);
+
+                    //! Standard destructor.
+                    ~SSynchronousTaskManager(void);
             };
         } // End NameSpace Tasking
     } // End NameSpace Engine

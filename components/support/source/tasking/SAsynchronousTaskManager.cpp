@@ -1,6 +1,9 @@
 /**
  */
 
+#include <chrono>
+#include <thread>
+
 #include <support/Console.hpp>
 //#include <core/config.hpp>
 #include <support/SSettingsRegistry.hpp>
@@ -33,7 +36,7 @@ namespace Kiaro
                     context->mIsComplete = context->mTask->tick(0.00f);
                 }
             }
-            
+
             SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
             {
                 if (mPoolSize == 0)
@@ -66,7 +69,7 @@ namespace Kiaro
                 for (auto it = mIdleWorkers.begin(); it != mIdleWorkers.end(); it++)
                     delete (*it);
             }
-            
+
             void SAsynchronousTaskManager::tick(void)
             {
                 // If we've got any scheduled tasks, hand it off to some idle worker

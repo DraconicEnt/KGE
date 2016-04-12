@@ -2,6 +2,7 @@
  *
  */
 
+#include <support/Console.hpp>
 #include <support/tasking/SSynchronousTaskManager.hpp>
 
 namespace Kiaro
@@ -39,7 +40,7 @@ namespace Kiaro
 
             SSynchronousTaskManager::SSynchronousTaskManager(void)
             {
-                std::cout << "SSynchronousTaskManager: Initialized. " << std::endl;
+                CONSOLE_INFO("SSynchronousTaskManager: Initialized.");
             }
 
             SSynchronousTaskManager::~SSynchronousTaskManager(void)
