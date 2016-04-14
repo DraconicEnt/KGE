@@ -17,15 +17,21 @@ namespace Kiaro
 {
     namespace Support
     {
-        static SSynchronousScheduler* sInstance = NULL;
+        static SSynchronousScheduler* sInstance = nullptr;
 
-        CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring) : mInternalDeferredCaller(deferredCaller)
+        CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring) : mCancelled(false),
+        mTriggerTimeMS(Support::FTime::getSimTimeMilliseconds() + waitTimeMS), mInternalDeferredCaller(deferredCaller), mRecurring(recurring),
+        mWaitTimeMS(waitTimeMS)
         {
-            mTriggerTimeMS = Support::FTime::getSimTimeMilliseconds() + waitTimeMS;
 
-            mRecurring = recurring;
-            mWaitTimeMS = waitTimeMS;
-            mCancelled = false;
+        }
+
+        CScheduledEvent::~CScheduledEvent(void)
+        {
+            if (mInternalDeferredCaller)
+                delete mInternalDeferredCaller;
+
+            mInternalDeferredCaller = nullptr;
         }
 
         bool CScheduledEvent::shouldDispatch(const Common::U64& currentSimTimeMS)
@@ -73,20 +79,19 @@ namespace Kiaro
 
         CScheduledEvent* SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32& waitTimeMS, const bool& recurring)
         {
-            CScheduledEvent* event = new CScheduledEvent(deferredCaller, waitTimeMS, recurring);
-            mScheduledEventSet.insert(event);
-
-            return event;
+            return *mScheduledEventSet.insert(mScheduledEventSet.end(), new CScheduledEvent(deferredCaller, waitTimeMS, recurring));
         }
 
         void SSynchronousScheduler::update(void)
         {
             const Common::U64 currentSimTimeMS = Support::FTime::getSimTimeMilliseconds();
 
-            for (auto iterator = mScheduledEventSet.begin(); iterator != mScheduledEventSet.end(); iterator++)
+            Support::UnorderedSet<CScheduledEvent*> removedEvents;
+
+            for (auto it = mScheduledEventSet.begin(); it != mScheduledEventSet.end(); ++it)
             {
                 bool shouldRemoveCurrentEvent = false;
-                CScheduledEvent* currentEvent = *iterator;
+                CScheduledEvent* currentEvent = *it;
 
                 if (currentEvent->shouldDispatch(currentSimTimeMS))
                 {
@@ -100,12 +105,14 @@ namespace Kiaro
                 else if (currentEvent->isCancelled())
                     shouldRemoveCurrentEvent = true;
 
-                // FIXME: Breaks the iterator?
                 if (shouldRemoveCurrentEvent)
-                {
-                    mScheduledEventSet.erase(currentEvent);
-                    delete currentEvent;
-                }
+                    removedEvents.insert(*it);
+            }
+
+            for (auto it = removedEvents.begin(); it != removedEvents.end(); ++it)
+            {
+                mScheduledEventSet.erase(*it);
+                delete *it;
             }
         }
     } // End Namespace Support

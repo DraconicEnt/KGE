@@ -9,6 +9,9 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
+#include <chrono>
+#include <thread>
+
 #include <core/SEngineInstance.hpp>
 
 #include <video/SRenderer.hpp>
@@ -26,13 +29,13 @@
     #include <allegro5/allegro_osx.h>
 #endif
 
-#include <core/config.hpp>
 #include <support/tasking/SAsynchronousTaskManager.hpp>
 #include <support/tasking/SAsynchronousSchedulerTask.hpp>
 #include <filesystem/SResourceProvider.hpp>
 #include <input/SInputListener.hpp>
 #include <support/SSettingsRegistry.hpp>
 
+#include <core/config.hpp>
 #include <game/SGameServer.hpp>
 
 #include <net/IOutgoingClient.hpp>
@@ -46,6 +49,8 @@
 #include <support/Console.hpp>
 
 #include <core/COutgoingClient.hpp>
+
+#include <support/SProfiler.hpp>
 
 namespace Kiaro
 {
@@ -90,7 +95,7 @@ namespace Kiaro
 
         bool SEngineInstance::isDedicated(void)
         {
-            return mEngineMode & Kiaro::Core::MODE_DEDICATED;
+            return mEngineMode & MODE_DEDICATED;
         }
 
         Kiaro::Common::S32 SEngineInstance::start(const Common::S32& argc, Common::C8* argv[])
@@ -108,7 +113,7 @@ namespace Kiaro
             {
                 mRunning = false;
 
-                Support::Console::writef(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to mount game directory '%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
+                CONSOLE_ERRORF("'%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
                 return -1;
             }
             else
@@ -132,7 +137,7 @@ namespace Kiaro
                 return 3;
 
             // Only init sound if we're not a dedicated server.
-            if (mEngineMode != Kiaro::Core::MODE_DEDICATED)
+            if (mEngineMode != MODE_DEDICATED)
                 this->initializeSound();
 
             this->initializeNetwork();
@@ -208,20 +213,20 @@ namespace Kiaro
             // Catch if the netcode somehow doesn't initialize correctly.
             if (enet_initialize() < 0)
             {
-                Support::Console::write(Support::Console::MESSAGE_FATAL, "SEngineInstance: Failed to initialize the network!");
+                CONSOLE_ERROR("Failed to initialize the network!");
                 return 1;
             }
 
             // Initialize the client or server ends
             switch (mEngineMode)
             {
-                case Core::MODE_CLIENT:
+                case MODE_CLIENT:
                 {
                     mActiveClient = new COutgoingClient();
                     break;
                 }
 
-                case Core::MODE_CLIENTCONNECT:
+                case MODE_CLIENTCONNECT:
                 {
                     mActiveClient = new COutgoingClient();
                     mActiveClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
@@ -233,7 +238,7 @@ namespace Kiaro
                     break;
                 }
 
-                case Core::MODE_DEDICATED:
+                case MODE_DEDICATED:
                 {
                     Game::SGameServer::initialize();
                     break;
@@ -257,13 +262,15 @@ namespace Kiaro
                 #endif
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
+                    std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
+
                     Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
 
                     // Pump a time pulse at the scheduler
                     Support::SSynchronousScheduler::getPointer()->update();
 
                     // The GUI, video and sound systems run independently of our network time pulse
-                    if (mEngineMode == Core::MODE_CLIENT || mEngineMode == Core::MODE_CLIENTCONNECT)
+                    if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);

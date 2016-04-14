@@ -59,6 +59,8 @@ namespace Kiaro
                  */
                 CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring);
 
+                ~CScheduledEvent(void);
+
                 /**
                  *  @brief Returns whether or not the scheduled event should be dispatched given
                  *  the current time.

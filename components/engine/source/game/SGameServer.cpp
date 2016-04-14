@@ -16,6 +16,8 @@
 
 #include <support/Console.hpp>
 
+#include <support/SProfiler.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -57,7 +59,7 @@ namespace Kiaro
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
             mSimulation = new Phys::CSimulation();
-                        
+
             // Add our update to the scheduler
             mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
         }
@@ -67,31 +69,31 @@ namespace Kiaro
             // FIXME (Robert MacGregor#9): Call IServer destructor?
             delete mSimulation;
             mSimulation = nullptr;
-            
+
             mUpdatePulse->cancel();
             mUpdatePulse = nullptr;
         }
-        
+
         void SGameServer::onClientConnected(Net::IIncomingClient* client)
         {
             Net::IServer::onClientConnected(client);
-            
+
             this->initialScope(client);
         }
-        
+
         void SGameServer::initialScope(Net::IIncomingClient* client)
         {
             Game::Messages::Scope scope;
-            
+
             Game::SGameWorld* world = Game::SGameWorld::getPointer();
             for (auto it = world->begin(); it != world->end(); it++)
             {
                 Entities::IEntity* entity = *it;
-                
+
                 if (entity->mFlags & Entities::FLAG_SCOPING || entity->mFlags & Entities::FLAG_STATIC)
                     scope.add(entity);
             }
-            
+
             client->send(&scope, true);
         }
 
@@ -111,11 +113,12 @@ namespace Kiaro
 
         void SGameServer::update(void)
         {
+            PROFILER_BEGIN(Server);
             Net::IServer::update(0);
-
+            PROFILER_END(Server);
             //mCurrentGamemode->
         }
-        
+
         void SGameServer::onReceivePacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
             // The packet whose payload is in incomingStream can contain multiple messages.
@@ -124,14 +127,14 @@ namespace Kiaro
             {
                 Net::IMessage basePacket;
                 basePacket.unpack(incomingStream);
-                                
+
                 switch (basePacket.getType())
                 {
                     // Stageless messages
 
                     // If it's not any stageless message, then drop into the appropriate stage handler
                     default:
-                    {                        
+                    {
                         switch (sender->getConnectionStage())
                         {
                             case Net::STAGE_AUTHENTICATION:
@@ -139,7 +142,7 @@ namespace Kiaro
                                 this->processStageZero(basePacket, incomingStream, sender);
                                 break;
                             }
-                            
+
                             case Net::STAGE_LOADING:
                             {
                                 Support::Console::error("Unimplemented");
@@ -155,7 +158,7 @@ namespace Kiaro
                 }
             }
         }
-        
+
         void SGameServer::processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
             switch(header.getType())
@@ -183,7 +186,7 @@ namespace Kiaro
                     break;
                 }
 
-                // Out of stage message or a totally unknown message type                                                                                                                                                                           
+                // Out of stage message or a totally unknown message type
                 default:
                 {
                     // TODO (Robert MacGregor#9): IP Address

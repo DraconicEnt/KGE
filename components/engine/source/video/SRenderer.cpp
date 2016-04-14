@@ -35,6 +35,8 @@
 
 #include <core/SEngineInstance.hpp>
 
+#include <support/SProfiler.hpp>
+
 namespace Kiaro
 {
     namespace Video
@@ -52,7 +54,7 @@ namespace Kiaro
                 this->setResolution(resolution);
             }
         }
-        
+
         SRenderer::~SRenderer(void)
         {
             if (mIrrlichtDevice)
@@ -139,7 +141,7 @@ namespace Kiaro
             {
                 Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                 const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
-                
+
                 mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
             }
 
@@ -148,7 +150,7 @@ namespace Kiaro
 
             return 0;
         }
-        
+
         void SRenderer::setSceneGraph(CSceneGraph* graph)
         {
             if (mCurrentScene)
@@ -272,7 +274,7 @@ namespace Kiaro
                     }
                 }
         }
-        
+
         ALLEGRO_DISPLAY* SRenderer::getDisplay(void)
         {
             return mDisplay;
@@ -280,6 +282,8 @@ namespace Kiaro
 
         void SRenderer::drawFrame(void)
         {
+            PROFILER_BEGIN(Render);
+
             mVideo->beginScene(true, true, mClearColor);
 
             if (mCurrentScene)
@@ -291,6 +295,8 @@ namespace Kiaro
             al_flip_display();
 
             this->processWindowEvents();
+
+            PROFILER_END(Render);
         }
     } // End NameSpace Video
 } // End NameSpace Kiaro

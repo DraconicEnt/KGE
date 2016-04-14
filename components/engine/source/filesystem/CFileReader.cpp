@@ -15,23 +15,23 @@ namespace Kiaro
 {
     namespace FileSystem
     {
-        FileReadObject::FileReadObject(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data())), mIrrlichtPath(filename.data())
+        CFileReader::CFileReader(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data())), mIrrlichtPath(filename.data())
         {
             if (!mFileHandle)
                 throw std::logic_error(PHYSFS_getLastError());
         }
 
-        FileReadObject::~FileReadObject(void)
+        CFileReader::~CFileReader(void)
         {
             PHYSFS_close(mFileHandle);
         }
 
-        irr::s32 FileReadObject::read(void* buffer, irr::u32 sizeToRead)
-        {   
+        irr::s32 CFileReader::read(void* buffer, irr::u32 sizeToRead)
+        {
             return PHYSFS_read(mFileHandle, buffer, 1, sizeToRead);
         }
 
-        bool FileReadObject::seek(long finalPos, bool relativeMovement)
+        bool CFileReader::seek(long finalPos, bool relativeMovement)
         {
             if (relativeMovement)
                 finalPos += PHYSFS_tell(mFileHandle);
@@ -39,17 +39,17 @@ namespace Kiaro
             return PHYSFS_seek(mFileHandle, finalPos) != 0;
         }
 
-        long FileReadObject::getSize() const
+        long CFileReader::getSize() const
         {
             return PHYSFS_fileLength(mFileHandle);
         }
 
-        long FileReadObject::getPos() const
+        long CFileReader::getPos() const
         {
             return PHYSFS_tell(mFileHandle);
         }
 
-        const irr::io::path &FileReadObject::getFileName() const
+        const irr::io::path &CFileReader::getFileName() const
         {
             return mIrrlichtPath;
         }

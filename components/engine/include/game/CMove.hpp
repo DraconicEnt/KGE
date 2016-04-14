@@ -19,15 +19,15 @@ namespace Kiaro
                 Common::F32 mX;
                 Common::F32 mY;
                 Common::F32 mZ;
-                
+
                 bool mTriggers[9];
-            
+
             // Public Methods
             public:
                 CMove(void);
-                
+
                 void reset(void);
-                
+
                 void packEverything(Support::CBitStream& out) const;
 
                 void unpack(Support::CBitStream& in);
@@ -36,5 +36,4 @@ namespace Kiaro
         };
     }
 }
-
 #endif // _INCLUDE_GAME_CMOVE_HPP_

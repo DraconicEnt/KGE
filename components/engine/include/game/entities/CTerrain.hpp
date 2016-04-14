@@ -37,13 +37,28 @@ namespace Kiaro
                 TERRAIN_TERRAINFILE = 3,
             };
 
+            /**
+             *  @brief
+             */
             class CTerrain : public Kiaro::Game::Entities::IRigidObject
             {
                 // Public Methods
                 public:
+                    /**
+                     *  @brief Constructor accepting a path to a terrain file.
+                     *  @param terrainFile The path to the terrain file.
+                     */
                     CTerrain(const std::string& terrainFile);
+
+                    /**
+                     *  @brief Constructor accepting a CBitStream to unpack terrain
+                     *  instantiation data from. This will unpack a terrain file, position,
+                     *  etc.
+                     *  @param in The input CBitStream to instantiate from.
+                     */
                     CTerrain(Kiaro::Support::CBitStream& in);
 
+                    //! Standard destructor.
                     ~CTerrain(void);
 
                     virtual void packEverything(Kiaro::Support::CBitStream &out) const;
@@ -57,8 +72,10 @@ namespace Kiaro
 
                 // Private Members
                 private:
+                    //! The Irrlicht scene node associated with this terrain.
                     irr::scene::ITerrainSceneNode *mSceneNode;
 
+                    //! The path to the loaded terrain file.
                     std::string mTerrainFile;
 
                     static std::map<std::string, size_t> sNetworkedProperties;

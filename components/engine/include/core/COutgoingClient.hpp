@@ -8,7 +8,7 @@
  *  @author Robert MacGregor
  *  @copyright (c) 2016 Draconic Entity
  */
- 
+
 #ifndef _INCLUDE_CORE_COUTGOINGCLIENT_HPP_
 #define _INCLUDE_CORE_COUTGOINGCLIENT_HPP_
 
@@ -43,14 +43,32 @@ namespace Kiaro
                  *  when a connection to a remote host has failed.
                  */
                 virtual void onConnectFailed(void);
-                
+
                 void onAuthenticated(void);
-                                
+
+            // Protected Methods
             protected:
-                void processPacket(Support::CBitStream& incomingStream);
+                /**
+                 *  @brief Used internally by the COutGoingClient implementation to process client data
+                 *  in the context of stage zero.
+                 *  @param header The message header to consider when processing the input.
+                 *  @param incomingStream A CBitStream to unpack data from as necessary.
+                 */
                 void processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream);
+
+                /**
+                 *  @brief Used internally by the COutGoingClient implementation to process client data
+                 *  in the context of stage two.
+                 *  @param header The message header to consider when processing the input.
+                 *  @param incomingStream A CBitStream to unpack data from as necessary.
+                 */
                 void processStageTwo(const Net::IMessage& header, Support::CBitStream& incomingStream);
-                
+
+                /**
+                 *  @brief Called automatically by the networking subsystem when a packet has been
+                 *  received by some remote machine on the same network or outside of it.
+                 *  @param incomingStream A CBitStream to unpack data from as necessary.
+                 */
                 void onReceivePacket(Support::CBitStream& incomingStream);
         };
     } // End NameSpace Core

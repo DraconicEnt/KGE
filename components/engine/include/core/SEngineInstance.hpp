@@ -40,23 +40,25 @@ namespace Kiaro
     {
         class COutgoingClient;
 
-        //! An enumeration used to represent the possible modes of operation for the engine.
-        enum MODE_NAME
-        {
-            //! Start up using the regular start process. Cinamatics, main menu, etc.
-            MODE_CLIENT = 0,
-            //! Start up and immediately connect to some remote server as soon as possible.
-            MODE_CLIENTCONNECT = 1,
-            //! Run as a console-only server; pretty helpful for CLI only boxes.
-            MODE_DEDICATED = 2,
-        }; // End Enum ENGINE_MODE
-
         /**
          *  @brief The SEngineInstance class is the core of the entire game
          *  engine architecture.
          */
         class SEngineInstance
         {
+            // Public Members
+            public:
+                //! An enumeration used to represent the possible modes of operation for the engine.
+                enum MODE_NAME
+                {
+                    //! Start up using the regular start process. Cinamatics, main menu, etc.
+                    MODE_CLIENT = 0,
+                    //! Start up and immediately connect to some remote server as soon as possible.
+                    MODE_CLIENTCONNECT = 1,
+                    //! Run as a console-only server; pretty helpful for CLI only boxes.
+                    MODE_DEDICATED = 2,
+                }; // End Enum ENGINE_MODE
+
             // Public Methods
             public:
                 /**
