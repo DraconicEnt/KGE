@@ -39,11 +39,11 @@ namespace Kiaro
             void Scope::packEverything(Support::CBitStream& out) const
             {
                 IMessage::packEverything(out);
-                
+
                 out << static_cast<Common::U32>(mScoped.size());
 
-                for (auto it = mScoped.begin(); it != mScoped.end(); it++)
-                    (*it)->packEverything(out);
+                for (const Net::INetworkPersistable* currentPersistable: mScoped)
+                    currentPersistable->packEverything(out);
             }
 
             void Scope::unpack(Support::CBitStream& in)
@@ -55,7 +55,7 @@ namespace Kiaro
 
                 CONSOLE_DEBUG(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
 
-                for (Common::U32 iteration = 0; iteration < mScopedCount; iteration++)
+                for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
                 {
                     // Read off an ID and a type
                     Common::U32 netID = 0;
@@ -67,7 +67,7 @@ namespace Kiaro
                     {
                         case Game::Entities::ENTITY_TERRAIN:
                         {
-                            Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);                            
+                            Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);
                             break;
                         }
 
@@ -75,7 +75,7 @@ namespace Kiaro
                         {
                             Support::String message = "Scope: Invalid entity type to unpack: ";
                             message += type;
-                            
+
                             throw std::logic_error(message);
                             break;
                         }

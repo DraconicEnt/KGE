@@ -42,8 +42,8 @@ namespace Kiaro
             CONSOLE_INFO("Deinitializing game server ...");
 
             // Disconnect everyone
-            for (auto it = this->clientsBegin(); it != this->clientsEnd(); it++)
-                (*it)->disconnect("Server Shutdown");
+            for (IIncomingClient* currentClient: mConnectedClientSet)
+                currentClient->disconnect("Server Shutdown");
 
            // Game::SGameWorld::destroy();
 
@@ -59,8 +59,8 @@ namespace Kiaro
 
         void IServer::globalSend(IMessage* packet, const bool& reliable)
         {
-            for (auto it = mConnectedClientSet.begin(); it != mConnectedClientSet.end(); it++)
-                (*it)->send(packet, reliable);
+            for (IIncomingClient* currentClient: mConnectedClientSet)
+                currentClient->send(packet, reliable);
         }
 
         void IServer::update(const Common::F32& deltaTimeSeconds)

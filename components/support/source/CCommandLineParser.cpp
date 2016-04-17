@@ -21,7 +21,7 @@ namespace Kiaro
            	size_t currentFlagHash = 0;
 			const Common::C8* currentFlagName = NULL;
 
-            for (size_t iteration = 1; iteration < argc; iteration++)
+            for (size_t iteration = 1; iteration < argc; ++iteration)
 				if (argv[iteration][0] == '-')
 				{
 					currentFlagName = argv[iteration];
@@ -73,13 +73,13 @@ namespace Kiaro
         {
             std::cout << "You may run " << argv[0] << " with:" << std::endl;
 
-            for (auto it = mFlagDescriptions.begin(); it != mFlagDescriptions.end(); it++)
+            for (auto it = mFlagDescriptions.begin(); it != mFlagDescriptions.end(); ++it)
             {
                 Support::Pair<Support::String, Support::String> currentEntry = (*it).second;
 
                 std::cout << "  " << currentEntry.first;
 
-                for (size_t iteration = 0; iteration < (mCurrentLongestFlagLength + 1) - currentEntry.first.length(); iteration++)
+                for (size_t iteration = 0; iteration < (mCurrentLongestFlagLength + 1) - currentEntry.first.length(); ++iteration)
                     std::cout << " ";
 
                 std::cout << currentEntry.second << std::endl;

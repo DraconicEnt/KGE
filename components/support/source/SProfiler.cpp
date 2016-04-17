@@ -100,12 +100,8 @@ namespace Kiaro
         {
             Support::Set<std::pair<Support::String, Common::F32>> result;
 
-            for (auto it = mSampleNames.begin(); it != mSampleNames.end(); it++)
-            {
-                const Support::String& name= *it;
-
+            for (const std::string& name: mSampleNames)
                 result.insert(std::make_pair(name, this->getAverage(name)));
-            }
 
             return result;
         }

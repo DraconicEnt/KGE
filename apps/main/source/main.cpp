@@ -30,9 +30,9 @@ using namespace Kiaro;
  */
 Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 {
-    Support::Console::write(Support::Console::MESSAGE_INFO, "------------------------------------------------");
-    Support::Console::writef(Support::Console::MESSAGE_INFO, "Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
-    Support::Console::write(Support::Console::MESSAGE_INFO, "------------------------------------------------");
+    CONSOLE_INFO("------------------------------------------------");
+    CONSOLE_INFOF("Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+    CONSOLE_INFO("------------------------------------------------");
 
     // Create our parser as a pointer so we can destroy it when entering the engine
     Kiaro::Support::CommandLineParser commandLineParser(argc, argv);
@@ -48,14 +48,14 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
     if (commandLineParser.hasFlag("-h"))
         commandLineParser.displayHelp(argc, argv);
     else if (commandLineParser.hasFlag("-v"))
-        Support::Console::writef(Support::Console::MESSAGE_INFO, "Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
+        CONSOLE_INFOF("Engine Version %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
     else if (commandLineParser.hasFlag("-game"))
     {
         const Support::Vector<Support::String>& gameArguments = commandLineParser.getFlagArguments("-game");
 
         if (gameArguments.size() != 1)
         {
-            Support::Console::write(Support::Console::MESSAGE_FATAL, "No game specified.\n");
+            CONSOLE_ERROR("No game specified.");
             commandLineParser.displayHelp(argc, argv);
             return -1;
         }
@@ -66,7 +66,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Support::Vector<Support::String> addonList;
         if (commandLineParser.hasFlag("-addons") && commandLineParser.getFlagArgumentCount("-addons") == 0)
         {
-            Support::Console::write(Support::Console::MESSAGE_FATAL, "No addons specified.\n");
+            CONSOLE_ERROR("No addons specified.");
 
             commandLineParser.displayHelp(argc, argv);
             return -2;
@@ -74,10 +74,10 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         else if (commandLineParser.hasFlag("-addons"))
             addonList = commandLineParser.getFlagArguments("-addons");
 
-        Core::MODE_NAME engineMode = Core::MODE_CLIENT;
+        Core::SEngineInstance::MODE_NAME engineMode = Core::SEngineInstance::MODE_CLIENT;
 
         if (commandLineParser.hasFlag("-dedicated"))
-            engineMode = Core::MODE_DEDICATED;
+            engineMode = Core::SEngineInstance::MODE_DEDICATED;
 
         // Check for the -server <ip address> flag
         Support::String targetServerIP;
@@ -86,13 +86,13 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
             targetServerIP = commandLineParser.getFlagArguments("-server")[0];
             if (targetServerIP.empty())
             {
-                Support::Console::write(Support::Console::MESSAGE_FATAL, "No server specified.\n");
+                CONSOLE_ERROR("No server specified.");
 
                 commandLineParser.displayHelp(argc, argv);
                 return -3;
             }
 
-            engineMode = Core::MODE_CLIENTCONNECT;
+            engineMode = Core::SEngineInstance::MODE_CLIENTCONNECT;
         }
 
         // Create the Engine Instance
@@ -106,8 +106,8 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         Core::SEngineInstance::destroy();
     }
     else
-        Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Nothing to do.");
+        CONSOLE_INFO("Nothing to do.");
 
-    Support::Console::write(Support::Console::MESSAGE_INFO, "EngineMain: Exited successfully.");
+    CONSOLE_INFO("Exited successfully.");
     return 0;
 }

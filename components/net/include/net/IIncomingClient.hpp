@@ -36,6 +36,7 @@ namespace Kiaro
         {
             // Public Members
             public:
+                //! Are we currently connected somewhere?
                 bool mIsConnected;
 
             // Private Members
@@ -75,7 +76,7 @@ namespace Kiaro
                  */
                 void send(IMessage* message, const bool& reliable) NOTHROW;
 
-                bool getIsOppositeEndian(void) NOTHROW;
+                bool getIsOppositeEndian(void) const NOTHROW;
 
                 //! Disconnects this client from the server.
                 virtual void disconnect(const Support::String& reason);
@@ -85,14 +86,14 @@ namespace Kiaro
                  *  @return A Common::U16 representing the port number that this CIncomingClient is
                  *  connected on.
                  */
-                const Common::U16& getPort(void) NOTHROW;
+                const Common::U16& getPort(void) const NOTHROW;
 
                 /**
                  *  @brief Get the IP address that this CIncomingClient is connecting from.
                  *  @return A Common::U32 representing the IP address that this CIncomingClient is
                  *  connected from.
                  */
-                const Common::U32& getIPAddress(void) NOTHROW;
+                const Common::U32& getIPAddress(void) const NOTHROW;
 
                 /**
                  *  @brief Gets the IP address that this CIncomingClient is connecting on and
@@ -100,7 +101,7 @@ namespace Kiaro
                  *  @return A Common::String representing the dotted decimal notation of the
                  *  IP address that this CIncomingClient is connecting from.
                  */
-                Support::String getIPAddressString(void);
+                Support::String getIPAddressString(void) const;
 
                 /**
                  *  @brief Sets the current connection stage of this CIncomingClient.
@@ -117,7 +118,7 @@ namespace Kiaro
                  *  @return The current connection stage of this CIncomingClient.
                  *  @see mCurrentConnectionStage
                  */
-                const STAGE_NAME& getConnectionStage(void);
+                const STAGE_NAME& getConnectionStage(void) const;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

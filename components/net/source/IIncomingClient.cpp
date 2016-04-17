@@ -45,7 +45,7 @@ namespace Kiaro
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
 
-        bool IIncomingClient::getIsOppositeEndian(void)
+        bool IIncomingClient::getIsOppositeEndian(void) const
         {
             return mIsOppositeEndian;
         }
@@ -55,17 +55,17 @@ namespace Kiaro
             enet_peer_disconnect_later(mInternalClient, 0);
         }
 
-        const Common::U16& IIncomingClient::getPort(void)
+        const Common::U16& IIncomingClient::getPort(void) const
         {
             return mInternalClient->address.port;
         }
 
-        const Common::U32& IIncomingClient::getIPAddress(void)
+        const Common::U32& IIncomingClient::getIPAddress(void) const
         {
             return mInternalClient->address.host;
         }
 
-        Support::String IIncomingClient::getIPAddressString(void)
+        Support::String IIncomingClient::getIPAddressString(void) const
         {
             // TODO (Robert MacGregor#9): Make sure that the STL handles this correctly?
             Common::C8 temporaryBuffer[18];
@@ -79,7 +79,7 @@ namespace Kiaro
             mCurrentConnectionStage = in;
         }
 
-        const STAGE_NAME& IIncomingClient::getConnectionStage(void)
+        const STAGE_NAME& IIncomingClient::getConnectionStage(void) const
         {
             return mCurrentConnectionStage;
         }

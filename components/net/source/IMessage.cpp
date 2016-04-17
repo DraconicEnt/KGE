@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        IMessage::IMessage(const Common::U32& packetType, Support::CBitStream* received , IIncomingClient* sender) : mID(0),
+        IMessage::IMessage(const Common::U32& packetType, Support::CBitStream* received, IIncomingClient* sender) : mID(0),
         mType(packetType), mSender(sender)
         {
 

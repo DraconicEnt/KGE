@@ -9,6 +9,7 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
+#include <support/Console.hpp>
 #include <core/SEngineInstance.hpp>
 #include <video/CSceneGraph.hpp>
 
@@ -27,7 +28,7 @@ namespace Kiaro
             mRoot->remove();
             mRoot = NULL;
 
-            std::cout << "CSceneGraph: Destroyed a scene graph." << std::endl;
+            CONSOLE_INFO("Destroyed a scene graph.");
         }
 
         void CSceneGraph::add(irr::scene::ISceneNode *node)

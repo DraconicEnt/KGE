@@ -88,10 +88,9 @@ namespace Kiaro
 
             Support::UnorderedSet<CScheduledEvent*> removedEvents;
 
-            for (auto it = mScheduledEventSet.begin(); it != mScheduledEventSet.end(); ++it)
+            for (CScheduledEvent* currentEvent: mScheduledEventSet)
             {
                 bool shouldRemoveCurrentEvent = false;
-                CScheduledEvent* currentEvent = *it;
 
                 if (currentEvent->shouldDispatch(currentSimTimeMS))
                 {
@@ -106,13 +105,13 @@ namespace Kiaro
                     shouldRemoveCurrentEvent = true;
 
                 if (shouldRemoveCurrentEvent)
-                    removedEvents.insert(*it);
+                    removedEvents.insert(currentEvent);
             }
 
-            for (auto it = removedEvents.begin(); it != removedEvents.end(); ++it)
+            for (CScheduledEvent* currentEvent: removedEvents)
             {
-                mScheduledEventSet.erase(*it);
-                delete *it;
+                mScheduledEventSet.erase(currentEvent);
+                delete currentEvent;
             }
         }
     } // End Namespace Support

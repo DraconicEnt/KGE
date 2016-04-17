@@ -9,6 +9,7 @@
  *  @copyright (c) 2015 Draconic Entity
  */
 
+#include <support/Console.hpp>
 #include <video/CBulletDebugDrawer.hpp>
 
 namespace Kiaro
@@ -46,7 +47,7 @@ namespace Kiaro
 
         void CBulletDebugDrawer::reportErrorWarning(const char* warningString)
         {
-            std::cerr << "CBulletDebugDrawer: " << warningString << std::endl;
+            CONSOLE_WARNING(warningString);
         }
 
         void CBulletDebugDrawer::draw3dText(const btVector3& location,const char* textString)

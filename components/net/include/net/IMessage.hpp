@@ -37,7 +37,9 @@ namespace Kiaro
 
             // Private Members
             private:
+                //! The type identifier of this message.
                 Common::U32 mType;
+                //! The sequencing ID of this message.
                 Common::U32 mID;
 
             // Public Methods
@@ -46,7 +48,7 @@ namespace Kiaro
                  *  @brief Constructor that accepts a received netpacket from the underlaying networking subsystem.
                  *  @param received A packet from the internal networking subsystem to construct the class from.
                  */
-                IMessage(const Common::U32& packetType = 0, Support::CBitStream* received = NULL, IIncomingClient* sender = NULL);
+                IMessage(const Common::U32& packetType = 0, Support::CBitStream* received = nullptr, IIncomingClient* sender = nullptr);
 
                 virtual void packEverything(Support::CBitStream& out) const;
 

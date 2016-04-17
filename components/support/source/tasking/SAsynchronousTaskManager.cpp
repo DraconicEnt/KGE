@@ -45,7 +45,7 @@ namespace Kiaro
                     return;
                 }
 
-                for (Common::U8 iteration = 0; iteration < mPoolSize; iteration++)
+                for (Common::U8 iteration = 0; iteration < mPoolSize; ++iteration)
                 {
                     WorkerContext* currentWorker = new WorkerContext();
                     currentWorker->mTask = nullptr;
@@ -62,18 +62,18 @@ namespace Kiaro
             SAsynchronousTaskManager::~SAsynchronousTaskManager(void)
             {
                 // Kill any active workers
-                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
-                    delete (*it);
+                for (WorkerContext* worker: mActiveWorkers)
+                    delete worker;
 
                 // Kill inactive workers
-                for (auto it = mIdleWorkers.begin(); it != mIdleWorkers.end(); it++)
-                    delete (*it);
+                for (WorkerContext* worker: mIdleWorkers)
+                    delete worker;
             }
 
             void SAsynchronousTaskManager::tick(void)
             {
                 // If we've got any scheduled tasks, hand it off to some idle worker
-                for (size_t iteration = 0; iteration < mScheduledTasks.size() && iteration < mIdleWorkers.size(); iteration++)
+                for (size_t iteration = 0; iteration < mScheduledTasks.size() && iteration < mIdleWorkers.size(); ++iteration)
                 {
                     // TODO (Robert MacGregor#9): More efficiency?
                     WorkerContext* currentWorker = *mIdleWorkers.begin();
@@ -89,10 +89,7 @@ namespace Kiaro
                 }
 
                 // Do we have any tasks that have completed?
-                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
-                {
-                    WorkerContext* currentWorker = *it;
-
+                for (WorkerContext* currentWorker: mActiveWorkers)
                     if (currentWorker->mIsComplete)
                     {
                         // TODO (Robert MacGregor#9): Task completion notice?
@@ -102,7 +99,6 @@ namespace Kiaro
                         mActiveWorkers.erase(currentWorker);
                         mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                     }
-                }
             }
 
             const size_t SAsynchronousTaskManager::getIdleWorkerCount(void)
@@ -136,17 +132,13 @@ namespace Kiaro
                 if (!task)
                     throw std::runtime_error("SAsynchronousTaskManager: Cannot remove a NULL task.");
 
-                for (auto it = mActiveWorkers.begin(); it != mActiveWorkers.end(); it++)
-                {
-                    WorkerContext* worker = *it;
-
-                    if (worker->mTask == task)
+                for (WorkerContext* currentWorker: mActiveWorkers)
+                    if (currentWorker->mTask == task)
                     {
-                        worker->mIsComplete = true;
-                        worker->mTask = nullptr;
+                        currentWorker->mIsComplete = true;
+                        currentWorker->mTask = nullptr;
                         return true;
                     }
-                }
                 return false;
             }
         } // End NameSpace Tasking
