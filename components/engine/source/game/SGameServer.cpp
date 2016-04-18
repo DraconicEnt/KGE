@@ -67,6 +67,9 @@ namespace Kiaro
         SGameServer::~SGameServer(void)
         {
             // FIXME (Robert MacGregor#9): Call IServer destructor?
+            assert(mSimulation);
+            assert(mUpdatePulse);
+
             delete mSimulation;
             mSimulation = nullptr;
 
@@ -146,6 +149,7 @@ namespace Kiaro
                             case Net::STAGE_LOADING:
                             {
                                 Support::Console::error("Unimplemented");
+                                break;
                             }
 
                             default:

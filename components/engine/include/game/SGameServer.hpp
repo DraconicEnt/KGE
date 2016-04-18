@@ -52,16 +52,40 @@ namespace Kiaro
 
                 /**
                  *  @brief Sets the running gamemode of this server.
-                 *  @param game The game mode to use.
+                 *  @param game The game mode to use. If null, then no gamemode programming will be
+                 *  in use.
                  */
                 void setGamemode(IGameMode* game);
 
                 virtual void update(void);
 
+                /**
+                 *  @brief Called when the client passes the initial authentication stages.
+                 *  @param client The client that has passed the authentication process.
+                 */
                 void onClientConnected(Net::IIncomingClient* client);
 
+                /**
+                 *  @brief Called by the network component when a client first initiates a connection to the
+                 *  running game server.
+                 *  @param client The internal remote host context object that the network system created.
+                 *  Just pass this back into the appropriate network subsystem constructor.
+                 *  @return The newly created incoming client context.
+                 */
                 Net::IIncomingClient* onReceiveClientChallenge(Net::RemoteHostContext client);
 
+                /**
+                 *  @brief Produces a packet or series of packets whose purpose is to perform
+                 *  initial server state networking to synchronize basic elements such as advertising
+                 *  the existing of always-scoped objects such as the terrain.
+                 *  @details This method should generally only be used when a client first connects and
+                 *  passes the authentication stages for the first time or when a new map is loaded
+                 *  and clients need to be informed about the basic details of the currently loaded map.
+                 *
+                 *  The payload generated will include non-scoped and static objects and does not bother
+                 *  with trying to
+                 *  @param client The connected client to network this information to.
+                 */
                 void initialScope(Net::IIncomingClient* client);
 
             // Protected Methods

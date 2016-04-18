@@ -28,6 +28,11 @@ namespace Kiaro
             sObjectRegistry = nullptr;
         }
 
+        SObjectRegistry::~SObjectRegistry(void)
+        {
+            this->clear();
+        }
+
         bool SObjectRegistry::addObject(IEngineObject* object)
         {
             assert(object);
@@ -91,23 +96,18 @@ namespace Kiaro
 
         IEngineObject* SObjectRegistry::getObject(const Common::U32& id)
         {
-            if (id >= mObjects.size())
-                return nullptr;
-
-            return mObjects[id];
+            return id >= mObjects.size() ? nullptr : mObjects[id];
         }
 
         IEngineObject* SObjectRegistry::getObject(const Support::String& name)
         {
             auto it = mNameDictionary.find(name);
-            if (it == mNameDictionary.end())
-                return nullptr;
-
-            return (*it).second;
+            return it == mNameDictionary.end() ? nullptr : (*it).second;
         }
 
         void SObjectRegistry::clear(void)
         {
+            // Destroy each object in the registry and fill its spot with a null pointer
             for (IEngineObject*& object: mObjects)
             {
                 if (object)
@@ -115,11 +115,6 @@ namespace Kiaro
 
                 object = nullptr;
             }
-        }
-
-        SObjectRegistry::~SObjectRegistry(void)
-        {
-            this->clear();
         }
     }
 }
