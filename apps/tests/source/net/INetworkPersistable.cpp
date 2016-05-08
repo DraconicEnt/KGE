@@ -91,7 +91,7 @@ namespace Kiaro
             EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
             EXPECT_THROW(networkedEntity.setNetworkedPropertyValue<Common::U8>("float", 1), std::runtime_error);
             EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
-            EXPECT_THROW(networkedEntity.setNetworkedPropertyValue<Common::F64>("float", 6.19d), std::runtime_error);
+            EXPECT_THROW(networkedEntity.setNetworkedPropertyValue<Common::F64>("float", 6.19f), std::runtime_error);
             EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
             EXPECT_THROW(networkedEntity.setNetworkedPropertyValue<Common::U64>("float", 1337), std::runtime_error);
             EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
