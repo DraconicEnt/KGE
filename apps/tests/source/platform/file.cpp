@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <support/common.hpp>
-#include <platform/file.hpp>
+#include <support/platform/file.hpp>
 
 namespace Kiaro
 {

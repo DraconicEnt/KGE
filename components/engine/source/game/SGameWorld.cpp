@@ -107,7 +107,7 @@ namespace Kiaro
 
         void SGameWorld::packEverything(Support::CBitStream& out) const
         {
-			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+			for (Support::UnorderedSet<Game::Entities::IEntity*>::const_iterator it = mEntities.begin(); it != mEntities.end(); it++)
 				 (*it)->packEverything(out);
         }
 
