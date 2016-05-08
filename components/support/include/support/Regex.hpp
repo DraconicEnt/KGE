@@ -41,16 +41,16 @@ namespace Kiaro
 
         bool RegexMatch(const Support::String& input, const Support::Regex& pattern);
 
-        enum RegexConstants
-        {
-            #ifdef ENGINE_USE_BOOST_REGEX
-                Basic = boost::regex_constants::basic,
-                Extended = boost::regex_constants::extended,
-            #else
-                Basic = std::regex_constants::basic,
-                Extended = std::regex_constants::extended,
-            #endif
-        };
+		namespace RegexConstants
+		{
+			#ifdef ENGINE_USE_BOOST_REGEX
+			static const auto Basic = boost::regex_constants::basic;
+			static const auto Extended = boost::regex_constants::extended;
+			#else
+			static const auto Basic = std::regex_constants::basic;
+			static const auto Extended = std::regex_constants::extended;
+			#endif
+		}
     }
 }
 #endif // _INCLUDE_SUPPORT_REGEX_HPP_
