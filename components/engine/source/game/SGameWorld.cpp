@@ -42,9 +42,13 @@ namespace Kiaro
         void SGameWorld::update(const Common::F32& deltaTimeSeconds)
         {
             // FIXME: Implement bitmask checking for updated entities
-            for (Entities::IEntity* entity: mEntities)
-                if (entity && entity->mFlags & Entities::FLAG_UPDATING)
-                    entity->update(deltaTimeSeconds);
+			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+			{
+				Game::Entities::IEntity* entity = *it;
+
+				if (entity && entity->mFlags & Entities::FLAG_UPDATING)
+					entity->update(deltaTimeSeconds);
+			}
         }
 
         const Entities::CSky* SGameWorld::getSky(void)
@@ -55,8 +59,8 @@ namespace Kiaro
         void SGameWorld::clear(void)
         {
             // Destroy any existing entities and reset the ID tracker
-            for (Entities::IEntity* currentEntity: mEntities)
-                delete currentEntity;
+			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                delete *it;
 
             mEntities.clear();
         }
@@ -65,7 +69,7 @@ namespace Kiaro
         {
             assert(dynamic_cast<Entities::IEntity*>(entity));
 
-            auto it = mEntities.find(entity);
+			Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
 
             if (it == mEntities.end())
                 mEntities.insert(mEntities.end(), entity);
@@ -103,8 +107,8 @@ namespace Kiaro
 
         void SGameWorld::packEverything(Support::CBitStream& out) const
         {
-            for (Entities::IEntity* currentEntity: mEntities)
-                currentEntity->packEverything(out);
+			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+				 (*it)->packEverything(out);
         }
 
         void SGameWorld::unpack(Support::CBitStream& in)

@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_KIARO_ENGINE_COMMON_
 #define _INCLUDE_KIARO_ENGINE_COMMON_
 
+#include <cassert>
 #include <iostream>
 
 #include <math.h>
@@ -21,7 +22,11 @@
 #include <functional> // std::hash
 
 #include <irrlicht.h>
-#include <boost/unordered_map.hpp>
+
+//#include <boost/unordered_map.hpp>
+
+// Temporary Windows build work around
+#define _WINSOCKAPI_
 
 namespace Kiaro
 {
@@ -61,6 +66,9 @@ namespace Kiaro
         #else
             #define NOTHROW __attribute__((nothrow))
         #endif
+
+		#define NOEXCEPT 
+		#define CONSTEXPR
 
         #ifndef _ENGINE_USE_IRRLICHT_TYPES_
             #if defined(_MSC_VER) || (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)

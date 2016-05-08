@@ -46,7 +46,7 @@ namespace EasyDelegate
              *  @param isMemberDelegate A boolean representing whether or not this delegate
              *  is an instance of MemberDelegate.
              */
-            IDelegate(const bool& isMemberDelegate) noexcept : mIsMemberDelegate(isMemberDelegate) { }
+			IDelegate(const bool& isMemberDelegate) EASYDELEGATE_NOEXCEPT : mIsMemberDelegate(isMemberDelegate) { }
     };
 
     template <typename className, typename returnType, typename... parameters>
@@ -106,14 +106,14 @@ namespace EasyDelegate
              *  against the given this pointer.
              *  @note Always returns false because StaticDelegates don't use a this pointer.
              */
-            EASYDELEGATE_INLINE bool hasThisPointer(const void *thisPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasThisPointer(const void *thisPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this StaticDelegate calls the given static method.
              *  @param methodPointer A pointer to the static method to be checked against.
              *  @return A boolean representing whether or not this StaticDelegate calls the given static method.
              */
-            EASYDELEGATE_INLINE bool callsMethod(const MethodPointer methodPointer) const noexcept { return methodPointer == mMethodPointer; };
+			EASYDELEGATE_INLINE bool callsMethod(const MethodPointer methodPointer) const EASYDELEGATE_NOEXCEPT { return methodPointer == mMethodPointer; };
 
             /**
              *  @brief Returns whether or not this StaticDelegate calls the given class member method.
@@ -122,7 +122,7 @@ namespace EasyDelegate
              *  @note Always returns false because StaticDelegates don't call class member methods.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool callsMethod(const MemberMethodPointer<otherClass, otherReturn, otherParams...> methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const MemberMethodPointer<otherClass, otherReturn, otherParams...> methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this StaticDelegate calls the same method as the StaticDelegate
@@ -131,7 +131,7 @@ namespace EasyDelegate
              *  @return A boolean representing whether or not this StaticDelegate calls the same method as the
              *  StaticDelegate to check against.
              */
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const StaticDelegate<returnType, parameters...>* other) const noexcept { return other->mMethodPointer == mMethodPointer; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const StaticDelegate<returnType, parameters...>* other) const EASYDELEGATE_NOEXCEPT { return other->mMethodPointer == mMethodPointer; }
 
             /**
              *  @brief Returns whether or not this StaticDelegate calls against the same method as the MemberDelegate
@@ -141,7 +141,7 @@ namespace EasyDelegate
              *  share the same address.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const noexcept { return false;  }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this StaticDelegate calls against the same method as the StaticDelegate
@@ -152,7 +152,7 @@ namespace EasyDelegate
              *  sharing the same method.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const StaticDelegate<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const StaticDelegate<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this StaticDelegate uses the same this pointer as the MemberDelegate
@@ -163,7 +163,7 @@ namespace EasyDelegate
              *  @note Always returns false because StaticDelegates do not use this pointers.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this StaticDelegate uses the same this pointer as the StaticDelegate
@@ -174,7 +174,7 @@ namespace EasyDelegate
              *  @note Always returns false because StaticDelegates do not use this pointers.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const StaticDelegate<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const StaticDelegate<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
         private:
             //! Internal pointer to proc address to be called.
@@ -246,14 +246,14 @@ namespace EasyDelegate
              *  @return A boolean representing whether or not this MemberDelegate calls a member function
              *  against the given this pointer.
              */
-            EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const noexcept { return mThisPointer == thisPointer; }
+			EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const EASYDELEGATE_NOEXCEPT { return mThisPointer == thisPointer; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls the given class member method pointer.
              *  @param methodPointer A pointer to a class member method to be checked against.
              *  @return A boolean representing whether or not this MemberDelegate calls the given class method pointer.
              */
-            EASYDELEGATE_INLINE bool callsMethod(const MethodPointer methodPointer) const noexcept { return mMethodPointer == methodPointer; }
+			EASYDELEGATE_INLINE bool callsMethod(const MethodPointer methodPointer) const EASYDELEGATE_NOEXCEPT { return mMethodPointer == methodPointer; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls the given static method pointer.
@@ -262,7 +262,7 @@ namespace EasyDelegate
              *  @note Always returns false because a MemberDelegate will never be calling a static method.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool callsMethod(const StaticMethodPointer<otherReturn, otherParams...> methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const StaticMethodPointer<otherReturn, otherParams...> methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this MemeberDelegate calls the given static method address.
@@ -270,14 +270,14 @@ namespace EasyDelegate
              *  @return A boolean representing whether or not this delegate calls the given proc address.
              *  @note Always returns false because a static method cannot be invoked by a MemberDelegate.
              */
-            EASYDELEGATE_INLINE bool callsMethod(const typename ITypedDelegate<returnType, parameters...>::StaticMethodPointerType methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const typename ITypedDelegate<returnType, parameters...>::StaticMethodPointerType methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls the same method as the other MemberDelegate.
              *  @param other The other MemberDelegate pointer to compare against.
              *  @return A boolean representing whether or not both MemberDelegate instances share the same method.
              */
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const MemberDelegate<classType, returnType, parameters...>* other) const noexcept { return other->mMethodPointer == mMethodPointer; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const MemberDelegate<classType, returnType, parameters...>* other) const EASYDELEGATE_NOEXCEPT { return other->mMethodPointer == mMethodPointer; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls the same method as the other of a deferring
@@ -289,7 +289,7 @@ namespace EasyDelegate
              *  methods should never share the same address.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const noexcept { return false;  }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls the same method as the StaticDelegate
@@ -300,7 +300,7 @@ namespace EasyDelegate
              *  @note Always returns false because MemberDelegate types cannot call static methods.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const StaticDelegate<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const StaticDelegate<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls against the same this pointer as the
@@ -311,7 +311,7 @@ namespace EasyDelegate
              *  @note Always returns false because StaticDelegate types do not use this pointers.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const StaticDelegate<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const StaticDelegate<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this MemberDelegate calls against the same this pointer as the
@@ -321,7 +321,7 @@ namespace EasyDelegate
              *  this pointer as the other.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const noexcept { return reinterpret_cast<void*>(mThisPointer) == reinterpret_cast<void*>(other->mThisPointer); }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const MemberDelegate<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return reinterpret_cast<void*>(mThisPointer) == reinterpret_cast<void*>(other->mThisPointer); }
 
         // Public Members
         public:
@@ -366,7 +366,7 @@ namespace EasyDelegate
              *  @param isMemberDelegate A boolean representing whether or not this delegate is a
              *  member delegate.
              */
-            ITypedDelegate(const bool& isMemberDelegate) noexcept : IDelegate(isMemberDelegate) { }
+			ITypedDelegate(const bool& isMemberDelegate) EASYDELEGATE_NOEXCEPT : IDelegate(isMemberDelegate) { }
 
             /**
              *  @brief Returns whether or not this delegate calls the given static method.
@@ -375,7 +375,7 @@ namespace EasyDelegate
              *  @note Always returns false for MemeberDelegate types because a MemberDelegate cannot invoke static
              *  functions.
              */
-            virtual bool callsMethod(const StaticMethodPointerType methodPointer) const noexcept = 0;
+			virtual bool callsMethod(const StaticMethodPointerType methodPointer) const EASYDELEGATE_NOEXCEPT = 0;
 
             /**
              *  @brief Returns whether or not this delegate calls the given class member method address.
@@ -388,7 +388,7 @@ namespace EasyDelegate
              *  call member functions.
              */
             template <typename className>
-            bool callsMethod(const MemberDelegateFuncPtr<className> methodPointer) const noexcept
+            bool callsMethod(const MemberDelegateFuncPtr<className> methodPointer) const EASYDELEGATE_NOEXCEPT
             {
                 // Don't try to check as a MemberDelegate if we're not actually one
                 if (!mIsMemberDelegate)
@@ -406,7 +406,7 @@ namespace EasyDelegate
              *  against the given this pointer.
              *  @note Always returns false for StaticDelegate types because they do not use a this pointer.
              */
-            virtual bool hasThisPointer(const void* thisPointer) const noexcept = 0;
+			virtual bool hasThisPointer(const void* thisPointer) const EASYDELEGATE_NOEXCEPT = 0;
 
             /**
              *  @brief Invoke the delegate with the given arguments and return a value, if any.

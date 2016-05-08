@@ -79,7 +79,7 @@ namespace Kiaro
                  *  This is the base declaration that resolves to PROPERTY_UNKNOWN which is an error state.
                  */
                 template <typename propertyType>
-                struct TypeIDResolver { static constexpr PROPERTY_TYPE value = PROPERTY_UNKNOWN; };
+                struct TypeIDResolver { static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_UNKNOWN; };
 
             // Private Members
             private:
@@ -208,35 +208,35 @@ namespace Kiaro
          *  This is an explicit declaration for the Common::F32 type.
          */
         template <>
-        struct INetworkPersistable::TypeIDResolver<Common::F32> { static constexpr PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F32; };
+		struct INetworkPersistable::TypeIDResolver<Common::F32> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F32; };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::F64 type.
          */
         template <>
-        struct INetworkPersistable::TypeIDResolver<Common::F64> { static constexpr PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F64; };
+		struct INetworkPersistable::TypeIDResolver<Common::F64> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F64; };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::U32 type.
          */
         template <>
-        struct INetworkPersistable::TypeIDResolver<Common::U32> { static constexpr PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U32; };
+		struct INetworkPersistable::TypeIDResolver<Common::U32> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U32; };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::U64 type.
          */
         template <>
-        struct INetworkPersistable::TypeIDResolver<Common::U64> { static constexpr PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U64; };
+		struct INetworkPersistable::TypeIDResolver<Common::U64> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U64; };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::U8 type.
          */
         template <>
-        struct INetworkPersistable::TypeIDResolver<Common::U8> { static constexpr PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U8; };
+		struct INetworkPersistable::TypeIDResolver<Common::U8> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U8; };
     } // End Namespace Engine
 } // End Namespace Kiaro
 #endif // _INCLUDE_NET_INETWORKPERSISTABLE_HPP_

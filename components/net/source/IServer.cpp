@@ -156,7 +156,7 @@ namespace Kiaro
             //Core::Logging::write(Core::Logging::MESSAGE_INFO, "IServer: Received disconnection from %s:%u.", client->getStringIPAddress().data(), client->getPort());
         }
 
-        IIncomingClient* IServer::getLastPacketSender(void) noexcept
+		IIncomingClient* IServer::getLastPacketSender(void) NOEXCEPT
         {
             IIncomingClient* result = mLastPacketSender;
             mLastPacketSender = nullptr;
@@ -164,14 +164,14 @@ namespace Kiaro
             return result;
         }
 
-        void IServer::stop(void) noexcept { mRunning = false; }
+		void IServer::stop(void) NOEXCEPT { mRunning = false; }
 
-        Common::U32 IServer::getClientCount(void) const noexcept
+		Common::U32 IServer::getClientCount(void) const NOEXCEPT
         {
             return mConnectedClientSet.size();
         }
 
-        const bool& IServer::isRunning(void) const noexcept { return mRunning; }
+		const bool& IServer::isRunning(void) const NOEXCEPT { return mRunning; }
 
         void IServer::dispatch(void)
         {

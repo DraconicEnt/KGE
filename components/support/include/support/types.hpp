@@ -16,20 +16,22 @@
 
 #include <atomic>
 #include <iostream>
-#include <set>
 #include <unordered_set>
 #include <map>
 #include <mutex>
 #include <thread>
-#include <unordered_map>
 #include <tuple>
 #include <utility>
 #include <queue>
-#include <deque>
-#include <string>
-#include <stack>
 
+#include <support/Stack.hpp>
 #include <support/common.hpp>
+#include <support/Deque.hpp>
+#include <support/UnorderedMap.hpp>
+#include <support/UnorderedSet.hpp>
+#include <support/Vector.hpp>
+#include <support/String.hpp>
+#include <support/Set.hpp>
 
 namespace Kiaro
 {
@@ -38,10 +40,6 @@ namespace Kiaro
 		//! A typedef to an std::atomic.
         template <typename storedType>
         using Atomic = std::atomic<storedType>;
-
-		//! A typedef to an std::deque.
-        template <typename storedType>
-        using Deque = std::deque<storedType>;
 
         // TODO (Robert MacGregor#9): Compare template param
         template <typename storedType, typename containerType = Deque<storedType>>
@@ -55,16 +53,10 @@ namespace Kiaro
         template <typename storedTypeOne, typename storedTypeTwo>
         using Pair = std::pair<storedTypeOne, storedTypeTwo>;
 
-		//! A typedef to an std::string.
-		template <typename storedType>
-		using Stack = std::stack<storedType>;
-
 		//! A typedef to an std::mutex.
         typedef std::mutex Mutex;
 		//! A typedef to an std::thread.
         typedef std::thread Thread;
-		//! A typedef to an std::string.
-        typedef std::string String;
 		//! A typedef to an std::wstring.
         typedef std::wstring WString;
 

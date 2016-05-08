@@ -117,7 +117,7 @@ namespace Kiaro
         }
         */
 
-        const bool& IOutgoingClient::isOppositeEndian(void) const noexcept
+		const bool& IOutgoingClient::isOppositeEndian(void) const EASYDELEGATE_NOEXCEPT
         {
             return mOppositeEndian;
         }
@@ -142,7 +142,7 @@ namespace Kiaro
             this->onReceivePacket(incomingStream);
         }
 
-        const Common::U16& IOutgoingClient::getPort(void) const noexcept
+		const Common::U16& IOutgoingClient::getPort(void) const EASYDELEGATE_NOEXCEPT
         {
             return mPort;
         }

@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_KIARO_SUPPORT_TIME_HPP_
 #define _INCLUDE_KIARO_SUPPORT_TIME_HPP_
 
-#include <boost/date_time/posix_time/posix_time_types.hpp>
+// #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include <support/common.hpp>
 
@@ -33,7 +33,6 @@ namespace Kiaro
              */
             Common::F32 stopTimer(const timer &timerIdentifier);
 
-            Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
             Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
 
             Common::U64 getSimTimeMicroseconds(void) NOTHROW;

@@ -17,7 +17,11 @@
     #define __forceinline __attribute__((always_inline))
     #define EASYDELEGATE_NOEXCEPT noexcept
     #define EASYDELEGATE_CONSTEXPR constexpr
-// Otherwise, define noexcept
+// VS15 and onwards should support these
+#elif _MSC_VER >= 1900
+	#define EASYDELEGATE_NOEXCEPT noexcept
+	#define EASYDELEGATE_CONSTEXPR constexpr
+// Assume we don't support noexcept and constexpr
 #else
     //! A macro that is used to noexcept to something that is compatible with the compiler.
 	#define EASYDELEGATE_NOEXCEPT

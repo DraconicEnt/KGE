@@ -74,7 +74,7 @@ namespace Kiaro
                 /**
                  *  @brief Signals the server to stop running.
                  */
-                void stop(void) noexcept;
+                void stop(void) NOEXCEPT;
 
                 void globalSend(IMessage* packet, const bool &reliable);
 
@@ -82,7 +82,7 @@ namespace Kiaro
                  *  @brief Returns the current running status of the server.
                  *  @return A boolean representing whether or not the server is running.
                  */
-                const bool& isRunning(void) const noexcept;
+				const bool& isRunning(void) const NOEXCEPT;
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
@@ -107,9 +107,9 @@ namespace Kiaro
                  */
                 virtual void onClientDisconnected(Net::IIncomingClient* client);
 
-                Net::IIncomingClient* getLastPacketSender(void) noexcept;
+				Net::IIncomingClient* getLastPacketSender(void) NOEXCEPT;
 
-                Common::U32 getClientCount(void) const noexcept;
+				Common::U32 getClientCount(void) const NOEXCEPT;
 
                // Kiaro::Network::IncomingClientBase *GetLastPacketSender(void);
                 clientIterator clientsBegin(void) { return mConnectedClientSet.begin(); }

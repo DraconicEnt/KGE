@@ -41,7 +41,7 @@ namespace EasyDelegate
              *  against the given this pointer.
              *  @note Always returns false for static deferred caller types because they do not use a this pointer.
              */
-            EASYDELEGATE_INLINE virtual bool hasThisPointer(const void* thisPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE virtual bool hasThisPointer(const void* thisPointer) const EASYDELEGATE_NOEXCEPT{ return false; }
     };
 
     /**
@@ -120,7 +120,7 @@ namespace EasyDelegate
              *  @param methodPointer A pointer to a static method to be checked against.
              *  @return A boolean representing whether or not this DeferredStaticCaller calls the given method address.
              */
-            EASYDELEGATE_INLINE bool callsMethod(const StaticDelegateMethodPointer methodPointer) const noexcept { return mMethodPointer == methodPointer; }
+			EASYDELEGATE_INLINE bool callsMethod(const StaticDelegateMethodPointer methodPointer) const EASYDELEGATE_NOEXCEPT{ return mMethodPointer == methodPointer; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller calls the given static method
@@ -130,7 +130,7 @@ namespace EasyDelegate
              *  @note Always returns false because methods of different signatures should reside at their own addresses.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool callsMethod(const StaticMethodPointer<otherReturn, otherParams...> methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const StaticMethodPointer<otherReturn, otherParams...> methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller calls the given class member method
@@ -140,7 +140,7 @@ namespace EasyDelegate
              *  @note Always returns false because DeferredStaticCaller types cannot call class member methods.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool callsMethod(const MemberMethodPointer<otherClass, otherReturn, otherParams...> methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const MemberMethodPointer<otherClass, otherReturn, otherParams...> methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller calls the same method as the specified
@@ -149,7 +149,7 @@ namespace EasyDelegate
              *  @return A boolean representing whether or not this DeferredStaticCaller calls the same method as
              *  the given DeferredStaticCaller.
              */
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredStaticCaller<returnType, parameters...>* other) const noexcept { return mMethodPointer == other->mMethodPointer; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredStaticCaller<returnType, parameters...>* other) const EASYDELEGATE_NOEXCEPT { return mMethodPointer == other->mMethodPointer; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller calls the same method as the specified
@@ -159,7 +159,7 @@ namespace EasyDelegate
              *  share the same address.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredMemberCaller<otherClass, otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredMemberCaller<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller calls the same of the given DeferredStaticCaller
@@ -169,7 +169,7 @@ namespace EasyDelegate
              *  @note Always returns false because methods of different signatures should reside at their own addresses.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredStaticCaller<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredStaticCaller<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller calls against the given this pointer.
@@ -178,7 +178,7 @@ namespace EasyDelegate
              *  against the given this pointer.
              *  @note Always returns false for DeferredStaticCaller types because they do not use a this pointer.
              */
-            EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredStaticCaller shares the same this pointer as the given
@@ -189,7 +189,7 @@ namespace EasyDelegate
              *  @note Always returns false for DeferredStaticCaller types because they do not use a this pointer.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const IDeferredCaller* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const IDeferredCaller* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
         // Private Methods
         private:
@@ -272,7 +272,7 @@ namespace EasyDelegate
              *  @param methodPointer A pointer to a class member method to be checked against.
              *  @return A boolean representing whether or not this DeferredMemberCaller calls the given method pointer.
              */
-            EASYDELEGATE_INLINE bool callsMethod(const MemberDelegateMethodPointer methodPointer) const noexcept { return methodPointer == mMethodPointer; }
+			EASYDELEGATE_INLINE bool callsMethod(const MemberDelegateMethodPointer methodPointer) const EASYDELEGATE_NOEXCEPT { return methodPointer == mMethodPointer; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls the given class member method of a differing
@@ -283,7 +283,7 @@ namespace EasyDelegate
              *  addresses.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool callsMethod(const MemberMethodPointer<otherClass, otherReturn, otherParams...> methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const MemberMethodPointer<otherClass, otherReturn, otherParams...> methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls the given static method.
@@ -292,7 +292,7 @@ namespace EasyDelegate
              *  @note Always returns false because DeferredMemberCaller types cannot call static methods.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool callsMethod(const StaticMethodPointer<otherReturn, otherParams...> methodPointer) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool callsMethod(const StaticMethodPointer<otherReturn, otherParams...> methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls the same method as another
@@ -301,7 +301,7 @@ namespace EasyDelegate
              *  @return A boolean representing whether or not this DeferredMemberCaller calls the same method as the other
              *  DeferredMemberCaller.
              */
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredMemberCaller<classType, returnType, parameters...>* other) const noexcept { return mMethodPointer == other->mMethodPointer; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredMemberCaller<classType, returnType, parameters...>* other) const EASYDELEGATE_NOEXCEPT { return mMethodPointer == other->mMethodPointer; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls the same method as another
@@ -313,7 +313,7 @@ namespace EasyDelegate
              *  addresses.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredMemberCaller<otherClass, otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredMemberCaller<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls the same method as DeferredStaticCaller.
@@ -323,7 +323,7 @@ namespace EasyDelegate
              *  @note Always returns false because DeferredMemberCaller types cannot call static methods.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredStaticCaller<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameMethodAs(const DeferredStaticCaller<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls against the same this pointer as another.
@@ -331,7 +331,7 @@ namespace EasyDelegate
              *  pointer of the other.
              */
             template <typename otherClass, typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const DeferredMemberCaller<otherClass, otherReturn, otherParams...>* other) const noexcept { return reinterpret_cast<void*>(mThisPointer) == reinterpret_cast<void*>(other->mThisPointer); }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const DeferredMemberCaller<otherClass, otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return reinterpret_cast<void*>(mThisPointer) == reinterpret_cast<void*>(other->mThisPointer); }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls against the same this pointer of the
@@ -341,7 +341,7 @@ namespace EasyDelegate
              *  @note Always returns false because DeferredStaticCaller types do not use a this pointer.
              */
             template <typename otherReturn, typename... otherParams>
-            EASYDELEGATE_INLINE bool hasSameThisPointerAs(const DeferredStaticCaller<otherReturn, otherParams...>* other) const noexcept { return false; }
+			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const DeferredStaticCaller<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
             /**
              *  @brief Returns whether or not this DeferredMemberCaller calls against the given this pointer.
@@ -349,7 +349,7 @@ namespace EasyDelegate
              *  @return A boolean representing whether or not this DeferredMemberCaller calls a class member method
              *  against the given this pointer.
              */
-            EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const noexcept { return reinterpret_cast<const void*>(mThisPointer) == reinterpret_cast<const void*>(thisPointer); }
+			EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const EASYDELEGATE_NOEXCEPT { return reinterpret_cast<const void*>(mThisPointer) == reinterpret_cast<const void*>(thisPointer); }
 
         // Public Members
         public:

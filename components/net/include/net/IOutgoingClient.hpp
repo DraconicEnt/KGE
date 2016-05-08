@@ -76,7 +76,7 @@ namespace Kiaro
                  */
                 //virtual void onReceivePacket(Support::CBitStream& incomingStream) = 0;
 
-                const bool& isOppositeEndian(void) const noexcept;
+                const bool& isOppositeEndian(void) const NOEXCEPT;
 
                 /**
                  *  @brief Signals to the IOutgoingClient from the remote host the next chance it gets.
@@ -97,7 +97,7 @@ namespace Kiaro
                  *  @return A Common::U16 representing the port number that the IOutgoingClient is connected to
                  *  on the remote host.
                  */
-                const Common::U16& getPort(void) const noexcept;
+				const Common::U16& getPort(void) const EASYDELEGATE_NOEXCEPT;
 
                 void update(void);
 

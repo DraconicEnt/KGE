@@ -6,17 +6,18 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <numeric>
 #include <algorithm>
 
-#include <sys/time.h>
-
 #include <support/FTime.hpp>
 #include <support/Stack.hpp>
 #include <support/String.hpp>
+
+#include <support/types.hpp>
+#include <support/platform/time.hpp>
 
 namespace Kiaro
 {
@@ -29,7 +30,7 @@ namespace Kiaro
 
             Support::FTime::timer startTimer(void)
             {
-                sTimerStack.push(Support::FTime::getCurrentTimeMicroseconds());
+                sTimerStack.push(Platform::Time::getCurrentTimeMicroseconds());
                 return sTimerStack.size();
             }
 
@@ -50,7 +51,7 @@ namespace Kiaro
                 }
 
                 const Common::U64 lastTimeMicroseconds = sTimerStack.top();
-                const Common::U64 currentTimeMicroseconds = Support::FTime::getCurrentTimeMicroseconds();
+                const Common::U64 currentTimeMicroseconds = Platform::Time::getCurrentTimeMicroseconds();
 
                 // NOTE (Robert MacGregor#1): Prevents the conversion calculation below from potentially being unrepresentable
                 Common::U64 deltaTimeMicroseconds = currentTimeMicroseconds - lastTimeMicroseconds;
@@ -65,14 +66,6 @@ namespace Kiaro
                 sTimerStack.pop();
 
                 return result;
-            }
-
-            Common::U64 getCurrentTimeMicroseconds(void)
-            {
-                timeval currentTime;
-                gettimeofday(&currentTime, NULL);
-
-                return currentTime.tv_usec + (1000000ULL * currentTime.tv_sec);
             }
 
             Common::U64 getTimerResolutionMicroseconds(void)

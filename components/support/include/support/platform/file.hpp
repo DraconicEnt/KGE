@@ -76,6 +76,9 @@ namespace Kiaro
                     void close(void);
 
                 private:
+					//! A pointer to arbitrary data that may be used however necessary for platform implementations.
+					void* mData;
+
                     //! A pointer to the internal file we're using for the memory mapping.
                     FILE* mHandle;
             };

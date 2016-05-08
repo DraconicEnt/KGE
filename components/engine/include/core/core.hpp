@@ -10,12 +10,11 @@
  */
 
 #include "config.hpp"
-#include "common.hpp"
-#include "Logging.hpp"
-#include "ISerializable.hpp"
-#include "SEngineInstance.hpp"
-#include "SGameWorld.hpp"
-#include "SSynchronousScheduler.hpp"
+#include <support/common.hpp>
+#include <support/Console.hpp>
+//#include "SEngineInstance.hpp"
+//#include "SGameWorld.hpp"
+//#include "SSynchronousScheduler.hpp"
 
 namespace Kiaro
 {
