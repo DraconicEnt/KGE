@@ -97,7 +97,7 @@ namespace Kiaro
                  *  @return A Common::U16 representing the port number that the IOutgoingClient is connected to
                  *  on the remote host.
                  */
-				const Common::U16& getPort(void) const EASYDELEGATE_NOEXCEPT;
+				const Common::U16& getPort(void) const NOEXCEPT;
 
                 void update(void);
 
@@ -105,6 +105,10 @@ namespace Kiaro
 
                 const bool& isConnected(void);
 
+                /**
+                 *  @brief Dispatches any queued packets so that they are sent to their intended destinations
+                 *  immediately instead of waiting for the next network update.
+                 */
                 void dispatch(void);
 
                 virtual void onReceivePacket(Support::CBitStream& in) = 0;
