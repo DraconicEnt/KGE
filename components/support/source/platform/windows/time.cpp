@@ -10,15 +10,14 @@ namespace Kiaro
 		{
 			Common::U64 getCurrentTimeMicroseconds(void)
 			{
-				LARGE_INTEGER ticksPerSecond;
-				LARGE_INTEGER tick;
-				LARGE_INTEGER time;
+				LARGE_INTEGER time, frequency;
+				QueryPerformanceFrequency(&frequency);
+				QueryPerformanceCounter(&time);
 
-				QueryPerformanceFrequency(&ticksPerSecond);
-				QueryPerformanceCounter(&tick);
+				time.QuadPart *= 1000000;
+				time.QuadPart /= frequency.QuadPart;
 
-				Common::U64 ticks_per_micro = ticksPerSecond.QuadPart / 1000000;
-				return (tick.QuadPart % ticksPerSecond.QuadPart) / ticks_per_micro;
+				return time.QuadPart;
 			}
 		}
 	}
