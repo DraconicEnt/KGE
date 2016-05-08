@@ -12,11 +12,11 @@ PROJECT (Support)
 file(GLOB_RECURSE SUPPORT_INCLUDES "include/*.hpp")
 file(GLOB_RECURSE SUPPORT_SOURCES "source/*.cpp")
 
-FILE(GLOB_RECURSE PLATFORM_SOURCES_COMMON "source/platform/common/*.cpp")
+FILE(GLOB_RECURSE PLATFORM_SOURCES_COMMON "platform/common/*.cpp")
 IF (UNIX)
-	FILE(GLOB_RECURSE PLATFORM_SOURCES_PLATFORM "source/platform/unix/*.cpp")
+	FILE(GLOB_RECURSE PLATFORM_SOURCES_PLATFORM "platform/unix/*.cpp")
 ELSEIF(WIN32)
-	FILE(GLOB_RECURSE PLATFORM_SOURCES_PLATFORM "source/platform/windows/*.cpp")
+	FILE(GLOB_RECURSE PLATFORM_SOURCES_PLATFORM "platform/windows/*.cpp")
 ENDIF(UNIX)
 
 # FIXME: Include dirs?
