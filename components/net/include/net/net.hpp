@@ -10,6 +10,6 @@
 #include <net/IMessage.hpp>
 #include <net/IOutgoingClient.hpp>
 #include <net/IServer.hpp>
-#include <net/stasges.hpp>
+#include <net/stages.hpp>
 
 #endif // _INCLUDE_NET_NET_HPP_

@@ -102,7 +102,7 @@ namespace Kiaro
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
-                    constexpr PROPERTY_TYPE typeIdentifier = TypeIDResolver<propertyType>::value;
+                    CONSTEXPR PROPERTY_TYPE typeIdentifier = TypeIDResolver<propertyType>::value;
                     mNetworkedProperties[Support::getHashCode(name)] = std::make_pair(&propertyValue, typeIdentifier);
                 }
 

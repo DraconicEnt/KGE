@@ -119,7 +119,13 @@ namespace Kiaro
             creationParameters.IgnoreInput = false; // We will use Allegro for this
             creationParameters.DriverType = videoDriver;
             // We should be using SDL with this as the GLX routines used in the X implementation are not supported by NVidia drivers
+
+			#if defined(ENGINE_WIN)
+			creationParameters.DeviceType = irr::EIDT_WIN32;
+			#else
             creationParameters.DeviceType = irr::EIDT_SDL;
+			#endif
+
             creationParameters.WindowSize = resolution;
 
             CONSOLE_INFOF("Using %ux%u resolution.", resolution.Width, resolution.Height);
