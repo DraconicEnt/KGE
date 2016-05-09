@@ -42,7 +42,16 @@ namespace Kiaro
 
         void CSimulation::update(const Common::F32& deltaTimeSeconds)
         {
+            mPhysicalWorld->stepSimulation(deltaTimeSeconds);
+        }
 
+        void CSimulation::setDebugRenderer(IDebugRenderer* renderer)
+        {
+            // We shouldn't already have a debug renderer in here
+            assert(!mDebugRenderer);
+
+            mDebugRenderer = renderer;
+            mPhysicalWorld->setDebugDrawer(renderer);
         }
     } // End NameSpace Phys
 } // End NameSpace Kiaro

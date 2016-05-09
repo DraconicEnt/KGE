@@ -9,6 +9,8 @@
 
 #include <support/common.hpp>
 
+#include <phys/IDebugRenderer.hpp>
+
 namespace Kiaro
 {
     namespace Phys
@@ -37,6 +39,9 @@ namespace Kiaro
                 //! Pointer to the bullet physical world.
                 btDiscreteDynamicsWorld* mPhysicalWorld;
 
+                //! Pointer to the current physics debug renderer.
+                IDebugRenderer* mDebugRenderer;
+
             // Public Methods
             public:
                 /**
@@ -54,6 +59,13 @@ namespace Kiaro
                  *  @param deltaTimeSeconds The number of seconds to advance the simulation by.
                  */
                 void update(const Common::F32& deltaTimeSeconds);
+
+                /**
+                 *  @brief Set the debug renderer of the simulation which will be utilized immediately.
+                 *  @param renderer The pointer to the renderer to use. If NULL, then there will be no
+                 *  debug rendering.
+                 */
+                void setDebugRenderer(IDebugRenderer* renderer);
         };
     } // End NameSpace Phys
 } // End NameSpace Kiaro
