@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <stdlib.h>
@@ -17,13 +17,6 @@
 #include <enet/enet.h>
 
 #include <support/Console.hpp>
-
-//#include <core/Logging.hpp>
-//#include <video/CBulletDebugDrawer.hpp>
-//#include <game/SGameWorld.hpp>
-//#include <core/SEngineInstance.hpp>
-
-//#include <game/MoveManager.hpp>
 
 #include <net/IOutgoingClient.hpp>
 
@@ -38,20 +31,7 @@ namespace Kiaro
     {
         IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr)
         {
-        /*
-            mEntityGroup = Game::SGameWorld::getPointer();
 
-            mBroadphase = new btDbvtBroadphase();
-            mCollisionConfiguration = new btDefaultCollisionConfiguration();
-            mPhysicalDebugger = new Video::CBulletDebugDrawer(irrlicht);
-            mCollisionDispatcher = new btCollisionDispatcher(mCollisionConfiguration);
-            mConstraintSolver = new btSequentialImpulseConstraintSolver();
-
-            mPhysicalWorld = new btDiscreteDynamicsWorld(mCollisionDispatcher, mBroadphase, mConstraintSolver, mCollisionConfiguration);
-            mPhysicalWorld->setDebugDrawer(mPhysicalDebugger);
-
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Initialized Bullet.");
-            */
         }
 
         IOutgoingClient::~IOutgoingClient(void)
@@ -67,57 +47,9 @@ namespace Kiaro
                 enet_host_destroy(mInternalHost);
                 mInternalHost = nullptr;
             }
-
-/*
-            delete mPhysicalWorld;
-            mPhysicalWorld = NULL;
-
-            delete mConstraintSolver;
-            mConstraintSolver = NULL;
-
-            delete mBroadphase;
-            mBroadphase = NULL;
-
-            delete mCollisionDispatcher;
-            mCollisionDispatcher = NULL;
-
-            delete mCollisionConfiguration;
-            mCollisionConfiguration = NULL;
-
-            delete mPhysicalDebugger;
-            mPhysicalDebugger = NULL;
-
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Deinitialized Bullet.");
-
-            Game::SGameWorld::destroy();
-            */
         }
 
-/*
-        void IOutgoingClient::onDisconnected(void)
-        {
-            Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Disconnected from remote host.");
-
-            lua_State *lua = Core::SEngineInstance::getPointer()->getLuaState();
-
-            EasyLua::pushObject(lua, "GameClient", "onDisconnected");
-
-            EasyLua::call(lua, 1.02f, "Test", 5);
-            //lua_call(lua, 0, 0);
-        }
-        */
-
-/*
-        void IOutgoingClient::onConnectFailed(void)
-        {
-            lua_State* lua = Core::SEngineInstance::getPointer()->getLuaState();
-
-            EasyLua::pushObject(lua, "GameClient", "onConnectFailed");
-            lua_call(lua, 0, 0);
-        }
-        */
-
-		const bool& IOutgoingClient::isOppositeEndian(void) const EASYDELEGATE_NOEXCEPT
+		const bool& IOutgoingClient::isOppositeEndian(void) const NOEXCEPT
         {
             return mOppositeEndian;
         }
@@ -142,7 +74,7 @@ namespace Kiaro
             this->onReceivePacket(incomingStream);
         }
 
-		const Common::U16& IOutgoingClient::getPort(void) const EASYDELEGATE_NOEXCEPT
+		const Common::U16& IOutgoingClient::getPort(void) const NOEXCEPT
         {
             return mPort;
         }
@@ -183,16 +115,11 @@ namespace Kiaro
                 mCurrentStage = STAGE_AUTHENTICATION;
 
                 mConnected = true;
-              //  this->internalOnConnected();
-
-                this->onConnected();
-
-                //this->address = enet_address.host;
                 mPort = targetPort;
+                this->onConnected();
 
                 // Add our update to the scheduler
                 mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &IOutgoingClient::update);
-
                 return;
             }
 
@@ -211,8 +138,6 @@ namespace Kiaro
 
             if (!mConnected)
                 return;
-
-           // Game::MoveManager::reset();
 
             mConnected = false;
             enet_peer_disconnect_later(mInternalPeer, 0);

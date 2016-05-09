@@ -103,6 +103,11 @@ namespace Kiaro
 
                 void send(IMessage* packet, const bool& reliable);
 
+                /**
+                 *  @brief Returns whether or not this outgoing client is connected to a remote server.
+                 *  @return A boolean representing whether or not this outgoing client is connected to a
+                 *  remote server.
+                 */
                 const bool& isConnected(void);
 
                 /**
@@ -111,6 +116,11 @@ namespace Kiaro
                  */
                 void dispatch(void);
 
+                /**
+                 *  @brief Called when the client receives a packet from the remote server.
+                 *  @param in A Support::CBitStream containing the packet payload, ready for streaming data
+                 *  out of.
+                 */
                 virtual void onReceivePacket(Support::CBitStream& in) = 0;
 
             // Private Methods
@@ -140,17 +150,11 @@ namespace Kiaro
 
             // Private Members
             protected:
+                //! A pointer to the scheduled event for our update pulse.
                 Support::CScheduledEvent* mUpdatePulse;
 
+                //! Whether or not the server we are currently connected to has opposite endianness than us.
                 bool mOppositeEndian;
-
-               // btBroadphaseInterface* mBroadphase;
-               // btCollisionDispatcher* mCollisionDispatcher;
-               // btConstraintSolver* mConstraintSolver;
-               // btDefaultCollisionConfiguration* mCollisionConfiguration;
-               // btDiscreteDynamicsWorld* mPhysicalWorld;
-
-               // Video::CBulletDebugDrawer* mPhysicalDebugger;
 
                 /**
                  *  @brief What port is the IOutgoingClient currently connected on?
@@ -164,9 +168,8 @@ namespace Kiaro
                  */
                 Common::U8 mCurrentStage;
 
+                //! Whether or not we are currently connected to a remote server.
                 bool mConnected;
-
-                //Game::SGameWorld* mEntityGroup;
 
                 //! A pointer to the internally utilized ENetPeer.
                 ENetPeer* mInternalPeer;
