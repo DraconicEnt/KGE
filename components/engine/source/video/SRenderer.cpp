@@ -305,6 +305,7 @@ namespace Kiaro
 
             this->processWindowEvents();
 
+            al_inhibit_screensaver(true);
             PROFILER_END(Render);
         }
     } // End NameSpace Video
