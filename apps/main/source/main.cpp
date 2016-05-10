@@ -41,6 +41,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
     commandLineParser.setFlagDescription("-h", "Displays this help text.");
     commandLineParser.setFlagDescription("-game", "<game name> : Start up the engine with a given game.");
     commandLineParser.setFlagDescription("-dedicated", "Start up the engine as a standalone server.");
+	commandLineParser.setFlagDescription("-perfstat", "Occasionally write performance statistics to stdout.");
     commandLineParser.setFlagDescription("-v", "Print versioning information.");
     commandLineParser.setFlagDescription("-addons", "<addon1> [addon2...] : Run the game with a list of addons installed.");
 
@@ -100,6 +101,10 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         engineInstance->setMode(engineMode);
         engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
         engineInstance->setGame(gameName);
+
+		if (commandLineParser.hasFlag("-perfstat"))
+			engineInstance->setPerfStatEnabled(true);
+
         engineInstance->start(argc, argv);
 
         // Release used memory when the start routine eventually returns

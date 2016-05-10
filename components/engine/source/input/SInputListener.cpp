@@ -16,6 +16,8 @@
 #include <video/SRenderer.hpp>
 #include <support/Console.hpp>
 
+#include <support/SProfiler.hpp>
+
 namespace Kiaro
 {
     namespace Input
@@ -228,6 +230,8 @@ namespace Kiaro
 
         void SInputListener::update(void)
         {
+			PROFILER_BEGIN(Input);
+
             ALLEGRO_MOUSE_STATE mouseState;
             al_get_mouse_state(&mouseState);
             
@@ -282,6 +286,8 @@ namespace Kiaro
                     }
                 }
             }
+
+			PROFILER_END(Input);
         }
     } // End Namespace Game
 } // End Namespace Kiaro

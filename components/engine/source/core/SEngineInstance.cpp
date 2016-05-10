@@ -160,7 +160,7 @@ namespace Kiaro
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-        mRunning(false), mActiveClient(nullptr)
+		mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
         {
 
         }
@@ -168,6 +168,11 @@ namespace Kiaro
         SEngineInstance::~SEngineInstance(void)
         {
             CONSOLE_INFO("Deinitializing ...");
+
+			if (mPerfStatSchedule)
+				mPerfStatSchedule->cancel();
+
+			mPerfStatSchedule = nullptr;
 
             // TODO: Check the destroy order
          //   Net::SClient::destroy();
@@ -256,6 +261,8 @@ namespace Kiaro
 
             while (mRunning)
             {
+				PROFILER_BEGIN(MainLoop);
+
                 #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 try
                 {
@@ -297,6 +304,8 @@ namespace Kiaro
                     }
                 }
                 #endif
+
+				PROFILER_END(MainLoop);
             }
         }
 
@@ -341,5 +350,34 @@ namespace Kiaro
 
             syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
         }
+
+		void SEngineInstance::setPerfStatEnabled(const bool& enabled)
+		{
+			Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+
+			if (mPerfStatSchedule && enabled)
+				return;
+			else if (!mPerfStatSchedule && enabled)
+			{
+				mPerfStatSchedule = syncScheduler->schedule(4000, true, this, &SEngineInstance::printPerfStat);
+				CONSOLE_INFO("Enabled perf stat.");
+			}
+			else if (mPerfStatSchedule && !enabled)
+			{
+				mPerfStatSchedule->cancel();
+				mPerfStatSchedule = nullptr;
+				CONSOLE_INFO("Disabled perf stat.");
+			}
+		}
+
+		void SEngineInstance::printPerfStat(void)
+		{
+			Support::SProfiler* profiler = Support::SProfiler::getPointer();
+			auto averages = profiler->getSampleAverages();
+
+			CONSOLE_INFO("Performance Statistics---------------------------");
+			for (auto average : averages)
+				CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
+		}
     } // End Namespace Engine
 } // End Namespace Kiaro
