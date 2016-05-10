@@ -261,14 +261,14 @@ namespace Kiaro
 
             while (mRunning)
             {
-				PROFILER_BEGIN(MainLoop);
-
                 #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 try
                 {
                 #endif
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
+
+                    PROFILER_BEGIN(MainLoop);
                     std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
 
                     Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
@@ -279,6 +279,8 @@ namespace Kiaro
                     // The GUI, video and sound systems run independently of our network time pulse
                     if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
+
+                    PROFILER_END(MainLoop);
 
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
 
@@ -304,8 +306,6 @@ namespace Kiaro
                     }
                 }
                 #endif
-
-				PROFILER_END(MainLoop);
             }
         }
 

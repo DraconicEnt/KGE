@@ -298,7 +298,9 @@ namespace Kiaro
             CEGUI::System::getSingleton().renderAllGUIContexts();
             mVideo->endScene();
 
+            #if !defined(ENGINE_WIN)
             al_flip_display();
+            #endif
 
             this->processWindowEvents();
 
