@@ -118,6 +118,7 @@ namespace Kiaro
             creationParameters.Bits = 32;
             creationParameters.IgnoreInput = false; // We will use Allegro for this
             creationParameters.DriverType = videoDriver;
+            creationParameters.Doublebuffer = true;
             // We should be using SDL with this as the GLX routines used in the X implementation are not supported by NVidia drivers
 
 			#if defined(ENGINE_WIN)
@@ -133,7 +134,7 @@ namespace Kiaro
 
             if (!mIrrlichtDevice)
             {
-                Support::Console::write(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize Irrlicht! (Does your Irrlicht lib support SDL?)");
+                CONSOLE_ERROR("Failed to initialize Irrlicht! (Does your Irrlicht lib support SDL?)");
                 return 2;
             }
 
