@@ -1,11 +1,11 @@
 # Kiaro Game Engine CMake Build File
 # This software is licensed under the Draconic Free License Version 1.
 # Please refer to LICENSE.txt for more information.
-# Copyright (c) 2014 Draconic Entertainment
-
-MESSAGE(STATUS "Configuring Net Component ...")
+# Copyright (c) 2016 Draconic Entity
 
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+MESSAGE(STATUS "Configuring Net Component ...")
+
 PROJECT (Net)
 
 # Configure the Project itself

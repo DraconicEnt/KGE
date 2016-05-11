@@ -14,7 +14,7 @@ ENDIF (NOT DEFINED KGE_APP_NAME)
 # We can optionally define the template, but we will default to basic.
 IF (NOT DEFINED KGE_TEMPLATE_NAME)
     MESSAGE(WARNING "KGE_TEMPLATE_NAME not defined. Defaulting to 'basic'.")
-    
+
     SET(KGE_TEMPLATE_NAME "basic")
 ELSE (NOT DEFINED KGE_TEMPLATE_NAME)
     STRING(TOLOWER ${KGE_TEMPLATE_NAME} KGE_TEMPLATE_NAME)
@@ -23,7 +23,7 @@ ENDIF (NOT DEFINED KGE_TEMPLATE_NAME)
 # We can optionally define an author, but the default is "Your Name / Company Name"
 IF (NOT DEFINED KGE_AUTHOR_NAME)
     MESSAGE(WARNING "KGE_AUTHOR_NAME not defined. Defaulting to 'Your Name / Company Name'.")
-    
+
     SET(KGE_AUTHOR_NAME "Your Name / Company Name")
 ENDIF(NOT DEFINED KGE_AUTHOR_NAME)
 SET(KGE_APP_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${KGE_APP_NAME})
@@ -46,12 +46,13 @@ OPTION(BUILD_ENGINE "Build the core game engine." ON)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 # Check our dependencies
-FIND_PACKAGE(ENet REQUIRED)
 FIND_PACKAGE(Irrlicht REQUIRED)
-FIND_PACKAGE(Bullet REQUIRED)
 FIND_PACKAGE(PhysFS REQUIRED)
 FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
 FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog)
+FIND_PACKAGE(FMod REQUIRED)
+FIND_PACKAGE(ENet REQUIRED)
+FIND_PACKAGE(Bullet REQUIRED)
 FIND_PACKAGE(PythonLibs REQUIRED)
 FIND_PACKAGE(PythonInterp REQUIRED)
 

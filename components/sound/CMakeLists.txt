@@ -1,0 +1,25 @@
+# Kiaro Game Engine CMake Build File
+# This software is licensed under the Draconic Free License Version 1.
+# Please refer to LICENSE.txt for more information.
+# Copyright (c) 2016 Draconic Entity
+
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+
+MESSAGE(STATUS "Configuring Sound Component ...")
+
+PROJECT (Sound)
+
+# Configure the Project itself
+file(GLOB_RECURSE SOUND_INCLUDES "include/*.hpp")
+file(GLOB_RECURSE SOUND_SOURCES "source/*.cpp")
+
+INCLUDE_DIRECTORIES ("include/" ${FMOD_INCLUDE_DIRS} ${IRRLICHT_INCLUDE_DIRS} ${EASYDELEGATE_INCLUDE_DIRECTORY} ${SUPPORT_INCLUDE_DIRECTORY} ${PHYSFS_INCLUDE_DIR})
+ADD_LIBRARY (Sound "STATIC" ${SOUND_SOURCES} ${SOUND_INCLUDES})
+
+# Ensure that the parent can see our includes
+SET(SUPPORT_LINK_LIBRARIES $<TARGET_FILE:Support>)
+GET_FILENAME_COMPONENT(SOUND_INCLUDE_DIRECTORY "include/" ABSOLUTE)
+
+SET(SOUND_INCLUDES ${SOUND_INCLUDES} PARENT_SCOPE)
+SET(SOUND_INCLUDE_DIRECTORY ${SOUND_INCLUDE_DIRECTORY} PARENT_SCOPE)
+SET(SOUND_LINK_LIBRARIES ${SOUND_LINK_LIBRARIES} PARENT_SCOPE)
