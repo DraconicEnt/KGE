@@ -11,12 +11,9 @@ namespace Kiaro
         {
             mBroadphase = new btDbvtBroadphase();
             mCollisionConfiguration = new btDefaultCollisionConfiguration();
-//            mPhysicalDebugger = new Video::CBulletDebugDrawer(irrlicht);
             mCollisionDispatcher = new btCollisionDispatcher(mCollisionConfiguration);
             mConstraintSolver = new btSequentialImpulseConstraintSolver();
-
             mPhysicalWorld = new btDiscreteDynamicsWorld(mCollisionDispatcher, mBroadphase, mConstraintSolver, mCollisionConfiguration);
-            //mPhysicalWorld->setDebugDrawer(mPhysicalDebugger);
         }
 
         CSimulation::~CSimulation(void)
@@ -35,9 +32,6 @@ namespace Kiaro
 
             delete mCollisionConfiguration;
             mCollisionConfiguration = nullptr;
-
-          //  delete mPhysicalDebugger;
-           // mPhysicalDebugger = NULL;
         }
 
         void CSimulation::update(const Common::F32& deltaTimeSeconds)

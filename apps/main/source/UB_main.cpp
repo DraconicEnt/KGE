@@ -3,37 +3,7 @@
 
 #ifdef ENGINE_UB
 
-#include <lua.hpp>
-//#define luai_writestring(s,l)	fwrite((s), sizeof(char), (l), stdout)
-
-extern "C"
-{
-    void luai_writestring(const char* s, const size_t& length)
-    {
-        fwrite((s), sizeof(char), (length), stdout);
-    }
-
-    void luai_writeline(void)
-    {
-        luai_writestring("\n", 1);
-        fflush(stdout);
-    }
-
-    #include <math.h>
-
-    int luai_nummod(lua_State *L, int a, int b)
-    {
-        return (a) - l_mathop(floor)((a)/(b))*(b);
-    }
-
-    int luai_numpow(lua_State *L, int a,int b)
-    {
-        l_mathop(pow)(a,b);
-    }
-}
-
 #include "main.cpp"
-#include "easylua.cpp"
 
 #include "ces/CBehaviorModel.cpp"
 #include "ces/CComponentGravity.cpp"
@@ -63,12 +33,6 @@ extern "C"
 #include "game/entities/IRigidObject.cpp"
 
 #include "input/SInputListener.cpp"
-
-#include "lua/clientlib.cpp"
-#include "lua/enginelib.cpp"
-#include "lua/netlib.cpp"
-#include "lua/scenegraphlib.cpp"
-#include "lua/videolib.cpp"
 
 #include "net/CClient.cpp"
 #include "net/IServer.cpp"
