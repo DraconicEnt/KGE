@@ -12,6 +12,8 @@ namespace Kiaro
     {
         SSoundManager::SSoundManager(void)
         {
+            // dsp, stream, geometry, total
+
             FMOD_RESULT result;
             if ((result = FMOD::System_Create(&mFMod)) != FMOD_OK)
             {

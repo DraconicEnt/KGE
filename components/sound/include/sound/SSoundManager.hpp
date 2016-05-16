@@ -16,16 +16,29 @@ namespace Kiaro
          */
         class SSoundManager
         {
+            // Public Members
+            public:
+                /**
+                 *  @brief Gets a sound source associated with the given filename.
+                 *  @param filename The name of the sound file to source from
+                 *  @return A pointer to the created sound source.
+                 */
+                CSoundSource* getSoundSource(const Support::String& filename);
+
             // Private Members
             private:
                 //! Pointer to the FMod sound system.
                 FMOD::System* mFMod;
 
-            public:
-                CSoundSource* getSoundSource(const Support::String& filename);
-
             private:
+                /**
+                 *  @brief Parameter-less constructor.
+                 */
                 SSoundManager(void);
+
+                /**
+                 *  @brief Standard destructor.
+                 */
                 ~SSoundManager(void);
         };
     } // End NameSpace Sound
