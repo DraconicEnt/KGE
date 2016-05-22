@@ -33,9 +33,7 @@ namespace Kiaro
 
         void SGameWorld::destroy(void)
         {
-            if (sGameWorld)
-                delete sGameWorld;
-
+            delete sGameWorld;
             sGameWorld = nullptr;
         }
 

@@ -19,7 +19,7 @@ namespace Kiaro
     namespace Net
     {
         IServer::IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
-        mLastPacketSender(NULL), mRunning(true), mInternalHost(NULL), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
+        mLastPacketSender(nullptr), mRunning(true), mInternalHost(nullptr), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
             CONSOLE_INFOF("Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
 
@@ -51,7 +51,7 @@ namespace Kiaro
             {
                 enet_host_flush(mInternalHost); // Make sure we dispatch disconnects
                 enet_host_destroy(mInternalHost);
-                mInternalHost = NULL;
+                mInternalHost = nullptr;
             }
 
             mRunning = false;

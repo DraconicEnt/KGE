@@ -181,7 +181,7 @@ namespace Kiaro
                 al_add_config_section(config, "System");
                 al_add_config_comment(config, "System", "Core system configuration.");
 
-                // Worder Thread Count
+                // Worker Thread Count
                 sprintf(tempBuffer, "%u", this->getValue<Common::U8>("System::WorkerThreadCount"));
                 al_add_config_comment(config, "System", "WorkerThreadCount dictates how many worker threads will be created for the asynchronous task manager");
                 al_add_config_comment(config, "System", "If WorkerThreadCount=0 then the async tasker is disabled and such tasks will be handled synchronously");

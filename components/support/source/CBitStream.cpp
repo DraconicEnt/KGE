@@ -19,20 +19,20 @@ namespace Kiaro
 {
     namespace Support
     {
-        CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()), mMemoryBlock(new Common::U8[in->getRequiredMemory()]), mPointer(0),
-        mOwnsMemoryBlock(true)
+        CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()),
+        mMemoryBlock(new Common::U8[in->getRequiredMemory()]), mPointer(0), mOwnsMemoryBlock(true)
         {
             in->packEverything(*this);
         }
 
-        CBitStream::CBitStream(void* initializer, const size_t &initializerLength) : mMemoryBlock((Common::U8*)initializer), mTotalSize(initializerLength),
-        mPointer(0), mOwnsMemoryBlock(false)
+        CBitStream::CBitStream(void* initializer, const size_t &initializerLength) : mMemoryBlock((Common::U8*)initializer),
+        mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false)
         {
 
         }
 
-        CBitStream::CBitStream(const size_t& sizeInBytes, const void* initializer, size_t initializerLength)
-        : mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true)
+        CBitStream::CBitStream(const size_t& sizeInBytes, const void* initializer, size_t initializerLength) :
+        mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true)
         {
             memset(mMemoryBlock, 0x00, sizeInBytes);
 

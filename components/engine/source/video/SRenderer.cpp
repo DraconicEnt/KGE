@@ -41,7 +41,8 @@ namespace Kiaro
 {
     namespace Video
     {
-        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
+        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)),
+        mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
         {
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
             irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
@@ -149,7 +150,8 @@ namespace Kiaro
                 Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                 const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
 
-                mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this, &SRenderer::drawFrame);
+                mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this,
+                                                                                    &SRenderer::drawFrame);
             }
 
             CONSOLE_INFOF("Irrlicht version is %s.", mIrrlichtDevice->getVersion());
@@ -218,7 +220,8 @@ namespace Kiaro
                 }
                 catch (CEGUI::InvalidRequestException& e)
                 {
-                    Support::Console::writef(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize the GUI System. Reason:\n%s", e.what());
+                    Support::Console::writef(Support::Console::MESSAGE_FATAL, "SRenderer: Failed to initialize the GUI System. Reason:\n%s",
+                                            e.what());
                     return 1;
                 }
             }

@@ -22,9 +22,7 @@ namespace Kiaro
 
         void SObjectRegistry::destroy(void)
         {
-            if (sObjectRegistry)
-                delete sObjectRegistry;
-
+            delete sObjectRegistry;
             sObjectRegistry = nullptr;
         }
 

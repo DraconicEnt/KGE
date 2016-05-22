@@ -19,18 +19,16 @@ namespace Kiaro
     {
         static SSynchronousScheduler* sInstance = nullptr;
 
-        CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring) : mCancelled(false),
-        mTriggerTimeMS(Support::FTime::getSimTimeMilliseconds() + waitTimeMS), mInternalDeferredCaller(deferredCaller), mRecurring(recurring),
-        mWaitTimeMS(waitTimeMS)
+        CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring) :
+        mCancelled(false), mTriggerTimeMS(Support::FTime::getSimTimeMilliseconds() + waitTimeMS), mInternalDeferredCaller(deferredCaller),
+        mRecurring(recurring), mWaitTimeMS(waitTimeMS)
         {
 
         }
 
         CScheduledEvent::~CScheduledEvent(void)
         {
-            if (mInternalDeferredCaller)
-                delete mInternalDeferredCaller;
-
+            delete mInternalDeferredCaller;
             mInternalDeferredCaller = nullptr;
         }
 

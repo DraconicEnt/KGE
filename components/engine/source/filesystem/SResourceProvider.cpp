@@ -94,11 +94,8 @@ namespace Kiaro
 
         void SResourceProvider::destroy(void)
         {
-            if (sInstance)
-            {
-                delete sInstance;
-                sInstance = nullptr;
-            }
+            delete sInstance;
+            sInstance = nullptr;
         }
 
         SResourceProvider::SResourceProvider(void)

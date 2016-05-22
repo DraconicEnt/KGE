@@ -231,8 +231,8 @@ namespace Kiaro
                  *  @brief Constructor accepting an input bit stream.
                  *
                  *  @details When constructed in this manner, the ISerializable is to unpack a full set of instantiation data from
-                 *  the stream which is promptly written to the appropriate member fields. This would be the full set of data that is initially
-                 *  sent to a remote client to notify about the existence of a given game object.
+                 *  the stream which is promptly written to the appropriate member fields. This would be the full set of data that is
+                 *  initially sent to a remote client to notify about the existence of a given game object.
                  *  @param in The input bit stream.
                  */
                 ISerializable(Support::CBitStream& in) { this->unpack(in); }

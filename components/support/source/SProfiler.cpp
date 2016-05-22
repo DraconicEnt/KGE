@@ -27,9 +27,7 @@ namespace Kiaro
 
         void SProfiler::destroy(void)
         {
-            if (sInstance)
-                delete sInstance;
-
+            delete sInstance;
             sInstance = nullptr;
         }
 

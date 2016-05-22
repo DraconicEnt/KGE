@@ -27,11 +27,8 @@ namespace Kiaro
 
         void SEventManager::destroy(void)
         {
-            if (sInstance)
-            {
-                delete sInstance;
-                sInstance = NULL;
-            }
+            delete sInstance;
+            sInstance = nullptr;
         }
 
         void SEventManager::clearEvents(void)
