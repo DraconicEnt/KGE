@@ -98,6 +98,8 @@ namespace Kiaro
                                              const CEGUI::String& file_pattern,
                                              const CEGUI::String& resource_group);
 
+            Support::String obtainAbsolutePath(const Support::String& filename);
+
         protected:
             /*!
             \brief

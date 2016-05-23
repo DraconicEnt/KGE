@@ -6,14 +6,16 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
-#include <chrono>
-#include <thread>
+// FIXME: Caused include issues with Python.h
+//#include <chrono>
+//#include <thread>
+
+#include <Python.h>
 
 #include <core/SEngineInstance.hpp>
-
 #include <video/SRenderer.hpp>
 
 #include <irrlicht.h>
@@ -100,7 +102,7 @@ namespace Kiaro
 
         Kiaro::Common::S32 SEngineInstance::start(const Common::S32& argc, Common::C8* argv[])
         {
-            mRunning = true;
+            mRunning = false;
 
             al_init();
 
@@ -119,7 +121,10 @@ namespace Kiaro
             else
                 CONSOLE_INFOF("Mounted game directory '%s' successfully.", mGameName.data());
 
-            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+            // Initialize Python
+            Py_SetProgramName(argv[0]);
+            Py_Initialize();
+            CONSOLE_INFO("Python initialized.");
 
             // TODO (Robert MacGregor#9): Return error codes for the netcode
 
@@ -128,12 +133,10 @@ namespace Kiaro
             Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
             asyncTaskManager->addTask(Support::Tasking::SAsynchronousSchedulerTask::getPointer());
 
-            mRunning = this->initializeRenderer() == 0 ? true : false;
-            if (!mRunning)
+            if (this->initializeRenderer() != 0)
                 return 2;
 
-            mRunning = this->initializeGUI() == 0 ? true : false;
-            if (!mRunning)
+            if (this->initializeGUI() != 0)
                 return 3;
 
             // Only init sound if we're not a dedicated server.
@@ -145,8 +148,9 @@ namespace Kiaro
             // Initialize the time pulses
             this->initializeScheduledEvents();
 
-            this->runGameLoop();
+            mRunning = true;
 
+            this->runGameLoop();
             return 1;
         }
 
@@ -188,6 +192,8 @@ namespace Kiaro
             Video::SRenderer::destroy();
 
             al_uninstall_system();
+
+            Py_Finalize();
         }
 
         void SEngineInstance::networkUpdate(void)

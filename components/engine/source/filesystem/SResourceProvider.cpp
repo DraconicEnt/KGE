@@ -30,6 +30,9 @@
 #include <stdio.h>
 #include <physfs.h>
 
+#include <support/common.hpp>
+#include <support/String.hpp>
+
 #include "CEGUI/Exceptions.h"
 
 #include <filesystem/SResourceProvider.hpp>
@@ -96,6 +99,15 @@ namespace Kiaro
         {
             delete sInstance;
             sInstance = nullptr;
+        }
+
+        Support::String SResourceProvider::obtainAbsolutePath(const Support::String& filename)
+        {
+            const Common::C8* result = PHYSFS_getRealDir(filename.data());
+            if (!result)
+                result = "";
+
+            return result;
         }
 
         SResourceProvider::SResourceProvider(void)
