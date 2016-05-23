@@ -54,6 +54,8 @@
 
 #include <support/SProfiler.hpp>
 
+#include <sound/SSoundManager.hpp>
+
 namespace Kiaro
 {
     namespace Core
@@ -317,10 +319,7 @@ namespace Kiaro
 
         Common::U32 SEngineInstance::initializeSound(void)
         {
-            #ifndef ENGINE_BUILD_SOUNDENGINE
-                CONSOLE_WARNING("Built without audio support. There will be no sound.");
-            #else
-            #endif // ENGINE_BUILD_SOUNDENGINE
+            Sound::SSoundManager::getPointer();
 
             return 0;
         }

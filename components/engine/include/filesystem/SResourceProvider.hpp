@@ -42,7 +42,7 @@ namespace Kiaro
         class SResourceProvider : public CEGUI::ResourceProvider
         {
             public:
-                static SResourceProvider *getPointer(void);
+                static SResourceProvider* getPointer(void);
                 static void destroy(void);
 
             /*!

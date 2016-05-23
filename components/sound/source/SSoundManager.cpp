@@ -10,6 +10,21 @@ namespace Kiaro
 {
     namespace Sound
     {
+        static SSoundManager* mInstance = nullptr;
+
+        SSoundManager* SSoundManager::getPointer(void)
+        {
+            if (!mInstance)
+                mInstance = new SSoundManager();
+            return mInstance;
+        }
+
+        void SSoundManager::destroy(void)
+        {
+            delete mInstance;
+            mInstance = nullptr;
+        }
+
         SSoundManager::SSoundManager(void)
         {
             // dsp, stream, geometry, total

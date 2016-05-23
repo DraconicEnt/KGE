@@ -87,7 +87,7 @@ namespace Kiaro
     {
         static SResourceProvider* sInstance = nullptr;
 
-        SResourceProvider *SResourceProvider::getPointer(void)
+        SResourceProvider* SResourceProvider::getPointer(void)
         {
             if (!sInstance)
                 sInstance = new SResourceProvider();

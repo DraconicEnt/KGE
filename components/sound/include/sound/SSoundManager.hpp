@@ -18,6 +18,9 @@ namespace Kiaro
         {
             // Public Members
             public:
+                static SSoundManager* getPointer(void);
+                static void destroy(void);
+
                 /**
                  *  @brief Gets a sound source associated with the given filename.
                  *  @param filename The name of the sound file to source from
