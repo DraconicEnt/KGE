@@ -28,10 +28,17 @@ namespace Kiaro
                  */
                 CSoundSource* getSoundSource(const Support::String& filename);
 
+                void update(void);
+
             // Private Members
             private:
                 //! Pointer to the FMod sound system.
                 FMOD::System* mFMod;
+
+                static FMOD_RESULT fmodOpen(const char* name, unsigned int* filesize, void** handle, void* userdata);
+                static FMOD_RESULT fmodClose(void* handle, void* userdata);
+                static FMOD_RESULT fmodRead(void* handle, void* buffer, unsigned int sizebytes, unsigned int* bytesread, void* userdata);
+                static FMOD_RESULT fmodSeek(void* handle, unsigned int pos, void *userdata);
 
             private:
                 /**

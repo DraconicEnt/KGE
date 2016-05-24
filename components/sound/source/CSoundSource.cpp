@@ -13,6 +13,7 @@ namespace Kiaro
         CSoundSource::CSoundSource(FMOD::System* system) : mSound(nullptr), mFMod(system)
         {
             FMOD_RESULT result;
+
             if ((result = system->createSound("Bla", FMOD_DEFAULT, nullptr, &mSound)) != FMOD_OK)
             {
                 CONSOLE_ERRORF("Failed to create sound source! Code: %u", result);
