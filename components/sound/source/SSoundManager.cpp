@@ -93,7 +93,7 @@ namespace Kiaro
             return sound;
         }
 
-        FMOD_RESULT SSoundManager::fmodOpen(const char* name, unsigned int* filesize, void** handle, void* userdata)
+        FMOD_RESULT SSoundManager::fmodOpen(const Common::C8* name, Common::U32* filesize, void** handle, void* userdata)
         {
             if (!PHYSFS_exists(name))
                 return FMOD_ERR_FILE_NOTFOUND;
@@ -113,23 +113,26 @@ namespace Kiaro
         {
             if (!PHYSFS_close(reinterpret_cast<PHYSFS_File*>(handle)))
                 return FMOD_ERR_INTERNAL;
+
             return FMOD_OK;
         }
 
-        FMOD_RESULT SSoundManager::fmodRead(void* handle, void* buffer, unsigned int sizebytes, unsigned int* bytesread, void* userdata)
+        FMOD_RESULT SSoundManager::fmodRead(void* handle, void* buffer, Common::U32 sizebytes, Common::U32* bytesread, void* userdata)
         {
             unsigned long physfsBytesRead = PHYSFS_read(reinterpret_cast<PHYSFS_File*>(handle), buffer, 1, sizebytes);
+
             if (physfsBytesRead == -1)
                 return FMOD_ERR_INTERNAL;
 
-            *bytesread = physfsBytesRead;
+            *bytesread = static_cast<Common::U32>(physfsBytesRead);
             return FMOD_OK;
         }
 
-        FMOD_RESULT SSoundManager::fmodSeek(void* handle, unsigned int pos, void *userdata)
+        FMOD_RESULT SSoundManager::fmodSeek(void* handle, Common::U32 pos, void *userdata)
         {
             if (!PHYSFS_seek(reinterpret_cast<PHYSFS_File*>(handle), pos))
                 return FMOD_ERR_INTERNAL;
+
             return FMOD_OK;
         }
     }

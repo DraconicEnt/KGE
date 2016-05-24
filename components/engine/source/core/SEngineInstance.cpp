@@ -113,7 +113,7 @@ namespace Kiaro
             CONSOLE_INFOF("Running game '%s'", mGameName.data());
 
             // Add the game search path
-            if (PHYSFS_mount(mGameName.c_str(), nullptr, 1) == 0)
+            if (PHYSFS_mount(mGameName.data(), nullptr, 1) == 0)
             {
                 mRunning = false;
 
@@ -286,7 +286,10 @@ namespace Kiaro
 
                     // The GUI, video and sound systems run independently of our network time pulse
                     if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
+                    {
                         CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
+                        Sound::SSoundManager::getPointer()->update();
+                    }
 
                     PROFILER_END(MainLoop);
 
@@ -332,6 +335,7 @@ namespace Kiaro
 
             // Remove the search path that points to the same directory as the executable
             // TODO (Robert MacGregor#9): Research this.
+
             Common::C8** searchPaths = PHYSFS_getSearchPath();
             Common::C8* searchPath = searchPaths[1];
             PHYSFS_removeFromSearchPath(searchPath);
