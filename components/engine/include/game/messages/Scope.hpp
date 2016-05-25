@@ -25,7 +25,7 @@ namespace Kiaro
         class IIncomingClient;
         class INetworkPersistable;
     }
-    
+
     namespace Game
     {
         namespace Messages
@@ -54,9 +54,9 @@ namespace Kiaro
 
                     virtual void unpack(Support::CBitStream& in);
 
-                    Common::U32 getMinimumPacketPayloadLength(void);
+                    virtual Common::U32 getMinimumPacketPayloadLength(void);
 
-                    size_t getRequiredMemory(void);
+                    virtual size_t getRequiredMemory(void) const;
             };
         } // End NameSpace Messages
     } // End NameSpace Game

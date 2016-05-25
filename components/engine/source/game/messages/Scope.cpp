@@ -53,7 +53,7 @@ namespace Kiaro
 
                 in >> mScopedCount;
 
-                CONSOLE_DEBUG(Support::Console::MESSAGE_DEBUG, "Scope: Unpacking %u entities.", mScopedCount);
+                CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);
 
                 for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
                 {
@@ -85,10 +85,10 @@ namespace Kiaro
 
             Common::U32 Scope::getMinimumPacketPayloadLength(void)
             {
-                return sizeof(Common::U32) * 3;
+                return (sizeof(Common::U32) * 1);
             }
 
-            size_t Scope::getRequiredMemory(void)
+            size_t Scope::getRequiredMemory(void) const
             {
                 return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 2) + Net::IMessage::getRequiredMemory();
             }

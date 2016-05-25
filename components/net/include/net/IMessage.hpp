@@ -60,7 +60,7 @@ namespace Kiaro
 
                 virtual Common::U32 getMinimumPacketPayloadLength(void);
 
-                size_t getRequiredMemory(void) const;
+                virtual size_t getRequiredMemory(void) const;
         };
     } // End Namespace Net
 } // End Namespace Kiaro
