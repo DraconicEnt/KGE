@@ -55,12 +55,12 @@ namespace Kiaro
             enet_peer_disconnect_later(mInternalClient, 0);
         }
 
-        const Common::U16& IIncomingClient::getPort(void) const
+        Common::U16 IIncomingClient::getPort(void) const
         {
             return mInternalClient->address.port;
         }
 
-        const Common::U32& IIncomingClient::getIPAddress(void) const
+        Common::U32 IIncomingClient::getIPAddress(void) const
         {
             return mInternalClient->address.host;
         }

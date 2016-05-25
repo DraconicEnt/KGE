@@ -58,7 +58,7 @@ namespace Kiaro
                  *  @brief Advances the physical simulation along by deltaTimeSeconds seconds.
                  *  @param deltaTimeSeconds The number of seconds to advance the simulation by.
                  */
-                void update(const Common::F32& deltaTimeSeconds);
+                void update(const Common::F32 deltaTimeSeconds);
 
                 /**
                  *  @brief Set the debug renderer of the simulation which will be utilized immediately.

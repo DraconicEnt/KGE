@@ -53,8 +53,8 @@ namespace Kiaro
                     bool addTask(Support::Tasking::ITask* task);
                     bool removeTask(Support::Tasking::ITask* task);
 
-                    const size_t getIdleWorkerCount(void);
-                    const size_t getWorkerPoolSize(void);
+                    size_t getIdleWorkerCount(void);
+                    size_t getWorkerPoolSize(void);
 
                     //! Parameter-less constructor.
                     SAsynchronousTaskManager(void);

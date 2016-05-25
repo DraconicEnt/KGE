@@ -54,9 +54,9 @@ namespace Kiaro
 
                 virtual void unpack(Support::CBitStream& in);
 
-                const Common::U32 getType(void) const;
+                Common::U32 getType(void) const;
 
-                const Common::U32 getID(void) const;
+                Common::U32 getID(void) const;
 
                 virtual Common::U32 getMinimumPacketPayloadLength(void);
 

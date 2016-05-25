@@ -34,7 +34,7 @@ namespace Kiaro
             mCollisionConfiguration = nullptr;
         }
 
-        void CSimulation::update(const Common::F32& deltaTimeSeconds)
+        void CSimulation::update(const Common::F32 deltaTimeSeconds)
         {
             mPhysicalWorld->stepSimulation(deltaTimeSeconds);
         }

@@ -171,7 +171,7 @@ namespace Kiaro
             return mConnectedClientSet.size();
         }
 
-		const bool IServer::isRunning(void) const NOEXCEPT { return mRunning; }
+        bool IServer::isRunning(void) const NOEXCEPT { return mRunning; }
 
         void IServer::dispatch(void)
         {

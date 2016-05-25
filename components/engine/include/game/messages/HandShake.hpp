@@ -46,7 +46,7 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    HandShake(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
+                    HandShake(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = nullptr);
                     virtual void packEverything(Support::CBitStream& out) const;
 
                     void unpack(Support::CBitStream& in);

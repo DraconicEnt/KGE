@@ -82,7 +82,7 @@ namespace Kiaro
                  *  @brief Returns the current running status of the server.
                  *  @return A boolean representing whether or not the server is running.
                  */
-				const bool isRunning(void) const NOEXCEPT;
+                bool isRunning(void) const NOEXCEPT;
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);

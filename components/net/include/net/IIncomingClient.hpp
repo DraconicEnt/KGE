@@ -86,14 +86,14 @@ namespace Kiaro
                  *  @return A Common::U16 representing the port number that this CIncomingClient is
                  *  connected on.
                  */
-                const Common::U16& getPort(void) const NOTHROW;
+                Common::U16 getPort(void) const NOTHROW;
 
                 /**
                  *  @brief Get the IP address that this CIncomingClient is connecting from.
                  *  @return A Common::U32 representing the IP address that this CIncomingClient is
                  *  connected from.
                  */
-                const Common::U32& getIPAddress(void) const NOTHROW;
+                Common::U32 getIPAddress(void) const NOTHROW;
 
                 /**
                  *  @brief Gets the IP address that this CIncomingClient is connecting on and

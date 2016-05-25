@@ -101,12 +101,12 @@ namespace Kiaro
                     }
             }
 
-            const size_t SAsynchronousTaskManager::getIdleWorkerCount(void)
+            size_t SAsynchronousTaskManager::getIdleWorkerCount(void)
             {
                 return mIdleWorkers.size();
             }
 
-            const size_t SAsynchronousTaskManager::getWorkerPoolSize(void)
+            size_t SAsynchronousTaskManager::getWorkerPoolSize(void)
             {
                 return mPoolSize;
             }
