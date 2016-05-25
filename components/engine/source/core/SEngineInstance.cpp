@@ -102,7 +102,7 @@ namespace Kiaro
             return mEngineMode & MODE_DEDICATED;
         }
 
-        Kiaro::Common::S32 SEngineInstance::start(const Common::S32& argc, Common::C8* argv[])
+        Kiaro::Common::S32 SEngineInstance::start(const Common::S32 argc, Common::C8* argv[])
         {
             mRunning = false;
 
@@ -327,7 +327,7 @@ namespace Kiaro
             return 0;
         }
 
-        void SEngineInstance::initializeFileSystem(const Common::S32& argc, Common::C8* argv[])
+        void SEngineInstance::initializeFileSystem(const Common::S32 argc, Common::C8* argv[])
         {
             // Initialize the file system
             PHYSFS_init(argv[0]);
@@ -360,7 +360,7 @@ namespace Kiaro
             syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
         }
 
-		void SEngineInstance::setPerfStatEnabled(const bool& enabled)
+		void SEngineInstance::setPerfStatEnabled(const bool enabled)
 		{
 			Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
 

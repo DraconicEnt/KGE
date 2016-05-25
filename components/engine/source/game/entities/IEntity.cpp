@@ -29,18 +29,18 @@ namespace Kiaro
 
             IEntity::~IEntity(void)
             {
-                
+
             }
 
-            const Common::U32& IEntity::getTypeMask(void) const { return mType; }
+            const Common::U32 IEntity::getTypeMask(void) const { return mType; }
 
-            const Common::U32& IEntity::getNetID(void) const { return mNetID; }
+            const Common::U32 IEntity::getNetID(void) const { return mNetID; }
 
             void IEntity::packDeltas(Support::CBitStream& out)
             {
 
             }
-            
+
             const ENTITY_TYPE& IEntity::getType(void) const
             {
                 return mType;
@@ -57,7 +57,7 @@ namespace Kiaro
                 in >> mType >> mNetID;
             }
 
-            void IEntity::setNetID(const Common::U32& identifier)
+            void IEntity::setNetID(const Common::U32 identifier)
             {
                 mNetID = identifier;
             }

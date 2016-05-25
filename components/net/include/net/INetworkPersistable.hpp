@@ -133,7 +133,7 @@ namespace Kiaro
                  *  @param newValue The desired value to use.
                  */
                 template <typename propertyType>
-                void setNetworkedPropertyValue(const size_t& mapIndex, const propertyType& newValue)
+                void setNetworkedPropertyValue(const size_t mapIndex, const propertyType& newValue)
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
 
@@ -200,7 +200,7 @@ namespace Kiaro
                  *  @param propertyHash The hash code of the property to use.
                  *  @param property A reference to the Support::Tuple to write.
                  */
-                inline void packProperty(Support::CBitStream& out, const size_t& propertyHash, const std::pair<void*, PROPERTY_TYPE>& property) const;
+                inline void packProperty(Support::CBitStream& out, const size_t propertyHash, const std::pair<void*, PROPERTY_TYPE>& property) const;
         };
 
         /**

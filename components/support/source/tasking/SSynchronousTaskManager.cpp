@@ -11,7 +11,7 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            void SSynchronousTaskManager::tick(const Common::F32& deltaTime)
+            void SSynchronousTaskManager::tick(const Common::F32 deltaTime)
             {
                 for (auto it = mTaskList.begin(); it != mTaskList.end(); it++)
                     if ((*it)->tick(deltaTime))

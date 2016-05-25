@@ -18,7 +18,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        IServer::IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) :
+        IServer::IServer(const Support::String& listenAddress, const Common::U16 listenPort, const Common::U32 maximumClientCount) :
         mLastPacketSender(nullptr), mRunning(true), mInternalHost(nullptr), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
             CONSOLE_INFOF("Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
@@ -57,13 +57,13 @@ namespace Kiaro
             mRunning = false;
         }
 
-        void IServer::globalSend(IMessage* packet, const bool& reliable)
+        void IServer::globalSend(IMessage* packet, const bool reliable)
         {
             for (IIncomingClient* currentClient: mConnectedClientSet)
                 currentClient->send(packet, reliable);
         }
 
-        void IServer::update(const Common::F32& deltaTimeSeconds)
+        void IServer::update(const Common::F32 deltaTimeSeconds)
         {
             // TODO (Robert MacGregor#9): Dispatch commit packets after we're done dispatching sim updates
            // Net::Messages::SimCommit commitPacket;
@@ -171,7 +171,7 @@ namespace Kiaro
             return mConnectedClientSet.size();
         }
 
-		const bool& IServer::isRunning(void) const NOEXCEPT { return mRunning; }
+		const bool IServer::isRunning(void) const NOEXCEPT { return mRunning; }
 
         void IServer::dispatch(void)
         {

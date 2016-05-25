@@ -50,7 +50,7 @@ namespace Kiaro
             return true;
         }
 
-        bool SObjectRegistry::removeObject(const Common::U32& identifier)
+        bool SObjectRegistry::removeObject(const Common::U32 identifier)
         {
             if (identifier >= mObjects.size())
                 return false;
@@ -92,7 +92,7 @@ namespace Kiaro
             return result;
         }
 
-        IEngineObject* SObjectRegistry::getObject(const Common::U32& id)
+        IEngineObject* SObjectRegistry::getObject(const Common::U32 id)
         {
             return id >= mObjects.size() ? nullptr : mObjects[id];
         }

@@ -59,7 +59,7 @@ namespace Kiaro
                  *  @return A pointer to the currently allocated SProfiler. If
                  *  this is the first call, then a new SProfiler will be allocated.
                  */
-                static SProfiler* getPointer(const size_t& sampleCount = 32);
+                static SProfiler* getPointer(const size_t sampleCount = 32);
 
                 /**
                  *  @brief Destroys the existing profiler singleton.
@@ -91,7 +91,7 @@ namespace Kiaro
                  *  @throw std::out_of_range Thrown when either the resource or sample number
                  *  are not found.
                  */
-                const Common::F32& getSample(const Support::String& name, const size_t& sample);
+                const Common::F32& getSample(const Support::String& name, const size_t sample);
 
                 /**
                  *  @brief Returns the average of the given resource across all currently recorded
@@ -116,7 +116,7 @@ namespace Kiaro
 
             // Private Methods
             private:
-                SProfiler(const size_t& sampleCount = 32);
+                SProfiler(const size_t sampleCount = 32);
                 ~SProfiler(void);
         };
     } // End NameSpace Support

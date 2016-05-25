@@ -28,7 +28,7 @@ namespace Kiaro
         void INetworkPersistable::packEverything(Support::CBitStream& out) const
         {
             out.write<Common::U32>(mNetworkedProperties.size());
-            
+
             for (auto it = mNetworkedProperties.begin(); it != mNetworkedProperties.end(); it++)
             {
                 std::pair<size_t, std::pair<void*, PROPERTY_TYPE>> networkedPropertyInfo = *it;
@@ -36,12 +36,12 @@ namespace Kiaro
             }
         }
 
-        void INetworkPersistable::packProperty(Support::CBitStream& out, const size_t& propertyHash, const std::pair<void*, PROPERTY_TYPE>& property) const
+        void INetworkPersistable::packProperty(Support::CBitStream& out, const size_t propertyHash, const std::pair<void*, PROPERTY_TYPE>& property) const
         {
             // Write the property hash
             // FIXME (Robert MacGregor#9): size_t Differences will cause breakage when networking two systems that have different sizeof(size_t)
             out.write<size_t>(propertyHash);
-            
+
             // Pack each type accordingly
             switch(property.second)
             {

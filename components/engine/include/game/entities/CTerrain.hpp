@@ -64,7 +64,7 @@ namespace Kiaro
                     virtual void packEverything(Kiaro::Support::CBitStream &out) const;
                     virtual void unpack(Kiaro::Support::CBitStream &in);
                     virtual void registerEntity(void);
-                    virtual void update(const Kiaro::Common::F32 &deltaTimeSeconds);
+                    virtual void update(const Kiaro::Common::F32 deltaTimeSeconds);
                     virtual size_t getRequiredMemory(void) const;
 
                     void setPosition(const Common::Vector3DF& position);

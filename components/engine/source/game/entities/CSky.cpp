@@ -75,7 +75,7 @@ namespace Kiaro
                 IEntity::registerEntity();
             }
 
-            void CSky::update(const Common::F32& deltaTimeSeconds)
+            void CSky::update(const Common::F32 deltaTimeSeconds)
             {
 
             }

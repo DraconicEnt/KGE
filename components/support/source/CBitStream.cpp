@@ -25,13 +25,13 @@ namespace Kiaro
             in->packEverything(*this);
         }
 
-        CBitStream::CBitStream(void* initializer, const size_t &initializerLength) : mMemoryBlock((Common::U8*)initializer),
+        CBitStream::CBitStream(void* initializer, const size_t initializerLength) : mMemoryBlock((Common::U8*)initializer),
         mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false)
         {
 
         }
 
-        CBitStream::CBitStream(const size_t& sizeInBytes, const void* initializer, size_t initializerLength) :
+        CBitStream::CBitStream(const size_t sizeInBytes, const void* initializer, size_t initializerLength) :
         mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true)
         {
             memset(mMemoryBlock, 0x00, sizeInBytes);
@@ -60,7 +60,7 @@ namespace Kiaro
                 delete[] mMemoryBlock;
         }
 
-        void CBitStream::writeString(const Common::C8* string, const size_t& length)
+        void CBitStream::writeString(const Common::C8* string, const size_t length)
         {
             // FIXME: The check below may cause a SIGSEGV if we're out on the heap
 
@@ -132,7 +132,7 @@ namespace Kiaro
             return mMemoryBlock;
         }
 
-        void CBitStream::setPointer(const size_t& pointer)
+        void CBitStream::setPointer(const size_t pointer)
         {
             if (pointer < 0 || pointer >= mTotalSize)
                 throw std::out_of_range("Attempted to index out of bounds in BitStream");
@@ -140,7 +140,7 @@ namespace Kiaro
             mPointer = pointer;
         }
 
-        void CBitStream::resize(const size_t& newSize)
+        void CBitStream::resize(const size_t newSize)
         {
             Common::U8* newBlock = new Common::U8[newSize];
             memset(newBlock, 0x00, newSize);
@@ -189,7 +189,7 @@ namespace Kiaro
             in->packEverything(*this);
         }
 
-        const size_t& CBitStream::getSize(void) const
+        const size_t CBitStream::getSize(void) const
         {
             return mTotalSize;
         }

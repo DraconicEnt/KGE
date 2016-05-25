@@ -49,12 +49,12 @@ namespace Kiaro
             }
         }
 
-		const bool& IOutgoingClient::isOppositeEndian(void) const NOEXCEPT
+		const bool IOutgoingClient::isOppositeEndian(void) const NOEXCEPT
         {
             return mOppositeEndian;
         }
 
-        void IOutgoingClient::send(IMessage* packet, const bool& reliable)
+        void IOutgoingClient::send(IMessage* packet, const bool reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
             if (reliable)
@@ -74,12 +74,12 @@ namespace Kiaro
             this->onReceivePacket(incomingStream);
         }
 
-		const Common::U16& IOutgoingClient::getPort(void) const NOEXCEPT
+		const Common::U16 IOutgoingClient::getPort(void) const NOEXCEPT
         {
             return mPort;
         }
 
-        void IOutgoingClient::connect(const Support::String& hostName, const Common::U16& targetPort, const Common::U32& wait)
+        void IOutgoingClient::connect(const Support::String& hostName, const Common::U16 targetPort, const Common::U32 wait)
         {
 			// TODO: Report Error
 			if (mInternalPeer || mInternalHost)
@@ -188,7 +188,7 @@ namespace Kiaro
                 }
         }
 
-        const bool& IOutgoingClient::isConnected(void)
+        const bool IOutgoingClient::isConnected(void)
         {
             return mConnected;
         }

@@ -33,7 +33,7 @@ namespace Kiaro
 
                     void initialize(void);
 
-                    bool tick(const Common::F32 &deltaTime);
+                    bool tick(const Common::F32 deltaTime);
 
                     void deinitialize(void);
 

@@ -56,7 +56,7 @@ namespace Kiaro
 
                 }
 
-                void update(const Common::F32& deltaTimeSeconds)
+                void update(const Common::F32 deltaTimeSeconds)
                 {
 
                 }

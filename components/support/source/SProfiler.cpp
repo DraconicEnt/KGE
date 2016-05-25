@@ -17,7 +17,7 @@ namespace Kiaro
     {
         static SProfiler* sInstance = nullptr;
 
-        SProfiler* SProfiler::getPointer(const size_t& sampleCount)
+        SProfiler* SProfiler::getPointer(const size_t sampleCount)
         {
             if (!sInstance)
                 sInstance = new SProfiler(sampleCount);
@@ -31,7 +31,7 @@ namespace Kiaro
             sInstance = nullptr;
         }
 
-        SProfiler::SProfiler(const size_t& sampleCount) : mSample(0), mSampleCount(sampleCount)
+        SProfiler::SProfiler(const size_t sampleCount) : mSample(0), mSampleCount(sampleCount)
         {
             // Populate the set
             Support::UnorderedMap<Support::String, Common::F32> inserted;
@@ -69,7 +69,7 @@ namespace Kiaro
                 throw std::runtime_error("No such profiler context!");
         }
 
-        const Common::F32& SProfiler::getSample(const Support::String& name, const size_t& sample)
+        const Common::F32& SProfiler::getSample(const Support::String& name, const size_t sample)
         {
             if (sample >= mSampleCount || mSamples[sample].find(name) == mSamples[sample].end())
                 throw std::out_of_range("No such sample!");

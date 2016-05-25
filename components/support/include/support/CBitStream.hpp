@@ -63,9 +63,9 @@ namespace Kiaro
                  *  @param initializer A pointer to the memory to initialize with.
                  *  @param initializerLength The total size of memory in bytes the initializer is.
                  */
-                CBitStream(void* initializer, const size_t& initializerLength);
+                CBitStream(void* initializer, const size_t initializerLength);
 
-                CBitStream(const size_t& sizeInBytes, const void* initializer = NULL, size_t initializerLength = 0);
+                CBitStream(const size_t sizeInBytes, const void* initializer = NULL, size_t initializerLength = 0);
 
                 //! Standard destructor.
                 ~CBitStream(void);
@@ -94,7 +94,7 @@ namespace Kiaro
 
                 void writeString(const std::string& string);
 
-                void writeString(const Common::C8* string, const size_t& length);
+                void writeString(const Common::C8* string, const size_t length);
 
                 const Common::C8* topString(void);
 
@@ -154,7 +154,7 @@ namespace Kiaro
                  *  @warning Data will be destroyed if the new size is less than the the data pointer the bit stream is
                  *  currently using.
                  */
-                void resize(const size_t& newSize);
+                void resize(const size_t newSize);
 
                 /**
                  *  @brief Templated operator overload that allows one to use the stream insertion operator for writing
@@ -211,9 +211,9 @@ namespace Kiaro
                  *  @brief Sets the current location of the stream pointer.
                  *  @param pointer The new pointer value to use.
                  */
-                void setPointer(const size_t& pointer);
+                void setPointer(const size_t pointer);
 
-                const size_t& getSize(void) const;
+                const size_t getSize(void) const;
         };
 
         /**

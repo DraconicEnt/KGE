@@ -30,7 +30,7 @@ namespace Kiaro
 
             }
 
-            bool SAsynchronousSchedulerTask::tick(const Common::F32& deltaTime)
+            bool SAsynchronousSchedulerTask::tick(const Common::F32 deltaTime)
             {
                 mMutex.lock();
 

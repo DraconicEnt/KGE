@@ -76,7 +76,7 @@ namespace Kiaro
                  */
                 //virtual void onReceivePacket(Support::CBitStream& incomingStream) = 0;
 
-                const bool& isOppositeEndian(void) const NOEXCEPT;
+                const bool isOppositeEndian(void) const NOEXCEPT;
 
                 /**
                  *  @brief Signals to the IOutgoingClient from the remote host the next chance it gets.
@@ -90,25 +90,25 @@ namespace Kiaro
                  *  @param targetPort The port number to attempt the connection on.
                  *  @param wait The wait time on milliseconds to wait.
                  */
-                void connect(const Support::String& hostName, const Common::U16& targetPort, const Common::U32& wait);
+                void connect(const Support::String& hostName, const Common::U16 targetPort, const Common::U32 wait);
 
                 /**
                  *  @brief Returns the port number that the IOutgoingClient is connected to on the remote host.
                  *  @return A Common::U16 representing the port number that the IOutgoingClient is connected to
                  *  on the remote host.
                  */
-				const Common::U16& getPort(void) const NOEXCEPT;
+				const Common::U16 getPort(void) const NOEXCEPT;
 
                 void update(void);
 
-                void send(IMessage* packet, const bool& reliable);
+                void send(IMessage* packet, const bool reliable);
 
                 /**
                  *  @brief Returns whether or not this outgoing client is connected to a remote server.
                  *  @return A boolean representing whether or not this outgoing client is connected to a
                  *  remote server.
                  */
-                const bool& isConnected(void);
+                const bool isConnected(void);
 
                 /**
                  *  @brief Dispatches any queued packets so that they are sent to their intended destinations

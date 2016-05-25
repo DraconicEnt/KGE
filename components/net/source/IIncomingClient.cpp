@@ -31,7 +31,7 @@ namespace Kiaro
                 this->disconnect("Destroyed net handle.");
         }
 
-        void IIncomingClient::send(IMessage* packet, const bool& reliable)
+        void IIncomingClient::send(IMessage* packet, const bool reliable)
         {
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 

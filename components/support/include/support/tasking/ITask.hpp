@@ -44,7 +44,7 @@ namespace Kiaro
                      *  @param deltaTimeSeconds The amount of time in seconds that has passed since the
                      *  last tick.
                      */
-                    virtual bool tick(const Common::F32& deltaTimeSeconds) = 0;
+                    virtual bool tick(const Common::F32 deltaTimeSeconds) = 0;
 
                     //! Deinitializes the task, destroying any associated resources.
                     virtual void deinitialize(void) = 0;

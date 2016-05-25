@@ -69,14 +69,14 @@ namespace Kiaro
                  *  the internal deque.
                  *  @param identifier The object ID to remove.
                  */
-                bool removeObject(const Common::U32& identifier);
+                bool removeObject(const Common::U32 identifier);
 
                 /**
                  *  @brief Gets an object by ID.
                  *  @param id The ID to lookup.
                  *  @return The object corresponding with the provided ID.
                  */
-                IEngineObject* getObject(const Common::U32& id);
+                IEngineObject* getObject(const Common::U32 id);
 
                 /**
                  *  @brief Gets an object by name.

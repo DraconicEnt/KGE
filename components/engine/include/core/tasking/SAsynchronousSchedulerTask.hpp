@@ -8,7 +8,7 @@
  *  @author Robert MacGregor
  *  @copyright (c) 2016 Draconic Entity
  */
- 
+
 #ifndef _INCLUDE_KIARO_ENGINE_TASKER_SASYNCHRONOUSSCHEDULERTASK_HPP_
 #define _INCLUDE_KIARO_ENGINE_TASKER_SASYNCHRONOUSSCHEDULERTASK_HPP_
 
@@ -39,7 +39,7 @@ namespace Kiaro
                 // Private Members
                 private:
                     Support::UnorderedSet<EasyDelegate::IDeferredCaller*> mScheduledTasks;
-                    
+
                 // Public Methods
                 public:
                     static SAsynchronousSchedulerTask* getPointer(void);
@@ -47,7 +47,7 @@ namespace Kiaro
 
                     void initialize(void);
 
-                    bool tick(const Common::F32& deltaTime);
+                    bool tick(const Common::F32 deltaTime);
 
                     void deinitialize(void);
 

@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace Net
     {
-        IMessage::IMessage(const Common::U32& packetType, Support::CBitStream* received, IIncomingClient* sender) : mID(0),
+        IMessage::IMessage(const Common::U32 packetType, Support::CBitStream* received, IIncomingClient* sender) : mID(0),
         mType(packetType), mSender(sender)
         {
 
@@ -36,9 +36,9 @@ namespace Kiaro
             in >> mID;
         }
 
-        const Common::U32& IMessage::getType(void) const { return mType; }
+        const Common::U32 IMessage::getType(void) const { return mType; }
 
-        const Common::U32& IMessage::getID(void) const { return mID; }
+        const Common::U32 IMessage::getID(void) const { return mID; }
 
         Common::U32 IMessage::getMinimumPacketPayloadLength(void)
         {

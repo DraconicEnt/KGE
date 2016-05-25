@@ -106,7 +106,7 @@ namespace Kiaro
                 return mIdleWorkers.size();
             }
 
-            const size_t& SAsynchronousTaskManager::getWorkerPoolSize(void)
+            const size_t SAsynchronousTaskManager::getWorkerPoolSize(void)
             {
                 return mPoolSize;
             }

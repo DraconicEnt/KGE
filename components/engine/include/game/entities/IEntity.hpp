@@ -54,7 +54,7 @@ namespace Kiaro
             };
 
             class IEntity : public Net::INetworkPersistable, public Game::IEngineObject
-            {                
+            {
                 // Public Methods
                 public:
                     /**
@@ -71,19 +71,19 @@ namespace Kiaro
                      *  @brief Gets the type mask of this object.
                      *  @return A Kiaro::Common::U32 representing the typemask.
                      */
-                    const Common::U32& getTypeMask(void) const;
+                    const Common::U32 getTypeMask(void) const;
 
-                    const Common::U32& getNetID(void) const;
+                    const Common::U32 getNetID(void) const;
 
-                    void setNetID(const Common::U32& identifier);
+                    void setNetID(const Common::U32 identifier);
 
                     virtual void registerEntity(void) = 0;
-                    virtual void update(const Common::F32& deltaTimeSeconds) = 0;
+                    virtual void update(const Common::F32 deltaTimeSeconds) = 0;
 
                     virtual void packDeltas(Support::CBitStream& out);
                     virtual void packEverything(Support::CBitStream& out) const;
                     virtual void unpack(Support::CBitStream& in);
-                    
+
                     const ENTITY_TYPE& getType(void) const;
 
                     //virtual void setPosition(const Common::Vector3DF& position) = 0;
@@ -91,7 +91,7 @@ namespace Kiaro
                 // Public Members
                 public:
                     const Common::U8 mFlags;
-                    
+
                 // Protected Members
                 protected:
                     ENTITY_TYPE mType;

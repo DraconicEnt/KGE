@@ -54,12 +54,12 @@ namespace Kiaro
 
                 void addEntity(Entities::IEntity* entity);
                 void removeEntity(Entities::IEntity* entity);
-                void removeEntity(const Common::U32& id);
+                void removeEntity(const Common::U32 id);
 
-                Entities::IEntity* getEntity(const Common::U32& id) const;
+                Entities::IEntity* getEntity(const Common::U32 id) const;
                 Entities::IEntity* getEntity(const Support::String& name) const;
 
-                void update(const Common::F32& deltaTimeSeconds);
+                void update(const Common::F32 deltaTimeSeconds);
                 void clear(void);
                 const Entities::CSky* getSky(void);
                 size_t getRequiredMemory(void) const;

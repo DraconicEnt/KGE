@@ -117,7 +117,7 @@ namespace Kiaro
                  *  @retval !=0 A fatal error has occurred during the engine's lifetime that
                  *  caused it to exit prematurely.
                  */
-                Common::S32 start(const Common::S32& argc, Common::C8* argv[]);
+                Common::S32 start(const Common::S32 argc, Common::C8* argv[]);
 
                 /**
                  *  @brief Notifies the engine to stop at the next chance it gets.
@@ -137,7 +137,7 @@ namespace Kiaro
 				 *	data collection is still occurring.
 				 *	@param enabled Whether or not the performance statistic reporting should occur.
 				 */
-				void setPerfStatEnabled(const bool& enabled);
+				void setPerfStatEnabled(const bool enabled);
 
             // Private Methods
             private:
@@ -179,7 +179,7 @@ namespace Kiaro
                  *  @retval 0 No error.
                  *  @retval !=0 An error has occurred in the Lua runtime initialization.
                  */
-                Common::U32 initializeLua(const Common::S32& argc, Common::C8* argv[]);
+                Common::U32 initializeLua(const Common::S32 argc, Common::C8* argv[]);
 
                 /**
                  *  @brief A subroutine that is called to initialize the renderer.
@@ -216,7 +216,7 @@ namespace Kiaro
                  *  @retval 0 No error.
                  *  @retval !=0 An error has occurred in the file system initialization.
                  */
-                void initializeFileSystem(const Common::S32& argc, Common::C8* argv[]);
+                void initializeFileSystem(const Common::S32 argc, Common::C8* argv[]);
 
                 void initializeScheduledEvents(void);
 

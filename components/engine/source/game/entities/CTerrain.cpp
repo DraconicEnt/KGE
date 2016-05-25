@@ -96,7 +96,7 @@ namespace Kiaro
                 mSceneNode->setPosition(position);
             }
 
-            void CTerrain::update(const Common::F32& deltaTimeSeconds)
+            void CTerrain::update(const Common::F32 deltaTimeSeconds)
             {
 
             }

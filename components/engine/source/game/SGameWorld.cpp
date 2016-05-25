@@ -37,7 +37,7 @@ namespace Kiaro
             sGameWorld = nullptr;
         }
 
-        void SGameWorld::update(const Common::F32& deltaTimeSeconds)
+        void SGameWorld::update(const Common::F32 deltaTimeSeconds)
         {
             // FIXME: Implement bitmask checking for updated entities
 			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
@@ -83,13 +83,13 @@ namespace Kiaro
             SObjectRegistry::getPointer()->removeObject(entity);
         }
 
-        void SGameWorld::removeEntity(const Common::U32& id)
+        void SGameWorld::removeEntity(const Common::U32 id)
         {
             Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(id));
             mEntities.erase(erased);
         }
 
-        Entities::IEntity* SGameWorld::getEntity(const Common::U32& id) const
+        Entities::IEntity* SGameWorld::getEntity(const Common::U32 id) const
         {
             // FIXME: Type Check without using dynamic_cast
             Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(id));

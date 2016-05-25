@@ -57,7 +57,7 @@ namespace Kiaro
                  *  @param waitTimeMS The time to wait in milliseconds relative to the current time.
                  *  @param recurring A boolean representing whether or not the scheduled event is recurring.
                  */
-                CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64& waitTimeMS, const bool& recurring);
+                CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64 waitTimeMS, const bool recurring);
 
                 ~CScheduledEvent(void);
 
@@ -67,7 +67,7 @@ namespace Kiaro
                  *  @return A boolean representing whether or not the scheduled event should be
                  *  dispatched.
                  */
-                bool shouldDispatch(const Common::U64& currentSimTimeMS) NOTHROW;
+                bool shouldDispatch(const Common::U64 currentSimTimeMS) NOTHROW;
 
                 /**
                  *  @brief Sets the absolute trigger time for the scheduled event. This means
@@ -76,12 +76,12 @@ namespace Kiaro
                  *  @param triggerTime The absolute sim time in milliseconds to trigger upon meeting
                  *  or exceeding.
                  */
-                void setTriggerTimeMS(const Common::U64& triggerTime) NOTHROW;
+                void setTriggerTimeMS(const Common::U64 triggerTime) NOTHROW;
 
                 /**
                  *  @brief
                  */
-                void setWaitTimeMS(const Common::U64& waitTimeMS, const bool& refresh) NOTHROW;
+                void setWaitTimeMS(const Common::U64 waitTimeMS, const bool refresh) NOTHROW;
 
                 /**
                  *  @brief Dispatches the scheduled event, calling whatever code it is set
@@ -103,7 +103,7 @@ namespace Kiaro
                  *  @return A boolean representing whether or not the scheduled event was flagged for
                  *  cancellation.
                  */
-                const bool& isCancelled(void) NOTHROW;
+                const bool isCancelled(void) NOTHROW;
 
                 /**
                  *  @brief Returns whether or not this scheduled event is flagged to operate on a
@@ -112,14 +112,14 @@ namespace Kiaro
                  *  @return A boolean representing whether or the scheduled event is flagged to operate
                  *  on a recurring basis.
                  */
-                const bool& isRecurring(void) NOTHROW;
+                const bool isRecurring(void) NOTHROW;
 
                 /**
                  *  @brief Returns the time delta that the scheduled event is set to execute on.
                  *  If it is a recurring event, this is the time delta between executions.
                  *  @return A Common::U64 representing the wait time in milliseconds.
                  */
-                const Common::U64& getWaitTimeMS(void) NOTHROW;
+                const Common::U64 getWaitTimeMS(void) NOTHROW;
         };
 
         /**
@@ -148,7 +148,7 @@ namespace Kiaro
                  *  @warning If recurring is true, then the returned CScheduledEvent should be kept track of in almost all cases.
                  */
                 template <typename returnType, typename... parameters>
-                CScheduledEvent* schedule(const Common::U32& waitTimeMS, const bool& recurring, EasyDelegate::StaticMethodPointer<returnType, parameters...> method, parameters... params)
+                CScheduledEvent* schedule(const Common::U32 waitTimeMS, const bool recurring, EasyDelegate::StaticMethodPointer<returnType, parameters...> method, parameters... params)
                 {
                     return this->schedule(new EasyDelegate::DeferredStaticCaller<returnType, parameters...>(method, params...), waitTimeMS, recurring);
                 }
@@ -167,7 +167,7 @@ namespace Kiaro
                  *  @warning The thisPointer parameter must be guaranteed to be valid for the lifetime of the scheduled event.
                  */
                 template <typename classType, typename returnType, typename... parameters>
-                CScheduledEvent* schedule(const Common::U32& waitTimeMS, const bool& recurring, classType* thisPointer, EasyDelegate::MemberMethodPointer<classType, returnType, parameters...> method, parameters... params)
+                CScheduledEvent* schedule(const Common::U32 waitTimeMS, const bool recurring, classType* thisPointer, EasyDelegate::MemberMethodPointer<classType, returnType, parameters...> method, parameters... params)
                 {
                     return this->schedule(new EasyDelegate::DeferredMemberCaller<classType, returnType, parameters...>(method, thisPointer, params...), waitTimeMS, recurring);
                 }
@@ -181,7 +181,7 @@ namespace Kiaro
                  *  @return A pointer to the created event.
                  *  @warning If recurring is true, then the returned CScheduledEvent should be kept track of in almost all cases.
                  */
-                CScheduledEvent* schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32& waitTimeMS, const bool& recurring = false);
+                CScheduledEvent* schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32 waitTimeMS, const bool recurring = false);
 
                 /**
                  *  @brief Sends an update time pulse to the SSynchronousScheduler singleton. Call this once

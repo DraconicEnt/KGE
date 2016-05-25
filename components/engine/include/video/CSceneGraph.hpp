@@ -40,7 +40,7 @@ namespace Kiaro
                 void add(irr::scene::ISceneNode *node);
 
                 bool isVisible(void);
-                void setVisible(const bool& visible);
+                void setVisible(const bool visible);
 
                // const Kiaro::Common::ColorRGBA &getClearColor(void);
                // void setClearColor(const Kiaro::Common::ColorRGBA &color);

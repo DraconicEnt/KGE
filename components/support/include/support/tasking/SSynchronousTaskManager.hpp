@@ -42,7 +42,7 @@ namespace Kiaro
                      *  necessary.
                      *  @param deltaTime The amount of time in seconds that has passed.
                      */
-                    void tick(const Common::F32 &deltaTime);
+                    void tick(const Common::F32 deltaTime);
 
                     /**
                      *  @brief Adds a new task to the task manager.

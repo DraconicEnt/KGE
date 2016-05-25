@@ -41,7 +41,7 @@ namespace Kiaro
             return mRoot->isVisible();
         }
 
-        void CSceneGraph::setVisible(const bool &visible)
+        void CSceneGraph::setVisible(const bool visible)
         {
             mRoot->setVisible(visible);
         }

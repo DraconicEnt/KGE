@@ -55,7 +55,7 @@ namespace Kiaro
 
             }
 
-            void CRigidObject::update(const Common::F32 &deltaTimeSeconds)
+            void CRigidObject::update(const Common::F32 deltaTimeSeconds)
             {
 
             }

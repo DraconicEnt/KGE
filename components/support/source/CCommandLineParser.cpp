@@ -69,7 +69,7 @@ namespace Kiaro
             mFlagDescriptions.insert({flagNameHash, {flagName, description}});
         }
 
-        void CommandLineParser::displayHelp(const Common::S32& argc, Common::C8* argv[])
+        void CommandLineParser::displayHelp(const Common::S32 argc, Common::C8* argv[])
         {
             std::cout << "You may run " << argv[0] << " with:" << std::endl;
 

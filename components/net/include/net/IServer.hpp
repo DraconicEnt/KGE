@@ -76,18 +76,18 @@ namespace Kiaro
                  */
                 void stop(void) NOEXCEPT;
 
-                void globalSend(IMessage* packet, const bool &reliable);
+                void globalSend(IMessage* packet, const bool reliable);
 
                 /**
                  *  @brief Returns the current running status of the server.
                  *  @return A boolean representing whether or not the server is running.
                  */
-				const bool& isRunning(void) const NOEXCEPT;
+				const bool isRunning(void) const NOEXCEPT;
 
                 //! Causes the server to handle all queued network events immediately.
                 void dispatch(void);
 
-                virtual void update(const Common::F32& deltaTimeSeconds);
+                virtual void update(const Common::F32 deltaTimeSeconds);
 
                 virtual IIncomingClient* onReceiveClientChallenge(RemoteHostContext client) = 0;
 
@@ -126,7 +126,7 @@ namespace Kiaro
                  *  @param listen_port A Kiaro::Common::U16 representing the port number to listen on.
                  *  @param clients A Kiaro::Common::U32 representing the maximum number of clients to accept.
                  */
-                IServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
+                IServer(const Support::String& listenAddress, const Common::U16 listenPort, const Common::U32 maximumClientCount);
 
                 /**
                  *  @brief Standard virtual destructor.

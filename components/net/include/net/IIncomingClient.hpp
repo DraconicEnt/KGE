@@ -74,7 +74,7 @@ namespace Kiaro
                  *  @param reliable A boolean representing whether or not the
                  *  message should be sent reliably.
                  */
-                void send(IMessage* message, const bool& reliable) NOTHROW;
+                void send(IMessage* message, const bool reliable) NOTHROW;
 
                 bool getIsOppositeEndian(void) const NOTHROW;
 

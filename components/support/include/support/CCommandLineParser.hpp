@@ -69,7 +69,7 @@ namespace Kiaro
                  *  @param argc The argc passed in to the program via the main method.
                  *  @param argv The argv passed in to the program via the main method.
                  */
-                void displayHelp(const Common::S32& argc, Common::C8* argv[]);
+                void displayHelp(const Common::S32 argc, Common::C8* argv[]);
 
             // Private Members
             private:

@@ -37,7 +37,7 @@ namespace Kiaro
                     void unpackInitialization(Support::CBitStream &in);
                     void instantiate(void);
 
-                    void update(const Common::F32 &deltaTimeSeconds);
+                    void update(const Common::F32 deltaTimeSeconds);
             };
         } // End Namespace Entities
     } // End Namespace Game
