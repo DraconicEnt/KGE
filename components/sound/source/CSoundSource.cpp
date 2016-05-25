@@ -2,6 +2,8 @@
  *  @file SSoundSource.cpp
  */
 
+#include <fmod_errors.h>
+
 #include <sound/CSoundSource.hpp>
 
 #include <support/Console.hpp>
@@ -10,13 +12,13 @@ namespace Kiaro
 {
     namespace Sound
     {
-        CSoundSource::CSoundSource(FMOD::System* system) : mSound(nullptr), mFMod(system)
+        CSoundSource::CSoundSource(FMOD::System* system, const Support::String& filename) : mSound(nullptr), mFMod(system)
         {
             FMOD_RESULT result;
 
-            if ((result = system->createSound("Bla", FMOD_DEFAULT, nullptr, &mSound)) != FMOD_OK)
+            if ((result = system->createSound(filename.data(), FMOD_DEFAULT, nullptr, &mSound)) != FMOD_OK)
             {
-                CONSOLE_ERRORF("Failed to create sound source! Code: %u", result);
+                CONSOLE_ERRORF("Failed to create sound source! Reason: %s", FMOD_ErrorString(result));
                 return;
             }
         }
@@ -40,7 +42,7 @@ namespace Kiaro
             FMOD::Channel* channel = nullptr;
             if ((result = mFMod->playSound(mSound, 0, false, &channel)) != FMOD_OK)
             {
-                CONSOLE_ERRORF("Failed to play sound source! Code: %u", result);
+                CONSOLE_ERRORF("Failed to play sound source! Reason: %s", FMOD_ErrorString(result));
                 return nullptr;
             }
 

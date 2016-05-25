@@ -88,8 +88,21 @@ namespace Kiaro
 
         CSoundSource* SSoundManager::getSoundSource(const Support::String& filename)
         {
-            CSoundSource* sound = new CSoundSource(mFMod);
+            // Does the sound exist?
+            auto it = mSoundRegistry.find(filename);
 
+            if (it != mSoundRegistry.end())
+                return (*it).second;
+
+            // If PhysFS says we can't have it, return nullptr
+            if (!PHYSFS_exists(filename.data()))
+            {
+                CONSOLE_ERRORF("Can't find sound file: %s", filename.data());
+                return nullptr;
+            }
+
+            CSoundSource* sound = new CSoundSource(mFMod, filename.data());
+            mSoundRegistry[filename] = sound;
             return sound;
         }
 

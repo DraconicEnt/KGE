@@ -5,6 +5,8 @@
 #include <fmod.hpp>
 
 #include <support/String.hpp>
+#include <support/UnorderedMap.hpp>
+
 #include <sound/CSoundSource.hpp>
 
 namespace Kiaro
@@ -16,7 +18,14 @@ namespace Kiaro
          */
         class SSoundManager
         {
-            // Public Members
+            // Private Members
+            private:
+                //! Pointer to the FMod sound system.
+                FMOD::System* mFMod;
+
+                Support::UnorderedMap<Support::String, CSoundSource*> mSoundRegistry;
+
+            // Public Methods
             public:
                 static SSoundManager* getPointer(void);
                 static void destroy(void);
@@ -30,17 +39,13 @@ namespace Kiaro
 
                 void update(void);
 
-            // Private Members
+            // Private Methods
             private:
-                //! Pointer to the FMod sound system.
-                FMOD::System* mFMod;
-
                 static FMOD_RESULT fmodOpen(const Common::C8* name, Common::U32* filesize, void** handle, void* userdata);
                 static FMOD_RESULT fmodClose(void* handle, void* userdata);
                 static FMOD_RESULT fmodRead(void* handle, void* buffer, Common::U32 sizebytes, Common::U32* bytesread, void* userdata);
                 static FMOD_RESULT fmodSeek(void* handle, Common::U32 pos, void *userdata);
 
-            private:
                 /**
                  *  @brief Parameter-less constructor.
                  */

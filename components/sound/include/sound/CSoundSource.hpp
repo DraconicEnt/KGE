@@ -6,6 +6,7 @@
 #define _INCLUDE_SOUND_CSOUNDSOURCE_HPP_
 
 #include <fmod.hpp>
+#include <support/String.hpp>
 #include <support/UnorderedSet.hpp>
 
 #include <sound/CVoice.hpp>
@@ -35,7 +36,7 @@ namespace Kiaro
                  *  @brief Constructor accepting an FMod system.
                  *  @param system A pointer to the active FMod system.
                  */
-                CSoundSource(FMOD::System* system);
+                CSoundSource(FMOD::System* system, const Support::String& filename);
 
                 /**
                  *  @brief Standard destructor.
