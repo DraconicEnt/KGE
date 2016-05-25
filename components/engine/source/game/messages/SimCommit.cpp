@@ -37,12 +37,12 @@ namespace Kiaro
                 //    throw std::runtime_error("Unable to unpack SimCommit packet; too small of a payload!");
             }
 
-            Common::U32 SimCommit::getMinimumPacketPayloadLength(void)
+            size_t SimCommit::getMinimumPacketPayloadLength(void) const
             {
                 return IMessage::getMinimumPacketPayloadLength();
             }
 
-            size_t SimCommit::getRequiredMemory(void)
+            size_t SimCommit::getRequiredMemory(void) const
             {
                 return IMessage::getRequiredMemory();
             }

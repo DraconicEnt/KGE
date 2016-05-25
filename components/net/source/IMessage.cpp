@@ -40,7 +40,7 @@ namespace Kiaro
 
         Common::U32 IMessage::getID(void) const { return mID; }
 
-        Common::U32 IMessage::getMinimumPacketPayloadLength(void)
+        size_t IMessage::getMinimumPacketPayloadLength(void) const
         {
             return sizeof(Common::U32) * 2;
         }

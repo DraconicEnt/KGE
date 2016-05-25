@@ -51,9 +51,9 @@ namespace Kiaro
 
                     void unpack(Support::CBitStream& in);
 
-                    Common::U32 getMinimumPacketPayloadLength(void);
+                    virtual size_t getMinimumPacketPayloadLength(void) const;
 
-                    size_t getRequiredMemory(void) const;
+                    virtual size_t getRequiredMemory(void) const;
             };
         } // End NameSpace Messages
     } // End NameSpace Game

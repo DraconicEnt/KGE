@@ -83,7 +83,7 @@ namespace Kiaro
                 }
             }
 
-            Common::U32 Scope::getMinimumPacketPayloadLength(void)
+            size_t Scope::getMinimumPacketPayloadLength(void) const
             {
                 return (sizeof(Common::U32) * 1);
             }

@@ -23,7 +23,7 @@ namespace Kiaro
     {
         class IIncomingClient;
     }
-    
+
     namespace Game
     {
         namespace Messages
@@ -51,12 +51,12 @@ namespace Kiaro
                         in >> mName;
                     }
 
-                    Common::U32 getMinimumPacketPayloadLength(void)
+                    virtual size_t getMinimumPacketPayloadLength(void) const
                     {
                         return sizeof(Common::U32);
                     }
 
-                    size_t getRequiredMemory(void)
+                    virtual size_t getRequiredMemory(void) const
                     {
                         return mName.length();
                     }

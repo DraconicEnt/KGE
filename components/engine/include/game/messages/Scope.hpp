@@ -54,7 +54,7 @@ namespace Kiaro
 
                     virtual void unpack(Support::CBitStream& in);
 
-                    virtual Common::U32 getMinimumPacketPayloadLength(void);
+                    virtual size_t getMinimumPacketPayloadLength(void) const;
 
                     virtual size_t getRequiredMemory(void) const;
             };

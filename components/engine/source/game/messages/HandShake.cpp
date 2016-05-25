@@ -41,7 +41,7 @@ namespace Kiaro
                 in >> mVersionMajor >> mVersionMinor >> mVersionRevision >> mVersionBuild >> mProtocolVersion;
             }
 
-            Common::U32 HandShake::getMinimumPacketPayloadLength(void)
+            size_t HandShake::getMinimumPacketPayloadLength(void) const
             {
                 return (sizeof(Common::U32) * 2) + (sizeof(Common::U8) * 3);
             }

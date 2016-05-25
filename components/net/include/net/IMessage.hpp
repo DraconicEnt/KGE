@@ -58,7 +58,7 @@ namespace Kiaro
 
                 Common::U32 getID(void) const;
 
-                virtual Common::U32 getMinimumPacketPayloadLength(void);
+                virtual size_t getMinimumPacketPayloadLength(void) const;
 
                 virtual size_t getRequiredMemory(void) const;
         };

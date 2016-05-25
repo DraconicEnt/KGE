@@ -51,12 +51,12 @@ namespace Kiaro
                         mReason = in.popString();
                     }
 
-                    Common::U32 getMinimumPacketPayloadLength(void)
+                    virtual size_t getMinimumPacketPayloadLength(void) const
                     {
                         return sizeof(Common::U32);
                     }
 
-                    size_t getRequiredMemory(void) const
+                    virtual size_t getRequiredMemory(void) const
                     {
                         return mReason.length();
                     }
