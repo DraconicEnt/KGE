@@ -10,10 +10,8 @@
  */
 
 // FIXME: Caused include issues with Python.h
-//#include <chrono>
-//#include <thread>
-
-#include <Python.h>
+#include <chrono>
+#include <thread>
 
 #include <core/SEngineInstance.hpp>
 #include <video/SRenderer.hpp>
@@ -123,11 +121,6 @@ namespace Kiaro
             else
                 CONSOLE_INFOF("Mounted game directory '%s' successfully.", mGameName.data());
 
-            // Initialize Python
-            Py_SetProgramName(argv[0]);
-            Py_Initialize();
-            CONSOLE_INFO("Python initialized.");
-
             // TODO (Robert MacGregor#9): Return error codes for the netcode
 
             // Init the taskers
@@ -194,8 +187,6 @@ namespace Kiaro
             Video::SRenderer::destroy();
 
             al_uninstall_system();
-
-            Py_Finalize();
         }
 
         void SEngineInstance::networkUpdate(void)
