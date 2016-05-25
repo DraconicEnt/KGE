@@ -23,12 +23,14 @@ namespace Kiaro
         {
             public:
                 bool mFunctionCalled;
+                Support::Vector<Support::String> mGotParams;
 
                 TestClass(void) : mFunctionCalled(false) {}
 
                 void testFunction(const Support::Vector<Support::String>& params)
                 {
                     mFunctionCalled = true;
+                    mGotParams = params;
                 }
         };
 
@@ -51,10 +53,14 @@ namespace Kiaro
             EXPECT_EQ("2", sGotParams[1]);
             EXPECT_EQ("3", sGotParams[2]);
 
-            // FIXME: Calls against member bindings causes a segfault right now
-          //  console.eval("testClass");
+            // Test member calls
+            console.eval("           testClass a        b          c");
 
-          //  EXPECT_TRUE(testInstance.mFunctionCalled);
+            EXPECT_TRUE(testInstance.mFunctionCalled);
+            EXPECT_EQ(3, testInstance.mGotParams.size());
+            EXPECT_EQ("a", testInstance.mGotParams[0]);
+            EXPECT_EQ("b", testInstance.mGotParams[1]);
+            EXPECT_EQ("c", testInstance.mGotParams[2]);
         }
     } // End Namespace Support
 } // End namespace Kiaro

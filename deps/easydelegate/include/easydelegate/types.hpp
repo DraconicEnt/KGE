@@ -1,7 +1,7 @@
 /**
  *  @file types.hpp
- *  @date 7/11/2015
- *  @version 2.0
+ *  @date 5/25/2016
+ *  @version 2.2
  *  @brief Include file declaring various helper types used by the EasyDelegate library. They
  *  may also aid programmers using the library as well.
  *  @author <a href="http://dx.no-ip.org">Robert MacGregor</a>
