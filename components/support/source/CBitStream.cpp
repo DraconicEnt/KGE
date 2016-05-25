@@ -66,19 +66,19 @@ namespace Kiaro
 
             // Is it properly NULL terminated?
             if (string[length] != 0x00)
-                throw std::runtime_error("Attempted to write bad string!");
+                throw std::runtime_error("Attempted to write bad string (null terminator isn't where it should be)!");
 
             const size_t stringLength = strlen(string) + 1; // Account for the NULL as well
 
             if (stringLength - 1 != length)
-                throw std::runtime_error("Attempted to write a bad string!");
+                throw std::runtime_error("Attempted to write a bad string (Lengths do not match)!");
 
             // Will the string fit?
-            if (mTotalSize - mPointer < stringLength + sizeof(size_t))
-                throw std::runtime_error("Cannot fit string into bit stream buffer!");
+            if (mTotalSize - mPointer < stringLength + sizeof(Common::U32))
+                throw std::runtime_error("Cannot fit string into buffer!");
 
             // Write off the string length so we can properly unpack later
-            this->write<size_t>(stringLength);
+            this->write<Common::U32>(static_cast<Common::U32>(stringLength));
 
             //if (mPointer >= mTotalSize || mTotalSize - mPointer < stringLength)
             //    throw std::overflow_error("Stack Overflow");
@@ -94,7 +94,7 @@ namespace Kiaro
 
         const Common::C8* CBitStream::popString(void)
         {
-            const size_t& totalBytes = this->pop<size_t>();
+            const Common::U32 totalBytes = this->pop<Common::U32>();
 
             //if (mPointer <= 0 || mPointer < totalBytes)
               //  throw std::underflow_error("Stack Underflow");
@@ -108,7 +108,7 @@ namespace Kiaro
         const Common::C8* CBitStream::topString(void)
         {
             // Read the string length off
-            const size_t& totalBytes = this->pop<size_t>();
+            const Common::U32 totalBytes = this->pop<Common::U32>();
 
             // First off, is there enough memory in the buffer?
          //   if (totalBytes > mPointer)
