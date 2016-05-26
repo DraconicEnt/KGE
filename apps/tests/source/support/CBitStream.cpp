@@ -104,7 +104,7 @@ namespace Kiaro
 
             size_t writtenBytes = 0;
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
-                writtenBytes += sStringList[iteration].length() + sizeof(size_t) + 1;
+                writtenBytes += sStringList[iteration].length() + sizeof(Common::U32) + 1;
 
             EXPECT_EQ(stream.getPointer(), writtenBytes);
             stream.setPointer(0);
@@ -124,7 +124,7 @@ namespace Kiaro
             // String isn't properly NULL terminated to be of this length
             EXPECT_THROW(stream.writeString(payload, 8), std::runtime_error);
             EXPECT_NO_THROW(stream.writeString(payload, 5));
-            EXPECT_EQ(6 + sizeof(size_t), stream.getPointer());
+            EXPECT_EQ(6 + sizeof(Common::U32), stream.getPointer());
         }
 
         TEST(BitStream, LongString)
