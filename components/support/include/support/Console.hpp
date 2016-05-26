@@ -22,6 +22,8 @@
 
 #include <support/String.hpp>
 
+#include <easydelegate/easydelegate.hpp>
+
 namespace Kiaro
 {
     namespace Support
@@ -46,16 +48,18 @@ namespace Kiaro
                 MESSAGE_DEBUG = 5,
             };
 
+            typedef EasyDelegate::DelegateSet<void, MESSAGE_TYPE, const Support::String&> LogResponderSetType;
+
             /**
              *  @brief A typedef for a pointer to a log responder method.
              *  @param type The message type that has been emitted.
              *  @param message The message string that has been emitted.
              */
-            typedef void (*LogResponderPointer)(const MESSAGE_TYPE& type, const Support::String& message);
+            typedef void (*LogResponderPointer)(MESSAGE_TYPE type, const Support::String& message);
 
-            extern Support::UnorderedMap<Common::U8, Support::UnorderedSet<LogResponderPointer>> sLogResponders;
+            extern Support::UnorderedMap<Common::U8, LogResponderSetType> sLogResponders;
 
-            inline const Common::C8* messageTypeText(const MESSAGE_TYPE& type)
+            inline const Common::C8* messageTypeText(MESSAGE_TYPE type)
             {
                 switch(type)
                 {
@@ -74,6 +78,17 @@ namespace Kiaro
                 return "UNKNOWN";
             }
 
+            static void registerListener(LogResponderSetType::StaticDelegateFuncPtr method, MESSAGE_TYPE type)
+            {
+                sLogResponders[type].push_back(new LogResponderSetType::StaticDelegateType(method));
+            }
+
+            template <typename className>
+            static void registerListener(LogResponderSetType::MemberDelegateFuncPtr<className> method, className* thisPtr, MESSAGE_TYPE type)
+            {
+                sLogResponders[type].push_back(new LogResponderSetType::MemberDelegateType<className>(method, thisPtr));
+            }
+
             /**
              *  @brief Writes a formatted message to the console as the given message type.
              *  @param type The message type to write as.
@@ -81,15 +96,13 @@ namespace Kiaro
              *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
-            static void writef(const MESSAGE_TYPE& type, const Support::String& format, parameters... params)
+            static void writef(MESSAGE_TYPE type, const Support::String& format, parameters... params)
             {
                 // Call the responders first.
                 Common::C8 buffer[256];
                 sprintf(buffer, format.data(), params...);
 
-                for (auto it = sLogResponders[type].begin(); it != sLogResponders[type].end(); it++)
-                    (*it)(type, buffer);
-
+                sLogResponders[type].invoke(type, buffer);
                 printf("(%s) ", messageTypeText(type));
 
                 if (sizeof...(params) >= 1)
@@ -124,7 +137,7 @@ namespace Kiaro
             {
                 writef(MESSAGE_ERROR, format.c_str(), params...);
             }
-            
+
             /**
              *  @brief Helper method to write a debug message to the game console.
              *  @param format The string to format given the varible length parameter list.
@@ -152,11 +165,10 @@ namespace Kiaro
              *  @param type The message type to write as.
              *  @param output The string to write to the console.
              */
-            static void write(const MESSAGE_TYPE& type, const Support::String& output)
+            static void write(MESSAGE_TYPE type, const Support::String& output)
             {
-                for (auto it = sLogResponders[type].begin(); it != sLogResponders[type].end(); it++)
-                    (*it)(type, output.data());
-                         
+                sLogResponders[type].invoke(type, output);
+
                 printf("(%s) %s", messageTypeText(type), output.data());
                 puts("");
             }
@@ -169,7 +181,7 @@ namespace Kiaro
             {
                 write(MESSAGE_INFO, output);
             }
-            
+
             /**
              *  @brief Helper method to write an unformatted error message to the console.
              *  @param output The string to write to the console.
@@ -187,7 +199,7 @@ namespace Kiaro
             {
                 write(MESSAGE_WARNING, output);
             }
-        
+
             /**
              *  @brief Helper method to write an unformatted debug message to the console.
              *  @param output The string to write to the console.
@@ -196,7 +208,7 @@ namespace Kiaro
             {
                 write(MESSAGE_DEBUG, output);
             }
-            
+
             #define QUOTE_IMPL(T) #T
             #define QUOTE(T) QUOTE_IMPL(T)
 
@@ -205,7 +217,7 @@ namespace Kiaro
             #define CONSOLE_INFOF(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
             #define CONSOLE_WARNINGF(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
             #define CONSOLE_DEBUGF(format, ...) Support::Console::debugf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-            
+
             #define CONSOLE_ERROR(message, ...) Support::Console::error(QUOTE(ASSEMBLE_OUTPUT(message)))
             #define CONSOLE_INFO(message, ...) Support::Console::info(QUOTE(ASSEMBLE_OUTPUT(message)))
             #define CONSOLE_WARNING(message, ...) Support::Console::warning(QUOTE(ASSEMBLE_OUTPUT(message)))

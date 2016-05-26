@@ -15,7 +15,8 @@ namespace Kiaro
 
         CManagementConsole::~CManagementConsole(void)
         {
-
+            for (auto entry: mCallmap)
+                delete entry.second;
         }
 
         static const Support::Regex mCallSignature("[A-z]( +[A-z]+)*", Support::RegexConstants::Extended);

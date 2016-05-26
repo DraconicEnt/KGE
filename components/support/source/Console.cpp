@@ -10,7 +10,7 @@ namespace Kiaro
     {
         namespace Console
         {
-            Support::UnorderedMap<Common::U8, Support::UnorderedSet<LogResponderPointer>> sLogResponders;
+            Support::UnorderedMap<Common::U8, LogResponderSetType> sLogResponders;
         }
     }
 }

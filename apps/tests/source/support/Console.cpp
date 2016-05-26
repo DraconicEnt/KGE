@@ -24,7 +24,7 @@ namespace Kiaro
 
             static const Common::C8* sString = "This %u test";
 
-            static void ConsoleListener(const MESSAGE_TYPE& type, const Support::String& message)
+            static void ConsoleListener(MESSAGE_TYPE type, const Support::String& message)
             {
                 // Check the expected result
                 Common::C8 buffer[256];
@@ -35,15 +35,15 @@ namespace Kiaro
                 sLogCounts[type]++;
             }
 
-            static void WriteLog(const MESSAGE_TYPE& type)
+            static void WriteLog(MESSAGE_TYPE type)
             {
                 Console::writef(type, sString, sLogCounts[type]);
             }
 
             TEST(Console, Listener)
             {
-                sLogResponders[MESSAGE_INFO].insert(sLogResponders[MESSAGE_INFO].end(), ConsoleListener);
-                sLogResponders[MESSAGE_ERROR].insert(sLogResponders[MESSAGE_INFO].end(), ConsoleListener);
+                Console::registerListener(ConsoleListener, MESSAGE_INFO);
+                Console::registerListener(ConsoleListener, MESSAGE_ERROR);
 
                 for (Common::U32 iteration = 0; iteration < 10; iteration++)
                 {
