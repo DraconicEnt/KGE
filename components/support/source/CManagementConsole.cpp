@@ -22,29 +22,45 @@ namespace Kiaro
 
         bool CManagementConsole::eval(const Support::String& input)
         {
-            // FIXME: Support multi-line calls with string & numeric params
-            Support::Vector<Support::String> params;
+            bool success = true;
 
-            std::stringstream ss(input);
-            Support::String item;
-            while (std::getline(ss, item, ' '))
-                if (item.length() > 0)
-                    params.push_back(item);
+            // Loop for commands
+            std::stringstream commandStream(input);
 
-            Support::String command = params[0];
-            params.erase(params.begin());
+            Support::String commandString;
+            while (std::getline(commandStream, commandString, ';'))
+                if (commandString.length() > 0)
+                {
+                    // Loop for command components
+                    std::stringstream componentStream(commandString);
 
-            // Lookup the command
-            auto it = mCallmap.find(command);
+                    Support::String componentString;
 
-            if (it != mCallmap.end())
-            {
-                (*it).second->invoke(params);
-                return true;
-            }
+                    Support::Vector<Support::String> params;
+                    while (std::getline(componentStream, componentString, ' '))
+                        if (componentString.length() > 0)
+                            params.push_back(componentString);
 
-            CONSOLE_ERRORF("Unknown command: %s", command.data());
-            return false;
+                    // Evaluate
+                    Support::String commandName = params[0];
+                    params.erase(params.begin());
+
+                    // Lookup the command
+                    auto it = mCallmap.find(commandName);
+
+                    if (it != mCallmap.end())
+                    {
+                        CONSOLE_DEBUGF("Calling command: %s", commandName.data());
+                        (*it).second->invoke(params);
+                    }
+                    else
+                    {
+                        CONSOLE_ERRORF("Unknown command: %s", commandName.data());
+                        success = false;
+                    }
+                }
+
+            return success;
         }
 
         void CManagementConsole::registerFunction(const Support::String& name, ManagementFunction::StoredDelegateType* called)
