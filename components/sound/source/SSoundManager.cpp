@@ -29,6 +29,49 @@ namespace Kiaro
             mInstance = nullptr;
         }
 
+        static FMOD_RESULT F_CALLBACK fmodOpen(const Common::C8* name, Common::U32* filesize, void** handle, void* userdata)
+        {
+            if (!PHYSFS_exists(name))
+                return FMOD_ERR_FILE_NOTFOUND;
+
+            PHYSFS_File* result = PHYSFS_openRead(name);
+
+            if (!result)
+                return FMOD_ERR_INTERNAL;
+
+            *handle = result;
+            *filesize = PHYSFS_fileLength(result);
+
+            return FMOD_OK;
+        }
+
+        static FMOD_RESULT F_CALLBACK fmodClose(void* handle, void* userdata)
+        {
+            if (!PHYSFS_close(reinterpret_cast<PHYSFS_File*>(handle)))
+                return FMOD_ERR_INTERNAL;
+
+            return FMOD_OK;
+        }
+
+        static FMOD_RESULT F_CALLBACK fmodRead(void* handle, void* buffer, Common::U32 sizebytes, Common::U32* bytesread, void* userdata)
+        {
+            unsigned long physfsBytesRead = PHYSFS_read(reinterpret_cast<PHYSFS_File*>(handle), buffer, 1, sizebytes);
+
+            if (physfsBytesRead == -1)
+                return FMOD_ERR_INTERNAL;
+
+            *bytesread = static_cast<Common::U32>(physfsBytesRead);
+            return FMOD_OK;
+        }
+
+        static FMOD_RESULT F_CALLBACK fmodSeek(void* handle, Common::U32 pos, void *userdata)
+        {
+            if (!PHYSFS_seek(reinterpret_cast<PHYSFS_File*>(handle), pos))
+                return FMOD_ERR_INTERNAL;
+
+            return FMOD_OK;
+        }
+
         SSoundManager::SSoundManager(void)
         {
             FMOD_RESULT result;
@@ -63,7 +106,7 @@ namespace Kiaro
                 return;
             }
 
-            if ((result = mFMod->setFileSystem(this->fmodOpen, this->fmodClose, this->fmodRead, this->fmodSeek, nullptr, nullptr, 0)) != FMOD_OK)
+            if ((result = mFMod->setFileSystem(fmodOpen, fmodClose, fmodRead, fmodSeek, nullptr, nullptr, 0)) != FMOD_OK)
             {
                 CONSOLE_ERRORF("Failed to set FMod file system! Reason: %s", FMOD_ErrorString(result));
                 this->~SSoundManager();
@@ -104,49 +147,6 @@ namespace Kiaro
             CSoundSource* sound = new CSoundSource(mFMod, filename.data());
             mSoundRegistry[filename] = sound;
             return sound;
-        }
-
-        FMOD_RESULT SSoundManager::fmodOpen(const Common::C8* name, Common::U32* filesize, void** handle, void* userdata)
-        {
-            if (!PHYSFS_exists(name))
-                return FMOD_ERR_FILE_NOTFOUND;
-
-            PHYSFS_File* result = PHYSFS_openRead(name);
-
-            if (!result)
-                return FMOD_ERR_INTERNAL;
-
-            *handle = result;
-            *filesize = PHYSFS_fileLength(result);
-
-            return FMOD_OK;
-        }
-
-        FMOD_RESULT SSoundManager::fmodClose(void* handle, void* userdata)
-        {
-            if (!PHYSFS_close(reinterpret_cast<PHYSFS_File*>(handle)))
-                return FMOD_ERR_INTERNAL;
-
-            return FMOD_OK;
-        }
-
-        FMOD_RESULT SSoundManager::fmodRead(void* handle, void* buffer, Common::U32 sizebytes, Common::U32* bytesread, void* userdata)
-        {
-            unsigned long physfsBytesRead = PHYSFS_read(reinterpret_cast<PHYSFS_File*>(handle), buffer, 1, sizebytes);
-
-            if (physfsBytesRead == -1)
-                return FMOD_ERR_INTERNAL;
-
-            *bytesread = static_cast<Common::U32>(physfsBytesRead);
-            return FMOD_OK;
-        }
-
-        FMOD_RESULT SSoundManager::fmodSeek(void* handle, Common::U32 pos, void *userdata)
-        {
-            if (!PHYSFS_seek(reinterpret_cast<PHYSFS_File*>(handle), pos))
-                return FMOD_ERR_INTERNAL;
-
-            return FMOD_OK;
         }
     }
 }
