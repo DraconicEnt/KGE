@@ -44,7 +44,6 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
     commandLineParser.setFlagDescription("-dedicated", "Start up the engine as a standalone server.");
 	commandLineParser.setFlagDescription("-perfstat", "Occasionally write performance statistics to stdout.");
     commandLineParser.setFlagDescription("-v", "Print versioning information.");
-    commandLineParser.setFlagDescription("-addons", "<addon1> [addon2...] : Run the game with a list of addons installed.");
 
     // Should we display the help info?
     if (commandLineParser.hasFlag("-h"))
@@ -63,18 +62,6 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         }
 
         const Support::String gameName = gameArguments[0];
-
-        // Get the addons list, if there is one
-        Support::Vector<Support::String> addonList;
-        if (commandLineParser.hasFlag("-addons") && commandLineParser.getFlagArgumentCount("-addons") == 0)
-        {
-            CONSOLE_ERROR("No addons specified.");
-
-            commandLineParser.displayHelp(argc, argv);
-            return -2;
-        }
-        else if (commandLineParser.hasFlag("-addons"))
-            addonList = commandLineParser.getFlagArguments("-addons");
 
         Core::SEngineInstance::MODE_NAME engineMode = Core::SEngineInstance::MODE_CLIENT;
 
