@@ -29,6 +29,8 @@
     #include <allegro5/allegro_osx.h>
 #endif
 
+#include <allegro5/allegro_physfs.h>
+
 #include <support/tasking/SAsynchronousTaskManager.hpp>
 #include <support/tasking/SAsynchronousSchedulerTask.hpp>
 #include <filesystem/SResourceProvider.hpp>
@@ -107,6 +109,9 @@ namespace Kiaro
             al_init();
 
             this->initializeFileSystem(argc, argv);
+
+            // Once the filesystem is initialized, pump Allegro through it
+            al_set_physfs_file_interface();
 
             CONSOLE_INFOF("Running game '%s'", mGameName.data());
 
