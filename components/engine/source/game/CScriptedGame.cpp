@@ -10,17 +10,14 @@ namespace Kiaro
     {
         CScriptedGame::CScriptedGame(void) : IGameMode("Scripted Game")
         {
-        
         }
-        
+
         void CScriptedGame::setup(void)
         {
-
         }
 
         void CScriptedGame::tearDown(void)
         {
-
         }
     } // End NameSpace Game
 } // End NameSpace Kiaro

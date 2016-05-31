@@ -17,16 +17,16 @@ namespace Kiaro
     {
         class CManagementConsole
         {
-            // Public Members
+                // Public Members
             public:
                 typedef EasyDelegate::DelegateSet<void, const Support::Vector<Support::String>& > ManagementFunction;
 
-            // Private Members
+                // Private Members
             private:
                 Support::UnorderedMap<Support::String, ManagementFunction::StoredDelegateType*> mCallmap;
 
 
-            // Public Methods
+                // Public Methods
             public:
                 CManagementConsole(void);
                 ~CManagementConsole(void);

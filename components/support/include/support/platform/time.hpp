@@ -2,11 +2,11 @@
 
 namespace Kiaro
 {
-	namespace Platform
-	{
-		namespace Time
-		{
-			Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
-		}
-	}
+    namespace Platform
+    {
+        namespace Time
+        {
+            Common::U64 getCurrentTimeMicroseconds(void) NOTHROW;
+        }
+    }
 }

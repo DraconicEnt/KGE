@@ -7,7 +7,7 @@
  *
  *  @author Robert MacGregor
  *  @copyright (c) 2016 Draconic Entity
- */ 
+ */
 
 #ifndef _INCLUDE_SUPPORT_ISINGLETON_HPP_
 #define _INCLUDE_SUPPORT_ISINGLETON_HPP_
@@ -26,12 +26,12 @@ namespace Kiaro
         template <typename child>
         class ISingleton
         {
-            // Private Members
+                // Private Members
             private:
                 //! The pointer to the instance
                 static child* mInstance;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Returns the pointer to the singleton instance, creating a new
@@ -43,10 +43,10 @@ namespace Kiaro
                 {
                     if (!mInstance)
                         mInstance = new child(params...);
-                        
+
                     return mInstance;
                 }
-                
+
                 /**
                  *  @brief Destroys the singleton instance, causing the next call to getPointer
                  *  to create a new instance.
@@ -60,7 +60,7 @@ namespace Kiaro
                     }
                 }
         };
-        
+
         template <typename child>
         child* ISingleton<child>::mInstance = nullptr;
     }

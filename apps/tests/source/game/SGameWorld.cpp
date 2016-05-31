@@ -38,27 +38,22 @@ namespace Kiaro
 
                 ~TestEntity(void)
                 {
-
                 }
 
                 void packEverything(Support::CBitStream& out) const
                 {
-
                 }
 
                 void unpack(Support::CBitStream& in)
                 {
-
                 }
 
                 void registerEntity(void)
                 {
-
                 }
 
                 void update(const Common::F32 deltaTimeSeconds)
                 {
-
                 }
 
                 size_t getRequiredMemory(void) const
@@ -72,34 +67,26 @@ namespace Kiaro
             public:
                 TestObject(void) : IEngineObject()
                 {
-
                 }
         };
 
         TEST(SGameWorld, SingletonConstructor)
         {
             SGameWorld* world = SGameWorld::getPointer();
-
             EXPECT_TRUE(sGameWorld);
-
             SGameWorld::destroy();
             SObjectRegistry::destroy();
-
             EXPECT_FALSE(sGameWorld);
         }
 
         TEST(SGameWorld, Lookup)
         {
             SGameWorld* world = SGameWorld::getPointer();
-
             EXPECT_NO_THROW(EXPECT_FALSE(world->getEntity("entity")));
-
             TestEntity* entity = new TestEntity();
             entity->setName("entity");
-
             EXPECT_EQ(entity, world->getEntity("entity"));
             EXPECT_EQ(entity, world->getEntity(entity->mID));
-
             SGameWorld::destroy();
             SObjectRegistry::destroy();
         }
@@ -107,24 +94,18 @@ namespace Kiaro
         TEST(SGameWorld, IDAssignment)
         {
             SGameWorld* world = SGameWorld::getPointer();
-
             TestEntity* entityOne = new TestEntity();
             EXPECT_EQ(0, entityOne->mID);
-
             TestEntity* entityTwo = new TestEntity();
             EXPECT_EQ(1, entityTwo->mID);
-
             TestEntity* entityThree = new TestEntity();
             EXPECT_EQ(2, entityThree->mID);
-
             world->removeEntity(entityTwo);
             delete entityTwo;
-
             entityTwo = new TestEntity();
             EXPECT_EQ(1, entityTwo->mID);
             world->removeEntity(entityTwo);
             delete entityTwo;
-
             SGameWorld::destroy();
             SObjectRegistry::destroy();
         }
@@ -132,17 +113,14 @@ namespace Kiaro
         TEST(SGameWorld, TypeTesting)
         {
             SGameWorld* world = SGameWorld::getPointer();
-
             TestEntity* entity = new TestEntity();
             entity->setName("entity");
             TestObject* object = new TestObject();
             object->setName("object");
-
             EXPECT_FALSE(world->getEntity("object"));
             EXPECT_FALSE(world->getEntity(object->mID));
             EXPECT_EQ(entity, world->getEntity("entity"));
             EXPECT_EQ(entity, world->getEntity(entity->mID));
-
             SGameWorld::destroy();
             SObjectRegistry::destroy();
         }

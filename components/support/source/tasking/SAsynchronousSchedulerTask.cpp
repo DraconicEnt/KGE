@@ -27,33 +27,26 @@ namespace Kiaro
 
             void SAsynchronousSchedulerTask::initialize(void)
             {
-
             }
 
             bool SAsynchronousSchedulerTask::tick(const Common::F32 deltaTime)
             {
                 mMutex.lock();
-
                 std::this_thread::sleep_for(std::chrono::milliseconds(2));
-
                 mMutex.unlock();
-
                 return false;
             }
 
             void SAsynchronousSchedulerTask::deinitialize(void)
             {
-
             }
 
             SAsynchronousSchedulerTask::SAsynchronousSchedulerTask(void)
             {
-
             }
 
             SAsynchronousSchedulerTask::~SAsynchronousSchedulerTask(void)
             {
-
             }
         } // End NameSpace Tasking
     } // End NameSpace Engine

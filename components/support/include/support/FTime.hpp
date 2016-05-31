@@ -31,7 +31,7 @@ namespace Kiaro
              *  to that of the current top level timer identifier.
              *  @throw std::logic_error When there are no running timers to stop.
              */
-            Common::F32 stopTimer(const timer &timerIdentifier);
+            Common::F32 stopTimer(const timer& timerIdentifier);
 
             Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
 

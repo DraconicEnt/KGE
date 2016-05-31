@@ -19,7 +19,7 @@ namespace Kiaro
     {
         CSceneGraph::CSceneGraph(void)
         {
-           // mRoot = Core::SEngineInstance::getPointer()->getSceneManager()->addEmptySceneNode();
+            // mRoot = Core::SEngineInstance::getPointer()->getSceneManager()->addEmptySceneNode();
         }
 
         CSceneGraph::~CSceneGraph(void)
@@ -27,11 +27,10 @@ namespace Kiaro
             mRoot->removeAll();
             mRoot->remove();
             mRoot = NULL;
-
             CONSOLE_INFO("Destroyed a scene graph.");
         }
 
-        void CSceneGraph::add(irr::scene::ISceneNode *node)
+        void CSceneGraph::add(irr::scene::ISceneNode* node)
         {
             mRoot->addChild(node);
         }
@@ -46,17 +45,17 @@ namespace Kiaro
             mRoot->setVisible(visible);
         }
 
-/*
-        const Common::ColorRGBA &CSceneGraph::getClearColor(void)
-        {
-            return mClearColor;
-        }
+        /*
+                const Common::ColorRGBA &CSceneGraph::getClearColor(void)
+                {
+                    return mClearColor;
+                }
 
-        void CSceneGraph::setClearColor(const Common::ColorRGBA &color)
-        {
-            mClearColor = color;
-        }
-        */
+                void CSceneGraph::setClearColor(const Common::ColorRGBA &color)
+                {
+                    mClearColor = color;
+                }
+                */
 
     } // End NameSpace Engine
 } // End NameSpace Kiaro

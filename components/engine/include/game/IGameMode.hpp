@@ -23,16 +23,22 @@ namespace Kiaro
     {
         class IGameMode
         {
-            // Public Members
+                // Public Members
             public:
                 const Support::String mName;
-                
-            // Public Methods
+
+                // Public Methods
             public:
                 IGameMode(const Support::String& name = "Unnamed") : mName(name) { }
-                
-                virtual void setup(void) { std::cerr << "IGameMode: Gamemode setup not implemented!" << std::endl; }
-                virtual void tearDown(void) { std::cerr << "IGameMode: Gamemode teardown not implemented!" << std::endl; }
+
+                virtual void setup(void)
+                {
+                    std::cerr << "IGameMode: Gamemode setup not implemented!" << std::endl;
+                }
+                virtual void tearDown(void)
+                {
+                    std::cerr << "IGameMode: Gamemode teardown not implemented!" << std::endl;
+                }
 
                 virtual void onPlayerKilled(void) { }
 

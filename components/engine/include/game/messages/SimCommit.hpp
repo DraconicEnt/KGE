@@ -31,7 +31,7 @@ namespace Kiaro
         {
             class SimCommit : public Net::IMessage
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     SimCommit(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
 

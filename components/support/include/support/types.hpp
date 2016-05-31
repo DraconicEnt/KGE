@@ -37,7 +37,7 @@ namespace Kiaro
 {
     namespace Support
     {
-		//! A typedef to an std::atomic.
+        //! A typedef to an std::atomic.
         template <typename storedType>
         using Atomic = std::atomic<storedType>;
 
@@ -45,19 +45,19 @@ namespace Kiaro
         template <typename storedType, typename containerType = Deque<storedType>>
         using PriorityQueue = std::priority_queue<storedType, containerType>;
 
-		//! A typrdef to an std::queue.
+        //! A typrdef to an std::queue.
         template <typename storedType, typename containerType = Deque<storedType>>
         using Queue = std::queue<storedType, containerType>;
 
-		//! A typedef to an std::pair.
+        //! A typedef to an std::pair.
         template <typename storedTypeOne, typename storedTypeTwo>
         using Pair = std::pair<storedTypeOne, storedTypeTwo>;
 
-		//! A typedef to an std::mutex.
+        //! A typedef to an std::mutex.
         typedef std::mutex Mutex;
-		//! A typedef to an std::thread.
+        //! A typedef to an std::thread.
         typedef std::thread Thread;
-		//! A typedef to an std::wstring.
+        //! A typedef to an std::wstring.
         typedef std::wstring WString;
 
         //! A typedef to a 2D vector type that represents dimensions.

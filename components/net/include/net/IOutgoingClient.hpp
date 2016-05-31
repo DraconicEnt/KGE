@@ -39,7 +39,7 @@ namespace Kiaro
          */
         class IOutgoingClient
         {
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting a Peer object.
@@ -123,7 +123,7 @@ namespace Kiaro
                  */
                 virtual void onReceivePacket(Support::CBitStream& in) = 0;
 
-            // Private Methods
+                // Private Methods
             protected:
                 /**
                  *  @brief An internally called method used to process packet payloads specified in a CBitStream.
@@ -148,7 +148,7 @@ namespace Kiaro
                 //! Internally called method when the IOutgoingClient connected to a remote host.
                 void internalOnConnected(void);
 
-            // Private Members
+                // Private Members
             protected:
                 //! A pointer to the scheduled event for our update pulse.
                 Support::CScheduledEvent* mUpdatePulse;

@@ -10,7 +10,7 @@
  */
 
 #if ENGINE_TESTS>0
-    #include <gtest/gtest.h>
+#include <gtest/gtest.h>
 #endif // ENGINE_TESTS
 
 #include <support/CBitStream.hpp>
@@ -20,19 +20,18 @@ namespace Kiaro
     namespace Support
     {
         CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()),
-        mMemoryBlock(new Common::U8[in->getRequiredMemory()]), mPointer(0), mOwnsMemoryBlock(true)
+            mMemoryBlock(new Common::U8[in->getRequiredMemory()]), mPointer(0), mOwnsMemoryBlock(true)
         {
             in->packEverything(*this);
         }
 
         CBitStream::CBitStream(void* initializer, const size_t initializerLength) : mMemoryBlock((Common::U8*)initializer),
-        mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false)
+            mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false)
         {
-
         }
 
         CBitStream::CBitStream(const size_t sizeInBytes, const void* initializer, size_t initializerLength) :
-        mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true)
+            mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true)
         {
             memset(mMemoryBlock, 0x00, sizeInBytes);
 
@@ -44,10 +43,8 @@ namespace Kiaro
             {
                 // Only copy what we can actually store.
                 initializerLength = initializerLength >= sizeInBytes ? sizeInBytes - 1 : initializerLength;
-
                 // Perform the copy.
                 memcpy(mMemoryBlock, initializer, initializerLength);
-
                 // Make sure we the pointer is set to the next available space
                 mPointer = sizeInBytes;
             }
@@ -79,10 +76,8 @@ namespace Kiaro
 
             // Write off the string length so we can properly unpack later
             this->write<Common::U32>(static_cast<Common::U32>(stringLength));
-
             //if (mPointer >= mTotalSize || mTotalSize - mPointer < stringLength)
             //    throw std::overflow_error("Stack Overflow");
-
             memcpy(&mMemoryBlock[mPointer], string, stringLength);
             mPointer += stringLength;
         }
@@ -95,12 +90,9 @@ namespace Kiaro
         const Common::C8* CBitStream::popString(void)
         {
             const Common::U32 totalBytes = this->pop<Common::U32>();
-
             //if (mPointer <= 0 || mPointer < totalBytes)
-              //  throw std::underflow_error("Stack Underflow");
-
+            //  throw std::underflow_error("Stack Underflow");
             const Common::C8* result = reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
-
             mPointer += totalBytes;
             return result;
         }
@@ -109,17 +101,14 @@ namespace Kiaro
         {
             // Read the string length off
             const Common::U32 totalBytes = this->pop<Common::U32>();
-
             // First off, is there enough memory in the buffer?
-         //   if (totalBytes > mPointer)
+            //   if (totalBytes > mPointer)
             //    throw std::underflow_error("Stack Underflow");
-
             // Ensure that the string is properly terminated
-           // if (mMemoryBlock[(mPointer - sizeof(size_t)) - 1] != 0x00)
+            // if (mMemoryBlock[(mPointer - sizeof(size_t)) - 1] != 0x00)
             //    throw std::logic_error("Attempted to unpack an improperly terminated string");
-
             // Return the result
-           return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
+            return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
         }
 
         const size_t& CBitStream::getPointer(void)
@@ -144,10 +133,8 @@ namespace Kiaro
         {
             Common::U8* newBlock = new Common::U8[newSize];
             memset(newBlock, 0x00, newSize);
-
             // Determine how much memory from our old block to copy.
             const size_t copyLength = newSize < mTotalSize ? mTotalSize - newSize : mTotalSize;
-
             // Copy the old memory block and delete it.
             memcpy(newBlock, mMemoryBlock, copyLength);
 
@@ -158,7 +145,6 @@ namespace Kiaro
             // Update our pointer and size.
             mMemoryBlock = newBlock;
             mTotalSize = newSize;
-
             // We definitely own this block now
             mOwnsMemoryBlock = true;
         }
@@ -168,7 +154,6 @@ namespace Kiaro
         {
             //if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType))
             //    throw std::overflow_error("Stack Overflow");
-
             this->write(input.X);
             this->write(input.Y);
             this->write(input.Z);
@@ -184,7 +169,7 @@ namespace Kiaro
             return mPointer >= mTotalSize;
         }
 
-        void CBitStream::write(const ISerializable *in)
+        void CBitStream::write(const ISerializable* in)
         {
             in->packEverything(*this);
         }

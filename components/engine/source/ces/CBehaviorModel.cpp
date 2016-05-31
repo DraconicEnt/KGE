@@ -18,12 +18,10 @@ namespace Kiaro
     {
         CBehaviorModel::CBehaviorModel(const Support::String& name)
         {
-
         }
 
         CBehaviorModel::~CBehaviorModel(void)
         {
-
         }
 
         void CBehaviorModel::setName(const Support::String& name)
@@ -45,7 +43,6 @@ namespace Kiaro
 
         void CBehaviorModel::unpackData(Support::CBitStream& in)
         {
-
         }
     } // End NameSpace CES
 } // End NameSpace Kiaro

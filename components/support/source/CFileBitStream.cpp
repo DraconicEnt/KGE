@@ -17,7 +17,7 @@ namespace Kiaro
 {
     namespace Support
     {
-        CFileBitStream::CFileBitStream(const Support::String &fileName, const BITSTREAM_MODE &fileMode) : mFileHandle(NULL)
+        CFileBitStream::CFileBitStream(const Support::String& fileName, const BITSTREAM_MODE& fileMode) : mFileHandle(NULL)
         {
             if (fileMode == BITSTREAM_READ)
                 mFileHandle = PHYSFS_openRead(fileName.c_str());

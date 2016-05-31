@@ -27,7 +27,7 @@ namespace Kiaro
         {
             CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, FLAG_STATIC) //, mColor(0, 0, 0, 0)
             {
-               // addNetworkedProperty("color", mColor);
+                // addNetworkedProperty("color", mColor);
             }
 
             CSky::CSky(Support::CBitStream& in) : IEntity(ENTITY_SKY) //, mColor(0, 0, 0, 0)
@@ -37,37 +37,30 @@ namespace Kiaro
 
             CSky::~CSky(void)
             {
-
             }
 
-            void CSky::packUpdate(Support::CBitStream &out)
+            void CSky::packUpdate(Support::CBitStream& out)
             {
-
             }
 
-            void CSky::unpackUpdate(Support::CBitStream &in)
+            void CSky::unpackUpdate(Support::CBitStream& in)
             {
-
             }
 
-            void CSky::packInitialization(Support::CBitStream &out)
+            void CSky::packInitialization(Support::CBitStream& out)
             {
-
             }
 
-            void CSky::unpackInitialization(Support::CBitStream &in)
+            void CSky::unpackInitialization(Support::CBitStream& in)
             {
-
             }
 
-            void CSky::writeTo(Support::CBitStream &out) const
+            void CSky::writeTo(Support::CBitStream& out) const
             {
-
             }
 
-            void CSky::extractFrom(Support::CBitStream &in)
+            void CSky::extractFrom(Support::CBitStream& in)
             {
-
             }
 
             void CSky::registerEntity(void)
@@ -77,13 +70,12 @@ namespace Kiaro
 
             void CSky::update(const Common::F32 deltaTimeSeconds)
             {
-
             }
 
-           // const Common::ColorRGBA& CSky::getColor(void)
-          // {
-           //     return mColor;
-           // }
+            // const Common::ColorRGBA& CSky::getColor(void)
+            // {
+            //     return mColor;
+            // }
         } // End Namespace Entities
     } // End Namespace Game
 } // End Namespace Kiaro

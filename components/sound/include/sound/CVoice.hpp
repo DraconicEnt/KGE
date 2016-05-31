@@ -18,12 +18,12 @@ namespace Kiaro
          */
         class CVoice
         {
-            // Private Members
+                // Private Members
             private:
                 //! Pointer to the FMod channel.
                 FMOD::Channel* mChannel;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an FMod channel.

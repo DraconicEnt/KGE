@@ -18,7 +18,7 @@
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
-{    
+{
     namespace CES
     {
         class IComponent;
@@ -30,7 +30,7 @@ namespace Kiaro
          */
         class CBehaviorModel : public Support::ISerializable
         {
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Constructor for a BehaviorModel accepting a name.
@@ -59,7 +59,7 @@ namespace Kiaro
                 virtual void packData(Support::CBitStream& out);
                 virtual void unpackData(Support::CBitStream& in);
 
-            // Private Members
+                // Private Members
             private:
                 //! The current name of this BehaviorModel.
                 Support::String mName;

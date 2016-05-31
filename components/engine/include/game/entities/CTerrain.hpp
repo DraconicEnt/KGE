@@ -42,7 +42,7 @@ namespace Kiaro
              */
             class CTerrain : public Kiaro::Game::Entities::IRigidObject
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     /**
                      *  @brief Constructor accepting a path to a terrain file.
@@ -61,8 +61,8 @@ namespace Kiaro
                     //! Standard destructor.
                     ~CTerrain(void);
 
-                    virtual void packEverything(Kiaro::Support::CBitStream &out) const;
-                    virtual void unpack(Kiaro::Support::CBitStream &in);
+                    virtual void packEverything(Kiaro::Support::CBitStream& out) const;
+                    virtual void unpack(Kiaro::Support::CBitStream& in);
                     virtual void registerEntity(void);
                     virtual void update(const Kiaro::Common::F32 deltaTimeSeconds);
                     virtual size_t getRequiredMemory(void) const;
@@ -70,10 +70,10 @@ namespace Kiaro
                     void setPosition(const Common::Vector3DF& position);
 
 
-                // Private Members
+                    // Private Members
                 private:
                     //! The Irrlicht scene node associated with this terrain.
-                    irr::scene::ITerrainSceneNode *mSceneNode;
+                    irr::scene::ITerrainSceneNode* mSceneNode;
 
                     //! The path to the loaded terrain file.
                     std::string mTerrainFile;

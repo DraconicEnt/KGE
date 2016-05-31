@@ -9,7 +9,6 @@ namespace Kiaro
     {
         CGameAIClient::CGameAIClient(void) : CGameClient(nullptr)
         {
-
         }
 
         void CGameAIClient::disconnect(const Support::String& reason)

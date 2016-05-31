@@ -20,16 +20,12 @@ namespace Kiaro
         {
             delete mPhysicalWorld;
             mPhysicalWorld = nullptr;
-
             delete mConstraintSolver;
             mConstraintSolver = nullptr;
-
             delete mBroadphase;
             mBroadphase = nullptr;
-
             delete mCollisionDispatcher;
             mCollisionDispatcher = nullptr;
-
             delete mCollisionConfiguration;
             mCollisionConfiguration = nullptr;
         }
@@ -43,7 +39,6 @@ namespace Kiaro
         {
             // We shouldn't already have a debug renderer in here
             assert(!mDebugRenderer);
-
             mDebugRenderer = renderer;
             mPhysicalWorld->setDebugDrawer(renderer);
         }

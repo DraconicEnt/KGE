@@ -30,7 +30,7 @@ namespace Kiaro
          */
         class SRenderer : public Support::ISingleton<SRenderer>
         {
-            // Public Members
+                // Public Members
             public:
                 //! The color drawn that is drawn when there is pixel space without anything in it.
                 Common::ColorRGBA mClearColor;
@@ -38,7 +38,7 @@ namespace Kiaro
                 //! A boolean representing whether or not the renderer has a display. It won't have a display in dedicated mode.
                 const bool mHasDisplay;
 
-            // Private Members
+                // Private Members
             private:
                 //! The Irrlichr context.
                 irr::IrrlichtDevice* mIrrlichtDevice;
@@ -60,11 +60,11 @@ namespace Kiaro
                 //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
                 Support::CScheduledEvent* mTimePulse;
 
-            // Public Methods
+                // Public Methods
             public:
                 SRenderer(void);
                 ~SRenderer(void);
-                
+
                 //! Draws a single frame to the Allegro display.
                 void drawFrame(void);
 
@@ -86,10 +86,10 @@ namespace Kiaro
                  *  @return A pointer to the internally used Irrlicht device.
                  */
                 irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
-                
+
                 ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
 
-            // Private Methods
+                // Private Methods
             private:
                 /**
                  *  @brief Initializes the GUI subsystem and returns a status code.

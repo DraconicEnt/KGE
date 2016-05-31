@@ -30,12 +30,12 @@ namespace Kiaro
              */
             class SSynchronousTaskManager : public Support::ISingleton<SSynchronousTaskManager>
             {
-                // Private Members
+                    // Private Members
                 private:
                     //! A set of tasks to process.
-                    Support::UnorderedSet<ITask *> mTaskList;
+                    Support::UnorderedSet<ITask*> mTaskList;
 
-                // Public Methods
+                    // Public Methods
                 public:
                     /**
                      *  @brief Ticks all tasks along, taking into consideration time passage where
@@ -50,7 +50,7 @@ namespace Kiaro
                      *  @return A boolean representing whether or not the task was added successfully.
                      *  @throw std::runtime_error Thrown when the input task is null.
                      */
-                    bool addTask(ITask *task);
+                    bool addTask(ITask* task);
 
                     /**
                      *  @brief Removes a task from the task manager.
@@ -58,7 +58,7 @@ namespace Kiaro
                      *  @return A boolean representing whether or not the task was added successfully.
                      *  @throw std::runtime_error Thrown when the input task is null.
                      */
-                    bool removeTask(ITask *task);
+                    bool removeTask(ITask* task);
 
                     //! Parameter-less constructor.
                     SSynchronousTaskManager(void);

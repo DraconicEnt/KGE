@@ -45,7 +45,6 @@ namespace Kiaro
 
             SSynchronousTaskManager::~SSynchronousTaskManager(void)
             {
-
             }
         } // End NameSpace Tasking
     } // End NameSpace Engine

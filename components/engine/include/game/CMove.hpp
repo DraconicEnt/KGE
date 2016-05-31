@@ -14,7 +14,7 @@ namespace Kiaro
     {
         class CMove : public Support::ISerializable
         {
-            // Public Members
+                // Public Members
             public:
                 Common::F32 mX;
                 Common::F32 mY;
@@ -22,7 +22,7 @@ namespace Kiaro
 
                 bool mTriggers[9];
 
-            // Public Methods
+                // Public Methods
             public:
                 CMove(void);
 

@@ -30,9 +30,8 @@ namespace Kiaro
         namespace Entities
         {
             CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
-            mTerrainFile(terrainFile), mSceneNode(nullptr)
+                mTerrainFile(terrainFile), mSceneNode(nullptr)
             {
-
             }
 
             CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
@@ -42,17 +41,13 @@ namespace Kiaro
 
             CTerrain::~CTerrain(void)
             {
-
             }
 
             void CTerrain::packEverything(Support::CBitStream& out) const
             {
                 assert(mSceneNode);
-
                 IEntity::packEverything(out);
-
                 const Common::Vector3DF& position = mSceneNode->getPosition();
-
                 out.writeString(mTerrainFile);
                 out << position.X << position.Y << position.Z;
             }
@@ -60,10 +55,8 @@ namespace Kiaro
             void CTerrain::unpack(Support::CBitStream& in)
             {
                 mTerrainFile = in.popString();
-
                 Common::Vector3DF position;
                 in >> position.X >> position.Y >> position.Z;
-
                 this->registerEntity();
 
                 if (mSceneNode)
@@ -74,7 +67,6 @@ namespace Kiaro
             {
                 CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
                 FileSystem::CFileReader fileHandle(mTerrainFile);
-
                 irr::IrrlichtDevice* irrlichtDevice = Video::SRenderer::getPointer()->getIrrlichtDevice();
                 irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
 
@@ -82,9 +74,7 @@ namespace Kiaro
                 {
                     terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
                     terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
-
                     mSceneNode = terrain;
-
                     IEntity::registerEntity();
                 }
                 else
@@ -98,7 +88,6 @@ namespace Kiaro
 
             void CTerrain::update(const Common::F32 deltaTimeSeconds)
             {
-
             }
 
             size_t CTerrain::getRequiredMemory(void) const

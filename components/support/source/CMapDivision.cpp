@@ -29,14 +29,14 @@ namespace Kiaro
         CMapDivision::CMapDivision(Common::U32 power, Common::U32 divisions) : mDivisions(divisions), mResolution(pow(2, power))
         {
             Support::FTime::timer timerHandle = Support::FTime::startTimer();
-          //  Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Initializing with a %ux%u map size ... ", mResolution, mResolution);
-
+            //  Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Initializing with a %ux%u map size ... ", mResolution, mResolution);
             Common::U32 currentResolution = mResolution;
+
             while (currentResolution > 1)
             {
                 Common::U32 currentLODDivision = mResolution / currentResolution;
-
                 std::vector<std::vector<CMapDivisionSquare>> currentLOD;
+
                 for (Common::U32 iterationX = 0; iterationX < currentLODDivision; iterationX++)
                 {
                     std::vector<CMapDivisionSquare> currentYAxis;
@@ -49,7 +49,6 @@ namespace Kiaro
                 // Push the last element to the vector again to prevent out of bounds access under certain improbable circumstances
                 currentLOD.push_back(currentLOD[currentLOD.size() - 1]);
                 mLODs.push_back(currentLOD);
-
                 currentResolution >>= 1;
             }//Core::Logging::write(Core::Logging::MESSAGE_INFO, "CMapDivision: Built grid in %f seconds.", Support::FTime::stopTimer(timerHandle));
         }

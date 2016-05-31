@@ -28,12 +28,12 @@ namespace Kiaro
         {
             class IRigidObject : public IEntity
             {
-                // Protected Members
+                    // Protected Members
                 protected:
                     irr::scene::ISceneNode* mRender;
                     btRigidBody* mPhysicalBody;
 
-                // Public Methods
+                    // Public Methods
                 public:
                     IRigidObject(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
             }; // End Class RigidObjectBase

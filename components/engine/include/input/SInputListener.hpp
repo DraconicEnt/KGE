@@ -28,7 +28,7 @@ namespace Kiaro
     {
         class SInputListener : public Support::ISingleton<SInputListener>
         {
-            // Public Members
+                // Public Members
             public:
                 typedef EasyDelegate::ITypedDelegate<void, bool> KeyResponderDelegate;
 
@@ -37,14 +37,14 @@ namespace Kiaro
                 //! A boolean representing whether or not keyboard events should be forwarded to CEGUI (typing) or processed as keybind invocations.
                 bool mTyping;
 
-            // Private Members
+                // Private Members
             private:
                 //! A mapping of keycodes to responding method pointers.
                 Support::UnorderedMap<Common::C8, KeyResponderDelegate*> mKeyResponders;
 
                 ALLEGRO_EVENT_QUEUE* mInputQueue;
 
-            // Public Methods
+                // Public Methods
             public:
                 SInputListener(void);
                 ~SInputListener(void);

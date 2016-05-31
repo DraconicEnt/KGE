@@ -38,10 +38,8 @@ namespace Kiaro
             al_install_mouse();
             al_install_keyboard();
             al_install_joystick();
-
             al_register_event_source(mInputQueue, al_get_keyboard_event_source());
             al_register_event_source(mInputQueue, al_get_joystick_event_source());
-
             CONSOLE_INFO("Initialized input subsystem.");
             this->scanJoysticks();
         }
@@ -51,7 +49,6 @@ namespace Kiaro
             al_uninstall_mouse();
             al_uninstall_keyboard();
             al_uninstall_joystick();
-
             al_destroy_event_queue(mInputQueue);
         }
 
@@ -61,75 +58,109 @@ namespace Kiaro
             {
                 case ALLEGRO_KEY_A:
                     return CEGUI::Key::Scan::A;
+
                 case ALLEGRO_KEY_B:
                     return CEGUI::Key::Scan::B;
+
                 case ALLEGRO_KEY_C:
                     return CEGUI::Key::Scan::C;
+
                 case ALLEGRO_KEY_D:
                     return CEGUI::Key::Scan::D;
+
                 case ALLEGRO_KEY_E:
                     return CEGUI::Key::Scan::E;
+
                 case ALLEGRO_KEY_F:
                     return CEGUI::Key::Scan::F;
+
                 case ALLEGRO_KEY_G:
                     return CEGUI::Key::Scan::G;
+
                 case ALLEGRO_KEY_H:
                     return CEGUI::Key::Scan::H;
+
                 case ALLEGRO_KEY_I:
                     return CEGUI::Key::Scan::I;
+
                 case ALLEGRO_KEY_J:
                     return CEGUI::Key::Scan::J;
+
                 case ALLEGRO_KEY_K:
                     return CEGUI::Key::Scan::K;
+
                 case ALLEGRO_KEY_L:
                     return CEGUI::Key::Scan::L;
+
                 case ALLEGRO_KEY_M:
                     return CEGUI::Key::Scan::M;
+
                 case ALLEGRO_KEY_N:
                     return CEGUI::Key::Scan::N;
+
                 case ALLEGRO_KEY_O:
                     return CEGUI::Key::Scan::O;
+
                 case ALLEGRO_KEY_P:
                     return CEGUI::Key::Scan::P;
+
                 case ALLEGRO_KEY_Q:
                     return CEGUI::Key::Scan::Q;
+
                 case ALLEGRO_KEY_R:
                     return CEGUI::Key::Scan::R;
+
                 case ALLEGRO_KEY_S:
                     return CEGUI::Key::Scan::S;
+
                 case ALLEGRO_KEY_T:
                     return CEGUI::Key::Scan::T;
+
                 case ALLEGRO_KEY_U:
                     return CEGUI::Key::Scan::U;
+
                 case ALLEGRO_KEY_V:
                     return CEGUI::Key::Scan::V;
+
                 case ALLEGRO_KEY_W:
                     return CEGUI::Key::Scan::W;
+
                 case ALLEGRO_KEY_X:
                     return CEGUI::Key::Scan::X;
+
                 case ALLEGRO_KEY_Y:
                     return CEGUI::Key::Scan::Y;
+
                 case ALLEGRO_KEY_Z:
                     return CEGUI::Key::Scan::Z;
 
                 case ALLEGRO_KEY_0:
                     return CEGUI::Key::Scan::Zero;
+
                 case ALLEGRO_KEY_1:
                     return CEGUI::Key::Scan::One;
+
                 case ALLEGRO_KEY_2:
                     return CEGUI::Key::Scan::Two;
+
                 case ALLEGRO_KEY_3:
                     return CEGUI::Key::Scan::Three;
+
                 case ALLEGRO_KEY_4:
                     return CEGUI::Key::Scan::Four;
+
                 case ALLEGRO_KEY_5:
                     return CEGUI::Key::Scan::Five;
+
                 case ALLEGRO_KEY_6:
                     return CEGUI::Key::Scan::Six;
+
                 case ALLEGRO_KEY_7:
                     return CEGUI::Key::Scan::Seven;
+
                 case ALLEGRO_KEY_8:
                     return CEGUI::Key::Scan::Eight;
+
                 case ALLEGRO_KEY_9:
                     return CEGUI::Key::Scan::Nine;
 
@@ -141,43 +172,57 @@ namespace Kiaro
 
                 case ALLEGRO_KEY_ESCAPE:
                     return CEGUI::Key::Scan::Escape;
+
                 case ALLEGRO_KEY_F1:
                     return CEGUI::Key::Scan::F1;
+
                 case ALLEGRO_KEY_F2:
                     return CEGUI::Key::Scan::F2;
+
                 case ALLEGRO_KEY_F3:
                     return CEGUI::Key::Scan::F3;
+
                 case ALLEGRO_KEY_F4:
                     return CEGUI::Key::Scan::F4;
+
                 case ALLEGRO_KEY_F5:
                     return CEGUI::Key::Scan::F5;
+
                 case ALLEGRO_KEY_F6:
                     return CEGUI::Key::Scan::F6;
+
                 case ALLEGRO_KEY_F7:
                     return CEGUI::Key::Scan::F7;
+
                 case ALLEGRO_KEY_F8:
                     return CEGUI::Key::Scan::F8;
+
                 case ALLEGRO_KEY_F9:
                     return CEGUI::Key::Scan::F9;
+
                 case ALLEGRO_KEY_F10:
                     return CEGUI::Key::Scan::F10;
+
                 case ALLEGRO_KEY_F11:
                     return CEGUI::Key::Scan::F11;
+
                 case ALLEGRO_KEY_F12:
                     return CEGUI::Key::Scan::F12;
 
                 case ALLEGRO_KEY_UP:
                     return CEGUI::Key::Scan::ArrowUp;
+
                 case ALLEGRO_KEY_DOWN:
                     return CEGUI::Key::Scan::ArrowDown;
+
                 case ALLEGRO_KEY_LEFT:
                     return CEGUI::Key::Scan::ArrowLeft;
+
                 case ALLEGRO_KEY_RIGHT:
                     return CEGUI::Key::Scan::ArrowRight;
 
                 case ALLEGRO_KEY_SPACE:
                     return CEGUI::Key::Scan::Space;
-
             }
 
             return CEGUI::Key::Scan::Unknown;
@@ -186,7 +231,6 @@ namespace Kiaro
         void SInputListener::scanJoysticks(void)
         {
             al_reconfigure_joysticks();
-
             const Common::U32 joystickCount = al_get_num_joysticks();
             CONSOLE_INFOF("%u joysticks detected.", joystickCount);
 
@@ -195,7 +239,6 @@ namespace Kiaro
                 ALLEGRO_JOYSTICK* joystick = al_get_joystick(joystickID);
                 const Common::U32 stickCount = al_get_joystick_num_sticks(joystick);
                 const Common::U32 buttonCount = al_get_joystick_num_buttons(joystick);
-
                 CONSOLE_DEBUGF("Joystick %u ------------", joystickID);
                 CONSOLE_DEBUGF("  Name: %s", al_get_joystick_name(joystick));
                 CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
@@ -230,14 +273,11 @@ namespace Kiaro
 
         void SInputListener::update(void)
         {
-			PROFILER_BEGIN(Input);
-
+            PROFILER_BEGIN(Input);
             ALLEGRO_MOUSE_STATE mouseState;
             al_get_mouse_state(&mouseState);
-
             ALLEGRO_KEYBOARD_STATE keyboardState;
             al_get_keyboard_state(&keyboardState);
-
             CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
             guiContext.injectMousePosition(mouseState.x, mouseState.y);
 
@@ -248,7 +288,6 @@ namespace Kiaro
 
                 if (al_get_next_event(mInputQueue, &event))
                 {
-
                     switch (event.type)
                     {
                         case ALLEGRO_EVENT_KEY_UP:
@@ -287,7 +326,7 @@ namespace Kiaro
                 }
             }
 
-			PROFILER_END(Input);
+            PROFILER_END(Input);
         }
     } // End Namespace Game
 } // End Namespace Kiaro

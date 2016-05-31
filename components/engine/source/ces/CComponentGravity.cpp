@@ -22,12 +22,10 @@ namespace Kiaro
 
         void CComponentGravity::initialize(void)
         {
-
         }
 
         void CComponentGravity::deinitialize(void)
         {
-
         }
     }
 }

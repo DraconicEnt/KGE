@@ -22,7 +22,6 @@ namespace Kiaro
         {
             SimCommit::SimCommit(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(TYPE_SIMCOMMIT, in, sender)
             {
-
             }
 
             void SimCommit::packEverything(Support::CBitStream& out) const

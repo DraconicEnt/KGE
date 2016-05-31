@@ -48,7 +48,7 @@ namespace Kiaro
          */
         class SEngineInstance
         {
-            // Public Members
+                // Public Members
             public:
                 //! An enumeration used to represent the possible modes of operation for the engine.
                 enum MODE_NAME
@@ -61,7 +61,7 @@ namespace Kiaro
                     MODE_DEDICATED = 2,
                 }; // End Enum ENGINE_MODE
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Returns an instance to the engine instance singleton, allocating it
@@ -135,14 +135,14 @@ namespace Kiaro
                  */
                 bool isDedicated(void);
 
-				/**
-				 *	@brief Toggles the performance statistic reporting to stdout. Even if this is off, the
-				 *	data collection is still occurring.
-				 *	@param enabled Whether or not the performance statistic reporting should occur.
-				 */
-				void setPerfStatEnabled(const bool enabled);
+                /**
+                 *  @brief Toggles the performance statistic reporting to stdout. Even if this is off, the
+                 *  data collection is still occurring.
+                 *  @param enabled Whether or not the performance statistic reporting should occur.
+                 */
+                void setPerfStatEnabled(const bool enabled);
 
-            // Private Methods
+                // Private Methods
             private:
                 //! Privately declared standard constructor to enforce singleton behavior.
                 SEngineInstance(void);
@@ -157,11 +157,11 @@ namespace Kiaro
                  */
                 void runGameLoop(void);
 
-				/**
-				 *	@brief Internal method called by the synchronous scheduler once every ~4sec if perfstat
-				 *	is enabled.
-				 */
-				void printPerfStat(void);
+                /**
+                 *  @brief Internal method called by the synchronous scheduler once every ~4sec if perfstat
+                 *  is enabled.
+                 */
+                void printPerfStat(void);
 
                 /**
                  *  @brief A subroutine to initialize the GUI system.
@@ -223,7 +223,7 @@ namespace Kiaro
 
                 void initializeScheduledEvents(void);
 
-            // Private Members
+                // Private Members
             private:
                 //! A boolean representing whether or not the engine is running
                 bool mRunning;
@@ -241,7 +241,7 @@ namespace Kiaro
                 //! A pointer to the active outgoing client.
                 COutgoingClient* mActiveClient;
 
-				Support::CScheduledEvent* mPerfStatSchedule;
+                Support::CScheduledEvent* mPerfStatSchedule;
         };
     } // End Namespace Engine
 } // End Namespace Kiaro

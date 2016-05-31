@@ -10,12 +10,11 @@ namespace Kiaro
     {
         CManagementConsole::CManagementConsole(void)
         {
-
         }
 
         CManagementConsole::~CManagementConsole(void)
         {
-            for (auto entry: mCallmap)
+            for (auto entry : mCallmap)
                 delete entry.second;
         }
 
@@ -24,20 +23,18 @@ namespace Kiaro
         bool CManagementConsole::eval(const Support::String& input)
         {
             bool success = true;
-
             // Loop for commands
             std::stringstream commandStream(input);
-
             Support::String commandString;
+
             while (std::getline(commandStream, commandString, ';'))
                 if (commandString.length() > 0)
                 {
                     // Loop for command components
                     std::stringstream componentStream(commandString);
-
                     Support::String componentString;
-
                     Support::Vector<Support::String> params;
+
                     while (std::getline(componentStream, componentString, ' '))
                         if (componentString.length() > 0)
                             params.push_back(componentString);
@@ -45,7 +42,6 @@ namespace Kiaro
                     // Evaluate
                     Support::String commandName = params[0];
                     params.erase(params.begin());
-
                     // Lookup the command
                     auto it = mCallmap.find(commandName);
 

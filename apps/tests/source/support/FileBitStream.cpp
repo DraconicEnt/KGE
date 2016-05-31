@@ -19,7 +19,6 @@ namespace Kiaro
     {
         TEST(FileBitStream, BadStartFloats)
         {
-
         }
     } // End Namespace Support
 } // End namespace Kiaro

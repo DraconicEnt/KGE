@@ -19,14 +19,14 @@ namespace Kiaro
          */
         class IControllable
         {
-            friend class CGameClient;
+                friend class CGameClient;
 
-            // Protected Members
+                // Protected Members
             protected:
                 //! Pointer to the controlling client.
                 CGameClient* mController;
 
-            // Public Methods
+                // Public Methods
             public:
                 //! Parameter-less constructor.
                 IControllable(void);

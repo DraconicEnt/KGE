@@ -27,24 +27,24 @@ namespace Kiaro
     {
         class SEventManager
         {
-            // Public Typedefs
+                // Public Typedefs
             public:
                 typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientConnectedEventType;
                 typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientDisconnectedEventType;
 
-            // Public Members
+                // Public Members
             public:
                 const onClientConnectedEventType mOnClientConnectedEvent;
                 const onClientDisconnectedEventType mOnClientDisconnectedEvent;
 
-            // Public Methods
+                // Public Methods
             public:
                 static SEventManager* get(void);
                 static void destroy(void);
 
                 void clearEvents(void);
 
-            // Private Methods
+                // Private Methods
             private:
                 //! Parameter-less constructor.
                 SEventManager(void);

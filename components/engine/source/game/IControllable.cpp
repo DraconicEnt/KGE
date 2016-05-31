@@ -10,9 +10,8 @@ namespace Kiaro
     {
         IControllable::IControllable(void) : mController(nullptr)
         {
-            
         }
-        
+
         CGameClient* IControllable::getController(void) const
         {
             return mController;

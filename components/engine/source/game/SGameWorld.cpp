@@ -40,13 +40,13 @@ namespace Kiaro
         void SGameWorld::update(const Common::F32 deltaTimeSeconds)
         {
             // FIXME: Implement bitmask checking for updated entities
-			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
-			{
-				Game::Entities::IEntity* entity = *it;
+            for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+            {
+                Game::Entities::IEntity* entity = *it;
 
-				if (entity && entity->mFlags & Entities::FLAG_UPDATING)
-					entity->update(deltaTimeSeconds);
-			}
+                if (entity && entity->mFlags & Entities::FLAG_UPDATING)
+                    entity->update(deltaTimeSeconds);
+            }
         }
 
         const Entities::CSky* SGameWorld::getSky(void)
@@ -57,7 +57,7 @@ namespace Kiaro
         void SGameWorld::clear(void)
         {
             // Destroy any existing entities and reset the ID tracker
-			for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+            for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
                 delete *it;
 
             mEntities.clear();
@@ -66,8 +66,7 @@ namespace Kiaro
         void SGameWorld::addEntity(Entities::IEntity* entity)
         {
             assert(dynamic_cast<Entities::IEntity*>(entity));
-
-			Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
+            Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
 
             if (it == mEntities.end())
                 mEntities.insert(mEntities.end(), entity);
@@ -78,7 +77,6 @@ namespace Kiaro
         void SGameWorld::removeEntity(Entities::IEntity* entity)
         {
             assert(entity);
-
             mEntities.erase(entity);
             SObjectRegistry::getPointer()->removeObject(entity);
         }
@@ -105,13 +103,12 @@ namespace Kiaro
 
         void SGameWorld::packEverything(Support::CBitStream& out) const
         {
-			for (Support::UnorderedSet<Game::Entities::IEntity*>::const_iterator it = mEntities.begin(); it != mEntities.end(); it++)
-				 (*it)->packEverything(out);
+            for (Support::UnorderedSet<Game::Entities::IEntity*>::const_iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                (*it)->packEverything(out);
         }
 
         void SGameWorld::unpack(Support::CBitStream& in)
         {
-
         }
 
         void SGameWorld::setGameMode(IGameMode* game)
@@ -132,7 +129,6 @@ namespace Kiaro
 
         SGameWorld::SGameWorld(void) : mSky(nullptr), mGameMode(nullptr)
         {
-
         }
 
         SGameWorld::~SGameWorld(void) { }

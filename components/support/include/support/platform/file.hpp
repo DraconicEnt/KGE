@@ -30,6 +30,7 @@ namespace Kiaro
             static bool exists(const Support::String& filename)
             {
                 FILE* handle = fopen(filename.data(), "r");
+
                 if (!handle)
                     return false;
 
@@ -76,8 +77,8 @@ namespace Kiaro
                     void close(void);
 
                 private:
-					//! A pointer to arbitrary data that may be used however necessary for platform implementations.
-					void* mData;
+                    //! A pointer to arbitrary data that may be used however necessary for platform implementations.
+                    void* mData;
 
                     //! A pointer to the internal file we're using for the memory mapping.
                     FILE* mHandle;

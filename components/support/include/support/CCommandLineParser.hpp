@@ -33,7 +33,7 @@ namespace Kiaro
          */
         class CommandLineParser
         {
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting the argument count and an argument array.
@@ -71,7 +71,7 @@ namespace Kiaro
                  */
                 void displayHelp(const Common::S32 argc, Common::C8* argv[]);
 
-            // Private Members
+                // Private Members
             private:
                 //! The argv passed into the program's main method.
                 Common::C8** mArgv;

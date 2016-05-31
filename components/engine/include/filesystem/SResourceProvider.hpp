@@ -45,75 +45,75 @@ namespace Kiaro
                 static SResourceProvider* getPointer(void);
                 static void destroy(void);
 
-            /*!
-            \brief
-                Set the directory associated with a given resource group identifier.
+                /*!
+                \brief
+                    Set the directory associated with a given resource group identifier.
 
-            \param resourceGroup
-                The resource group identifier whose directory is to be set.
+                \param resourceGroup
+                    The resource group identifier whose directory is to be set.
 
-            \param directory
-                The directory to be associated with resource group identifier
-                \a resourceGroup
+                \param directory
+                    The directory to be associated with resource group identifier
+                    \a resourceGroup
 
-            \return
-                Nothing.
-            */
-            void setResourceGroupDirectory(const CEGUI::String& resourceGroup, const CEGUI::String& directory);
+                \return
+                    Nothing.
+                */
+                void setResourceGroupDirectory(const CEGUI::String& resourceGroup, const CEGUI::String& directory);
 
-            /*!
-            \brief
-                Return the directory associated with the specified resource group
-                identifier.
+                /*!
+                \brief
+                    Return the directory associated with the specified resource group
+                    identifier.
 
-            \param resourceGroup
-                The resource group identifier for which the associated directory is to
-                be returned.
+                \param resourceGroup
+                    The resource group identifier for which the associated directory is to
+                    be returned.
 
-            \return
-                String object describing the directory currently associated with resource
-                group identifier \a resourceGroup.
+                \return
+                    String object describing the directory currently associated with resource
+                    group identifier \a resourceGroup.
 
-            \note
-                This member is not defined as being const because it may cause
-                creation of an 'empty' directory specification for the resourceGroup
-                if the resourceGroup has not previously been accessed.
-            */
-            const CEGUI::String& getResourceGroupDirectory(const CEGUI::String& resourceGroup);
+                \note
+                    This member is not defined as being const because it may cause
+                    creation of an 'empty' directory specification for the resourceGroup
+                    if the resourceGroup has not previously been accessed.
+                */
+                const CEGUI::String& getResourceGroupDirectory(const CEGUI::String& resourceGroup);
 
-            /*!
-            \brief
-                clears any currently set directory for the specified resource group
-                identifier.
+                /*!
+                \brief
+                    clears any currently set directory for the specified resource group
+                    identifier.
 
-            \param resourceGroup
-                The resource group identifier for which the associated directory is to
-                be cleared.
-            */
-            void clearResourceGroupDirectory(const CEGUI::String& resourceGroup);
+                \param resourceGroup
+                    The resource group identifier for which the associated directory is to
+                    be cleared.
+                */
+                void clearResourceGroupDirectory(const CEGUI::String& resourceGroup);
 
-            void loadRawDataContainer(const CEGUI::String& filename, CEGUI::RawDataContainer& output, const CEGUI::String& resourceGroup);
-            void unloadRawDataContainer(CEGUI::RawDataContainer& data);
-            size_t getResourceGroupFileNames(std::vector<CEGUI::String>& out_vec,
-                                             const CEGUI::String& file_pattern,
-                                             const CEGUI::String& resource_group);
+                void loadRawDataContainer(const CEGUI::String& filename, CEGUI::RawDataContainer& output, const CEGUI::String& resourceGroup);
+                void unloadRawDataContainer(CEGUI::RawDataContainer& data);
+                size_t getResourceGroupFileNames(std::vector<CEGUI::String>& out_vec,
+                                                 const CEGUI::String& file_pattern,
+                                                 const CEGUI::String& resource_group);
 
-            Support::String obtainAbsolutePath(const Support::String& filename);
+                Support::String obtainAbsolutePath(const Support::String& filename);
 
-        protected:
-            /*!
-            \brief
-                Return the final path and filename, taking into account the given
-                resource group identifier that should be used when attempting to
-                load the data.
-            */
-            CEGUI::String getFinalFilename(const CEGUI::String& filename, const CEGUI::String& resourceGroup) const;
+            protected:
+                /*!
+                \brief
+                    Return the final path and filename, taking into account the given
+                    resource group identifier that should be used when attempting to
+                    load the data.
+                */
+                CEGUI::String getFinalFilename(const CEGUI::String& filename, const CEGUI::String& resourceGroup) const;
 
-            //typedef std::map<CEGUI::String, CEGUI::String, CEGUI::String::FastLessCompare> ResourceGroupMap;
-            typedef std::map<CEGUI::String, CEGUI::String> ResourceGroupMap;
-            ResourceGroupMap    d_resourceGroups;
+                //typedef std::map<CEGUI::String, CEGUI::String, CEGUI::String::FastLessCompare> ResourceGroupMap;
+                typedef std::map<CEGUI::String, CEGUI::String> ResourceGroupMap;
+                ResourceGroupMap    d_resourceGroups;
 
-            // Private Methods
+                // Private Methods
             private:
                 SResourceProvider(void);
                 ~SResourceProvider(void);

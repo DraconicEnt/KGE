@@ -33,7 +33,7 @@ namespace Kiaro
          */
         class CBitStream
         {
-            // Private members
+                // Private members
             private:
                 //! A pointer to the start of the contiguous memory block this bit stream is working with.
                 Common::U8* mMemoryBlock;
@@ -47,7 +47,7 @@ namespace Kiaro
                 //! A boolean representing whether or not this bit stream owns the memory block pointed to by mMemoryBlock.
                 bool mOwnsMemoryBlock;
 
-            // Public methods
+                // Public methods
             public:
                 /**
                  *  @brief A constructor accepting a pointer to an ISerializable object to pack into this
@@ -82,7 +82,6 @@ namespace Kiaro
 
                     inType& output = *reinterpret_cast<inType*>(&mMemoryBlock[mPointer]);
                     output = input;
-
                     mPointer += sizeof(inType);
                 }
 
@@ -182,7 +181,6 @@ namespace Kiaro
                 {
                     output = stream.top<outType>();
                     stream.pop<outType>();
-
                     return stream;
                 }
 
@@ -222,7 +220,7 @@ namespace Kiaro
          */
         class ISerializable
         {
-            // Public methods
+                // Public methods
             public:
                 //! Parameter-less constructor.
                 ISerializable(void) { }
@@ -235,7 +233,10 @@ namespace Kiaro
                  *  initially sent to a remote client to notify about the existence of a given game object.
                  *  @param in The input bit stream.
                  */
-                ISerializable(Support::CBitStream& in) { this->unpack(in); }
+                ISerializable(Support::CBitStream& in)
+                {
+                    this->unpack(in);
+                }
 
                 /**
                  *  @brief Packs all data about this ISerializable into the CBitStream. This is usually required for

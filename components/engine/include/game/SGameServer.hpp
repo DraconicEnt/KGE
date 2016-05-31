@@ -21,7 +21,7 @@ namespace Kiaro
          */
         class SGameServer : public Net::IServer
         {
-            // Private Members
+                // Private Members
             private:
                 //! The currently running gamemode programming.
                 Game::IGameMode* mCurrentGamemode;
@@ -32,7 +32,7 @@ namespace Kiaro
                 //! Scheduled event created for use with the SSynchronousScheduler.
                 Support::CScheduledEvent* mUpdatePulse;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Initializes and starts a new game server.
@@ -88,12 +88,12 @@ namespace Kiaro
                  */
                 void initialScope(Net::IIncomingClient* client);
 
-            // Protected Methods
+                // Protected Methods
             protected:
                 void onReceivePacket(Support::CBitStream& in, Net::IIncomingClient* sender);
                 void processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
 
-            // Private Methods
+                // Private Methods
             private:
                 /**
                  *  @brief Constructor accepting a listen address, port & maximum client count.

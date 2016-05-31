@@ -37,7 +37,7 @@ namespace Kiaro
          */
         class IServer
         {
-            // Public Members
+                // Public Members
             public:
                 //! An iterator typedef used to iterate over all connected clients in the IServer.
                 typedef Support::UnorderedSet<IIncomingClient*>::iterator clientIterator;
@@ -49,7 +49,7 @@ namespace Kiaro
                 //! The address that we're listening on.
                 const Support::String mListenAddress;
 
-            // Protected Members
+                // Protected Members
             protected:
                 //! The last client the server has processed packet payloads from.
                 Net::IIncomingClient* mLastPacketSender;
@@ -64,12 +64,12 @@ namespace Kiaro
                 //! An unordered set of all clients waiting to pass the authentication stage.
                 Support::UnorderedSet<IIncomingClient*> mPendingClientSet;
 
-            // Private Members
+                // Private Members
             private:
                 //! The internally used E-Net host object that represents our server.
                 ENetHost* mInternalHost;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Signals the server to stop running.
@@ -107,18 +107,24 @@ namespace Kiaro
                  */
                 virtual void onClientDisconnected(Net::IIncomingClient* client);
 
-				Net::IIncomingClient* getLastPacketSender(void) NOEXCEPT;
+                Net::IIncomingClient* getLastPacketSender(void) NOEXCEPT;
 
-				Common::U32 getClientCount(void) const NOEXCEPT;
+                Common::U32 getClientCount(void) const NOEXCEPT;
 
-               // Kiaro::Network::IncomingClientBase *GetLastPacketSender(void);
-                clientIterator clientsBegin(void) { return mConnectedClientSet.begin(); }
+                // Kiaro::Network::IncomingClientBase *GetLastPacketSender(void);
+                clientIterator clientsBegin(void)
+                {
+                    return mConnectedClientSet.begin();
+                }
 
-                clientConstIterator clientsEnd(void) { return mConnectedClientSet.end(); }
+                clientConstIterator clientsEnd(void)
+                {
+                    return mConnectedClientSet.end();
+                }
 
                 virtual void onReceivePacket(Support::CBitStream& in, Net::IIncomingClient* sender) = 0;
 
-            // Protected Methods
+                // Protected Methods
             protected:
                 /**
                  *  @brief Constructor that initializes a server instance with the given information.
@@ -135,7 +141,7 @@ namespace Kiaro
                  */
                 ~IServer(void);
 
-            // Private Methods
+                // Private Methods
             protected:
                 void processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
                 virtual void processStageZero(const IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender) = 0;

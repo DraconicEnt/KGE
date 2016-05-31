@@ -22,11 +22,11 @@
 #include <CEGUI/RendererModules/Irrlicht/Renderer.h>
 
 #if defined(ENGINE_UNIX)
-    #include <allegro5/allegro_x.h>
+#include <allegro5/allegro_x.h>
 #elif defined(ENGINE_WIN)
-    #include <allegro5/allegro_windows.h>
+#include <allegro5/allegro_windows.h>
 #else
-    #include <allegro5/allegro_osx.h>
+#include <allegro5/allegro_osx.h>
 #endif
 
 #include <allegro5/allegro_physfs.h>
@@ -105,26 +105,20 @@ namespace Kiaro
         Kiaro::Common::S32 SEngineInstance::start(const Common::S32 argc, Common::C8* argv[])
         {
             mRunning = false;
-
             al_init();
-
             this->initializeFileSystem(argc, argv);
-
             // Once the filesystem is initialized, pump Allegro through it
             al_set_physfs_file_interface();
-
             CONSOLE_INFOF("Running game '%s'", mGameName.data());
-
             // Mount the data directories
             Support::Vector<Support::String> mountedDirectories = mModNames;
             mountedDirectories.push_back(mGameName);
 
-            for (Support::String directory: mountedDirectories)
+            for (Support::String directory : mountedDirectories)
             {
                 if (PHYSFS_mount(directory.c_str(), nullptr, 1) == 0)
                 {
                     mRunning = false;
-
                     CONSOLE_ERRORF("'%s'. Reason: '%s'", directory.c_str(), PHYSFS_getLastError());
                     return -1;
                 }
@@ -133,7 +127,6 @@ namespace Kiaro
             }
 
             // TODO (Robert MacGregor#9): Return error codes for the netcode
-
             // Init the taskers
             Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
             Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
@@ -150,12 +143,9 @@ namespace Kiaro
                 this->initializeSound();
 
             this->initializeNetwork();
-
             // Initialize the time pulses
             this->initializeScheduledEvents();
-
             mRunning = true;
-
             this->runGameLoop();
             return 1;
         }
@@ -175,46 +165,39 @@ namespace Kiaro
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-		mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
+            mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
         {
-
         }
 
         SEngineInstance::~SEngineInstance(void)
         {
             CONSOLE_INFO("Deinitializing ...");
 
-			if (mPerfStatSchedule)
-				mPerfStatSchedule->cancel();
+            if (mPerfStatSchedule)
+                mPerfStatSchedule->cancel();
 
-			mPerfStatSchedule = nullptr;
-
+            mPerfStatSchedule = nullptr;
             // TODO: Check the destroy order
-         //   Net::SClient::destroy();
+            //   Net::SClient::destroy();
             Game::SGameServer::destroy();
             Input::SInputListener::destroy();
             Support::SSynchronousScheduler::destroy();
-
             Support::SSettingsRegistry::destroy();
-
             PHYSFS_deinit();
             enet_deinitialize();
-
             Video::SRenderer::destroy();
-
             al_uninstall_system();
         }
 
         void SEngineInstance::networkUpdate(void)
         {
             // FIXME (Robert MacGregor#9): Pass in the time delta
-  //          Net::SClient* client = Net::SClient::getPointer();
-           // if (mActiveClient)
-           //     mActiveClient->update();
-
+            //          Net::SClient* client = Net::SClient::getPointer();
+            // if (mActiveClient)
+            //     mActiveClient->update();
             Game::SGameServer* server = Game::SGameServer::getPointer();
-           // if (server)
-           //     server->update(0.0f);
+            // if (server)
+            //     server->update(0.0f);
         }
 
         int SEngineInstance::initializeGUI(void)
@@ -250,11 +233,9 @@ namespace Kiaro
                 {
                     mActiveClient = new COutgoingClient();
                     mActiveClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
-
                     // FIXME (Robert MacGregor#9): Move error check elsewhere since the connection isn't acknowledged until the handshakes occur
-                   // if (!mActiveClient->isConnected())
-                   //     Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with server flag!");
-
+                    // if (!mActiveClient->isConnected())
+                    //     Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with server flag!");
                     break;
                 }
 
@@ -276,18 +257,16 @@ namespace Kiaro
 
             while (mRunning)
             {
-                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+#if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+
                 try
                 {
-                #endif
+#endif
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
-
                     PROFILER_BEGIN(MainLoop);
                     std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
-
                     Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
-
                     // Pump a time pulse at the scheduler
                     Support::SSynchronousScheduler::getPointer()->update();
 
@@ -299,10 +278,8 @@ namespace Kiaro
                     }
 
                     PROFILER_END(MainLoop);
-
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
-
-                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+#if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 }
                 catch(std::exception& e)
                 {
@@ -314,6 +291,7 @@ namespace Kiaro
 
                     // Servers just drop off the client that it last processed
                     Game::SGameServer* server = Game::SGameServer::getPointer();
+
                     if (server)
                     {
                         Net::IIncomingClient* lastClient = server->getLastPacketSender();
@@ -323,14 +301,14 @@ namespace Kiaro
                             lastClient->disconnect("Internal Exception");
                     }
                 }
-                #endif
+
+#endif
             }
         }
 
         Common::U32 SEngineInstance::initializeSound(void)
         {
             Sound::SSoundManager::getPointer();
-
             return 0;
         }
 
@@ -339,15 +317,12 @@ namespace Kiaro
             // Initialize the file system
             PHYSFS_init(argv[0]);
             PHYSFS_setSaneConfig("Draconic Entity", "KGE", "ZIP", 0, 0);
-
             // Remove the search path that points to the same directory as the executable
             // TODO (Robert MacGregor#9): Research this.
-
             Common::C8** searchPaths = PHYSFS_getSearchPath();
             Common::C8* searchPath = searchPaths[1];
             PHYSFS_removeFromSearchPath(searchPath);
             PHYSFS_freeList(searchPaths);
-
             // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
         }
 
@@ -359,7 +334,6 @@ namespace Kiaro
             if (mEngineMode != MODE_DEDICATED)
             {
                 Input::SInputListener* inputListener = Input::SInputListener::getPointer();
-
                 // Set up input sampling
                 syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
             }
@@ -367,33 +341,33 @@ namespace Kiaro
             syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
         }
 
-		void SEngineInstance::setPerfStatEnabled(const bool enabled)
-		{
-			Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+        void SEngineInstance::setPerfStatEnabled(const bool enabled)
+        {
+            Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
 
-			if (mPerfStatSchedule && enabled)
-				return;
-			else if (!mPerfStatSchedule && enabled)
-			{
-				mPerfStatSchedule = syncScheduler->schedule(4000, true, this, &SEngineInstance::printPerfStat);
-				CONSOLE_INFO("Enabled perf stat.");
-			}
-			else if (mPerfStatSchedule && !enabled)
-			{
-				mPerfStatSchedule->cancel();
-				mPerfStatSchedule = nullptr;
-				CONSOLE_INFO("Disabled perf stat.");
-			}
-		}
+            if (mPerfStatSchedule && enabled)
+                return;
+            else if (!mPerfStatSchedule && enabled)
+            {
+                mPerfStatSchedule = syncScheduler->schedule(4000, true, this, &SEngineInstance::printPerfStat);
+                CONSOLE_INFO("Enabled perf stat.");
+            }
+            else if (mPerfStatSchedule && !enabled)
+            {
+                mPerfStatSchedule->cancel();
+                mPerfStatSchedule = nullptr;
+                CONSOLE_INFO("Disabled perf stat.");
+            }
+        }
 
-		void SEngineInstance::printPerfStat(void)
-		{
-			Support::SProfiler* profiler = Support::SProfiler::getPointer();
-			auto averages = profiler->getSampleAverages();
+        void SEngineInstance::printPerfStat(void)
+        {
+            Support::SProfiler* profiler = Support::SProfiler::getPointer();
+            auto averages = profiler->getSampleAverages();
+            CONSOLE_INFO("Performance Statistics---------------------------");
 
-			CONSOLE_INFO("Performance Statistics---------------------------");
-			for (auto average : averages)
-				CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
-		}
+            for (auto average : averages)
+                CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
+        }
     } // End Namespace Engine
 } // End Namespace Kiaro

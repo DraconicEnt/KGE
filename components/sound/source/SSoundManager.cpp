@@ -20,6 +20,7 @@ namespace Kiaro
         {
             if (!mInstance)
                 mInstance = new SSoundManager();
+
             return mInstance;
         }
 
@@ -41,7 +42,6 @@ namespace Kiaro
 
             *handle = result;
             *filesize = PHYSFS_fileLength(result);
-
             return FMOD_OK;
         }
 
@@ -64,7 +64,7 @@ namespace Kiaro
             return FMOD_OK;
         }
 
-        static FMOD_RESULT F_CALLBACK fmodSeek(void* handle, Common::U32 pos, void *userdata)
+        static FMOD_RESULT F_CALLBACK fmodSeek(void* handle, Common::U32 pos, void* userdata)
         {
             if (!PHYSFS_seek(reinterpret_cast<PHYSFS_File*>(handle), pos))
                 return FMOD_ERR_INTERNAL;
@@ -75,6 +75,7 @@ namespace Kiaro
         SSoundManager::SSoundManager(void)
         {
             FMOD_RESULT result;
+
             if ((result = FMOD::System_Create(&mFMod)) != FMOD_OK)
             {
                 CONSOLE_ERRORF("Failed to create FMod system! Reason: %s", FMOD_ErrorString(result));
@@ -82,10 +83,10 @@ namespace Kiaro
             }
 
             Common::U32 fmodVersion;
+
             if ((result = mFMod->getVersion(&fmodVersion)) != FMOD_OK)
             {
                 CONSOLE_ERRORF("Failed to query FMod version! Reason: %s", FMOD_ErrorString(result));
-
                 this->~SSoundManager();
                 return;
             }
@@ -93,7 +94,6 @@ namespace Kiaro
             if (fmodVersion != FMOD_VERSION)
             {
                 CONSOLE_ERROR("FMod header version doesn't match our library's version!");
-
                 this->~SSoundManager();
                 return;
             }

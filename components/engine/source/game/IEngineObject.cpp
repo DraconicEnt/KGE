@@ -14,21 +14,20 @@ namespace Kiaro
         {
             SObjectRegistry::getPointer()->addObject(this);
         }
-        
+
         const Support::String& IEngineObject::getName(void)
         {
             return mName;
         }
-        
+
         IEngineObject::~IEngineObject(void)
         {
-        
         }
-        
+
         void IEngineObject::setName(const Support::String& name)
         {
             mName = name;
-            SObjectRegistry::getPointer()->setNameEntry(this, name);        
+            SObjectRegistry::getPointer()->setNameEntry(this, name);
         }
     }
 }

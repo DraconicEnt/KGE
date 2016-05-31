@@ -28,12 +28,9 @@ namespace Kiaro
             {
                 FTime::timer timer = FTime::startTimer();
                 EXPECT_EQ(1, timer);
-
                 // Sleep the thread
                 std::this_thread::sleep_for(std::chrono::milliseconds(32));
-
                 Common::F32 sleepTimeSeconds = FTime::stopTimer(timer);
-
                 // We should be reasonably accurate about the timing
                 EXPECT_TRUE(sleepTimeSeconds <= 0.034f && sleepTimeSeconds >= 0.031f);
             }

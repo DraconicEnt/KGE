@@ -18,7 +18,7 @@ namespace Kiaro
 {
     namespace Support
     {
-		//! A typedef to an std::tuple.
+        //! A typedef to an std::tuple.
         template <typename... storedTypes>
         using Tuple = std::tuple<storedTypes...>;
     } // End NameSpace Support

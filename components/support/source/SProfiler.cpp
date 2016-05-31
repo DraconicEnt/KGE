@@ -35,13 +35,13 @@ namespace Kiaro
         {
             // Populate the set
             Support::UnorderedMap<Support::String, Common::F32> inserted;
+
             for (size_t iteration = 0; iteration < mSampleCount; ++iteration)
                 mSamples.insert(mSamples.end(), inserted);
         }
 
         SProfiler::~SProfiler(void)
         {
-
         }
 
         void SProfiler::scopeBegin(const Support::String& name)
@@ -83,6 +83,7 @@ namespace Kiaro
                 throw std::out_of_range("No such sample!");
 
             Common::F32 sum = 0;
+
             for (size_t iteration = 0; iteration < mSampleCount; iteration++)
                 sum += mSamples[iteration][name];
 
@@ -98,7 +99,7 @@ namespace Kiaro
         {
             Support::Set<std::pair<Support::String, Common::F32>> result;
 
-            for (const std::string& name: mSampleNames)
+            for (const std::string& name : mSampleNames)
                 result.insert(std::make_pair(name, this->getAverage(name)));
 
             return result;

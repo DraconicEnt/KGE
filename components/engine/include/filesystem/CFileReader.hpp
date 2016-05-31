@@ -25,9 +25,9 @@ namespace Kiaro
     {
         class CFileReader : public irr::io::IReadFile
         {
-            // Public Methods
+                // Public Methods
             public:
-                CFileReader(const Support::String &filename);
+                CFileReader(const Support::String& filename);
 
                 ~CFileReader(void);
 
@@ -41,12 +41,12 @@ namespace Kiaro
 
                 const irr::io::path& getFileName() const;
 
-            // Private Members
+                // Private Members
             private:
                 const Support::String mFileName;
                 const irr::io::path mIrrlichtPath;
 
-                PHYSFS_File *mFileHandle;
+                PHYSFS_File* mFileHandle;
         };
     } // End Namespace Game
 } // End Namespace Kiaro

@@ -13,10 +13,10 @@ namespace Kiaro
     {
         class CScriptedGame : public IGameMode
         {
-            // Public Methods
+                // Public Methods
             public:
                 CScriptedGame(void);
-                
+
                 void setup(void);
                 void tearDown(void);
         };

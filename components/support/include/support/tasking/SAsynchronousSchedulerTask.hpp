@@ -26,9 +26,9 @@ namespace Kiaro
         {
             class SAsynchronousSchedulerTask : public ITask
             {
-                // Public Methods
+                    // Public Methods
                 public:
-                    static SAsynchronousSchedulerTask *getPointer(void);
+                    static SAsynchronousSchedulerTask* getPointer(void);
                     static void destroy(void);
 
                     void initialize(void);
@@ -38,16 +38,16 @@ namespace Kiaro
                     void deinitialize(void);
 
 
-                // Private Methods
+                    // Private Methods
                 private:
                     SAsynchronousSchedulerTask(void);
                     ~SAsynchronousSchedulerTask(void);
 
-                // Public Members
+                    // Public Members
                 public:
                     Support::Mutex mMutex;
 
-                // Private Members
+                    // Private Members
                 private:
                     Support::UnorderedSet<EasyDelegate::IDeferredCaller*> mScheduledTasks;
             };

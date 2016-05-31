@@ -26,15 +26,15 @@ namespace Kiaro
         {
             class CRigidObject : public Game::Entities::IRigidObject
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     CRigidObject(void);
                     ~CRigidObject(void);
 
-                    void packUpdate(Support::CBitStream &out);
-                    void unpackUpdate(Support::CBitStream &in);
-                    void packInitialization(Support::CBitStream &out);
-                    void unpackInitialization(Support::CBitStream &in);
+                    void packUpdate(Support::CBitStream& out);
+                    void unpackUpdate(Support::CBitStream& in);
+                    void packInitialization(Support::CBitStream& out);
+                    void unpackInitialization(Support::CBitStream& in);
                     void instantiate(void);
 
                     void update(const Common::F32 deltaTimeSeconds);

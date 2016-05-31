@@ -30,14 +30,14 @@ namespace Kiaro
          */
         class CComponentGravity : public IComponent
         {
-            // Public Methods
+                // Public Methods
             public:
                 CComponentGravity(void);
 
                 virtual void initialize(void);
                 virtual void deinitialize(void);
 
-            // Private Members
+                // Private Members
             private:
                 //! A pointer to an Entity that this Component belongs to.
                 Entity* Parent;

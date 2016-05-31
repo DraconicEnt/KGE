@@ -46,7 +46,7 @@ namespace Kiaro
 
                 void onAuthenticated(void);
 
-            // Protected Methods
+                // Protected Methods
             protected:
                 /**
                  *  @brief Used internally by the COutGoingClient implementation to process client data

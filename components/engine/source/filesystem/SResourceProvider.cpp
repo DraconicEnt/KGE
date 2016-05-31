@@ -49,7 +49,7 @@ std::wstring Utf8ToUtf16(const std::string& utf8text)
 
     if (textLen == 0)
         CEGUI_THROW(CEGUI::InvalidRequestException(
-            "Utf8ToUtf16 - MultiByteToWideChar failed"));
+                        "Utf8ToUtf16 - MultiByteToWideChar failed"));
 
     std::wstring wideStr(textLen, 0);
     MultiByteToWideChar(CP_UTF8, 0, utf8text.c_str(), utf8text.size() + 1,
@@ -62,23 +62,23 @@ CEGUI::String Utf16ToString(const wchar_t* const utf16text)
 {
     const int len = WideCharToMultiByte(CP_UTF8, 0, utf16text, -1,
                                         0, 0, 0, 0);
+
     if (!len)
         CEGUI_THROW(CEGUI::InvalidRequestException(
-            "Utf16ToUtf8 - WideCharToMultiByte failed"));
+                        "Utf16ToUtf8 - WideCharToMultiByte failed"));
 
     CEGUI::utf8* buff = new CEGUI::utf8[len + 1];
     WideCharToMultiByte(CP_UTF8, 0, utf16text, -1,
                         reinterpret_cast<char*>(buff), len, 0, 0);
     const CEGUI::String result(buff);
     delete[] buff;
-
     return result;
 }
 #else
-    #include <sys/types.h>
-    #include <sys/stat.h>
-    #include <dirent.h>
-    #include <fnmatch.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <fnmatch.h>
 #endif
 
 namespace Kiaro
@@ -104,6 +104,7 @@ namespace Kiaro
         Support::String SResourceProvider::obtainAbsolutePath(const Support::String& filename)
         {
             const Common::C8* result = PHYSFS_getRealDir(filename.data());
+
             if (!result)
                 result = "";
 
@@ -112,33 +113,31 @@ namespace Kiaro
 
         SResourceProvider::SResourceProvider(void)
         {
-
         }
 
         SResourceProvider::~SResourceProvider(void)
         {
-
         }
 
-       void SResourceProvider::loadRawDataContainer(const CEGUI::String& filename,
-                                                   CEGUI::RawDataContainer& output,
-                                                   const CEGUI::String& resourceGroup)
+        void SResourceProvider::loadRawDataContainer(const CEGUI::String& filename,
+                CEGUI::RawDataContainer& output,
+                const CEGUI::String& resourceGroup)
         {
-                // Make sure PhysFS has been initialized before this point!
+            // Make sure PhysFS has been initialized before this point!
             const CEGUI::String final_filename(getFinalFilename(filename, resourceGroup));
+
             if (!PHYSFS_exists(final_filename.c_str()))
                 CEGUI_THROW(CEGUI::InvalidRequestException("Kiaro::Engine::SResourceProvider::load: "
-                    "Filename supplied for data loading must be valid"));
+                            "Filename supplied for data loading must be valid"));
 
-                PHYSFS_file* file = PHYSFS_openRead(final_filename.c_str());
+            PHYSFS_file* file = PHYSFS_openRead(final_filename.c_str());
 
             if (file == NULL)
                 CEGUI_THROW(CEGUI::InvalidRequestException("Kiaro::Engine::SResourceProvider::load: " +
-                    final_filename + " does not exist. " + PHYSFS_getLastError()));
+                            final_filename + " does not exist. " + PHYSFS_getLastError()));
 
             const size_t size = PHYSFS_fileLength(file);
             unsigned char* const buffer = new unsigned char[size];
-
             const size_t size_read = PHYSFS_read(file, buffer, 1, size);
             PHYSFS_close(file);
 
@@ -146,8 +145,8 @@ namespace Kiaro
             {
                 delete[] buffer;
                 CEGUI_THROW(CEGUI::GenericException(
-                    "Kiaro::Engine::SResourceProvider::loadRawDataContainer: "
-                    "A problem occurred while reading file: " + final_filename));
+                                "Kiaro::Engine::SResourceProvider::loadRawDataContainer: "
+                                "A problem occurred while reading file: " + final_filename));
             }
 
             output.setData(buffer);
@@ -158,7 +157,6 @@ namespace Kiaro
         void SResourceProvider::unloadRawDataContainer(CEGUI::RawDataContainer& data)
         {
             CEGUI::uint8* const ptr = data.getDataPtr();
-
             delete[] ptr;
             data.setData(0);
             data.setSize(0);
@@ -166,18 +164,18 @@ namespace Kiaro
 
         //----------------------------------------------------------------------------//
         void SResourceProvider::setResourceGroupDirectory(
-                                                        const CEGUI::String& resourceGroup,
-                                                        const CEGUI::String& directory)
+            const CEGUI::String& resourceGroup,
+            const CEGUI::String& directory)
         {
             if (directory.length() == 0)
                 return;
 
-        #if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32) || defined(__WIN32__)
             // while we rarely use the unportable '\', the user may have
             const CEGUI::String separators("\\/");
-        #else
+#else
             const CEGUI::String separators("/");
-        #endif
+#endif
 
             if (CEGUI::String::npos == separators.find(directory[directory.length() - 1]))
                 d_resourceGroups[resourceGroup] = directory + '/';
@@ -187,14 +185,14 @@ namespace Kiaro
 
         //----------------------------------------------------------------------------//
         const CEGUI::String& SResourceProvider::getResourceGroupDirectory(
-                                                        const CEGUI::String& resourceGroup)
+            const CEGUI::String& resourceGroup)
         {
             return d_resourceGroups[resourceGroup];
         }
 
         //----------------------------------------------------------------------------//
         void SResourceProvider::clearResourceGroupDirectory(
-                                                        const CEGUI::String& resourceGroup)
+            const CEGUI::String& resourceGroup)
         {
             ResourceGroupMap::iterator iter = d_resourceGroups.find(resourceGroup);
 
@@ -204,16 +202,15 @@ namespace Kiaro
 
         //----------------------------------------------------------------------------//
         CEGUI::String SResourceProvider::getFinalFilename(
-                                                    const CEGUI::String& filename,
-                                                    const CEGUI::String& resourceGroup) const
+            const CEGUI::String& filename,
+            const CEGUI::String& resourceGroup) const
         {
             CEGUI::String final_filename;
-
             // look up resource group directory
             ResourceGroupMap::const_iterator iter =
                 d_resourceGroups.find(resourceGroup.empty() ?
-                    d_defaultResourceGroup :
-                    resourceGroup);
+                                      d_defaultResourceGroup :
+                                      resourceGroup);
 
             // if there was an entry for this group, use it's directory as the
             // first part of the filename
@@ -222,7 +219,6 @@ namespace Kiaro
 
             // append the filename part that we were passed
             final_filename += filename;
-
             // return result
             return final_filename;
         }
@@ -240,11 +236,9 @@ namespace Kiaro
             // get directory that's set for the resource group
             const CEGUI::String dir_name(
                 iter != d_resourceGroups.end() ? (*iter).second : "./");
-
             size_t entries = 0;
-
-        // Win32 code.
-        #if defined(__WIN32__) || defined(_WIN32)
+            // Win32 code.
+#if defined(__WIN32__) || defined(_WIN32)
             intptr_t f;
             struct _wfinddata_t fd;
 
@@ -263,8 +257,8 @@ namespace Kiaro
                 _findclose(f);
             }
 
-        // Everybody else
-        #else
+            // Everybody else
+#else
             DIR* dirp;
 
             if ((dirp = opendir(dir_name.c_str())))
@@ -287,8 +281,8 @@ namespace Kiaro
 
                 closedir(dirp);
             }
-        #endif
 
+#endif
             return entries;
         }
     } // End NameSpace Engine

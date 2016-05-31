@@ -1,13 +1,13 @@
- /**
- *  @file types.hpp
- *  @brief Include file declaring all the identifiers for known message types.
- *
- *  This software is licensed under the Draconic Free License version 1. Please refer
- *  to LICENSE.txt for more information.
- *
- *  @author Robert MacGregor
- *  @copyright (c) 2016 Draconic Entity
- */
+/**
+*  @file types.hpp
+*  @brief Include file declaring all the identifiers for known message types.
+*
+*  This software is licensed under the Draconic Free License version 1. Please refer
+*  to LICENSE.txt for more information.
+*
+*  @author Robert MacGregor
+*  @copyright (c) 2016 Draconic Entity
+*/
 
 #ifndef _INCLUDE_KIARO_NET_MESSAGES_IDENTIFIERS_HPP_
 #define _INCLUDE_KIARO_NET_MESSAGES_IDENTIFIERS_HPP_

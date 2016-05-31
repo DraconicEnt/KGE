@@ -18,7 +18,7 @@ namespace Kiaro
 {
     namespace Support
     {
-		//! A typedef to an std::map.
+        //! A typedef to an std::map.
         template <typename keyType, typename storedType>
         using Map = std::map<keyType, storedType>;
     } // End NameSpace Support

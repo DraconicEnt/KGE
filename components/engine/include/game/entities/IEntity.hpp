@@ -55,7 +55,7 @@ namespace Kiaro
 
             class IEntity : public Net::INetworkPersistable, public Game::IEngineObject
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     /**
                      *  @brief Constructor accepting a Kiaro::Common::U32.
@@ -88,11 +88,11 @@ namespace Kiaro
 
                     //virtual void setPosition(const Common::Vector3DF& position) = 0;
 
-                // Public Members
+                    // Public Members
                 public:
                     const Common::U8 mFlags;
 
-                // Protected Members
+                    // Protected Members
                 protected:
                     ENTITY_TYPE mType;
                     Common::U32 mNetID;

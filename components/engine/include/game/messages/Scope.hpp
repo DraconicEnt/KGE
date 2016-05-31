@@ -37,7 +37,7 @@ namespace Kiaro
              */
             class Scope : public Net::IMessage
             {
-                // Private Members
+                    // Private Members
                 private:
                     //! A Common::U32 representing the number of scoped entities in this message.
                     Common::U32 mScopedCount;
@@ -45,7 +45,7 @@ namespace Kiaro
                     //! A Support::UnorderedSet of all entities to pack.
                     Support::UnorderedSet<const Net::INetworkPersistable*> mScoped;
 
-                // Public Methods
+                    // Public Methods
                 public:
                     Scope(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
                     void add(const Net::INetworkPersistable* entity);

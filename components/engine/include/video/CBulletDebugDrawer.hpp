@@ -27,18 +27,18 @@ namespace Kiaro
          */
         class CBulletDebugDrawer : public btIDebugDraw
         {
-            // Public Methods
+                // Public Methods
             public:
                 CBulletDebugDrawer(irr::IrrlichtDevice* irrlicht);
 
-                virtual void drawLine(const btVector3& from,const btVector3& to,const btVector3& color);
-                virtual void drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,btScalar distance, Kiaro::Common::S32 lifeTime,const btVector3& color);
+                virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
+                virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, Kiaro::Common::S32 lifeTime, const btVector3& color);
                 virtual void reportErrorWarning(const char* warningString);
-                virtual void draw3dText(const btVector3& location,const char* textString);
+                virtual void draw3dText(const btVector3& location, const char* textString);
                 virtual void setDebugMode(Kiaro::Common::S32 debugMode);
                 virtual int getDebugMode() const;
 
-            // Private Members
+                // Private Members
             private:
                 Common::S32 mDebugMode;
                 irr::IrrlichtDevice* mIrrlicht;

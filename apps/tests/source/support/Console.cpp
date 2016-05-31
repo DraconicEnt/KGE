@@ -29,9 +29,7 @@ namespace Kiaro
                 // Check the expected result
                 Common::C8 buffer[256];
                 sprintf(buffer, sString, sLogCounts[type]);
-
                 EXPECT_FALSE(strcmp(buffer, message.data()));
-
                 sLogCounts[type]++;
             }
 
@@ -48,7 +46,6 @@ namespace Kiaro
                 for (Common::U32 iteration = 0; iteration < 10; iteration++)
                 {
                     WriteLog(MESSAGE_INFO);
-
                     EXPECT_EQ(sLogCounts[MESSAGE_INFO], iteration + 1);
                     EXPECT_EQ(sLogCounts[MESSAGE_ERROR], 0);
                 }

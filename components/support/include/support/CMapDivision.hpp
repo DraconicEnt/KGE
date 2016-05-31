@@ -34,14 +34,14 @@ namespace Kiaro
 
         class CMapDivision
         {
-            // Public Methods
+                // Public Methods
             public:
                 CMapDivision(Common::U32 power, Common::U32 divisions = 999);
 
                 const Common::U32 mDivisions;
                 const size_t mResolution;
 
-            // Private Members
+                // Private Members
             private:
 
 

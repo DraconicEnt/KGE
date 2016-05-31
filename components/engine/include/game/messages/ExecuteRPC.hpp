@@ -30,11 +30,10 @@ namespace Kiaro
         {
             class ExecuteRPC : public Net::IMessage
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     ExecuteRPC(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL) : IMessage(TYPE_EXECUTERPC, in, sender)
                     {
-
                     }
 
                     virtual void packEverything(Support::CBitStream& out) const
@@ -43,7 +42,7 @@ namespace Kiaro
                         out << mName;
                     }
 
-                    void unpack(Support::CBitStream &in)
+                    void unpack(Support::CBitStream& in)
                     {
                         if (in.getPointer() <= getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack ExecuteRPC packet; too small of a payload!");
@@ -61,7 +60,7 @@ namespace Kiaro
                         return mName.length();
                     }
 
-                // Public Members
+                    // Public Members
                 public:
                     Support::String mName;
             };

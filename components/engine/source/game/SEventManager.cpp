@@ -15,9 +15,9 @@ namespace Kiaro
 {
     namespace Core
     {
-        static SEventManager *sInstance = nullptr;
+        static SEventManager* sInstance = nullptr;
 
-        SEventManager *SEventManager::get(void)
+        SEventManager* SEventManager::get(void)
         {
             if (!sInstance)
                 sInstance = new SEventManager;
@@ -33,17 +33,14 @@ namespace Kiaro
 
         void SEventManager::clearEvents(void)
         {
-
         }
 
         SEventManager::SEventManager(void)
         {
-
         }
 
         SEventManager::~SEventManager(void)
         {
-
         }
     } // End NameSpace Support
 } // End nameSpace Kiaro

@@ -16,16 +16,16 @@ namespace Kiaro
 
         class CGameClient : public Net::IIncomingClient
         {
-            // Public Members
+                // Public Members
             public:
                 //! The current move state of this client.
                 CMove mMove;
 
-            // Protected Members
+                // Protected Members
             protected:
                 IControllable* mControlObject;
 
-            // Public Methods
+                // Public Methods
             public:
                 CGameClient(Net::RemoteHostContext client);
 

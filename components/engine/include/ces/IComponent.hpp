@@ -37,19 +37,22 @@ namespace Kiaro
          */
         class IComponent
         {
-            // Protected Members
+                // Protected Members
             protected:
                 COMPONENT_NAME mComponentTypeIdentifier;
 
-            // Private Members
+                // Private Members
             private:
                 //! A set of BehaviorModel instances that this IComponent belongs to.
                 std::set<CBehaviorModel*> mBehaviorModels;
 
-            // Public Methods
+                // Public Methods
             public:
                 //! Standard destructor.
-                ~IComponent(void) { this->deinitialize(); }
+                ~IComponent(void)
+                {
+                    this->deinitialize();
+                }
 
                 /**
                  *  @brief Initializes the behavior model component

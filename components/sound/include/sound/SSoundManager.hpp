@@ -18,14 +18,14 @@ namespace Kiaro
          */
         class SSoundManager
         {
-            // Private Members
+                // Private Members
             private:
                 //! Pointer to the FMod sound system.
                 FMOD::System* mFMod;
 
                 Support::UnorderedMap<Support::String, CSoundSource*> mSoundRegistry;
 
-            // Public Methods
+                // Public Methods
             public:
                 static SSoundManager* getPointer(void);
                 static void destroy(void);
@@ -39,7 +39,7 @@ namespace Kiaro
 
                 void update(void);
 
-            // Private Methods
+                // Private Methods
             private:
                 /**
                  *  @brief Parameter-less constructor.

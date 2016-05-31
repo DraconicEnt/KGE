@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace FileSystem
     {
-        CFileReader::CFileReader(const Support::String &filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data())), mIrrlichtPath(filename.data())
+        CFileReader::CFileReader(const Support::String& filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data())), mIrrlichtPath(filename.data())
         {
             if (!mFileHandle)
                 throw std::logic_error(PHYSFS_getLastError());
@@ -49,7 +49,7 @@ namespace Kiaro
             return PHYSFS_tell(mFileHandle);
         }
 
-        const irr::io::path &CFileReader::getFileName() const
+        const irr::io::path& CFileReader::getFileName() const
         {
             return mIrrlichtPath;
         }

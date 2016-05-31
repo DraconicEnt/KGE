@@ -30,16 +30,16 @@ namespace Kiaro
 
             mSound = nullptr;
 
-            for (CVoice* voice: mVoices)
+            for (CVoice* voice : mVoices)
                 delete voice;
         }
 
         CVoice* CSoundSource::play(void)
         {
             assert(mSound);
-
             FMOD_RESULT result;
             FMOD::Channel* channel = nullptr;
+
             if ((result = mFMod->playSound(mSound, 0, false, &channel)) != FMOD_OK)
             {
                 CONSOLE_ERRORF("Failed to play sound source! Reason: %s", FMOD_ErrorString(result));
@@ -48,7 +48,6 @@ namespace Kiaro
 
             CVoice* voice = new CVoice(channel);
             mVoices.insert(mVoices.end(), voice);
-
             return voice;
         }
     } // End NameSpace Sound

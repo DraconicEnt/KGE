@@ -32,7 +32,6 @@ namespace Kiaro
 
         void IDebugRenderer::setDebugMode(Kiaro::Common::S32 debugMode)
         {
-
         }
 
         Common::S32 getDebugMode()

@@ -30,21 +30,21 @@ namespace Kiaro
          */
         class SSettingsRegistry : public Support::ISingleton<SSettingsRegistry>
         {
-            // Private Members
+                // Private Members
             private:
                 //! An unordered map mapping the setting name hashes to a pair representing the memory location and type.
                 Support::UnorderedMap<size_t, std::pair<void*, size_t>> mStoredProperties;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Returns the pointer to the SSettingsRegistry, creating and initializing it if
                  *  necessary before returning.
                  *  @return A pointer to the SSettingsRegistry instance.
                  */
-               // static SSettingsRegistry* getPointer(void);
+                // static SSettingsRegistry* getPointer(void);
                 //! Destroys the singleton instance, if available.
-               // static void destroy(void);
+                // static void destroy(void);
 
                 /**
                  *  @brief Initializes and sets defaults for all of the settings kept in the settings
@@ -73,7 +73,6 @@ namespace Kiaro
                     {
                         Support::String exceptionText = "SSettingsRegistry: No such setting key: ";
                         exceptionText += name;
-
                         throw std::runtime_error(exceptionText);
                     }
 
@@ -114,7 +113,6 @@ namespace Kiaro
 
                         // FIXME (Robert MacGregor#9): Values that own heap entries will create memory leaks
                         new (heapEntry) storedType(value);
-
                         mStoredProperties[mapIndex] = std::make_pair(heapEntry, typeid(storedType).hash_code());
                         return;
                     }
@@ -130,7 +128,7 @@ namespace Kiaro
                     oldPropertyValue = value;
                 }
 
-            // Private Methods
+                // Private Methods
             public:
                 //! Parameter-less constructor.
                 SSettingsRegistry(void);

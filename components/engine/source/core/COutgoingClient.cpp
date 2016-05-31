@@ -19,21 +19,17 @@ namespace Kiaro
         void COutgoingClient::onConnected(void)
         {
             CONSOLE_INFO("Established connection to remote host.");
-
             // Dispatch our own handshake in response
             Game::Messages::HandShake handShake;
-
             this->send(&handShake, true);
         }
 
         void COutgoingClient::onDisconnected(void)
         {
-
         }
 
         void COutgoingClient::onConnectFailed(void)
         {
-
         }
 
         void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
@@ -50,10 +46,8 @@ namespace Kiaro
                     {
                         Game::Messages::Disconnect disconnect;
                         disconnect.unpack(incomingStream);
-
                         CONSOLE_INFOF("Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
                         this->disconnect();
-
                         break;
                     }
 
@@ -78,7 +72,6 @@ namespace Kiaro
                             {
                                 Support::String exceptionText = "COutgoingClient:  Encountered unknown stage type: ";
                                 exceptionText += mCurrentStage;
-
                                 throw std::out_of_range(exceptionText);
                                 break;
                             }
@@ -90,7 +83,6 @@ namespace Kiaro
 
         void COutgoingClient::onAuthenticated(void)
         {
-
         }
 
         void COutgoingClient::processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream)
@@ -101,17 +93,12 @@ namespace Kiaro
                 {
                     Game::Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
-
                     CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-
+                                  receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
                     CONSOLE_INFO("Passed initial authentication.");
-
                     mConnected = true;
                     this->onAuthenticated();
-
                     mCurrentStage = Net::STAGE_LOADING;
-
                     break;
                 }
 
@@ -120,7 +107,6 @@ namespace Kiaro
                 {
                     Support::String exceptionText = "COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: ";
                     exceptionText += header.getType();
-
                     throw std::out_of_range(exceptionText);
                     break;
                 }
@@ -135,7 +121,6 @@ namespace Kiaro
                 {
                     Game::Messages::Scope receivedScope;
                     receivedScope.unpack(incomingStream);
-
                     break;
                 }
 
@@ -143,7 +128,6 @@ namespace Kiaro
                 {
                     Game::Messages::SimCommit receivedCommit;
                     receivedCommit.unpack(incomingStream);
-
                     break;
                 }
 
@@ -152,7 +136,6 @@ namespace Kiaro
                 {
                     Support::String exceptionText = "COutgoingClient: Out of stage or unknown message type encountered at stage 2 processing: ";
                     exceptionText += header.getType();
-
                     throw std::out_of_range(exceptionText);
                     break;
                 }

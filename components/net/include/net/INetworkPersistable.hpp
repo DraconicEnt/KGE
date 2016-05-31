@@ -52,7 +52,7 @@ namespace Kiaro
          */
         class INetworkPersistable : public Support::ISerializable
         {
-            // Public Members
+                // Public Members
             public:
                 //! A set of all modified network properties
                 Support::UnorderedSet<size_t> mDirtyNetworkedProperties;
@@ -79,14 +79,17 @@ namespace Kiaro
                  *  This is the base declaration that resolves to PROPERTY_UNKNOWN which is an error state.
                  */
                 template <typename propertyType>
-                struct TypeIDResolver { static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_UNKNOWN; };
+                struct TypeIDResolver
+                {
+                    static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_UNKNOWN;
+                };
 
-            // Private Members
+                // Private Members
             private:
                 //! A map of string hashes (networked property names) to an std::pair representing the location & typeid hash
                 Support::UnorderedMap<size_t, std::pair<void*, PROPERTY_TYPE>> mNetworkedProperties;
 
-            // Public Methods
+                // Public Methods
             public:
                 //! Parameterless Constructor.
                 INetworkPersistable(void);
@@ -101,7 +104,6 @@ namespace Kiaro
                 void addNetworkedProperty(const Support::String& name, propertyType& propertyValue)
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
                     CONSTEXPR PROPERTY_TYPE typeIdentifier = TypeIDResolver<propertyType>::value;
                     mNetworkedProperties[Support::getHashCode(name)] = std::make_pair(&propertyValue, typeIdentifier);
                 }
@@ -118,7 +120,6 @@ namespace Kiaro
                 void setNetworkedPropertyValue(const Support::String& name, const propertyType& newValue)
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
                     size_t mapIndex = Support::getHashCode(name);
                     this->setNetworkedPropertyValue<propertyType>(mapIndex, newValue);
                 }
@@ -136,7 +137,6 @@ namespace Kiaro
                 void setNetworkedPropertyValue(const size_t mapIndex, const propertyType& newValue)
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
                     std::pair<void*, PROPERTY_TYPE> networkedPropertyInfo = mNetworkedProperties[mapIndex];
 
                     // Is it the same type?
@@ -160,7 +160,6 @@ namespace Kiaro
                 const propertyType& getNetworkedPropertyValue(const Support::String& name)
                 {
                     static_assert(TypeIDResolver<propertyType>::value != PROPERTY_UNKNOWN, "INetworkPersistable: Cannot network this data type!");
-
                     std::pair<void*, PROPERTY_TYPE> networkedPropertyInfo = mNetworkedProperties[Support::getHashCode(name)];
 
                     // Is it the same type?
@@ -192,7 +191,7 @@ namespace Kiaro
                  */
                 virtual void unpack(Support::CBitStream& in);
 
-            // Private Methods
+                // Private Methods
             private:
                 /**
                  *  @brief Helper method used to pack arbitrary methods into the INetworkPersistable.
@@ -208,35 +207,50 @@ namespace Kiaro
          *  This is an explicit declaration for the Common::F32 type.
          */
         template <>
-		struct INetworkPersistable::TypeIDResolver<Common::F32> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F32; };
+        struct INetworkPersistable::TypeIDResolver<Common::F32>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F32;
+        };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::F64 type.
          */
         template <>
-		struct INetworkPersistable::TypeIDResolver<Common::F64> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F64; };
+        struct INetworkPersistable::TypeIDResolver<Common::F64>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_F64;
+        };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::U32 type.
          */
         template <>
-		struct INetworkPersistable::TypeIDResolver<Common::U32> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U32; };
+        struct INetworkPersistable::TypeIDResolver<Common::U32>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U32;
+        };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::U64 type.
          */
         template <>
-		struct INetworkPersistable::TypeIDResolver<Common::U64> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U64; };
+        struct INetworkPersistable::TypeIDResolver<Common::U64>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U64;
+        };
 
         /**
          *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
          *  This is an explicit declaration for the Common::U8 type.
          */
         template <>
-		struct INetworkPersistable::TypeIDResolver<Common::U8> { static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U8; };
+        struct INetworkPersistable::TypeIDResolver<Common::U8>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = INetworkPersistable::PROPERTY_U8;
+        };
     } // End Namespace Engine
 } // End Namespace Kiaro
 #endif // _INCLUDE_NET_INETWORKPERSISTABLE_HPP_

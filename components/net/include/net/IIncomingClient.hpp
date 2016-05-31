@@ -34,12 +34,12 @@ namespace Kiaro
         //! The IIncomingClient class is a handle for a remote host that has connected to the game server.
         class IIncomingClient
         {
-            // Public Members
+                // Public Members
             public:
                 //! Are we currently connected somewhere?
                 bool mIsConnected;
 
-            // Private Members
+                // Private Members
             private:
                 //! A pointer to the internally used ENet peer.
                 ENetPeer* mInternalClient;
@@ -57,13 +57,13 @@ namespace Kiaro
                  */
                 STAGE_NAME mCurrentConnectionStage;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an ENetPeer object pointer.
                  *  @param connecting A Peer object that is connecting.
                  */
-                IIncomingClient(ENetPeer *connecting, Net::IServer *server);
+                IIncomingClient(ENetPeer* connecting, Net::IServer* server);
 
                 //! Standard destructor.
                 ~IIncomingClient(void);

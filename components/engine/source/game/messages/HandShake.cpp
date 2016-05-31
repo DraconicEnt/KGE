@@ -21,10 +21,9 @@ namespace Kiaro
         namespace Messages
         {
             HandShake::HandShake(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(TYPE_HANDSHAKE, in, sender),
-            mVersionMajor(VERSION::MAJOR), mVersionMinor(VERSION::MINOR), mVersionRevision(VERSION::REVISION),
-            mVersionBuild(VERSION::BUILD), mProtocolVersion(VERSION::PROTOCOL)
+                mVersionMajor(VERSION::MAJOR), mVersionMinor(VERSION::MINOR), mVersionRevision(VERSION::REVISION),
+                mVersionBuild(VERSION::BUILD), mProtocolVersion(VERSION::PROTOCOL)
             {
-
             }
 
             void HandShake::packEverything(Support::CBitStream& out) const

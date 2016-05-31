@@ -22,7 +22,7 @@ namespace Kiaro
          */
         class CSimulation
         {
-            // Private Members
+                // Private Members
             private:
                 //! Pointer to the bullet broadphase interface.
                 btBroadphaseInterface* mBroadphase;
@@ -42,7 +42,7 @@ namespace Kiaro
                 //! Pointer to the current physics debug renderer.
                 IDebugRenderer* mDebugRenderer;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Parameter-less constructor.

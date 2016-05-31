@@ -34,7 +34,7 @@ namespace Kiaro
                 return sTimerStack.size();
             }
 
-            Common::F32 stopTimer(const Support::FTime::timer &timerIdentifier)
+            Common::F32 stopTimer(const Support::FTime::timer& timerIdentifier)
             {
                 if (sTimerStack.size() == 0)
                     throw std::runtime_error("FTime: No timers to stop!");
@@ -46,13 +46,11 @@ namespace Kiaro
                     errorString += sTimerStack.size();
                     errorString += " Given: ";
                     errorString += timerIdentifier;
-
                     throw std::runtime_error(errorString);
                 }
 
                 const Common::U64 lastTimeMicroseconds = sTimerStack.top();
                 const Common::U64 currentTimeMicroseconds = Platform::Time::getCurrentTimeMicroseconds();
-
                 // NOTE (Robert MacGregor#1): Prevents the conversion calculation below from potentially being unrepresentable
                 Common::U64 deltaTimeMicroseconds = currentTimeMicroseconds - lastTimeMicroseconds;
 
@@ -61,10 +59,8 @@ namespace Kiaro
                     sCurrentSimTime += deltaTimeMicroseconds;
 
                 deltaTimeMicroseconds = std::max(static_cast<Common::U64>(100), deltaTimeMicroseconds);
-
                 Common::F32 result = (Common::F32)(deltaTimeMicroseconds) / 1000000.f;
                 sTimerStack.pop();
-
                 return result;
             }
 
@@ -72,7 +68,6 @@ namespace Kiaro
             {
                 //timespec tp;
                 //clock_getres(CLOCK_MONOTONIC, &tp);
-
                 //return tp.tv_nsec;
                 return 0;
             }

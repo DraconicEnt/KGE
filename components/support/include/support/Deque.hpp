@@ -18,10 +18,10 @@ namespace Kiaro
 {
     namespace Support
     {
-		//! A typedef to an std::map.
+        //! A typedef to an std::map.
         template <typename storedType>
         using Deque = std::deque<storedType>;
     } // End NameSpace Support
 } // End NameSpace Kiaro
 #endif // _INCLUDE_SUPPORT_DEQUE_HPP_
- 
+

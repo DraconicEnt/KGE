@@ -26,7 +26,6 @@ namespace Kiaro
         TEST(CCommandLineParser, FlagCheck)
         {
             CommandLineParser commandLineParser(sArgc, sArgv);
-
             EXPECT_FALSE(commandLineParser.hasFlag("One"));
             EXPECT_FALSE(commandLineParser.hasFlag("-One"));
             EXPECT_TRUE(commandLineParser.hasFlag("-Two"));
@@ -36,13 +35,10 @@ namespace Kiaro
         TEST(CCommandLineParser, FlagArguments)
         {
             CommandLineParser commandLineParser(sArgc, sArgv);
-
             Vector<String> currentArguments = commandLineParser.getFlagArguments("One");
             EXPECT_EQ(0, currentArguments.size());
-
             currentArguments = commandLineParser.getFlagArguments("-One");
             EXPECT_EQ(0, currentArguments.size());
-
             currentArguments = commandLineParser.getFlagArguments("-Three");
             EXPECT_EQ(3, currentArguments.size());
 

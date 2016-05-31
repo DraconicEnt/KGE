@@ -29,10 +29,9 @@ namespace Kiaro
                 fseek(mHandle, 0, SEEK_END);
                 const size_t fileLength = ftell(mHandle);
                 fseek(mHandle, 0, SEEK_SET);
-
                 mLength = mLength == 0 ? fileLength : mLength;
-
                 const char nullBytes = 0x00;
+
                 if (fileLength < mLength)
                 {
                     fwrite(&nullBytes, 1, mLength - fileLength, mHandle);
@@ -40,8 +39,10 @@ namespace Kiaro
                 }
 
                 int protection = 0;
+
                 if (mAccessMode & ACCESS_MODE::WRITE)
                     protection |= PROT_WRITE;
+
                 if (mAccessMode & ACCESS_MODE::READ)
                     protection |= PROT_READ;
 

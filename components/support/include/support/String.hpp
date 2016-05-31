@@ -19,7 +19,7 @@ namespace Kiaro
     namespace Support
     {
         typedef std::string String;
-        
+
         static std::hash<std::string> getHashCode;
     } // End NameSpace Support
 } // End NameSpace Kiaro

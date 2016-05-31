@@ -37,17 +37,17 @@ namespace Kiaro
                  *  scene graph.
                  *  @param node A pointer to the node to add to this scene graph.
                  */
-                void add(irr::scene::ISceneNode *node);
+                void add(irr::scene::ISceneNode* node);
 
                 bool isVisible(void);
                 void setVisible(const bool visible);
 
-               // const Kiaro::Common::ColorRGBA &getClearColor(void);
-               // void setClearColor(const Kiaro::Common::ColorRGBA &color);
+                // const Kiaro::Common::ColorRGBA &getClearColor(void);
+                // void setClearColor(const Kiaro::Common::ColorRGBA &color);
 
             private:
                 //! A pointer to the root scene node.
-                irr::scene::ISceneNode *mRoot;
+                irr::scene::ISceneNode* mRoot;
         };
     } // End NameSpace Engine
 } // End NameSpace Kiaro

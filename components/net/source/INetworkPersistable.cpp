@@ -18,7 +18,6 @@ namespace Kiaro
             {
                 const size_t& propertyHash = *it;
                 const std::pair<void*, PROPERTY_TYPE>& networkedPropertyInfo = mNetworkedProperties[propertyHash];
-
                 this->packProperty(out, propertyHash, networkedPropertyInfo);
             }
 
@@ -90,9 +89,8 @@ namespace Kiaro
             for (Common::U32 iteration = 0; iteration < propertyCount; iteration++)
             {
                 // TODO (Robert MacGregor#9): Determine what to do when properties don't exist and are being unpacked here
-              //  const PROPERTY_TYPE& propertyType = *in.top<PROPERTY_TYPE>();
-              //  in.pop<PROPERTY_TYPE>();
-
+                //  const PROPERTY_TYPE& propertyType = *in.top<PROPERTY_TYPE>();
+                //  in.pop<PROPERTY_TYPE>();
                 const size_t& propertyHash = in.pop<size_t>();
 
                 // Do we have such a property?
@@ -100,7 +98,6 @@ namespace Kiaro
                 {
                     Support::String exceptionMessage = "INetworkPersisable: Encountered unknown property in unpack! HashCode: ";
                     exceptionMessage += propertyHash;
-
                     throw std::domain_error(exceptionMessage);
                 }
 
@@ -112,7 +109,6 @@ namespace Kiaro
                     {
                         Common::F32& out = *reinterpret_cast<Common::F32*>(propertyInformation.first);
                         out = in.pop<Common::F32>();
-
                         break;
                     }
 
@@ -120,7 +116,6 @@ namespace Kiaro
                     {
                         Common::F64& out = *reinterpret_cast<Common::F64*>(propertyInformation.first);
                         out = in.pop<Common::F64>();
-
                         break;
                     }
 
@@ -128,7 +123,6 @@ namespace Kiaro
                     {
                         Common::U32& out = *reinterpret_cast<Common::U32*>(propertyInformation.first);
                         out = in.pop<Common::U32>();
-
                         break;
                     }
 
@@ -136,7 +130,6 @@ namespace Kiaro
                     {
                         Common::U64& out = *reinterpret_cast<Common::U64*>(propertyInformation.first);
                         out = in.pop<Common::U64>();
-
                         break;
                     }
 

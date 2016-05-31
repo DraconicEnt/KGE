@@ -1,6 +1,6 @@
- /**
- *  @file SObjectRegistry.cpp
- */
+/**
+*  @file SObjectRegistry.cpp
+*/
 
 #include <game/SObjectRegistry.hpp>
 
@@ -35,7 +35,6 @@ namespace Kiaro
         {
             assert(object);
             assert(object->mID <= mObjects.size());
-
             const Common::U32& identifier = object->mID;
 
             if (object->mID == mObjects.size())
@@ -57,7 +56,6 @@ namespace Kiaro
 
             mObjects[identifier] = nullptr;
             mAvailableIDs.push(identifier);
-
             return true;
         }
 
@@ -106,7 +104,7 @@ namespace Kiaro
         void SObjectRegistry::clear(void)
         {
             // Destroy each object in the registry and fill its spot with a null pointer
-            for (IEngineObject*& object: mObjects)
+            for (IEngineObject*& object : mObjects)
             {
                 if (object)
                     delete object;

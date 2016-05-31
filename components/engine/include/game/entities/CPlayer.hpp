@@ -22,7 +22,7 @@ namespace Kiaro
     {
         class Player : public Kiaro::Game::RigidObjectBase
         {
-            // Public Methods
+                // Public Methods
             public:
         };
     } // End Namespace Game

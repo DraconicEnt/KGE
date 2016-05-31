@@ -21,7 +21,6 @@ namespace Kiaro
         {
             IRigidObject::IRigidObject(const ENTITY_TYPE& type, const Game::Entities::EntityHintMask& hintMask) : Game::Entities::IEntity(type, hintMask)
             {
-
             }
         } // End NameSpace Entities
     } // End NameSpace Game

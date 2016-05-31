@@ -18,7 +18,7 @@ namespace Kiaro
 {
     namespace Support
     {
-		//! A typedef to an std::unordered_map.
+        //! A typedef to an std::unordered_map.
         template <typename keyType, typename storedType>
         using UnorderedMap = std::unordered_map<keyType, storedType>;
     } // End NameSpace Support

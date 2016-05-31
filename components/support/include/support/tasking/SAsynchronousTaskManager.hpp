@@ -38,7 +38,7 @@ namespace Kiaro
              */
             class SAsynchronousTaskManager : public Support::ISingleton<SAsynchronousTaskManager>
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     void tick(void);
 
@@ -61,7 +61,7 @@ namespace Kiaro
                     //! Standard destructor.
                     ~SAsynchronousTaskManager(void);
 
-                // Private Members
+                    // Private Members
                 private:
                     //! The number of workers this asynchronous task manager is handling.
                     const Common::U8 mPoolSize;

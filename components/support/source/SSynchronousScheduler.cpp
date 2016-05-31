@@ -20,10 +20,9 @@ namespace Kiaro
         static SSynchronousScheduler* sInstance = nullptr;
 
         CScheduledEvent::CScheduledEvent(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U64 waitTimeMS, const bool recurring) :
-        mCancelled(false), mTriggerTimeMS(Support::FTime::getSimTimeMilliseconds() + waitTimeMS), mInternalDeferredCaller(deferredCaller),
-        mRecurring(recurring), mWaitTimeMS(waitTimeMS)
+            mCancelled(false), mTriggerTimeMS(Support::FTime::getSimTimeMilliseconds() + waitTimeMS), mInternalDeferredCaller(deferredCaller),
+            mRecurring(recurring), mWaitTimeMS(waitTimeMS)
         {
-
         }
 
         CScheduledEvent::~CScheduledEvent(void)
@@ -83,10 +82,9 @@ namespace Kiaro
         void SSynchronousScheduler::update(void)
         {
             const Common::U64 currentSimTimeMS = Support::FTime::getSimTimeMilliseconds();
-
             Support::UnorderedSet<CScheduledEvent*> removedEvents;
 
-            for (CScheduledEvent* currentEvent: mScheduledEventSet)
+            for (CScheduledEvent* currentEvent : mScheduledEventSet)
             {
                 bool shouldRemoveCurrentEvent = false;
 
@@ -106,7 +104,7 @@ namespace Kiaro
                     removedEvents.insert(currentEvent);
             }
 
-            for (CScheduledEvent* currentEvent: removedEvents)
+            for (CScheduledEvent* currentEvent : removedEvents)
             {
                 mScheduledEventSet.erase(currentEvent);
                 delete currentEvent;

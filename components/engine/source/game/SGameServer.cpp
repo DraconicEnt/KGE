@@ -29,7 +29,6 @@ namespace Kiaro
             if (!sInstance)
             {
                 Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-
                 sInstance = new SGameServer(settings->getValue<Support::String>("Server::ListenAddress"),
                                             settings->getValue<Common::U16>("Server::ListenPort"),
                                             settings->getValue<Common::U32>("Server::MaximumClientCount"));
@@ -59,7 +58,6 @@ namespace Kiaro
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
             mSimulation = new Phys::CSimulation();
-
             // Add our update to the scheduler
             mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
         }
@@ -69,10 +67,8 @@ namespace Kiaro
             // FIXME (Robert MacGregor#9): Call IServer destructor?
             assert(mSimulation);
             assert(mUpdatePulse);
-
             delete mSimulation;
             mSimulation = nullptr;
-
             mUpdatePulse->cancel();
             mUpdatePulse = nullptr;
         }
@@ -80,15 +76,14 @@ namespace Kiaro
         void SGameServer::onClientConnected(Net::IIncomingClient* client)
         {
             Net::IServer::onClientConnected(client);
-
             this->initialScope(client);
         }
 
         void SGameServer::initialScope(Net::IIncomingClient* client)
         {
             Game::Messages::Scope scope;
-
             Game::SGameWorld* world = Game::SGameWorld::getPointer();
+
             for (auto it = world->begin(); it != world->end(); it++)
             {
                 Entities::IEntity* entity = *it;
@@ -133,7 +128,7 @@ namespace Kiaro
 
                 switch (basePacket.getType())
                 {
-                    // Stageless messages
+                        // Stageless messages
 
                     // If it's not any stageless message, then drop into the appropriate stage handler
                     default:
@@ -171,21 +166,16 @@ namespace Kiaro
                 {
                     Game::Messages::HandShake receivedHandshake;
                     receivedHandshake.unpack(incomingStream);
-
                     CONSOLE_INFOF("Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                    receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-
+                                  receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
                     Game::Messages::HandShake handShake;
                     sender->send(&handShake, true);
-
                     // At this point, the client has passed initial authentication
                     // TODO (Robert MacGregor#9): Make a proper challenge that isn't just version information.
                     CONSOLE_INFO("Client passed initial authentication.");
-
                     mPendingClientSet.erase(sender);
                     mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
                     sender->setConnectionStage(Net::STAGE_LOADING);
-
                     this->onClientConnected(sender);
                     break;
                 }
@@ -197,7 +187,6 @@ namespace Kiaro
                     Support::String exceptionText = "SGameServer: Out of stage or unknown message type encountered at stage 0 processing: ";
                     exceptionText += header.getType();
                     exceptionText += " for client <ADD IDENTIFIER> ";
-
                     throw std::out_of_range(exceptionText);
                     break;
                 }

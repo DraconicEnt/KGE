@@ -17,7 +17,7 @@ namespace Kiaro
 {
     namespace Support
     {
-		//! A typedef to an std::set.
+        //! A typedef to an std::set.
         template <typename storedType>
         using Set = std::set<storedType>;
     } // End NameSpace Support

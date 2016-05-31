@@ -30,11 +30,10 @@ namespace Kiaro
         {
             class Disconnect : public Net::IMessage
             {
-                // Public Methods
+                    // Public Methods
                 public:
-                    Disconnect(Support::CBitStream *in = NULL, Net::IIncomingClient* sender = NULL) : IMessage(TYPE_DISCONNECT, in, sender)
+                    Disconnect(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL) : IMessage(TYPE_DISCONNECT, in, sender)
                     {
-
                     }
 
                     virtual void packEverything(Support::CBitStream& out) const
@@ -43,7 +42,7 @@ namespace Kiaro
                         out.writeString(mReason);
                     }
 
-                    void unpack(Support::CBitStream &in)
+                    void unpack(Support::CBitStream& in)
                     {
                         if (in.getSize() - in.getPointer() < getMinimumPacketPayloadLength())
                             throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
@@ -61,7 +60,7 @@ namespace Kiaro
                         return mReason.length();
                     }
 
-                // Public Members
+                    // Public Members
                 public:
                     Support::String mReason;
             };

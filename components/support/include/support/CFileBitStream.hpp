@@ -28,14 +28,14 @@ namespace Kiaro
 
         class CFileBitStream
         {
-            // Public Members
+                // Public Members
             public:
-                CFileBitStream(const Support::String &fileName, const BITSTREAM_MODE &fileMode);
+                CFileBitStream(const Support::String& fileName, const BITSTREAM_MODE& fileMode);
                 ~CFileBitStream(void);
 
-            // Private Members
+                // Private Members
             private:
-                PHYSFS_File *mFileHandle;
+                PHYSFS_File* mFileHandle;
         };
     } // End NameSpace Support
 } // End NameSpace Kiaro

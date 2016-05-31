@@ -28,21 +28,19 @@ using namespace Kiaro;
  *  @param argv An array of Kiaro::Common::C8 representing the parameters passed in to the program.
  *  @return A Kiaro::Common::S32 representing the exit code.
  */
-Common::S32 main(Common::S32 argc, Common::C8 *argv[])
+Common::S32 main(Common::S32 argc, Common::C8* argv[])
 {
     CONSOLE_INFO("------------------------------------------------");
     CONSOLE_INFOF("Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
     CONSOLE_INFO("------------------------------------------------");
-
     // Create our parser as a pointer so we can destroy it when entering the engine
     Kiaro::Support::CommandLineParser commandLineParser(argc, argv);
-
     // Register all of the descriptions
     commandLineParser.setFlagDescription("-h", "Displays this help text.");
     commandLineParser.setFlagDescription("-game", "<game name> : Start up the engine with a given game.");
     commandLineParser.setFlagDescription("-mods", "<mod 1> [mod 2...] : A list of mods to run with the specified game.");
     commandLineParser.setFlagDescription("-dedicated", "Start up the engine as a standalone server.");
-	commandLineParser.setFlagDescription("-perfstat", "Occasionally write performance statistics to stdout.");
+    commandLineParser.setFlagDescription("-perfstat", "Occasionally write performance statistics to stdout.");
     commandLineParser.setFlagDescription("-v", "Print versioning information.");
 
     // Should we display the help info?
@@ -62,7 +60,6 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         }
 
         const Support::String gameName = gameArguments[0];
-
         Core::SEngineInstance::MODE_NAME engineMode = Core::SEngineInstance::MODE_CLIENT;
 
         if (commandLineParser.hasFlag("-dedicated"))
@@ -70,13 +67,14 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 
         // Check for the -server <ip address> flag
         Support::String targetServerIP;
+
         if (commandLineParser.hasFlag("-server"))
         {
             targetServerIP = commandLineParser.getFlagArguments("-server")[0];
+
             if (targetServerIP.empty())
             {
                 CONSOLE_ERROR("No server specified.");
-
                 commandLineParser.displayHelp(argc, argv);
                 return -3;
             }
@@ -95,11 +93,10 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
         engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
         engineInstance->setGame(gameName);
 
-		if (commandLineParser.hasFlag("-perfstat"))
-			engineInstance->setPerfStatEnabled(true);
+        if (commandLineParser.hasFlag("-perfstat"))
+            engineInstance->setPerfStatEnabled(true);
 
         engineInstance->start(argc, argv);
-
         // Release used memory when the start routine eventually returns
         Core::SEngineInstance::destroy();
     }

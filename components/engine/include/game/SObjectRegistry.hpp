@@ -23,9 +23,9 @@ namespace Kiaro
          */
         class SObjectRegistry
         {
-            friend class IEngineObject;
+                friend class IEngineObject;
 
-            // Private Members
+                // Private Members
             private:
                 //! A deque of engine objects for lookup by ID.
                 Support::Deque<IEngineObject*> mObjects;
@@ -36,7 +36,7 @@ namespace Kiaro
                 //! A mapping of names to objects.
                 Support::UnorderedMap<Support::String, IEngineObject*> mNameDictionary;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Obtains the pointer to the object registry singleton, creating a new one
@@ -91,7 +91,7 @@ namespace Kiaro
                  */
                 void clear(void);
 
-            // Protected Methods
+                // Protected Methods
             protected:
                 /**
                  *  @brief Grabs the next available object ID. If there are any previously used ID's now unused, those are
@@ -109,7 +109,7 @@ namespace Kiaro
                  */
                 void setNameEntry(IEngineObject* object, const Support::String& name);
 
-            // Private Methods
+                // Private Methods
             private:
                 //! Standard destructor.
                 ~SObjectRegistry(void);

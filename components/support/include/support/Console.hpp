@@ -65,12 +65,16 @@ namespace Kiaro
                 {
                     case MESSAGE_DEBUG:
                         return "DEBUG";
+
                     case MESSAGE_ERROR:
                         return "ERROR";
+
                     case MESSAGE_FATAL:
                         return "FATAL";
+
                     case MESSAGE_INFO:
                         return "INFO";
+
                     case MESSAGE_WARNING:
                         return "WARNING";
                 }
@@ -101,7 +105,6 @@ namespace Kiaro
                 // Call the responders first.
                 Common::C8 buffer[256];
                 sprintf(buffer, format.data(), params...);
-
                 sLogResponders[type].invoke(type, buffer);
                 printf("(%s) ", messageTypeText(type));
 
@@ -168,7 +171,6 @@ namespace Kiaro
             static void write(MESSAGE_TYPE type, const Support::String& output)
             {
                 sLogResponders[type].invoke(type, output);
-
                 printf("(%s) %s", messageTypeText(type), output.data());
                 puts("");
             }
@@ -209,19 +211,19 @@ namespace Kiaro
                 write(MESSAGE_DEBUG, output);
             }
 
-            #define QUOTE_IMPL(T) #T
-            #define QUOTE(T) QUOTE_IMPL(T)
+#define QUOTE_IMPL(T) #T
+#define QUOTE(T) QUOTE_IMPL(T)
 
-            #define ASSEMBLE_OUTPUT(format) __FILE__:__LINE__:: format
-            #define CONSOLE_ERRORF(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-            #define CONSOLE_INFOF(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-            #define CONSOLE_WARNINGF(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-            #define CONSOLE_DEBUGF(format, ...) Support::Console::debugf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+#define ASSEMBLE_OUTPUT(format) __FILE__:__LINE__:: format
+#define CONSOLE_ERRORF(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+#define CONSOLE_INFOF(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+#define CONSOLE_WARNINGF(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+#define CONSOLE_DEBUGF(format, ...) Support::Console::debugf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
 
-            #define CONSOLE_ERROR(message, ...) Support::Console::error(QUOTE(ASSEMBLE_OUTPUT(message)))
-            #define CONSOLE_INFO(message, ...) Support::Console::info(QUOTE(ASSEMBLE_OUTPUT(message)))
-            #define CONSOLE_WARNING(message, ...) Support::Console::warning(QUOTE(ASSEMBLE_OUTPUT(message)))
-            #define CONSOLE_DEBUG(message, ...) Support::Console::debug(QUOTE(ASSEMBLE_OUTPUT(message)))
+#define CONSOLE_ERROR(message, ...) Support::Console::error(QUOTE(ASSEMBLE_OUTPUT(message)))
+#define CONSOLE_INFO(message, ...) Support::Console::info(QUOTE(ASSEMBLE_OUTPUT(message)))
+#define CONSOLE_WARNING(message, ...) Support::Console::warning(QUOTE(ASSEMBLE_OUTPUT(message)))
+#define CONSOLE_DEBUG(message, ...) Support::Console::debug(QUOTE(ASSEMBLE_OUTPUT(message)))
         }
     } // End NameSpace Core
 } // End NameSpace Kiaro

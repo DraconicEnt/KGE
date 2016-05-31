@@ -20,30 +20,23 @@ namespace Kiaro
         TEST(SSettingsRegistry, SetGet)
         {
             SSettingsRegistry* settings = SSettingsRegistry::getPointer();
-
             Common::U32 integerSetting = 1337;
             Common::F32 floatSetting = 3.14f;
-
             EXPECT_NO_THROW(settings->setValue("integer", integerSetting));
             EXPECT_NO_THROW(settings->setValue("float", floatSetting));
-
             // Same values?
             EXPECT_EQ(integerSetting, settings->getValue<Common::U32>("integer"));
             EXPECT_EQ(floatSetting, settings->getValue<Common::F32>("float"));
-
             // Different addresses?
             EXPECT_NE(&integerSetting, &settings->getValue<Common::U32>("integer"));
             EXPECT_NE(&floatSetting, &settings->getValue<Common::F32>("float"));
-
             SSettingsRegistry::destroy();
         }
 
         TEST(SSettingsRegistry, Persistance)
         {
             SSettingsRegistry* settings = SSettingsRegistry::getPointer();
-
             // Write a test block
-
             SSettingsRegistry::destroy();
         }
     } // End Namespace Support

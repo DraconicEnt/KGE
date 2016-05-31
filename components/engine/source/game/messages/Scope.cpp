@@ -28,7 +28,6 @@ namespace Kiaro
         {
             Scope::Scope(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(TYPE_SCOPE, in, sender), mScopedCount(0)
             {
-
             }
 
             void Scope::add(const Net::INetworkPersistable* entity)
@@ -39,10 +38,9 @@ namespace Kiaro
             void Scope::packEverything(Support::CBitStream& out) const
             {
                 IMessage::packEverything(out);
-
                 out << static_cast<Common::U32>(mScoped.size());
 
-                for (const Net::INetworkPersistable* currentPersistable: mScoped)
+                for (const Net::INetworkPersistable* currentPersistable : mScoped)
                     currentPersistable->packEverything(out);
             }
 
@@ -52,7 +50,6 @@ namespace Kiaro
                     throw std::underflow_error("Unable to unpack Scope packet; too small of a payload!");
 
                 in >> mScopedCount;
-
                 CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);
 
                 for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
@@ -60,7 +57,6 @@ namespace Kiaro
                     // Read off an ID and a type
                     Common::U32 netID = 0;
                     Common::U32 type = 0;
-
                     in >> type >> netID;
 
                     switch(type)
@@ -75,7 +71,6 @@ namespace Kiaro
                         {
                             Support::String message = "Scope: Invalid entity type to unpack: ";
                             message += type;
-
                             throw std::logic_error(message);
                             break;
                         }

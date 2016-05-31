@@ -18,7 +18,7 @@ namespace Kiaro
     {
         namespace AI
         {
-        
+
         } // End NameSpace AI
     } // End NameSpace Game
 } // End NameSpace Kiaro

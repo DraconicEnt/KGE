@@ -20,7 +20,7 @@ namespace Kiaro
          */
         class CSoundSource
         {
-            // Private Members
+                // Private Members
             private:
                 //! A pointer to the internal FMod sound.
                 FMOD::Sound* mSound;
@@ -30,7 +30,7 @@ namespace Kiaro
                 //! A list of voices associated with this source.
                 Support::UnorderedSet<CVoice*> mVoices;
 
-            // Public Methods
+                // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an FMod system.

@@ -31,19 +31,19 @@ namespace Kiaro
         {
             class CSky : public Game::Entities::IEntity
             {
-                // Public Methods
+                    // Public Methods
                 public:
                     CSky();
-                    CSky(Support::CBitStream &in);
+                    CSky(Support::CBitStream& in);
 
                     ~CSky(void);
 
-                    virtual void packUpdate(Support::CBitStream &out);
-                    virtual void unpackUpdate(Support::CBitStream &in);
-                    virtual void writeTo(Support::CBitStream &out) const;
-                    virtual void extractFrom(Support::CBitStream &in);
-                    virtual void packInitialization(Support::CBitStream &out);
-                    virtual void unpackInitialization(Support::CBitStream &in);
+                    virtual void packUpdate(Support::CBitStream& out);
+                    virtual void unpackUpdate(Support::CBitStream& in);
+                    virtual void writeTo(Support::CBitStream& out) const;
+                    virtual void extractFrom(Support::CBitStream& in);
+                    virtual void packInitialization(Support::CBitStream& out);
+                    virtual void unpackInitialization(Support::CBitStream& in);
                     virtual void registerEntity(void);
                     virtual void update(const Common::F32 deltaTimeSeconds);
 
@@ -52,11 +52,11 @@ namespace Kiaro
                         return sizeof(Common::C8) * 4;
                     }
 
-                   // const Common::ColorRGBA &getColor(void);
+                    // const Common::ColorRGBA &getColor(void);
 
-                // Private Members
+                    // Private Members
                 private:
-                   // Common::ColorRGBA mColor;
+                    // Common::ColorRGBA mColor;
             };
         } // End Namespace Entities
     } // End Namespace Game

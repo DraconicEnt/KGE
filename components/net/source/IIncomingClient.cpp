@@ -20,9 +20,8 @@ namespace Kiaro
     namespace Net
     {
         IIncomingClient::IIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
-        mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true)
+            mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true)
         {
-
         }
 
         IIncomingClient::~IIncomingClient(void)
@@ -40,7 +39,6 @@ namespace Kiaro
 
             // TODO: Packet Size Query
             Support::CBitStream outStream(packet);
-
             ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getPointer(), packetFlag);
             enet_peer_send(mInternalClient, 0, enetPacket);
         }
@@ -70,7 +68,6 @@ namespace Kiaro
             // TODO (Robert MacGregor#9): Make sure that the STL handles this correctly?
             Common::C8 temporaryBuffer[18];
             enet_address_get_host_ip(&mInternalClient->address, temporaryBuffer, 18);
-
             return temporaryBuffer;
         }
 

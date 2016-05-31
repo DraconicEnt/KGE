@@ -49,7 +49,6 @@ namespace Kiaro
         TEST(BitStream, Floats)
         {
             Common::U32 expectedStreamSize = sFloatCount * sizeof(Common::F32);
-
             CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
             floatStream.setPointer(0);
@@ -65,10 +64,8 @@ namespace Kiaro
         TEST(BitStream, MemoryBlock)
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
-
             CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
-
             // We wil have a memory block to use from the float stream
             CBitStream blockStream(floatStream.getBlock(), floatStream.getPointer());
 
@@ -79,9 +76,7 @@ namespace Kiaro
         TEST(BitStream, BufferOverflow)
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
-
             CBitStream floatStream(expectedStreamSize - 3);
-
             bool caughtException = false;
             EXPECT_THROW(PackFloats(floatStream), std::overflow_error);
         }
@@ -90,7 +85,6 @@ namespace Kiaro
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
             CBitStream floatStream(expectedStreamSize);
-
             PackFloats(floatStream);
             EXPECT_THROW(floatStream.pop<Common::Vector3DF>(), std::underflow_error);
             EXPECT_THROW(floatStream.top<Common::Vector3DF>(), std::underflow_error);
@@ -99,10 +93,9 @@ namespace Kiaro
         TEST(BitStream, String)
         {
             CBitStream stream(256);
-
             PackStrings(stream);
-
             size_t writtenBytes = 0;
+
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
                 writtenBytes += sStringList[iteration].length() + sizeof(Common::U32) + 1;
 
@@ -116,11 +109,9 @@ namespace Kiaro
         TEST(BitStream, InvalidString)
         {
             CBitStream stream(256);
-
             char payload[8];
             memset(payload, 0x58, 8);
             payload[5] = 0x00;
-
             // String isn't properly NULL terminated to be of this length
             EXPECT_THROW(stream.writeString(payload, 8), std::runtime_error);
             EXPECT_NO_THROW(stream.writeString(payload, 5));
