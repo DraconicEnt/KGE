@@ -41,16 +41,24 @@ else (ALLEGRO_LIBRARIES AND ALLEGRO_INCLUDE_DIRS)
       /sw/lib
   )
 
-  set(ALLEGRO_INCLUDE_DIRS
-    ${ALLEGRO_INCLUDE_DIR}
+  find_library(ALLEG_PHYSFS_LIBRARY
+    NAMES
+      allegro_physfs
+    PATHS
+      /usr/lib/x86_64-linux-gnu/
+      /usr/lib/i386-linux-gnu/
+      /usr/lib
+      /usr/local/lib
+      /opt/local/lib
+      /sw/lib
   )
-  set(ALLEGRO_LIBRARIES
-    ${ALLEG_LIBRARY}
-)
 
-  if (ALLEGRO_INCLUDE_DIRS AND ALLEGRO_LIBRARIES)
+  set(ALLEGRO_INCLUDE_DIRS ${ALLEGRO_INCLUDE_DIR})
+  set(ALLEGRO_LIBRARIES ${ALLEG_LIBRARY} ${ALLEG_PHYSFS_LIBRARY})
+
+  if (ALLEGRO_INCLUDE_DIRS AND ALLEG_PHYSFS_LIBRARY AND ALLEG_LIBRARY)
      set(ALLEGRO_FOUND TRUE)
-  endif (ALLEGRO_INCLUDE_DIRS AND ALLEGRO_LIBRARIES)
+  endif (ALLEGRO_INCLUDE_DIRS AND ALLEG_PHYSFS_LIBRARY AND ALLEG_LIBRARY)
 
   if (ALLEGRO_FOUND)
     # Does our include dir desiginate allegro5?
@@ -90,7 +98,8 @@ else (ALLEGRO_LIBRARIES AND ALLEGRO_INCLUDE_DIRS)
     ENDIF (NOT FOUND_MATCH)
 
     if (NOT Allegro_FIND_QUIETLY)
-      message(STATUS "Found Allegro: ${ALLEGRO_LIBRARIES}")
+      message(STATUS "Found Allegro Core: ${ALLEG_LIBRARY}")
+      message(STATUS "Found Allegro PhysFS: ${ALLEG_PHYSFS_LIBRARY}")
     endif (NOT Allegro_FIND_QUIETLY)
   else (ALLEGRO_FOUND)
     if (Allegro_FIND_REQUIRED)
