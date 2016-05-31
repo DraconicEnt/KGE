@@ -40,6 +40,7 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
     // Register all of the descriptions
     commandLineParser.setFlagDescription("-h", "Displays this help text.");
     commandLineParser.setFlagDescription("-game", "<game name> : Start up the engine with a given game.");
+    commandLineParser.setFlagDescription("-mods", "<mod 1> [mod 2...] : A list of mods to run with the specified game.");
     commandLineParser.setFlagDescription("-dedicated", "Start up the engine as a standalone server.");
 	commandLineParser.setFlagDescription("-perfstat", "Occasionally write performance statistics to stdout.");
     commandLineParser.setFlagDescription("-v", "Print versioning information.");
@@ -98,6 +99,11 @@ Common::S32 main(Common::S32 argc, Common::C8 *argv[])
 
         // Create the Engine Instance
         Core::SEngineInstance* engineInstance = Core::SEngineInstance::getPointer();
+
+        // Deal with the -mods flag
+        if (commandLineParser.hasFlag("-mods"))
+            engineInstance->setMods(commandLineParser.getFlagArguments("-mods"));
+
         engineInstance->setMode(engineMode);
         engineInstance->setTargetServer((char*)targetServerIP.c_str(), 11595);
         engineInstance->setGame(gameName);

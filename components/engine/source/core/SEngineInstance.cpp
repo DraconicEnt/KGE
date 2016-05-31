@@ -115,16 +115,22 @@ namespace Kiaro
 
             CONSOLE_INFOF("Running game '%s'", mGameName.data());
 
-            // Add the game search path
-            if (PHYSFS_mount(mGameName.data(), nullptr, 1) == 0)
-            {
-                mRunning = false;
+            // Mount the data directories
+            Support::Vector<Support::String> mountedDirectories = mModNames;
+            mountedDirectories.push_back(mGameName);
 
-                CONSOLE_ERRORF("'%s'. Reason: '%s'", mGameName.data(), PHYSFS_getLastError());
-                return -1;
+            for (Support::String directory: mountedDirectories)
+            {
+                if (PHYSFS_mount(directory.c_str(), nullptr, 1) == 0)
+                {
+                    mRunning = false;
+
+                    CONSOLE_ERRORF("'%s'. Reason: '%s'", directory.c_str(), PHYSFS_getLastError());
+                    return -1;
+                }
+
+                CONSOLE_INFOF("Mounted game directory '%s' successfully.", directory.c_str());
             }
-            else
-                CONSOLE_INFOF("Mounted game directory '%s' successfully.", mGameName.data());
 
             // TODO (Robert MacGregor#9): Return error codes for the netcode
 
@@ -152,6 +158,11 @@ namespace Kiaro
 
             this->runGameLoop();
             return 1;
+        }
+
+        void SEngineInstance::setMods(const Support::Vector<Support::String>& mods)
+        {
+            mModNames = mods;
         }
 
         void SEngineInstance::kill(void)

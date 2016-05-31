@@ -17,6 +17,7 @@
 #include <irrlicht.h>
 
 #include <support/support.hpp>
+#include <support/Vector.hpp>
 #include <support/common.hpp>
 #include <support/SSynchronousScheduler.hpp>
 
@@ -103,6 +104,8 @@ namespace Kiaro
                  *  call.
                  */
                 void setGame(const Support::String& gameName);
+
+                void setMods(const Support::Vector<Support::String>& mods);
 
                 /**
                  *  @brief Tells the game engine to actually start and take control
@@ -232,6 +235,8 @@ namespace Kiaro
 
                 //! The name of the currently running game name.
                 Support::String mGameName;
+
+                Support::Vector<Support::String> mModNames;
 
                 //! A pointer to the active outgoing client.
                 COutgoingClient* mActiveClient;
