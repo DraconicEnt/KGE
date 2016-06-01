@@ -47,6 +47,8 @@ namespace Kiaro
                 //! A boolean representing whether or not this bit stream owns the memory block pointed to by mMemoryBlock.
                 bool mOwnsMemoryBlock;
 
+                size_t mResizeLength;
+
                 // Public methods
             public:
                 /**
@@ -62,10 +64,11 @@ namespace Kiaro
                  *  deallocate this memory.
                  *  @param initializer A pointer to the memory to initialize with.
                  *  @param initializerLength The total size of memory in bytes the initializer is.
+                 *  @param resizeLength The number of bytes that this bit stream will expand by if the existing buffer is exceeded.
                  */
-                CBitStream(void* initializer, const size_t initializerLength);
+                CBitStream(void* initializer, const size_t initializerLength, const size_t resizeLength = 0);
 
-                CBitStream(const size_t sizeInBytes, const void* initializer = NULL, size_t initializerLength = 0);
+                CBitStream(const size_t sizeInBytes, const void* initializer = nullptr, size_t initializerLength = 0, const size_t resizeLength = 0);
 
                 //! Standard destructor.
                 ~CBitStream(void);
@@ -77,11 +80,14 @@ namespace Kiaro
                 template <typename inType>
                 void write(const inType& input)
                 {
-                    if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType))
+                    if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType) && mResizeLength == 0)
                         throw std::overflow_error("Stack Overflow");
+                    else if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType))
+                        this->resize(mTotalSize + mResizeLength);
 
                     inType& output = *reinterpret_cast<inType*>(&mMemoryBlock[mPointer]);
                     output = input;
+
                     mPointer += sizeof(inType);
                 }
 

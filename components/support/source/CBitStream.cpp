@@ -19,19 +19,19 @@ namespace Kiaro
 {
     namespace Support
     {
-        CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()),
-            mMemoryBlock(new Common::U8[in->getRequiredMemory()]), mPointer(0), mOwnsMemoryBlock(true)
+        CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()), mMemoryBlock(new Common::U8[in->getRequiredMemory()]),
+        mPointer(0), mOwnsMemoryBlock(true), mResizeLength(0)
         {
             in->packEverything(*this);
         }
 
-        CBitStream::CBitStream(void* initializer, const size_t initializerLength) : mMemoryBlock((Common::U8*)initializer),
-            mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false)
+        CBitStream::CBitStream(void* initializer, const size_t initializerLength, const size_t resizeLength) : mMemoryBlock((Common::U8*)initializer),
+        mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false), mResizeLength(resizeLength)
         {
         }
 
-        CBitStream::CBitStream(const size_t sizeInBytes, const void* initializer, size_t initializerLength) :
-            mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true)
+        CBitStream::CBitStream(const size_t sizeInBytes, const void* initializer, size_t initializerLength, const size_t resizeLength) :
+            mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true), mResizeLength(resizeLength)
         {
             memset(mMemoryBlock, 0x00, sizeInBytes);
 
@@ -60,6 +60,7 @@ namespace Kiaro
         void CBitStream::writeString(const Common::C8* string, const size_t length)
         {
             // FIXME: The check below may cause a SIGSEGV if we're out on the heap
+            // FIXME: If mResizeLength < string length, this will cause erroneous writes
 
             // Is it properly NULL terminated?
             if (string[length] != 0x00)
@@ -71,8 +72,10 @@ namespace Kiaro
                 throw std::runtime_error("Attempted to write a bad string (Lengths do not match)!");
 
             // Will the string fit?
-            if (mTotalSize - mPointer < stringLength + sizeof(Common::U32))
+            if (mTotalSize - mPointer < stringLength + sizeof(Common::U32) && mResizeLength == 0)
                 throw std::runtime_error("Cannot fit string into buffer!");
+            else if (mTotalSize - mPointer < stringLength + sizeof(Common::U32))
+                this->resize(mTotalSize + mResizeLength);
 
             // Write off the string length so we can properly unpack later
             this->write<Common::U32>(static_cast<Common::U32>(stringLength));
@@ -107,6 +110,7 @@ namespace Kiaro
             // Ensure that the string is properly terminated
             // if (mMemoryBlock[(mPointer - sizeof(size_t)) - 1] != 0x00)
             //    throw std::logic_error("Attempted to unpack an improperly terminated string");
+
             // Return the result
             return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
         }
@@ -133,8 +137,10 @@ namespace Kiaro
         {
             Common::U8* newBlock = new Common::U8[newSize];
             memset(newBlock, 0x00, newSize);
+
             // Determine how much memory from our old block to copy.
             const size_t copyLength = newSize < mTotalSize ? mTotalSize - newSize : mTotalSize;
+
             // Copy the old memory block and delete it.
             memcpy(newBlock, mMemoryBlock, copyLength);
 
@@ -145,6 +151,7 @@ namespace Kiaro
             // Update our pointer and size.
             mMemoryBlock = newBlock;
             mTotalSize = newSize;
+
             // We definitely own this block now
             mOwnsMemoryBlock = true;
         }
