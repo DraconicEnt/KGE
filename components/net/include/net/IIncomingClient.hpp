@@ -16,6 +16,7 @@
 
 #include <support/String.hpp>
 #include <support/common.hpp>
+#include <support/CBitStream.hpp>
 
 #include <net/stages.hpp>
 
@@ -56,6 +57,8 @@ namespace Kiaro
                  *  on either end, causing a client disconnect.
                  */
                 STAGE_NAME mCurrentConnectionStage;
+
+                Support::CBitStream mOutputBitStream;
 
                 // Public Methods
             public:

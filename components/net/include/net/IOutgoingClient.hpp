@@ -39,7 +39,38 @@ namespace Kiaro
          */
         class IOutgoingClient
         {
-                // Public Methods
+            // Protected Members
+            protected:
+                //! A pointer to the scheduled event for our update pulse.
+                Support::CScheduledEvent* mUpdatePulse;
+
+                //! Whether or not the server we are currently connected to has opposite endianness than us.
+                bool mOppositeEndian;
+
+                /**
+                 *  @brief What port is the IOutgoingClient currently connected on?
+                 *  @note This value is irrelevant if !mInternalPeer.
+                 */
+                Common::U16 mPort;
+
+                /**
+                 *  @brief What is the current connection stage that the IOutgoingClient is in?
+                 *  @note This value is irrelvant if !mInternalPeer.
+                 */
+                Common::U8 mCurrentStage;
+
+                //! Whether or not we are currently connected to a remote server.
+                bool mConnected;
+
+                //! A pointer to the internally utilized ENetPeer.
+                ENetPeer* mInternalPeer;
+
+                //! A pointer to the internally utilized ENetHost.
+                ENetHost* mInternalHost;
+
+                Support::CBitStream mOutgoingStream;
+
+            // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting a Peer object.
@@ -123,7 +154,7 @@ namespace Kiaro
                  */
                 virtual void onReceivePacket(Support::CBitStream& in) = 0;
 
-                // Private Methods
+            // Protected Methods
             protected:
                 /**
                  *  @brief An internally called method used to process packet payloads specified in a CBitStream.
@@ -147,35 +178,6 @@ namespace Kiaro
 
                 //! Internally called method when the IOutgoingClient connected to a remote host.
                 void internalOnConnected(void);
-
-                // Private Members
-            protected:
-                //! A pointer to the scheduled event for our update pulse.
-                Support::CScheduledEvent* mUpdatePulse;
-
-                //! Whether or not the server we are currently connected to has opposite endianness than us.
-                bool mOppositeEndian;
-
-                /**
-                 *  @brief What port is the IOutgoingClient currently connected on?
-                 *  @note This value is irrelevant if !mInternalPeer.
-                 */
-                Common::U16 mPort;
-
-                /**
-                 *  @brief What is the current connection stage that the IOutgoingClient is in?
-                 *  @note This value is irrelvant if !mInternalPeer.
-                 */
-                Common::U8 mCurrentStage;
-
-                //! Whether or not we are currently connected to a remote server.
-                bool mConnected;
-
-                //! A pointer to the internally utilized ENetPeer.
-                ENetPeer* mInternalPeer;
-
-                //! A pointer to the internally utilized ENetHost.
-                ENetHost* mInternalHost;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

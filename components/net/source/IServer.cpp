@@ -116,7 +116,6 @@ namespace Kiaro
 
         void IServer::processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
-            assert(!incomingStream.isEmpty());
             this->onReceivePacket(incomingStream, sender);
         }
 

@@ -29,7 +29,8 @@ namespace Kiaro
 {
     namespace Net
     {
-        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr)
+        IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr),
+        mOutgoingStream(256, nullptr, 0, 256)
         {
         }
 
@@ -61,9 +62,12 @@ namespace Kiaro
                 packetFlag = ENET_PACKET_FLAG_RELIABLE;
 
             // TODO: Packet Size Query
-            Support::CBitStream outStream(packet);
-            ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getPointer(), packetFlag);
+            mOutgoingStream.write(packet);
+
+            ENetPacket* enetPacket = enet_packet_create(mOutgoingStream.getBlock(), mOutgoingStream.getPointer(), packetFlag);
             enet_peer_send(mInternalPeer, 0, enetPacket);
+
+            mOutgoingStream.setPointer(0);
         }
 
         void IOutgoingClient::processPacket(Support::CBitStream& incomingStream)

@@ -20,7 +20,7 @@ namespace Kiaro
     namespace Net
     {
         IIncomingClient::IIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
-            mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true)
+        mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true), mOutputBitStream(256, nullptr, 0, 256)
         {
         }
 
@@ -37,10 +37,15 @@ namespace Kiaro
             if (reliable)
                 packetFlag = ENET_PACKET_FLAG_RELIABLE;
 
-            // TODO: Packet Size Query
-            Support::CBitStream outStream(packet);
-            ENetPacket* enetPacket = enet_packet_create(outStream.getBlock(), outStream.getPointer(), packetFlag);
+            // Write the packet data to our stream
+            mOutputBitStream.write(packet);
+
+            ENetPacket* enetPacket = enet_packet_create(mOutputBitStream.getBlock(), mOutputBitStream.getPointer(), packetFlag);
+
+            // TODO: Optionally dispatch this immediately, otherwise we queue up in the same ENet packet
             enet_peer_send(mInternalClient, 0, enetPacket);
+
+            mOutputBitStream.setPointer(0);
         }
 
         bool IIncomingClient::getIsOppositeEndian(void) const
