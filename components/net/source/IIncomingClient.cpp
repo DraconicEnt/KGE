@@ -38,8 +38,7 @@ namespace Kiaro
                 packetFlag = ENET_PACKET_FLAG_RELIABLE;
 
             // Write the packet data to our stream
-            mOutputBitStream.write(packet);
-
+            packet->packEverything(mOutputBitStream);
             ENetPacket* enetPacket = enet_packet_create(mOutputBitStream.getBlock(), mOutputBitStream.getPointer(), packetFlag);
 
             // TODO: Optionally dispatch this immediately, otherwise we queue up in the same ENet packet

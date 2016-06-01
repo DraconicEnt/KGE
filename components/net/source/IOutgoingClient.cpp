@@ -61,9 +61,7 @@ namespace Kiaro
             if (reliable)
                 packetFlag = ENET_PACKET_FLAG_RELIABLE;
 
-            // TODO: Packet Size Query
-            mOutgoingStream.write(packet);
-
+            packet->packEverything(mOutgoingStream);
             ENetPacket* enetPacket = enet_packet_create(mOutgoingStream.getBlock(), mOutgoingStream.getPointer(), packetFlag);
             enet_peer_send(mInternalPeer, 0, enetPacket);
 

@@ -80,6 +80,8 @@ namespace Kiaro
                 template <typename inType>
                 void write(const inType& input)
                 {
+                    static_assert(!std::is_pointer<inType>::value, "Cannot write pointer values to a bit stream!");
+
                     assert(mPointer <= mTotalSize);
 
                     if ((mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType)) && mResizeLength == 0)
