@@ -26,7 +26,7 @@ namespace Kiaro
         {
             mRoot->removeAll();
             mRoot->remove();
-            mRoot = NULL;
+            mRoot = nullptr;
             CONSOLE_INFO("Destroyed a scene graph.");
         }
 

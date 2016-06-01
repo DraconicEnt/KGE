@@ -41,8 +41,7 @@ namespace Kiaro
 {
     namespace Video
     {
-        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)),
-            mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
+        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
         {
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
             irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
@@ -92,36 +91,41 @@ namespace Kiaro
 
                 mWindowEventQueue = al_create_event_queue();
                 al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
+
                 // TODO (Robert MacGregor#9): Rename to game name?
                 al_set_window_title(mDisplay, "Kiaro Game Engine");
                 al_set_new_window_title("Auxiliary Display ");
                 al_hide_mouse_cursor(mDisplay);
-#if defined(ENGINE_UNIX)
+
+                #if defined(ENGINE_UNIX)
                 XID windowID = al_get_x_window_id(mDisplay);
                 creationParameters.WindowId = reinterpret_cast<void*>(windowID);
-#elif defined(ENGINE_WIN)
+                #elif defined(ENGINE_WIN)
                 HWND windowHandle = al_get_win_window_handle(mDisplay);
                 creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
-#else
+                #else
                 NSWindow* windowHandle = al_osx_get_window(mDisplay);
                 creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
-#endif
+                #endif
             }
             else
                 videoDriver = irr::video::EDT_NULL;
 
             // Setup the Irrlicht creation request
             creationParameters.Bits = 32;
-            creationParameters.IgnoreInput = false; // We will use Allegro for this
+            creationParameters.IgnoreInput = true; // We will use Allegro for this
             creationParameters.DriverType = videoDriver;
             creationParameters.Doublebuffer = true;
-            // We should be using SDL with this as the GLX routines used in the X implementation are not supported by NVidia drivers
-#if defined(ENGINE_WIN)
+
+            // We should be using SDL on Linux with this as the GLX routines used in the X implementation are not supported by NVidia drivers
+            #if defined(ENGINE_WIN)
             creationParameters.DeviceType = irr::EIDT_WIN32;
-#else
+            #else
             creationParameters.DeviceType = irr::EIDT_SDL;
-#endif
+            #endif
+
             creationParameters.WindowSize = resolution;
+
             CONSOLE_INFOF("Using %ux%u resolution.", resolution.Width, resolution.Height);
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
@@ -141,6 +145,7 @@ namespace Kiaro
             {
                 Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                 const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
+
                 mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this,
                              &SRenderer::drawFrame);
             }
@@ -186,11 +191,13 @@ namespace Kiaro
                     CEGUI::IrrlichtRenderer& renderer = CEGUI::IrrlichtRenderer::create(*mIrrlichtDevice);
                     FileSystem::SResourceProvider* resourceProvider = FileSystem::SResourceProvider::getPointer();
                     CEGUI::System::create(renderer, resourceProvider, nullptr, nullptr, nullptr, "", "log.txt");
+
                     resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
                     resourceProvider->setResourceGroupDirectory("ui", "ui/");
                     CEGUI::System& cegui = CEGUI::System::getSingleton();
                     CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
                     CEGUI::FontManager::getSingleton().createFromFile( "DejaVuSans-10.font", "fonts" );
+
                     // Set the defaults
                     CEGUI::GUIContext& guiContext = cegui.getDefaultGUIContext();
                     guiContext.setDefaultFont( "DejaVuSans-10" );
@@ -243,6 +250,7 @@ namespace Kiaro
                         CONSOLE_INFO("Window unfocused.");
                         Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                         const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
+
                         mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
                         break;
                     }
@@ -252,6 +260,7 @@ namespace Kiaro
                         CONSOLE_INFO("Window focused.");
                         Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                         const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
+
                         mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
                         break;
                     }
@@ -273,11 +282,15 @@ namespace Kiaro
 
             CEGUI::System::getSingleton().renderAllGUIContexts();
             mVideo->endScene();
-#if !defined(ENGINE_WIN)
+
+            // FIXME: On Windows, we don't want to call al_flip_display because of framerate issues. We should figure out why that is.
+            #if !defined(ENGINE_WIN)
             al_flip_display();
-#endif
+            #endif
+
             this->processWindowEvents();
             al_inhibit_screensaver(true);
+
             PROFILER_END(Render);
         }
     } // End NameSpace Video
