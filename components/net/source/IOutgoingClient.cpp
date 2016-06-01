@@ -22,6 +22,7 @@
 
 #include <support/CBitStream.hpp>
 
+#include <net/config.hpp>
 #include <net/IMessage.hpp>
 #include <net/stages.hpp>
 
@@ -30,7 +31,7 @@ namespace Kiaro
     namespace Net
     {
         IOutgoingClient::IOutgoingClient() : mPort(0), mCurrentStage(0), mConnected(false), mInternalPeer(nullptr), mInternalHost(nullptr),
-        mOutgoingStream(256, nullptr, 0, 256)
+        mOutgoingStream(NETSTREAM_DEFAULT_SIZE, nullptr, 0, NETSTREAM_RESIZE_FACTOR)
         {
         }
 
@@ -94,6 +95,7 @@ namespace Kiaro
             //    return;
             // }
             //      Core::Logging::write(Core::Logging::MESSAGE_INFO, "SClient: Attempting connection to remote host %s:%u.", targetAddress.data(), targetPort);
+
             ENetAddress enetAddress;
             enet_address_set_host(&enetAddress, hostName.c_str());
             enetAddress.port = targetPort;
@@ -102,6 +104,7 @@ namespace Kiaro
                                              2 /* allow up 2 channels to be used, 0 and 1 */,
                                              57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
                                              14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
+
             mInternalPeer = enet_host_connect(mInternalHost, &enetAddress, 2, 0);
             ENetEvent event;
 
@@ -118,6 +121,7 @@ namespace Kiaro
 
             Support::Console::write(Support::Console::MESSAGE_ERROR, "SEngineInstance: Failed to connect to remote host.");
             this->onConnectFailed();
+
             enet_peer_reset(mInternalPeer);
         }
 
@@ -151,6 +155,7 @@ namespace Kiaro
                         mInternalHost = nullptr;
                         enet_peer_reset(mInternalPeer);
                         mInternalPeer = nullptr;
+
                         this->onDisconnected();
                         CONSOLE_INFO("Disconnected from remote host.");
                         break;
@@ -167,6 +172,7 @@ namespace Kiaro
 
                         Support::CBitStream incomingStream(event.packet->data, event.packet->dataLength);
                         this->processPacket(incomingStream);
+
                         enet_packet_destroy(event.packet);
                         break;
                     }

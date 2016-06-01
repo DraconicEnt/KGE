@@ -1,0 +1,11 @@
+/**
+ *  @file config.hpp
+ */
+
+#ifndef _INCLUDE_NET_CONFIG_HPP_
+#define _INCLUDE_NET_CONFIG_HPP_
+
+#define NETSTREAM_DEFAULT_SIZE 256
+#define NETSTREAM_RESIZE_FACTOR 256
+
+#endif // _INCLUDE_NET_CONFIG_HPP_

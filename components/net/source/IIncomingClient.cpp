@@ -12,6 +12,7 @@
 #include <net/IIncomingClient.hpp>
 
 #include <net/IMessage.hpp>
+#include <net/config.hpp>
 
 #include <support/CBitStream.hpp>
 
@@ -20,7 +21,7 @@ namespace Kiaro
     namespace Net
     {
         IIncomingClient::IIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
-        mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true), mOutputBitStream(256, nullptr, 0, 256)
+        mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true), mOutputBitStream(NETSTREAM_DEFAULT_SIZE, nullptr, 0, NETSTREAM_RESIZE_FACTOR)
         {
         }
 
