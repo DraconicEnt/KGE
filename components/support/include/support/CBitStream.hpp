@@ -80,7 +80,9 @@ namespace Kiaro
                 template <typename inType>
                 void write(const inType& input)
                 {
-                    if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType) && mResizeLength == 0)
+                    assert(mPointer <= mTotalSize);
+
+                    if ((mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType)) && mResizeLength == 0)
                         throw std::overflow_error("Stack Overflow");
                     else if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType))
                         this->resize(mTotalSize + mResizeLength);
@@ -203,7 +205,7 @@ namespace Kiaro
                  *  block the bit stream currently is at.
                  *  @return A reference to the internally stored stream index pointer.
                  */
-                const size_t& getPointer(void);
+                size_t getPointer(void);
 
                 /**
                  *  @brief Returns a pointer to the internal memory block that this bit stream is using.
@@ -217,7 +219,7 @@ namespace Kiaro
                  */
                 void setPointer(const size_t pointer);
 
-                const size_t getSize(void) const;
+                size_t getSize(void) const;
         };
 
         /**

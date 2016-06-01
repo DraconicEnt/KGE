@@ -66,6 +66,7 @@ namespace Kiaro
             Common::U32 expectedStreamSize = sizeof(sFloatList);
             CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
+
             // We wil have a memory block to use from the float stream
             CBitStream blockStream(floatStream.getBlock(), floatStream.getPointer());
 
@@ -77,6 +78,7 @@ namespace Kiaro
         {
             Common::U32 expectedStreamSize = sizeof(sFloatList);
             CBitStream floatStream(expectedStreamSize - 3);
+
             bool caughtException = false;
             EXPECT_THROW(PackFloats(floatStream), std::overflow_error);
         }
@@ -86,6 +88,7 @@ namespace Kiaro
             Common::U32 expectedStreamSize = sizeof(sFloatList);
             CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
+
             EXPECT_THROW(floatStream.pop<Common::Vector3DF>(), std::underflow_error);
             EXPECT_THROW(floatStream.top<Common::Vector3DF>(), std::underflow_error);
         }
@@ -112,6 +115,7 @@ namespace Kiaro
             char payload[8];
             memset(payload, 0x58, 8);
             payload[5] = 0x00;
+
             // String isn't properly NULL terminated to be of this length
             EXPECT_THROW(stream.writeString(payload, 8), std::runtime_error);
             EXPECT_NO_THROW(stream.writeString(payload, 5));
@@ -123,6 +127,30 @@ namespace Kiaro
             CBitStream stream(8);
             const char* payload = "This string is too long to fit into our bit stream memory.";
             EXPECT_THROW(stream.writeString(payload), std::runtime_error);
+        }
+
+        TEST(BitStream, DynamicResize)
+        {
+            CBitStream stream(8, nullptr, 0, 32);
+
+            // We should be able to pack the floats
+            EXPECT_NO_THROW(PackFloats(stream));
+
+            EXPECT_TRUE(stream.isFull());
+            EXPECT_EQ(8, stream.getSize());
+
+            // Now if we pack floats again, we should resize to 32+8 bytes
+            EXPECT_NO_THROW(PackFloats(stream));
+
+            EXPECT_FALSE(stream.isFull());
+            EXPECT_EQ(40, stream.getSize());
+
+            // But the pointer should only be at 8+8 bytes
+            EXPECT_EQ(16, stream.getPointer());
+
+            // Now make sure we can unpack the data correctly
+            for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
+                EXPECT_EQ(sFloatList[iteration], stream.pop<Common::F32>());
         }
     } // End Namespace Support
 } // End namespace Kiaro

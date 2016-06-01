@@ -59,6 +59,8 @@ namespace Kiaro
 
         void CBitStream::writeString(const Common::C8* string, const size_t length)
         {
+            assert(mPointer <= mTotalSize);
+
             // FIXME: The check below may cause a SIGSEGV if we're out on the heap
             // FIXME: If mResizeLength < string length, this will cause erroneous writes
 
@@ -115,7 +117,7 @@ namespace Kiaro
             return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
         }
 
-        const size_t& CBitStream::getPointer(void)
+        size_t CBitStream::getPointer(void)
         {
             return mPointer;
         }
@@ -135,20 +137,22 @@ namespace Kiaro
 
         void CBitStream::resize(const size_t newSize)
         {
-            Common::U8* newBlock = new Common::U8[newSize];
-            memset(newBlock, 0x00, newSize);
+            // TODO: Implement as an exception
+            assert(newSize > mTotalSize);
 
-            // Determine how much memory from our old block to copy.
-            const size_t copyLength = newSize < mTotalSize ? mTotalSize - newSize : mTotalSize;
+            Common::U8* newBlock = new Common::U8[newSize];
+
+            // Only memset the new bytes
+            memset(&newBlock[mPointer + 1], 0x00, newSize - (mPointer + 1));
 
             // Copy the old memory block and delete it.
-            memcpy(newBlock, mMemoryBlock, copyLength);
+            memcpy(newBlock, mMemoryBlock, mTotalSize);
 
             // Only delete our memory block if we actually own it.
             if (mOwnsMemoryBlock)
                 delete[] mMemoryBlock;
 
-            // Update our pointer and size.
+            // Update our stored block information
             mMemoryBlock = newBlock;
             mTotalSize = newSize;
 
@@ -168,12 +172,12 @@ namespace Kiaro
 
         bool CBitStream::isFull(void) const
         {
-            return mTotalSize >= mPointer;
+            return mTotalSize == mPointer;
         }
 
         bool CBitStream::isEmpty(void) const
         {
-            return mPointer >= mTotalSize;
+            return mPointer == 0;
         }
 
         void CBitStream::write(const ISerializable* in)
@@ -181,7 +185,7 @@ namespace Kiaro
             in->packEverything(*this);
         }
 
-        const size_t CBitStream::getSize(void) const
+        size_t CBitStream::getSize(void) const
         {
             return mTotalSize;
         }
