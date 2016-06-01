@@ -31,7 +31,7 @@ namespace Kiaro
         }
 
         CBitStream::CBitStream(const size_t sizeInBytes, const void* initializer, size_t initializerLength, const size_t resizeLength) :
-            mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true), mResizeLength(resizeLength)
+        mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true), mResizeLength(resizeLength)
         {
             memset(mMemoryBlock, 0x00, sizeInBytes);
 
@@ -43,8 +43,10 @@ namespace Kiaro
             {
                 // Only copy what we can actually store.
                 initializerLength = initializerLength >= sizeInBytes ? sizeInBytes - 1 : initializerLength;
+
                 // Perform the copy.
                 memcpy(mMemoryBlock, initializer, initializerLength);
+
                 // Make sure we the pointer is set to the next available space
                 mPointer = sizeInBytes;
             }
@@ -145,8 +147,8 @@ namespace Kiaro
             // Only memset the new bytes
             memset(&newBlock[mPointer + 1], 0x00, newSize - (mPointer + 1));
 
-            // Copy the old memory block and delete it.
-            memcpy(newBlock, mMemoryBlock, mTotalSize);
+            // Copy any data we're actually using out of the block
+            memcpy(newBlock, mMemoryBlock, mPointer);
 
             // Only delete our memory block if we actually own it.
             if (mOwnsMemoryBlock)
