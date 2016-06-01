@@ -58,6 +58,7 @@ namespace Kiaro
         SGameServer::SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount) : Net::IServer(listenAddress, listenPort, maximumClientCount)
         {
             mSimulation = new Phys::CSimulation();
+
             // Add our update to the scheduler
             mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
         }
@@ -67,9 +68,12 @@ namespace Kiaro
             // FIXME (Robert MacGregor#9): Call IServer destructor?
             assert(mSimulation);
             assert(mUpdatePulse);
+
             delete mSimulation;
+
             mSimulation = nullptr;
             mUpdatePulse->cancel();
+
             mUpdatePulse = nullptr;
         }
 
@@ -121,14 +125,14 @@ namespace Kiaro
         {
             // The packet whose payload is in incomingStream can contain multiple messages.
             // TODO: Alleviate DoS issues with a hard max on message counts
-            while (!incomingStream.isEmpty())
+            while (!incomingStream.isFull())
             {
                 Net::IMessage basePacket;
                 basePacket.unpack(incomingStream);
 
                 switch (basePacket.getType())
                 {
-                        // Stageless messages
+                    // Stageless messages
 
                     // If it's not any stageless message, then drop into the appropriate stage handler
                     default:
@@ -168,14 +172,17 @@ namespace Kiaro
                     receivedHandshake.unpack(incomingStream);
                     CONSOLE_INFOF("Client version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                                   receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
+
                     Game::Messages::HandShake handShake;
                     sender->send(&handShake, true);
+
                     // At this point, the client has passed initial authentication
                     // TODO (Robert MacGregor#9): Make a proper challenge that isn't just version information.
                     CONSOLE_INFO("Client passed initial authentication.");
                     mPendingClientSet.erase(sender);
                     mConnectedClientSet.insert(mConnectedClientSet.end(), sender);
                     sender->setConnectionStage(Net::STAGE_LOADING);
+
                     this->onClientConnected(sender);
                     break;
                 }
@@ -187,6 +194,7 @@ namespace Kiaro
                     Support::String exceptionText = "SGameServer: Out of stage or unknown message type encountered at stage 0 processing: ";
                     exceptionText += header.getType();
                     exceptionText += " for client <ADD IDENTIFIER> ";
+
                     throw std::out_of_range(exceptionText);
                     break;
                 }

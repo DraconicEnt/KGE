@@ -34,7 +34,7 @@ namespace Kiaro
 
         void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
         {
-            while (!incomingStream.isEmpty())
+            while (!incomingStream.isFull())
             {
                 Net::IMessage basePacket;
                 basePacket.unpack(incomingStream);
@@ -48,6 +48,7 @@ namespace Kiaro
                         disconnect.unpack(incomingStream);
                         CONSOLE_INFOF("Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
                         this->disconnect();
+
                         break;
                     }
 
