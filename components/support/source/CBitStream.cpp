@@ -96,27 +96,29 @@ namespace Kiaro
 
         const Common::C8* CBitStream::popString(void)
         {
-            const Common::U32 totalBytes = this->pop<Common::U32>();
-            //if (mPointer <= 0 || mPointer < totalBytes)
-            //  throw std::underflow_error("Stack Underflow");
-            const Common::C8* result = reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
-            mPointer += totalBytes;
+            // Grab the top string
+            // FIXME: Use the length read out of the buffer instead of recalculating the string size here
+            const Common::C8* result = this->topString();
+            mPointer += strlen(result) + sizeof(Common::U32) + 1;
+
             return result;
         }
 
         const Common::C8* CBitStream::topString(void)
         {
             // Read the string length off
-            const Common::U32 totalBytes = this->pop<Common::U32>();
+            const Common::U32 stringLength = this->top<Common::U32>();
+
             // First off, is there enough memory in the buffer?
-            //   if (totalBytes > mPointer)
-            //    throw std::underflow_error("Stack Underflow");
+            if (stringLength > mTotalSize - mPointer)
+                throw std::underflow_error("Stack Underflow");
+
             // Ensure that the string is properly terminated
-            // if (mMemoryBlock[(mPointer - sizeof(size_t)) - 1] != 0x00)
-            //    throw std::logic_error("Attempted to unpack an improperly terminated string");
+            if (mMemoryBlock[mPointer + stringLength + sizeof(Common::U32) + 1] != 0x00)
+                throw std::logic_error("Attempted to unpack an improperly terminated string");
 
             // Return the result
-            return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer]);
+            return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer + sizeof(Common::U32)]);
         }
 
         size_t CBitStream::getPointer(void)
