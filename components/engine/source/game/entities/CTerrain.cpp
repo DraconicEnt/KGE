@@ -29,8 +29,8 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CTerrain::CTerrain(const Support::String& terrainFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
-                mTerrainFile(terrainFile), mSceneNode(nullptr)
+            CTerrain::CTerrain(const Support::String& terrainFile, const Support::String& textureFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
+            mTerrainFile(terrainFile), mTextureFile(textureFile), mSceneNode(nullptr)
             {
             }
 
@@ -47,16 +47,23 @@ namespace Kiaro
             {
                 assert(mSceneNode);
                 IEntity::packEverything(out);
+
                 const Common::Vector3DF& position = mSceneNode->getPosition();
+
                 out.writeString(mTerrainFile);
+                out.writeString(mTextureFile);
                 out << position.X << position.Y << position.Z;
             }
 
             void CTerrain::unpack(Support::CBitStream& in)
             {
                 mTerrainFile = in.popString();
+                mTextureFile = in.popString();
+
                 Common::Vector3DF position;
+
                 in >> position.X >> position.Y >> position.Z;
+
                 this->registerEntity();
 
                 if (mSceneNode)
@@ -66,14 +73,22 @@ namespace Kiaro
             void CTerrain::registerEntity(void)
             {
                 CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
-                FileSystem::CFileReader fileHandle(mTerrainFile);
+                FileSystem::CFileReader heightmapHandle(mTerrainFile);
                 irr::IrrlichtDevice* irrlichtDevice = Video::SRenderer::getPointer()->getIrrlichtDevice();
-                irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&fileHandle);
+                irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&heightmapHandle);
 
                 if (terrain)
                 {
+                    FileSystem::CFileReader textureHandle(mTextureFile);
+
+                    irr::video::ITexture* texture = irrlichtDevice->getVideoDriver()->getTexture(&textureHandle);
+
+                    if (texture)
+                        terrain->setMaterialTexture(0, texture);
+
                     terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
                     terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
+
                     mSceneNode = terrain;
                     IEntity::registerEntity();
                 }

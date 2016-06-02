@@ -48,7 +48,7 @@ namespace Kiaro
                      *  @brief Constructor accepting a path to a terrain file.
                      *  @param terrainFile The path to the terrain file.
                      */
-                    CTerrain(const std::string& terrainFile);
+                    CTerrain(const std::string& terrainFile, const std::string& textureFile);
 
                     /**
                      *  @brief Constructor accepting a CBitStream to unpack terrain
@@ -76,9 +76,11 @@ namespace Kiaro
                     irr::scene::ITerrainSceneNode* mSceneNode;
 
                     //! The path to the loaded terrain file.
-                    std::string mTerrainFile;
+                    Support::String mTerrainFile;
 
-                    static std::map<std::string, size_t> sNetworkedProperties;
+                    Support::String mTextureFile;
+
+                    static Support::Map<Support::String, size_t> sNetworkedProperties;
             };
         } // End Namespace Entities
     } // End Namespace Game
