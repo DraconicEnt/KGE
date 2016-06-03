@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_KIARO_ENGINE_COMMON_
 #define _INCLUDE_KIARO_ENGINE_COMMON_
 
+#include <sstream>
 #include <cassert>
 #include <iostream>
 
