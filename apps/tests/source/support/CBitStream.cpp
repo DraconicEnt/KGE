@@ -149,6 +149,8 @@ namespace Kiaro
             EXPECT_EQ(16, stream.getPointer());
 
             // Now make sure we can unpack the data correctly
+            stream.setPointer(0);
+
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
                 EXPECT_EQ(sFloatList[iteration], stream.pop<Common::F32>());
         }
