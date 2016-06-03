@@ -12,7 +12,6 @@
 #ifndef _INCLUDE_KIARO_GAME_MESSAGES_HPP_
 #define _INCLUDE_KIARO_GAME_MESSAGES_HPP_
 
-#include <game/messages/types.hpp>
 #include <game/messages/Disconnect.hpp>
 #include <game/messages/HandShake.hpp>
 #include <game/messages/Scope.hpp>

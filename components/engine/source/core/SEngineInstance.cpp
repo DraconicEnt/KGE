@@ -56,6 +56,8 @@
 
 #include <sound/SSoundManager.hpp>
 
+#include <game/messages/messages.hpp>
+
 namespace Kiaro
 {
     namespace Core
@@ -179,6 +181,7 @@ namespace Kiaro
             mPerfStatSchedule = nullptr;
             // TODO: Check the destroy order
             //   Net::SClient::destroy();
+
             Game::SGameServer::destroy();
             Input::SInputListener::destroy();
             Support::SSynchronousScheduler::destroy();
@@ -220,6 +223,17 @@ namespace Kiaro
                 return 1;
             }
 
+            // Initialize the messages
+
+         //   this->registerMessage<Game::Messages::Disconnect>(&SGameServer::handshakeHandler, Net::STAGE_UNSTAGED);
+
+            // Authentication Stage registration
+            this->registerMessage<Game::Messages::HandShake>(&Game::SGameServer::handshakeHandler, &Core::COutgoingClient::handshakeHandler, Net::STAGE_AUTHENTICATION);
+
+            // Loading stage registration
+            this->registerMessage<Game::Messages::Scope>(nullptr, &Core::COutgoingClient::scopeHandler, Net::STAGE_LOADING);
+            this->registerMessage<Game::Messages::SimCommit>(nullptr, &Core::COutgoingClient::simCommitHandler, Net::STAGE_LOADING);
+
             // Initialize the client or server ends
             switch (mEngineMode)
             {
@@ -250,6 +264,26 @@ namespace Kiaro
             return 0;
         }
 
+        SEngineInstance::MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> SEngineInstance::lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id)
+        {
+            auto searchResult = mServerStageMap[stage].find(id);
+
+            if (searchResult == mServerStageMap[stage].end())
+                return nullptr;
+
+            return (*searchResult).second.second;
+        }
+
+        SEngineInstance::MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> SEngineInstance::lookupClientMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id)
+        {
+            auto searchResult = mClientStageMap[stage].find(id);
+
+            if (searchResult == mClientStageMap[stage].end())
+                return nullptr;
+
+            return (*searchResult).second.second;
+        }
+
         void SEngineInstance::runGameLoop(void)
         {
             // Start the Loop
@@ -257,11 +291,12 @@ namespace Kiaro
 
             while (mRunning)
             {
-#if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
 
                 try
                 {
-#endif
+                #endif
+
                     // Update all our subsystems
                     Support::FTime::timer timerID = Support::FTime::startTimer();
                     PROFILER_BEGIN(MainLoop);
@@ -279,7 +314,7 @@ namespace Kiaro
 
                     PROFILER_END(MainLoop);
                     deltaTimeSeconds = Support::FTime::stopTimer(timerID);
-#if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
                 }
                 catch(std::exception& e)
                 {
@@ -302,7 +337,7 @@ namespace Kiaro
                     }
                 }
 
-#endif
+                #endif
             }
         }
 

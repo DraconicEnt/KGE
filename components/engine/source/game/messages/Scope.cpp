@@ -26,7 +26,7 @@ namespace Kiaro
     {
         namespace Messages
         {
-            Scope::Scope(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(TYPE_SCOPE, in, sender), mScopedCount(0)
+            Scope::Scope(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender), mScopedCount(0)
             {
             }
 
@@ -37,7 +37,8 @@ namespace Kiaro
 
             void Scope::packEverything(Support::CBitStream& out) const
             {
-                IMessage::packEverything(out);
+                IMessage::packBaseData<Scope>(out);
+
                 out << static_cast<Common::U32>(mScoped.size());
 
                 for (const Net::INetworkPersistable* currentPersistable : mScoped)

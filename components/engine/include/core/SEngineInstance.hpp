@@ -21,6 +21,11 @@
 #include <support/common.hpp>
 #include <support/SSynchronousScheduler.hpp>
 
+#include <game/SGameServer.hpp>
+#include <core/COutgoingClient.hpp>
+
+#include <net/IMessage.hpp>
+
 namespace Kiaro
 {
     namespace Net
@@ -48,7 +53,7 @@ namespace Kiaro
          */
         class SEngineInstance
         {
-                // Public Members
+            // Public Members
             public:
                 //! An enumeration used to represent the possible modes of operation for the engine.
                 enum MODE_NAME
@@ -61,7 +66,7 @@ namespace Kiaro
                     MODE_DEDICATED = 2,
                 }; // End Enum ENGINE_MODE
 
-                // Public Methods
+            // Public Methods
             public:
                 /**
                  *  @brief Returns an instance to the engine instance singleton, allocating it
@@ -142,7 +147,37 @@ namespace Kiaro
                  */
                 void setPerfStatEnabled(const bool enabled);
 
-                // Private Methods
+                typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&> MessageConstructorSet;
+                typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
+
+                Common::U32 mMessageCounter;
+
+                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer>>>> mServerStageMap;
+                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient>>>> mClientStageMap;
+                Support::UnorderedMap<Common::U32, MessageConstructorSet::StaticDelegateFuncPtr> mMessageMap;
+
+                template <typename messageClass>
+                void registerMessage(MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> serverHandler, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> clientHandler, const Net::STAGE_NAME stage)
+                {
+                    MessageConstructorSet::StaticDelegateFuncPtr messageConstructor = Net::IMessage::constructMessage<messageClass>;
+
+                    Net::IMessage::SharedStatics<messageClass>::sMessageID = mMessageCounter;
+
+                    mMessageMap[mMessageCounter] = messageConstructor;
+
+                    if (serverHandler)
+                        mServerStageMap[stage][mMessageCounter] = std::make_pair(messageConstructor, serverHandler);
+
+                    if (clientHandler)
+                        mClientStageMap[stage][mMessageCounter] = std::make_pair(messageConstructor, clientHandler);
+
+                    ++mMessageCounter;
+                }
+
+                MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);
+                MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> lookupClientMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);
+
+            // Private Methods
             private:
                 //! Privately declared standard constructor to enforce singleton behavior.
                 SEngineInstance(void);
@@ -223,8 +258,9 @@ namespace Kiaro
 
                 void initializeScheduledEvents(void);
 
-                // Private Members
+            // Private Members
             private:
+
                 //! A boolean representing whether or not the engine is running
                 bool mRunning;
                 //! An enumeration representing the engine run status.

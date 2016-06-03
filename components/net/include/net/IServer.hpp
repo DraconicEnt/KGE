@@ -144,7 +144,6 @@ namespace Kiaro
                 // Private Methods
             protected:
                 void processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
-                virtual void processStageZero(const IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender) = 0;
         };
     } // End Namespace Network
 } // End Namespace Kiaro

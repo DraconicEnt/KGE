@@ -12,6 +12,8 @@
 
 #include <game/messages/messages.hpp>
 
+#include <core/SEngineInstance.hpp>
+
 namespace Kiaro
 {
     namespace Core
@@ -32,115 +34,64 @@ namespace Kiaro
         {
         }
 
+        void COutgoingClient::handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
+        {
+            Game::Messages::HandShake receivedHandshake;
+            receivedHandshake.unpack(in);
+            CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                          receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
+
+            CONSOLE_INFO("Passed initial authentication.");
+            mConnected = true;
+            this->onAuthenticated();
+            mCurrentStage = Net::STAGE_LOADING;
+        }
+
+        void COutgoingClient::scopeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
+        {
+            Game::Messages::Scope receivedScope;
+            receivedScope.unpack(in);
+        }
+
+        void COutgoingClient::simCommitHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
+        {
+            Game::Messages::SimCommit receivedCommit;
+            receivedCommit.unpack(in);
+        }
+
         void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
         {
+            Core::SEngineInstance* engine = Core::SEngineInstance::getPointer();
+
             while (!incomingStream.isFull())
             {
                 Net::IMessage basePacket;
                 basePacket.unpack(incomingStream);
 
-                switch (basePacket.getType())
+                Core::SEngineInstance::MessageHandlerSet::MemberDelegateFuncPtr<COutgoingClient> responder = engine->lookupClientMessageHandler(Net::STAGE_UNSTAGED, basePacket.getType());
+
+                if (responder)
                 {
-                    // Stageless messages
-                    case Game::Messages::TYPE_DISCONNECT:
-                    {
-                        Game::Messages::Disconnect disconnect;
-                        disconnect.unpack(incomingStream);
-                        CONSOLE_INFOF("Received disconnect packet from remote host. Reason:\n%s", disconnect.mReason.data());
-                        this->disconnect();
-
-                        break;
-                    }
-
-                    // Either it's an unknown message or it's a staged message
-                    default:
-                    {
-                        switch (mCurrentStage)
-                        {
-                            case Net::STAGE_AUTHENTICATION:
-                            {
-                                this->processStageZero(basePacket, incomingStream);
-                                break;
-                            }
-
-                            case Net::STAGE_LOADING:
-                            {
-                                this->processStageTwo(basePacket, incomingStream);
-                                break;
-                            }
-
-                            default:
-                            {
-                                Support::String exceptionText = "COutgoingClient:  Encountered unknown stage type: ";
-                                exceptionText += mCurrentStage;
-                                throw std::out_of_range(exceptionText);
-                                break;
-                            }
-                        }
-                    }
+                    (this->*responder)(nullptr, incomingStream);
+                    continue;
                 }
+
+                // If we got to this point, look it up by the client's stage
+                responder = engine->lookupClientMessageHandler(static_cast<Net::STAGE_NAME>(mCurrentStage), basePacket.getType());
+                if (responder)
+                {
+                    (this->*responder)(nullptr, incomingStream);
+                    continue;
+                }
+
+                Support::String exceptionText = "COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: ";
+                exceptionText += basePacket.getType();
+                throw std::out_of_range(exceptionText);
             }
         }
 
         void COutgoingClient::onAuthenticated(void)
         {
-        }
-
-        void COutgoingClient::processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream)
-        {
-            switch (header.getType())
-            {
-                case Game::Messages::TYPE_HANDSHAKE:
-                {
-                    Game::Messages::HandShake receivedHandshake;
-                    receivedHandshake.unpack(incomingStream);
-                    CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                                  receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-                    CONSOLE_INFO("Passed initial authentication.");
-                    mConnected = true;
-                    this->onAuthenticated();
-                    mCurrentStage = Net::STAGE_LOADING;
-                    break;
-                }
-
-                // Out of stage packet or unknown type
-                default:
-                {
-                    Support::String exceptionText = "COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: ";
-                    exceptionText += header.getType();
-                    throw std::out_of_range(exceptionText);
-                    break;
-                }
-            }
-        }
-
-        void COutgoingClient::processStageTwo(const Net::IMessage& header, Support::CBitStream& incomingStream)
-        {
-            switch (header.getType())
-            {
-                case Game::Messages::TYPE_SCOPE:
-                {
-                    Game::Messages::Scope receivedScope;
-                    receivedScope.unpack(incomingStream);
-                    break;
-                }
-
-                case Game::Messages::TYPE_SIMCOMMIT:
-                {
-                    Game::Messages::SimCommit receivedCommit;
-                    receivedCommit.unpack(incomingStream);
-                    break;
-                }
-
-                // Out of stage packet or unknown type
-                default:
-                {
-                    Support::String exceptionText = "COutgoingClient: Out of stage or unknown message type encountered at stage 2 processing: ";
-                    exceptionText += header.getType();
-                    throw std::out_of_range(exceptionText);
-                    break;
-                }
-            }
         }
     } // End NameSpace Core
 } // End NameSpace Kiaro

@@ -20,13 +20,13 @@ namespace Kiaro
     {
         namespace Messages
         {
-            SimCommit::SimCommit(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(TYPE_SIMCOMMIT, in, sender)
+            SimCommit::SimCommit(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender)
             {
             }
 
             void SimCommit::packEverything(Support::CBitStream& out) const
             {
-                IMessage::packEverything(out);
+                IMessage::packBaseData<SimCommit>(out);
             }
 
             void SimCommit::unpack(Support::CBitStream& in)

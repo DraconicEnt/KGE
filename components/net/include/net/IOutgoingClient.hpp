@@ -162,20 +162,6 @@ namespace Kiaro
                  */
                 void processPacket(Support::CBitStream& incomingStream);
 
-                /**
-                 *  @brief An internally called method used to process packet payloads specified in a CBitStream in
-                 *  respect to stage zero.
-                 *  @param incomingStream A CBitStream indexing the packet payload to use.
-                 */
-                virtual void processStageZero(const IMessage& header, Support::CBitStream& incomingStream) = 0;
-
-                /**
-                 *  @brief An internally called method used to process packet payloads specified in a CBitStream in
-                 *  respect to stage two.
-                 *  @param incomingStream A CBitStream indexing the packet payload to use.
-                 */
-                virtual void processStageTwo(const IMessage& header, Support::CBitStream& incomingStream) = 0;
-
                 //! Internally called method when the IOutgoingClient connected to a remote host.
                 void internalOnConnected(void);
         };

@@ -15,7 +15,6 @@
 #include <stdexcept>
 
 #include <support/common.hpp>
-#include <game/messages/types.hpp>
 #include <net/IMessage.hpp>
 
 namespace Kiaro

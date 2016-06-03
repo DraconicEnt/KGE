@@ -46,6 +46,10 @@ namespace Kiaro
 
                 void onAuthenticated(void);
 
+                void handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
+                void scopeHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
+                void simCommitHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
+
                 // Protected Methods
             protected:
                 /**

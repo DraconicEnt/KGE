@@ -13,7 +13,6 @@
 #define _INCLUDE_NET_MESSAGES_SCOPE_HPP_
 
 #include <support/common.hpp>
-#include <game/messages/types.hpp>
 #include <net/IMessage.hpp>
 
 #include <support/UnorderedSet.hpp>
@@ -47,7 +46,7 @@ namespace Kiaro
 
                     // Public Methods
                 public:
-                    Scope(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL);
+                    Scope(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
                     void add(const Net::INetworkPersistable* entity);
 
                     virtual void packEverything(Support::CBitStream& out) const;

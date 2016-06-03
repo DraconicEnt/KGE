@@ -14,7 +14,6 @@
 
 #include <stdexcept>
 
-#include <game/messages/types.hpp>
 #include <net/IMessage.hpp>
 
 namespace Kiaro
@@ -32,13 +31,13 @@ namespace Kiaro
             {
                     // Public Methods
                 public:
-                    Disconnect(Support::CBitStream* in = NULL, Net::IIncomingClient* sender = NULL) : IMessage(TYPE_DISCONNECT, in, sender)
+                    Disconnect(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr) : IMessage(in, sender)
                     {
                     }
 
                     virtual void packEverything(Support::CBitStream& out) const
                     {
-                        IMessage::packEverything(out);
+                        IMessage::packBaseData<Disconnect>(out);
                         out.writeString(mReason);
                     }
 

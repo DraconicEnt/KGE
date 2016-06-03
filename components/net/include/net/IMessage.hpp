@@ -44,6 +44,12 @@ namespace Kiaro
                     return result;
                 }
 
+                template <typename childName>
+                struct SharedStatics
+                {
+                    static Common::U32 sMessageID;
+                };
+
                 // Private Members
             private:
                 //! The type identifier of this message.
@@ -57,11 +63,20 @@ namespace Kiaro
                  *  @brief Constructor that accepts a received netpacket from the underlaying networking subsystem.
                  *  @param received A packet from the internal networking subsystem to construct the class from.
                  */
-                IMessage(const Common::U32 packetType = 0, Support::CBitStream* received = nullptr, IIncomingClient* sender = nullptr);
+                IMessage(Support::CBitStream* received = nullptr, IIncomingClient* sender = nullptr);
 
                 virtual void packEverything(Support::CBitStream& out) const;
 
                 virtual void unpack(Support::CBitStream& in);
+
+                template <typename messageType>
+                void packBaseData(Support::CBitStream& out) const
+                {
+                    static Common::U32 sLastPacketID = 0;
+                    out << IMessage::SharedStatics<messageType>::sMessageID << (sLastPacketID++);
+                    // TODO (Robert MacGregor#9): Sequencing?
+                    // mID = sLastPacketID;
+                }
 
                 Common::U32 getType(void) const;
 
@@ -71,6 +86,9 @@ namespace Kiaro
 
                 virtual size_t getRequiredMemory(void) const;
         };
+
+        template <typename childName>
+        typename Common::U32 IMessage::SharedStatics<childName>::sMessageID = 0;
     } // End Namespace Net
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_NETWORK_IMESSAGE_H_

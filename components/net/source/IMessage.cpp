@@ -15,17 +15,13 @@ namespace Kiaro
 {
     namespace Net
     {
-        IMessage::IMessage(const Common::U32 packetType, Support::CBitStream* received, IIncomingClient* sender) : mID(0),
-            mType(packetType), mSender(sender)
+        IMessage::IMessage(Support::CBitStream* received, IIncomingClient* sender) : mID(0), mType(0), mSender(sender)
         {
         }
 
         void IMessage::packEverything(Support::CBitStream& out) const
         {
-            static Common::U32 sLastPacketID = 0;
-            out << mType << (sLastPacketID++);
-            // TODO (Robert MacGregor#9): Sequencing?
-            // mID = sLastPacketID;
+
         }
 
         void IMessage::unpack(Support::CBitStream& in)
