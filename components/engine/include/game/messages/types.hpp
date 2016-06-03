@@ -20,7 +20,7 @@ namespace Kiaro
         {
             enum TYPE
             {
-                TYPE_HANDSHAKE = 0x03,
+                TYPE_HANDSHAKE = 0x01,
                 TYPE_SIMCOMMIT = 0x04,
                 TYPE_DISCONNECT = 0x05,
                 TYPE_SCOPE = 0x06,

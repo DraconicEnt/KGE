@@ -48,7 +48,7 @@ namespace Kiaro
                      *  @brief Constructor accepting a path to a terrain file.
                      *  @param terrainFile The path to the terrain file.
                      */
-                    CTerrain(const std::string& terrainFile, const std::string& textureFile);
+                    CTerrain(const Support::String& terrainFile, const Support::String& textureFile);
 
                     /**
                      *  @brief Constructor accepting a CBitStream to unpack terrain

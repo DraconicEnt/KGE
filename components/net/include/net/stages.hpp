@@ -15,12 +15,15 @@ namespace Kiaro
          */
         enum STAGE_NAME
         {
+            //! Messages registered under this stage can be received at any time.
+            STAGE_UNSTAGED = 0,
+
             //! The authentication stage is used solely for messages regarding the initial connection and client/server authentication.
-            STAGE_AUTHENTICATION = 0,
+            STAGE_AUTHENTICATION = 1,
             //! The loading state is used for messages regarding the loading of game assets and transferring scene information.
-            STAGE_LOADING = 1,
+            STAGE_LOADING = 2,
             //! The gameplay state is used for messages regarding the actual synchronization of game simulation state between client and server.
-            STAGE_GAMEPLAY = 2,
+            STAGE_GAMEPLAY = 3,
         };
     } // End NameSpace Net
 } // End NameSpace Kiaro

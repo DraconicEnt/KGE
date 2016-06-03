@@ -35,6 +35,15 @@ namespace Kiaro
                 //! A pointer to a Client instance that sent the data. If this is NULL, then the origin was a Server.
                 IIncomingClient* mSender;
 
+                template <typename className>
+                static IMessage* constructMessage(Support::CBitStream& in)
+                {
+                    className* result = new className();
+                    result->unpack(in);
+
+                    return result;
+                }
+
                 // Private Members
             private:
                 //! The type identifier of this message.

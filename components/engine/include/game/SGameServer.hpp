@@ -10,6 +10,8 @@
 
 #include <support/SSynchronousScheduler.hpp>
 
+#include <net/stages.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -21,7 +23,7 @@ namespace Kiaro
          */
         class SGameServer : public Net::IServer
         {
-                // Private Members
+            // Private Members
             private:
                 //! The currently running gamemode programming.
                 Game::IGameMode* mCurrentGamemode;
@@ -32,7 +34,16 @@ namespace Kiaro
                 //! Scheduled event created for use with the SSynchronousScheduler.
                 Support::CScheduledEvent* mUpdatePulse;
 
-                // Public Methods
+
+                // Initialize a net test
+                typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&> TestSet;
+                typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
+
+                Common::U32 mMessageCounter;
+                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<TestSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<SGameServer>>>> mStageMap;
+                Support::UnorderedMap<Common::U32, TestSet::StaticDelegateFuncPtr> mMessageMap;
+
+            // Public Methods
             public:
                 /**
                  *  @brief Initializes and starts a new game server.
@@ -88,12 +99,12 @@ namespace Kiaro
                  */
                 void initialScope(Net::IIncomingClient* client);
 
-                // Protected Methods
+            // Protected Methods
             protected:
                 void onReceivePacket(Support::CBitStream& in, Net::IIncomingClient* sender);
                 void processStageZero(const Net::IMessage& header, Support::CBitStream& incomingStream, Net::IIncomingClient* sender);
 
-                // Private Methods
+            // Private Methods
             private:
                 /**
                  *  @brief Constructor accepting a listen address, port & maximum client count.
@@ -102,6 +113,11 @@ namespace Kiaro
                  *  @param maximumClientCount The maximum number of clients to allow into the running game server.
                  */
                 SGameServer(const Support::String& listenAddress, const Common::U16& listenPort, const Common::U32& maximumClientCount);
+
+                void registerMessage(TestSet::StaticDelegateFuncPtr messageConstructor, MessageHandlerSet::MemberDelegateFuncPtr<SGameServer> handler, const Net::STAGE_NAME stage);
+
+
+                void handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
 
                 //! Standard destructor.
                 ~SGameServer(void);
