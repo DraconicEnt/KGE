@@ -19,6 +19,8 @@
 #include <support/Tuple.hpp>
 #include <support/ISingleton.hpp>
 
+#include <support/Console.hpp>
+
 namespace Kiaro
 {
     namespace Support
@@ -33,7 +35,7 @@ namespace Kiaro
                 // Private Members
             private:
                 //! An unordered map mapping the setting name hashes to a pair representing the memory location and type.
-                Support::UnorderedMap<size_t, std::pair<void*, size_t>> mStoredProperties;
+                Support::UnorderedMap<Support::String, std::pair<void*, size_t>> mStoredProperties;
 
                 // Public Methods
             public:
@@ -67,9 +69,7 @@ namespace Kiaro
                 template <typename storedType>
                 storedType& getValue(const Support::String& name)
                 {
-                    size_t mapIndex = Support::getHashCode(name);
-
-                    if (mStoredProperties.count(mapIndex) == 0)
+                    if (mStoredProperties.find(name) == mStoredProperties.end())
                     {
                         Support::String exceptionText = "SSettingsRegistry: No such setting key: ";
                         exceptionText += name;
@@ -77,10 +77,10 @@ namespace Kiaro
                     }
 
                     // Is it the same type?
-                    if (mStoredProperties[mapIndex].second != typeid(storedType).hash_code())
+                    if (mStoredProperties[name].second != typeid(storedType).hash_code())
                         throw std::runtime_error("SSettingsRegistry: Property type mismatch in setting read!");
 
-                    return *reinterpret_cast<storedType*>(mStoredProperties[mapIndex].first);
+                    return *reinterpret_cast<storedType*>(mStoredProperties[name].first);
                 }
 
                 /**
@@ -100,10 +100,8 @@ namespace Kiaro
                 template <typename storedType>
                 void setValue(const Support::String& name, storedType value)
                 {
-                    size_t mapIndex = Support::getHashCode(name);
-
                     // Does an entry exist?
-                    if (mStoredProperties.count(mapIndex) == 0)
+                    if (mStoredProperties.find(name) == mStoredProperties.end())
                     {
                         storedType* heapEntry = reinterpret_cast<storedType*>(malloc(sizeof(storedType)));
 
@@ -113,11 +111,11 @@ namespace Kiaro
 
                         // FIXME (Robert MacGregor#9): Values that own heap entries will create memory leaks
                         new (heapEntry) storedType(value);
-                        mStoredProperties[mapIndex] = std::make_pair(heapEntry, typeid(storedType).hash_code());
+                        mStoredProperties[name] = std::make_pair(heapEntry, typeid(storedType).hash_code());
                         return;
                     }
 
-                    std::pair<void*, size_t>& networkedPropertyInfo = mStoredProperties[mapIndex];
+                    std::pair<void*, size_t>& networkedPropertyInfo = mStoredProperties[name];
 
                     // Is it the same type?
                     if (networkedPropertyInfo.second != typeid(value).hash_code())
@@ -126,6 +124,46 @@ namespace Kiaro
                     // Assign it
                     storedType& oldPropertyValue = *reinterpret_cast<storedType*>(networkedPropertyInfo.first);
                     oldPropertyValue = value;
+                }
+
+                void setStringValue(const Support::String& name, const Support::String& value)
+                {
+                    // Does an entry exist?
+                    auto searchResult = mStoredProperties.find(name);
+                    if (searchResult == mStoredProperties.end() || (*searchResult).second.second == typeid(Support::String).hash_code())
+                    {
+                        this->setValue<Support::String>(name, value);
+                        return;
+                    }
+
+                    // FIXME: Resolve statically as per the INetworkPersistable
+                    size_t U32id = typeid(Common::U32).hash_code();
+                    const size_t U16id = typeid(Common::U16).hash_code();
+                    const size_t U8id = typeid(Common::U8).hash_code();
+                    const size_t resolutionID = typeid(irr::core::dimension2d<Common::U32>).hash_code();
+
+                    // What is the type of the existing entry?
+                    const size_t& typeID = (*searchResult).second.second;
+
+                    if (typeID == U32id)
+                    {
+                        this->setValue<Common::U32>(name, atoi(value.data()));
+                    }
+                    else if (typeID == U16id)
+                    {
+                        this->setValue<Common::U16>(name, atoi(value.data()));
+                    }
+                    else if (typeID == U8id)
+                    {
+                        this->setValue<Common::U8>(name, atoi(value.data()));
+                    }
+                    else if (typeID == resolutionID)
+                    {
+                        CONSOLE_INFO("Res");
+                    }
+                    else
+                    {
+                    }
                 }
 
                 // Private Methods

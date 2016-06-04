@@ -36,6 +36,38 @@ namespace Kiaro
                 CONSOLE_ERROR("Failed to load config.cfg, using default values.");
             else
             {
+                // Blow through each config section
+                ALLEGRO_CONFIG_SECTION* configSection;
+                const Common::C8* configSectionName = al_get_first_config_section(config, &configSection);
+
+                while (configSectionName != nullptr)
+                {
+                    Support::String variableBaseName = configSectionName;
+
+                    ALLEGRO_CONFIG_ENTRY* configEntry;
+                    const Common::C8* configEntryName = al_get_first_config_entry(config, configSectionName, &configEntry);
+
+                    while (configEntryName != nullptr)
+                    {
+                        Support::String variableName = variableBaseName + "::";
+                        variableName += configEntryName;
+
+                        // Set values
+                        const Common::C8* configValue = al_get_config_value(config, configSectionName, configEntryName);
+
+                        // TODO: Actually resolve types?
+                        this->setStringValue(variableName.data(), Support::String(configValue));
+
+                        // Get the next entry
+                        configEntryName = al_get_next_config_entry(&configEntry);
+                    }
+
+                    // Get the next section
+                    configSectionName = al_get_next_config_section(&configSection);
+                }
+
+                return;
+
                 const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
                 const Support::Regex resolutionRegex("[0-9]+x[0-9]+", Support::RegexConstants::Extended);
                 const Support::Regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", Support::RegexConstants::Extended);
