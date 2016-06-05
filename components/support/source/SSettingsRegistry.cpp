@@ -18,13 +18,13 @@ namespace Kiaro
         void SSettingsRegistry::setDefaultValues(void)
         {
             this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
-            this->setValue("Server::ListenPort", Common::U16(11595));
-            this->setValue("Server::MaximumClientCount", Common::U32(32));
-            this->setValue("Video::Fullscreen", true);
-            this->setValue("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
-            this->setValue("Video::ActiveFPS", Common::U16(60));
-            this->setValue("Video::InactiveFPS", Common::U16(15));
-            this->setValue("System::WorkerThreadCount", Common::U8(6));
+            this->setValue<Common::U16>("Server::ListenPort", 11595);
+            this->setValue<Common::U32>("Server::MaximumClientCount", 32);
+            this->setValue<bool>("Video::Fullscreen", false);
+            this->setValue<irr::core::dimension2d<Common::U32>>("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+            this->setValue<Common::U16>("Video::ActiveFPS", 60);
+            this->setValue<Common::U16>("Video::InactiveFPS", 15);
+            this->setValue<Common::U8>("System::WorkerThreadCount", 6);
         }
 
         SSettingsRegistry::SSettingsRegistry(void)
@@ -65,92 +65,6 @@ namespace Kiaro
                     // Get the next section
                     configSectionName = al_get_next_config_section(&configSection);
                 }
-
-                return;
-
-                const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
-                const Support::Regex resolutionRegex("[0-9]+x[0-9]+", Support::RegexConstants::Extended);
-                const Support::Regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", Support::RegexConstants::Extended);
-
-                // Listen port?
-                Common::U16 listenPort = 11595;
-                const Common::C8* configValue = al_get_config_value(config, "Server", "ListenPort");
-
-                if (configValue && Support::RegexMatch(configValue, numberRegex))
-                    listenPort = atoi(configValue);
-                else
-                    CONSOLE_ERRORF("Failed to parse Server::ListenPort config ('%s')! Using default value.", configValue);
-
-                // Maximum client count?
-                Common::U32 maximumClientCount = 32;
-                // FIXME (Robert MacGregor#9): Force GCC 4.9 when compiling this?
-                configValue = al_get_config_value(config, "Server", "MaximumClientCount");
-
-                if (configValue && Support::RegexMatch(configValue, numberRegex))
-                    maximumClientCount = atoi(configValue);
-                else
-                    CONSOLE_ERRORF("Failed to parse Server::MaximumClientCount config ('%s')! Using default value.", configValue);
-
-                // Listen Address?
-                configValue = al_get_config_value(config, "Server", "ListenAddress");
-                Support::String listenAddress = "0.0.0.0";
-
-                if (configValue && Support::RegexMatch(configValue, addressRegex))
-                    listenAddress = configValue;
-                else
-                    CONSOLE_ERRORF("Failed to parse Server::ListenAddress config ('%s')! Using default value.", configValue);
-
-                // Full screen?
-                bool fullScreen = true;
-                configValue = al_get_config_value(config, "Video", "Fullscreen");
-
-                if (configValue)
-                    fullScreen = atoi(configValue);
-
-                // Active & inactive FPS?
-                Common::U16 activeFPS = 60;
-                configValue = al_get_config_value(config, "Video", "ActiveFPS");
-
-                if (configValue)
-                    activeFPS = atoi(configValue);
-
-                Common::U16 inactiveFPS = 15;
-                configValue = al_get_config_value(config, "Video", "InactiveFPS");
-
-                if (configValue)
-                    inactiveFPS = atoi(configValue);
-
-                // Resolution?
-                Support::Dimension2DU resolution(640, 480);
-                configValue = al_get_config_value(config, "Video", "Resolution");
-
-                if (configValue && Support::RegexMatch(configValue, resolutionRegex))
-                {
-                    // Make sure the resolution follows the pattern we want and extract the width & height if so.
-                    const Support::String resolutionString = configValue;
-                    const size_t splitLocation = resolutionString.find("x");
-                    const Support::String widthString = resolutionString.substr(0, splitLocation);
-                    const Support::String heightString = resolutionString.substr(splitLocation + 1, resolutionString.length());
-                    resolution = Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data()));
-                }
-                else
-                    CONSOLE_ERRORF("Failed to parse Video::Resolution config ('%s')! Using default value.", configValue);
-
-                // Worker thread count?
-                Common::U8 workerThreadCount = 6;
-                configValue = al_get_config_value(config, "System", "WorkerThreadCount");
-
-                if (configValue)
-                    workerThreadCount = atoi(configValue);
-
-                this->setValue("Server::ListenAddress", listenAddress);
-                this->setValue("Server::ListenPort", listenPort);
-                this->setValue("Server::MaximumClientCount", maximumClientCount);
-                this->setValue("Video::Fullscreen", fullScreen);
-                this->setValue("Video::Resolution", resolution);
-                this->setValue("Video::ActiveFPS", activeFPS);
-                this->setValue("Video::InactiveFPS", inactiveFPS);
-                this->setValue("System::WorkerThreadCount", workerThreadCount);
 
                 al_destroy_config(config);
                 CONSOLE_INFO("SSettingsRegistry: Loaded config.cfg.");
@@ -241,21 +155,88 @@ namespace Kiaro
                 return;
             }
 
+            static const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
+            static const Support::Regex resolutionRegex("[0-9]+x[0-9]+", Support::RegexConstants::Extended);
+            static const Support::Regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", Support::RegexConstants::Extended);
+
             // What is the type of the existing entry?
-            switch((*searchResult).second.second)
+            const Support::PROPERTY_TYPE typeID = (*searchResult).second.second;
+
+            switch(typeID)
             {
                 case Support::PROPERTY_BOOL:
                 {
+                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    {
+                        CONSOLE_ERRORF("Failed to read config value as bool: '%s'. Using default value.", name.data());
+                        break;
+                    }
+
+                    this->setValue<bool>(name.data(), atoi(value.data()));
                     break;
                 }
 
                 case Support::PROPERTY_U64:
                 {
+                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    {
+                        CONSOLE_ERRORF("Failed to read config value as U64: '%s'. Using default value.", name.data());
+                        break;
+                    }
+
+                    this->setValue<Common::U64>(name.data(), atoi(value.data()));
                     break;
                 }
 
                 case Support::PROPERTY_U32:
                 {
+                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    {
+                        CONSOLE_ERRORF("Failed to read config value as U32: '%s'. Using default value.", name.data());
+                        break;
+                    }
+
+                    this->setValue<Common::U32>(name.data(), atoi(value.data()));
+                    break;
+                }
+
+                case Support::PROPERTY_U8:
+                {
+                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    {
+                        CONSOLE_ERRORF("Failed to read config value as U8: '%s'. Using default value.", name.data());
+                        break;
+                    }
+
+                    this->setValue<Common::U8>(name.data(), atoi(value.data()));
+                    break;
+                }
+
+                case Support::PROPERTY_U16:
+                {
+                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    {
+                        CONSOLE_ERRORF("Failed to read config value as U16: '%s'. Using default value.", name.data());
+                        break;
+                    }
+
+                    this->setValue<Common::U16>(name.data(), atoi(value.data()));
+                    break;
+                }
+
+                case Support::PROPERTY_DIMENSION:
+                {
+                    if (!Support::RegexMatch(value.data(), resolutionRegex))
+                    {
+                        CONSOLE_ERRORF("Failed to read config value as dimensions: '%s'. Using default value.", name.data());
+                        break;
+                    }
+
+                    const size_t splitLocation = value.find("x");
+                    const Support::String widthString = value.substr(0, splitLocation);
+                    const Support::String heightString = value.substr(splitLocation + 1, value.length());
+
+                    this->setValue<Support::Dimension2DU>(name.data(), Support::Dimension2DU(atoi(widthString.data()), atoi(heightString.data())));
                     break;
                 }
 
@@ -266,7 +247,7 @@ namespace Kiaro
 
                 default:
                 {
-                    CONSOLE_INFO("Blu");
+                    CONSOLE_ERROR("Encountered type");
                     break;
                 }
             }

@@ -29,6 +29,10 @@ namespace Kiaro
             PROPERTY_BOOL,
 
             PROPERTY_STRING,
+
+            PROPERTY_U16,
+
+            PROPERTY_DIMENSION,
         };
 
         /**
@@ -109,6 +113,26 @@ namespace Kiaro
         struct TypeIDResolver<Support::String>
         {
             static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_STRING;
+        };
+
+        /**
+         *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
+         *  This is an explicit declaration for the Common::U16 type.
+         */
+        template<>
+        struct TypeIDResolver<Common::U16>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_U16;
+        };
+
+        /**
+         *  @brief A compile-time resolver for converting a type name to its respective PROPERTY_TYPE value.
+         *  This is an explicit declaration for the Common::U16 type.
+         */
+        template<>
+        struct TypeIDResolver<irr::core::dimension2d<Common::U32>>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_DIMENSION;
         };
     }
 }

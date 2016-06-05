@@ -74,12 +74,20 @@ namespace Kiaro
             irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
             irr::SIrrlichtCreationParameters creationParameters;
 
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+
             if (mHasDisplay)
             {
                 const Common::S32 monitorCount = al_get_num_video_adapters();
                 CONSOLE_INFOF("Detected %u monitor(s)", monitorCount);
+
                 // Create the Allegro window and get its ID
-                al_set_new_display_flags(ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE);
+                Common::S32 displayFlags = ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE;
+                if (settings->getValue<bool>("Video::Fullscreen"))
+                    displayFlags |= ALLEGRO_FULLSCREEN;
+
+                al_set_new_display_flags(displayFlags);
+
                 mDisplay = al_create_display(resolution.Width, resolution.Height);
 
                 // TODO (Robert MacGregor#9): Use a preference for the desired screen
@@ -143,7 +151,6 @@ namespace Kiaro
             // Set up the renderer time pulse
             if (mHasDisplay)
             {
-                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
                 const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
 
                 mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true, this,

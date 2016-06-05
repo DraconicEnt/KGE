@@ -304,7 +304,7 @@ namespace Kiaro
                                     else
                                         (*it).second->invoke(false);
 
-                                return;
+                                break;
                             }
 
                             // We'll just shove keyboard input into CEGUI, then.
