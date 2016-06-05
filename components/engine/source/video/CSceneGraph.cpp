@@ -11,19 +11,22 @@
 
 #include <support/Console.hpp>
 #include <core/SEngineInstance.hpp>
+
 #include <video/CSceneGraph.hpp>
 
 namespace Kiaro
 {
     namespace Video
     {
-        CSceneGraph::CSceneGraph(void)
+        CSceneGraph::CSceneGraph(Video::SRenderer* renderer)
         {
-            // mRoot = Core::SEngineInstance::getPointer()->getSceneManager()->addEmptySceneNode();
+            mRoot = renderer->getIrrlichtDevice()->getSceneManager()->addEmptySceneNode();
         }
 
         CSceneGraph::~CSceneGraph(void)
         {
+            assert(mRoot);
+
             mRoot->removeAll();
             mRoot->remove();
             mRoot = nullptr;
@@ -33,6 +36,12 @@ namespace Kiaro
         void CSceneGraph::add(irr::scene::ISceneNode* node)
         {
             mRoot->addChild(node);
+        }
+
+        void CSceneGraph::add(Game::Entities::IEntity* entity)
+        {
+            for (irr::scene::ISceneNode* node: entity->mSceneNodes)
+                this->add(node);
         }
 
         bool CSceneGraph::isVisible(void)

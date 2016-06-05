@@ -90,6 +90,8 @@ namespace Kiaro
                     terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 
                     mSceneNode = terrain;
+
+                    mSceneNodes.insert(mSceneNodes.end(), mSceneNode);
                     IEntity::registerEntity();
                 }
                 else

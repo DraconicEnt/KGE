@@ -13,8 +13,11 @@
 #define _INCLUDE_VIDEO_CSCENEGRAPH_HPP_
 
 #include <support/common.hpp>
+#include <video/SRenderer.hpp>
 
 #include <irrlicht.h>
+
+#include <game/entities/IEntity.hpp>
 
 namespace Kiaro
 {
@@ -28,7 +31,7 @@ namespace Kiaro
         {
             public:
                 //! Parameterless constructor.
-                CSceneGraph(void);
+                CSceneGraph(Video::SRenderer* renderer);
                 //! Standard destructor.
                 ~CSceneGraph(void);
 
@@ -38,6 +41,8 @@ namespace Kiaro
                  *  @param node A pointer to the node to add to this scene graph.
                  */
                 void add(irr::scene::ISceneNode* node);
+
+                void add(Game::Entities::IEntity* entity);
 
                 bool isVisible(void);
                 void setVisible(const bool visible);

@@ -41,7 +41,9 @@ namespace Kiaro
 {
     namespace Video
     {
-        SRenderer::SRenderer(void) : mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated())
+        SRenderer::SRenderer(void) : mIrrlichtDevice(nullptr), mClearColor(Common::ColorRGBA(0, 0, 0, 0)), mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated()),
+        mVideo(nullptr), mSceneManager(nullptr), mMainScene(nullptr), mCurrentScene(nullptr), mDisplay(nullptr), mWindowEventQueue(nullptr),
+        mTimePulse(nullptr)
         {
             Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
             irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>("Video::Resolution");
@@ -88,6 +90,7 @@ namespace Kiaro
 
                 al_set_new_display_flags(displayFlags);
 
+                CONSOLE_INFOF("Using %ux%u resolution.", resolution.Width, resolution.Height);
                 mDisplay = al_create_display(resolution.Width, resolution.Height);
 
                 // TODO (Robert MacGregor#9): Use a preference for the desired screen
@@ -134,7 +137,6 @@ namespace Kiaro
 
             creationParameters.WindowSize = resolution;
 
-            CONSOLE_INFOF("Using %ux%u resolution.", resolution.Width, resolution.Height);
             mIrrlichtDevice = irr::createDeviceEx(creationParameters);
 
             if (!mIrrlichtDevice)
@@ -147,6 +149,9 @@ namespace Kiaro
             mSceneManager = mIrrlichtDevice->getSceneManager();
             mVideo = mIrrlichtDevice->getVideoDriver();
             mSceneManager->setActiveCamera(mSceneManager->addCameraSceneNode());
+
+            // Setup the main scene and make it the active scene
+            mMainScene = mCurrentScene = new CSceneGraph(this);
 
             // Set up the renderer time pulse
             if (mHasDisplay)
@@ -184,6 +189,16 @@ namespace Kiaro
         irr::IrrlichtDevice* SRenderer::getIrrlichtDevice(void) const
         {
             return mIrrlichtDevice;
+        }
+
+        CSceneGraph* SRenderer::getMainScene(void)
+        {
+            return mMainScene;
+        }
+
+        CSceneGraph* SRenderer::getCurrentScene(void)
+        {
+            return mCurrentScene;
         }
 
         Common::S32 SRenderer::initializeGUI(void)

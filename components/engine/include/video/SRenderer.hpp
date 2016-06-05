@@ -89,6 +89,9 @@ namespace Kiaro
 
                 ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
 
+                CSceneGraph* getMainScene(void);
+                CSceneGraph* getCurrentScene(void);
+
                 // Private Methods
             private:
                 /**

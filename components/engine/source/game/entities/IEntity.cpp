@@ -15,6 +15,9 @@
 #include <game/entities/IEntity.hpp>
 #include <game/SGameWorld.hpp>
 
+#include <video/CSceneGraph.hpp>
+#include <video/SRenderer.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -68,6 +71,9 @@ namespace Kiaro
             void IEntity::registerEntity(void)
             {
                 Game::SGameWorld::getPointer()->addEntity(this);
+
+                // Also register the entity with our current scene graph
+                Video::SRenderer::getPointer()->getCurrentScene()->add(this);
             }
         } // End Namespace Entities
     } // End Namespace Game

@@ -27,6 +27,7 @@
 #include <game/entities/types.hpp>
 
 #include <support/Set.hpp>
+#include <support/UnorderedSet.hpp>
 #include <support/String.hpp>
 
 namespace Kiaro
@@ -91,6 +92,8 @@ namespace Kiaro
                     // Public Members
                 public:
                     const Common::U8 mFlags;
+
+                    Support::UnorderedSet<irr::scene::ISceneNode*> mSceneNodes;
 
                     // Protected Members
                 protected:

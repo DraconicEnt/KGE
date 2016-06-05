@@ -63,6 +63,9 @@ namespace Kiaro
 
             // Add our update to the scheduler
             mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
+
+            Entities::CTerrain* terrain = new Entities::CTerrain("textures/terrain-heightmap.bmp", "textures/terrain-texture.jpg");
+            terrain->registerEntity();
         }
 
         void SGameServer::handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)

@@ -26,7 +26,7 @@ namespace Kiaro
         template <typename child>
         class ISingleton
         {
-                // Private Members
+            // Private Members
             private:
                 //! The pointer to the instance
                 static child* mInstance;
@@ -53,11 +53,8 @@ namespace Kiaro
                  */
                 static void destroy(void)
                 {
-                    if (mInstance)
-                    {
-                        delete mInstance;
-                        mInstance = nullptr;
-                    }
+                    delete mInstance;
+                    mInstance = nullptr;
                 }
         };
 
