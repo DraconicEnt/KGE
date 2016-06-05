@@ -109,7 +109,7 @@ namespace Kiaro
                 sprintf(tempBuffer, "%ux%u", resolution.Width, resolution.Height);
                 al_set_config_value(config, "Video", "Resolution", tempBuffer);
                 al_add_config_comment(config, "Video", "Fullscreen controls whether or not the engine will run full screen");
-                al_set_config_value(config, "Video", "Fullscreen", "1");
+                al_set_config_value(config, "Video", "Fullscreen", this->getValue<bool>("Video::Fullscreen") ? "1" : "0");
 
                 sprintf(tempBuffer, "%u", this->getValue<Common::U16>("Video::InactiveFPS"));
                 al_add_config_comment(config, "Video", "Inactive FPS determines what framerate the engine will render at when the window is inactive.");
