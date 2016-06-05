@@ -151,6 +151,7 @@ namespace Kiaro
                 this->setValue("Video::ActiveFPS", activeFPS);
                 this->setValue("Video::InactiveFPS", inactiveFPS);
                 this->setValue("System::WorkerThreadCount", workerThreadCount);
+
                 al_destroy_config(config);
                 CONSOLE_INFO("SSettingsRegistry: Loaded config.cfg.");
             }
@@ -168,45 +169,55 @@ namespace Kiaro
                 // Header comments---------------------
                 al_add_config_comment(config, NULL, "Configuration values for the operation of the KGE");
                 al_add_config_comment(config, NULL, tempBuffer);
+
                 // Write server section----------------
                 al_add_config_section(config, "Server");
                 al_add_config_comment(config, "Server", "Configuration values for the server end");
                 al_add_config_comment(config, "Server", "ListenAddress specifies what IP address the server will bind to");
                 al_set_config_value(config, "Server", "ListenAddress", this->getValue<Support::String>("Server::ListenAddress").data());
+
                 // Listen Port
                 sprintf(tempBuffer, "%u", this->getValue<Common::U16>("Server::ListenPort"));
                 al_add_config_comment(config, "Server", "ListenPort specifies what port number the server will listen on");
                 al_set_config_value(config, "Server", "ListenPort", tempBuffer);
+
                 // Maximum Client Count
                 sprintf(tempBuffer, "%u", this->getValue<Common::U32>("Server::MaximumClientCount"));
                 al_add_config_comment(config, "Server", "MaximumClientCount specifies the maximum number of remote clients allowed");
                 al_set_config_value(config, "Server", "MaximumClientCount", tempBuffer);
+
                 // Write video section-----------------------
                 al_add_config_section(config, "Video");
                 al_add_config_comment(config, "Video", "Video output configuration");
                 al_add_config_comment(config, "Video", "Resolution controls the window resolution of the engine");
                 Support::Dimension2DU resolution = this->getValue<Support::Dimension2DU>("Video::Resolution");
+
                 sprintf(tempBuffer, "%ux%u", resolution.Width, resolution.Height);
                 al_set_config_value(config, "Video", "Resolution", tempBuffer);
                 al_add_config_comment(config, "Video", "Fullscreen controls whether or not the engine will run full screen");
                 al_set_config_value(config, "Video", "Fullscreen", "1");
+
                 sprintf(tempBuffer, "%u", this->getValue<Common::U16>("Video::InactiveFPS"));
                 al_add_config_comment(config, "Video", "Inactive FPS determines what framerate the engine will render at when the window is inactive.");
                 al_add_config_comment(config, "Video", "Setting this to a high value does not guarantee that FPS to actually be achieved.");
                 al_add_config_comment(config, "Video", "This should generally be a low value to help system performance when the game isn't focused.");
                 al_set_config_value(config, "Video", "InactiveFPS", tempBuffer);
+
                 sprintf(tempBuffer, "%u", this->getValue<Common::U16>("Video::ActiveFPS"));
                 al_add_config_comment(config, "Video", "Active FPS determines what framerate the engine will render at when the window is active.");
                 al_add_config_comment(config, "Video", "Setting this to a high value does not guarantee that FPS to actually be achieved.");
                 al_set_config_value(config, "Video", "ActiveFPS", tempBuffer);
+
                 // Write system section----------------------
                 al_add_config_section(config, "System");
                 al_add_config_comment(config, "System", "Core system configuration.");
+
                 // Worker Thread Count
                 sprintf(tempBuffer, "%u", this->getValue<Common::U8>("System::WorkerThreadCount"));
                 al_add_config_comment(config, "System", "WorkerThreadCount dictates how many worker threads will be created for the asynchronous task manager");
                 al_add_config_comment(config, "System", "If WorkerThreadCount=0 then the async tasker is disabled and such tasks will be handled synchronously");
                 al_set_config_value(config, "System", "WorkerThreadCount", tempBuffer);
+
                 // We're done
                 al_save_config_file("config.cfg", config);
                 al_destroy_config(config);
