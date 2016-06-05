@@ -71,6 +71,7 @@ namespace Kiaro
                 const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
                 const Support::Regex resolutionRegex("[0-9]+x[0-9]+", Support::RegexConstants::Extended);
                 const Support::Regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", Support::RegexConstants::Extended);
+
                 // Listen port?
                 Common::U16 listenPort = 11595;
                 const Common::C8* configValue = al_get_config_value(config, "Server", "ListenPort");
@@ -217,6 +218,47 @@ namespace Kiaro
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); it++)
                 free(it->second.first);
+        }
+
+        void SSettingsRegistry::setStringValue(const Support::String& name, const Support::String& value)
+        {
+            // Does an entry exist?
+            auto searchResult = mStoredProperties.find(name);
+            if (searchResult != mStoredProperties.end() && ((*searchResult).second.second) == Support::PROPERTY_STRING)
+            {
+                this->setValue<Support::String>(name, value);
+                return;
+            }
+
+            // What is the type of the existing entry?
+            switch((*searchResult).second.second)
+            {
+                case Support::PROPERTY_BOOL:
+                {
+                    break;
+                }
+
+                case Support::PROPERTY_U64:
+                {
+                    break;
+                }
+
+                case Support::PROPERTY_U32:
+                {
+                    break;
+                }
+
+                case Support::PROPERTY_STRING:
+                {
+                    break;
+                }
+
+                default:
+                {
+                    CONSOLE_INFO("Blu");
+                    break;
+                }
+            }
         }
     } // End NameSpace Core
 } // End NameSpace Kiaro

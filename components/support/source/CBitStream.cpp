@@ -70,23 +70,26 @@ namespace Kiaro
             if (string[length] != 0x00)
                 throw std::runtime_error("Attempted to write bad string (null terminator isn't where it should be)!");
 
-            const size_t stringLength = strlen(string) + 1; // Account for the NULL as well
+            const size_t stringLength = strlen(string);
+            const size_t totalLength = stringLength + sizeof(Common::U32) + 1; // Account for the NULL as well
 
-            if (stringLength - 1 != length)
+            if (stringLength != length)
                 throw std::runtime_error("Attempted to write a bad string (Lengths do not match)!");
 
             // Will the string fit?
-            if (mTotalSize - mPointer < stringLength + sizeof(Common::U32) && mResizeLength == 0)
+            if (mTotalSize - mPointer < totalLength && mResizeLength == 0)
                 throw std::runtime_error("Cannot fit string into buffer!");
-            else if (mTotalSize - mPointer < stringLength + sizeof(Common::U32))
+            else if (mTotalSize - mPointer < totalLength)
                 this->resize(mTotalSize + mResizeLength);
 
             // Write off the string length so we can properly unpack later
             this->write<Common::U32>(static_cast<Common::U32>(stringLength));
+
             //if (mPointer >= mTotalSize || mTotalSize - mPointer < stringLength)
             //    throw std::overflow_error("Stack Overflow");
-            memcpy(&mMemoryBlock[mPointer], string, stringLength);
-            mPointer += stringLength;
+
+            memcpy(&mMemoryBlock[mPointer], string, stringLength + 1);
+            mPointer += stringLength + 1; // NULL byte again
         }
 
         void CBitStream::writeString(const std::string& string)
@@ -111,10 +114,11 @@ namespace Kiaro
 
             // First off, is there enough memory in the buffer?
             if (stringLength > mTotalSize - mPointer)
-                throw std::underflow_error("Stack Underflow");
+                throw std::underflow_error("Stack Underflow in String Read");
 
             // Ensure that the string is properly terminated
-            if (mMemoryBlock[mPointer + stringLength + sizeof(Common::U32) + 1] != 0x00)
+            const Common::U32 nullIndex = mPointer + stringLength + sizeof(Common::U32);
+            if (mMemoryBlock[nullIndex] != 0x00)
                 throw std::logic_error("Attempted to unpack an improperly terminated string");
 
             // Return the result

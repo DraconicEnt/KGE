@@ -16,9 +16,10 @@ namespace Kiaro
 
             for (auto it = mDirtyNetworkedProperties.begin(); it != mDirtyNetworkedProperties.end(); it++)
             {
-                const size_t& propertyHash = *it;
-                const std::pair<void*, PROPERTY_TYPE>& networkedPropertyInfo = mNetworkedProperties[propertyHash];
-                this->packProperty(out, propertyHash, networkedPropertyInfo);
+                Support::String name = *it;
+
+                const std::pair<void*, Support::PROPERTY_TYPE>& networkedPropertyInfo = mNetworkedProperties[name];
+                this->packProperty(out, name, networkedPropertyInfo);
             }
 
             mDirtyNetworkedProperties.clear();
@@ -30,44 +31,44 @@ namespace Kiaro
 
             for (auto it = mNetworkedProperties.begin(); it != mNetworkedProperties.end(); it++)
             {
-                std::pair<size_t, std::pair<void*, PROPERTY_TYPE>> networkedPropertyInfo = *it;
+                std::pair<Support::String, std::pair<void*, Support::PROPERTY_TYPE>> networkedPropertyInfo = *it;
                 this->packProperty(out, networkedPropertyInfo.first, networkedPropertyInfo.second);
             }
         }
 
-        void INetworkPersistable::packProperty(Support::CBitStream& out, const size_t propertyHash, const std::pair<void*, PROPERTY_TYPE>& property) const
+        void INetworkPersistable::packProperty(Support::CBitStream& out, const Support::String& propertyName, const std::pair<void*, Support::PROPERTY_TYPE>& property) const
         {
             // Write the property hash
             // FIXME (Robert MacGregor#9): size_t Differences will cause breakage when networking two systems that have different sizeof(size_t)
-            out.write<size_t>(propertyHash);
+            out.writeString(propertyName);
 
             // Pack each type accordingly
             switch(property.second)
             {
-                case PROPERTY_F32:
+                case Support::PROPERTY_F32:
                 {
                     const Common::F32& value = *reinterpret_cast<Common::F32*>(property.first);
                     out.write<Common::F32>(value);
                     break;
                 }
 
-                case PROPERTY_F64:
+                case Support::PROPERTY_F64:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::F64*>(property.first);
+                    const Common::F64& value = *reinterpret_cast<Common::F64*>(property.first);
                     out.write<Common::F64>(value);
                     break;
                 }
 
-                case PROPERTY_U32:
+                case Support::PROPERTY_U32:
                 {
                     const Common::U32& value = *reinterpret_cast<Common::U32*>(property.first);
                     out.write<Common::U32>(value);
                     break;
                 }
 
-                case PROPERTY_U64:
+                case Support::PROPERTY_U64:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::U32*>(property.first);
+                    const Common::U64& value = *reinterpret_cast<Common::U64*>(property.first);
                     out.write<Common::U64>(value);
                     break;
                 }
@@ -91,42 +92,42 @@ namespace Kiaro
                 // TODO (Robert MacGregor#9): Determine what to do when properties don't exist and are being unpacked here
                 //  const PROPERTY_TYPE& propertyType = *in.top<PROPERTY_TYPE>();
                 //  in.pop<PROPERTY_TYPE>();
-                const size_t& propertyHash = in.pop<size_t>();
+                const Common::C8* propertyName = in.popString();
 
                 // Do we have such a property?
-                if (mNetworkedProperties.count(propertyHash) == 0)
+                if (mNetworkedProperties.count(propertyName) == 0)
                 {
-                    Support::String exceptionMessage = "INetworkPersisable: Encountered unknown property in unpack! HashCode: ";
-                    exceptionMessage += propertyHash;
+                    Support::String exceptionMessage = "INetworkPersisable: Encountered unknown property in unpack! Name: ";
+                    exceptionMessage += propertyName;
                     throw std::domain_error(exceptionMessage);
                 }
 
-                const std::pair<void*, PROPERTY_TYPE>& propertyInformation = mNetworkedProperties[propertyHash];
+                const std::pair<void*, Support::PROPERTY_TYPE>& propertyInformation = mNetworkedProperties[propertyName];
 
                 switch(propertyInformation.second)
                 {
-                    case PROPERTY_F32:
+                    case Support::PROPERTY_F32:
                     {
                         Common::F32& out = *reinterpret_cast<Common::F32*>(propertyInformation.first);
                         out = in.pop<Common::F32>();
                         break;
                     }
 
-                    case PROPERTY_F64:
+                    case Support::PROPERTY_F64:
                     {
                         Common::F64& out = *reinterpret_cast<Common::F64*>(propertyInformation.first);
                         out = in.pop<Common::F64>();
                         break;
                     }
 
-                    case PROPERTY_U32:
+                    case Support::PROPERTY_U32:
                     {
                         Common::U32& out = *reinterpret_cast<Common::U32*>(propertyInformation.first);
                         out = in.pop<Common::U32>();
                         break;
                     }
 
-                    case PROPERTY_U64:
+                    case Support::PROPERTY_U64:
                     {
                         Common::U64& out = *reinterpret_cast<Common::U64*>(propertyInformation.first);
                         out = in.pop<Common::U64>();
