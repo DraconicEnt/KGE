@@ -7,11 +7,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(KiaroSDK)
 
 # Accept an app name
+SET(KGE_APP_NAME "KGE" CACHE STRING "Application name.")
 IF (NOT DEFINED KGE_APP_NAME)
     MESSAGE(FATAL_ERROR "KGE_APP_NAME must be defined. (Perhaps try passing -DKGE_APP_NAME=<Your App Name>?)")
 ENDIF (NOT DEFINED KGE_APP_NAME)
 
 # We can optionally define the template, but we will default to basic.
+SET(KGE_TEMPLATE_NAME "basic" CACHE STRING "Template name.")
 IF (NOT DEFINED KGE_TEMPLATE_NAME)
     MESSAGE(WARNING "KGE_TEMPLATE_NAME not defined. Defaulting to 'basic'.")
 
@@ -21,6 +23,7 @@ ELSE (NOT DEFINED KGE_TEMPLATE_NAME)
 ENDIF (NOT DEFINED KGE_TEMPLATE_NAME)
 
 # We can optionally define an author, but the default is "Your Name / Company Name"
+SET(KGE_TEMPLATE_NAME "No name" CACHE STRING "Author name.")
 IF (NOT DEFINED KGE_AUTHOR_NAME)
     MESSAGE(WARNING "KGE_AUTHOR_NAME not defined. Defaulting to 'Your Name / Company Name'.")
 
@@ -53,7 +56,6 @@ FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog)
 FIND_PACKAGE(FMod REQUIRED)
 FIND_PACKAGE(ENet REQUIRED)
 FIND_PACKAGE(Bullet REQUIRED)
-FIND_PACKAGE(PythonLibs REQUIRED)
 FIND_PACKAGE(PythonInterp REQUIRED)
 
 # GCC 4.9 implements std::regex, some versions prior implement a buggy version, so force a dep on boost::regex if we we're using < 4.9
