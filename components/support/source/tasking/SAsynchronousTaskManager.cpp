@@ -90,7 +90,7 @@ namespace Kiaro
                     {
                         // TODO (Robert MacGregor#9): Task completion notice?
                         delete currentWorker->mTask;
-                        currentWorker->mTask = NULL;
+                        currentWorker->mTask = nullptr;
                         mActiveWorkers.erase(currentWorker);
                         mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                     }

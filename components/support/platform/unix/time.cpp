@@ -11,7 +11,7 @@ namespace Kiaro
             Common::U64 getCurrentTimeMicroseconds(void)
             {
                 timeval currentTime;
-                gettimeofday(&currentTime, NULL);
+                gettimeofday(&currentTime, nullptr);
                 return currentTime.tv_usec + (1000000ULL * currentTime.tv_sec);
             }
         }

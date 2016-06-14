@@ -19,7 +19,7 @@ namespace Kiaro
             mCurrentLongestFlagLength(0)
         {
             size_t currentFlagHash = 0;
-            const Common::C8* currentFlagName = NULL;
+            const Common::C8* currentFlagName = nullptr;
 
             for (size_t iteration = 1; iteration < argc; ++iteration)
                 if (argv[iteration][0] == '-')
@@ -28,7 +28,7 @@ namespace Kiaro
                     currentFlagHash = Support::getHashCode(currentFlagName);
                     mFlags.insert(std::make_pair(currentFlagHash, Support::Vector<Support::String>()));
                 }
-                else if (currentFlagName != NULL)
+                else if (currentFlagName != nullptr)
                     mFlags[currentFlagHash].push_back(argv[iteration]);
         }
 
