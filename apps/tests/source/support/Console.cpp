@@ -6,7 +6,7 @@
  *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <gtest/gtest.h>

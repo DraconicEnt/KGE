@@ -41,6 +41,7 @@ namespace Kiaro
             TestClass testInstance;
             EXPECT_NO_THROW(console.registerFunction("testStatic", testStatic));
             EXPECT_NO_THROW(console.registerFunction("testClass", &testInstance, &TestClass::testFunction));
+
             // Test static calls
             EXPECT_TRUE(console.eval("            testStatic 1      2    3                 "));
             EXPECT_TRUE(sFunctionCalled);
@@ -48,6 +49,7 @@ namespace Kiaro
             EXPECT_EQ("1", sGotParams[0]);
             EXPECT_EQ("2", sGotParams[1]);
             EXPECT_EQ("3", sGotParams[2]);
+
             // Test member calls
             console.eval("           testClass a        b          c");
             EXPECT_TRUE(testInstance.mFunctionCalled);
@@ -62,14 +64,17 @@ namespace Kiaro
             sFunctionCalled = false;
             CManagementConsole console;
             TestClass testInstance;
+
             EXPECT_NO_THROW(console.registerFunction("testStatic", testStatic));
             EXPECT_NO_THROW(console.registerFunction("testClass", &testInstance, &TestClass::testFunction));
+
             EXPECT_TRUE(console.eval("            testStatic 1      2    3   ;           testClass a        b          c        "));
             EXPECT_TRUE(sFunctionCalled);
             EXPECT_EQ(3, sGotParams.size());
             EXPECT_EQ("1", sGotParams[0]);
             EXPECT_EQ("2", sGotParams[1]);
             EXPECT_EQ("3", sGotParams[2]);
+
             EXPECT_TRUE(testInstance.mFunctionCalled);
             EXPECT_EQ(3, testInstance.mGotParams.size());
             EXPECT_EQ("a", testInstance.mGotParams[0]);

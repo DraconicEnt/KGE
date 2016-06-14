@@ -6,9 +6,7 @@
  *  Please refer to gpl.txt and lgpl.txt for more information.
  *
  *  @author Robert MacGregor
- *  @version 0.1.0
- *  @date 12/23/2013
- *  @copyright (c) 2015 Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <game/entities/IRigidObject.hpp>

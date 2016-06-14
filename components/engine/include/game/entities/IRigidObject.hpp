@@ -5,10 +5,8 @@
  *  This software is licensed under the GNU Lesser General Public License version 3.
  *  Please refer to gpl.txt and lgpl.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @version 0.1.0
- *  @date 12/23/2013
- *  @copyright (c) 2016 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_RIGIDOBJECTBASE_HPP_

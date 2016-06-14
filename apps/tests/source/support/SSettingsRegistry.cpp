@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <gtest/gtest.h>
@@ -24,9 +24,11 @@ namespace Kiaro
             Common::F32 floatSetting = 3.14f;
             EXPECT_NO_THROW(settings->setValue("integer", integerSetting));
             EXPECT_NO_THROW(settings->setValue("float", floatSetting));
+
             // Same values?
             EXPECT_EQ(integerSetting, settings->getValue<Common::U32>("integer"));
             EXPECT_EQ(floatSetting, settings->getValue<Common::F32>("float"));
+
             // Different addresses?
             EXPECT_NE(&integerSetting, &settings->getValue<Common::U32>("integer"));
             EXPECT_NE(&floatSetting, &settings->getValue<Common::F32>("float"));

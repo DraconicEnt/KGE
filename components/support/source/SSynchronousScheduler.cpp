@@ -5,10 +5,10 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
  *  @ref http://stackoverflow.com/questions/7858817/unpacking-a-tuple-to-call-a-matching-function-pointer
  *
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <support/SSynchronousScheduler.hpp>

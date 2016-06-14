@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <gtest/gtest.h>
@@ -40,15 +40,19 @@ namespace Kiaro
                 EXPECT_NO_THROW(PROFILER_BEGIN(TestScope));
                 std::this_thread::sleep_for(std::chrono::milliseconds(32));
                 EXPECT_NO_THROW(PROFILER_END(TestScope));
+
                 // At this point, the first measure for 'TestScope' should measure ~32ms
                 Common::F32 measuredTime = Support::SProfiler::getPointer()->getSample("TestScope", 0);
                 EXPECT_TRUE(measuredTime <= 0.034f && measuredTime >= 0.031f);
+
                 // What about multiple measures?
                 EXPECT_NO_THROW(PROFILER_BEGIN(AnotherScope));
                 std::this_thread::sleep_for(std::chrono::milliseconds(16));
                 EXPECT_NO_THROW(PROFILER_END(AnotherScope));
+
                 measuredTime = Support::SProfiler::getPointer()->getSample("AnotherScope", 0);
                 EXPECT_TRUE(measuredTime <= 0.018f && measuredTime >= 0.014f);
+
                 // Is the original measure still right?
                 measuredTime = Support::SProfiler::getPointer()->getSample("TestScope", 0);
                 EXPECT_TRUE(measuredTime <= 0.034f && measuredTime >= 0.031f);
@@ -59,9 +63,11 @@ namespace Kiaro
             {
                 EXPECT_NO_THROW(PROFILER_BEGIN(TestScope));
                 EXPECT_NO_THROW(PROFILER_END(TestScope));
+
                 EXPECT_THROW(Support::SProfiler::getPointer()->getSample("TestScope", 900), std::out_of_range);
                 EXPECT_THROW(Support::SProfiler::getPointer()->getSample("RandomScope", 0), std::out_of_range);
                 EXPECT_THROW(Support::SProfiler::getPointer()->getSample("RandomScope", 900), std::out_of_range);
+
                 Support::SProfiler::destroy();
             }
 
@@ -79,9 +85,11 @@ namespace Kiaro
 
                 // Ensure we have only one name entry
                 EXPECT_EQ(1, profiler->getSampleNames().size());
+
                 // The average should be ~16ms
                 Common::F32 average = profiler->getAverage("TestScope");
                 EXPECT_TRUE(average <= 0.018f && average >= 0.014f);
+
                 // We should also report an error if we don't even know what the sample scope is
                 EXPECT_THROW(profiler->getAverage("RandomScope"), std::out_of_range);
                 Support::SProfiler::destroy();
@@ -97,7 +105,9 @@ namespace Kiaro
                     EXPECT_NO_THROW(PROFILER_BEGIN(TwoScope));
                     EXPECT_NO_THROW(PROFILER_BEGIN(ThreeScope));
                     EXPECT_NO_THROW(PROFILER_BEGIN(FourScope));
+
                     std::this_thread::sleep_for(std::chrono::milliseconds(16));
+
                     EXPECT_NO_THROW(PROFILER_END(FourScope));
                     EXPECT_NO_THROW(PROFILER_END(ThreeScope));
                     EXPECT_NO_THROW(PROFILER_END(TwoScope));

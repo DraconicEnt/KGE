@@ -5,8 +5,8 @@
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2014 Draconic Entertainment
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <chrono>
@@ -28,9 +28,11 @@ namespace Kiaro
             {
                 FTime::timer timer = FTime::startTimer();
                 EXPECT_EQ(1, timer);
+
                 // Sleep the thread
                 std::this_thread::sleep_for(std::chrono::milliseconds(32));
                 Common::F32 sleepTimeSeconds = FTime::stopTimer(timer);
+
                 // We should be reasonably accurate about the timing
                 EXPECT_TRUE(sleepTimeSeconds <= 0.034f && sleepTimeSeconds >= 0.031f);
             }
