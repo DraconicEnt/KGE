@@ -9,16 +9,9 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#include <physfs.h>
-
 #include <support/Console.hpp>
-#include <support/common.hpp>
 #include <support/support.hpp>
 #include <core/SEngineInstance.hpp>
-
-#include <support/CCommandLineParser.hpp>
-#include <support/CMapDivision.hpp>
-#include <support/SSynchronousScheduler.hpp>
 
 using namespace Kiaro;
 
