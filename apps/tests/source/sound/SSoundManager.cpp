@@ -20,7 +20,7 @@ namespace Kiaro
             Sound::SSoundManager* manager = Sound::SSoundManager::getPointer();
             Sound::CSoundSource* sound = manager->getSoundSource("testfile.wav");
 
-            EXPECT_NE(nullptr, sound);
+            EXPECT_TRUE(sound != nullptr);
             EXPECT_EQ(manager->getSoundSource("testfile.wav"), sound);
 
             Sound::SSoundManager::destroy();
@@ -30,7 +30,7 @@ namespace Kiaro
         {
             Sound::SSoundManager* manager = Sound::SSoundManager::getPointer();
 
-            EXPECT_EQ(nullptr, manager->getSoundSource("nosuchfile.wav"));
+            EXPECT_TRUE(manager->getSoundSource("nosuchfile.wav") != nullptr);
             Sound::SSoundManager::destroy();
         }
     } // End Namespace Support

@@ -74,10 +74,7 @@ namespace Kiaro
                 }
 
                 default:
-                {
                     throw std::domain_error("INetworkPersistable: Encountered unknown type in packDeltas!");
-                    break;
-                }
             }
         }
 
@@ -135,10 +132,7 @@ namespace Kiaro
                     }
 
                     default:
-                    {
                         throw std::domain_error("INetworkPersistable: Encountered unknown type in unpack!");
-                        break;
-                    }
                 }
             }
         }

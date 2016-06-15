@@ -15,7 +15,7 @@ namespace Kiaro
 {
     namespace Support
     {
-        CommandLineParser::CommandLineParser(Common::S32 argc, Common::C8** argv) : mArgv(argv), mArgc(argc),
+        CommandLineParser::CommandLineParser(Common::S32 argc, const Common::C8** argv) : mArgv(argv), mArgc(argc),
             mCurrentLongestFlagLength(0)
         {
             size_t currentFlagHash = 0;

@@ -65,9 +65,9 @@ namespace Kiaro
 
         void SGameWorld::addEntity(Entities::IEntity* entity)
         {
-            assert(dynamic_cast<Entities::IEntity*>(entity));
-            Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
+            assert(entity);
 
+            Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
             if (it == mEntities.end())
                 mEntities.insert(mEntities.end(), entity);
 
@@ -77,6 +77,7 @@ namespace Kiaro
         void SGameWorld::removeEntity(Entities::IEntity* entity)
         {
             assert(entity);
+
             mEntities.erase(entity);
             SObjectRegistry::getPointer()->removeObject(entity);
         }

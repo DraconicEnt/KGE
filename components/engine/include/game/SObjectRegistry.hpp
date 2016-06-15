@@ -98,7 +98,7 @@ namespace Kiaro
                  *  used first. Otherwise, we increment and extend the internal deque.
                  *  @return The next object identifier.
                  */
-                Common::U32 getNextObjectID(void);
+                Common::U64 getNextObjectID(void);
 
                 /**
                  *  @brief Sets the name association of the input object.

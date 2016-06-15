@@ -40,7 +40,7 @@ namespace Kiaro
                  *  @param argc A Kiaro::s32 representing the total number of arguments in our array.
                  *  @param argv An array of Kiaro::c8 representing the input arguments to parse.
                  */
-                CommandLineParser(Common::S32 argc, Common::C8** argv);
+                CommandLineParser(Common::S32 argc, const Common::C8** argv);
 
                 //! Standard Destructor
                 ~CommandLineParser(void);
@@ -74,7 +74,7 @@ namespace Kiaro
                 // Private Members
             private:
                 //! The argv passed into the program's main method.
-                Common::C8** mArgv;
+                const Common::C8** mArgv;
                 //! The argc passed into the program's main method.
                 Common::S32 mArgc;
 

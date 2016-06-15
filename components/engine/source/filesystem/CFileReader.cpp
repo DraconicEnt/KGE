@@ -28,7 +28,7 @@ namespace Kiaro
 
         irr::s32 CFileReader::read(void* buffer, irr::u32 sizeToRead)
         {
-            return PHYSFS_read(mFileHandle, buffer, 1, sizeToRead);
+            return static_cast<irr::s32>(PHYSFS_read(mFileHandle, buffer, 1, sizeToRead));
         }
 
         bool CFileReader::seek(long finalPos, bool relativeMovement)
@@ -36,7 +36,7 @@ namespace Kiaro
             if (relativeMovement)
                 finalPos += PHYSFS_tell(mFileHandle);
 
-            return PHYSFS_seek(mFileHandle, finalPos) != 0;
+            return PHYSFS_seek(mFileHandle, static_cast<PHYSFS_uint64>(finalPos)) != 0;
         }
 
         long CFileReader::getSize() const

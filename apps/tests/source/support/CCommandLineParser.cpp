@@ -10,7 +10,7 @@ namespace Kiaro
 {
     namespace Support
     {
-        static Common::C8* sArgv[] =
+        static const Common::C8* sArgv[] =
         {
             "One",
             "-Two",

@@ -139,7 +139,7 @@ namespace Kiaro
                  *  @note The only reason this destructor is virtual is to prevent compiler warnings when deleting instances that
                  *  are children of this Server class.
                  */
-                ~IServer(void);
+                virtual ~IServer(void);
 
                 // Private Methods
             protected:

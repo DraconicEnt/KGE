@@ -79,7 +79,6 @@ namespace Kiaro
             Common::U32 expectedStreamSize = sizeof(sFloatList);
             CBitStream floatStream(expectedStreamSize - 3);
 
-            bool caughtException = false;
             EXPECT_THROW(PackFloats(floatStream), std::overflow_error);
         }
 

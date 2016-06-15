@@ -13,10 +13,7 @@
 
 #include <filesystem/SResourceProvider.hpp>
 
-#include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Irrlicht/Renderer.h>
-
-#include <allegro5/allegro.h>
 
 #if defined(ENGINE_UNIX)
 #include <allegro5/allegro_x.h>
@@ -29,11 +26,7 @@
 #include <support/SSynchronousScheduler.hpp>
 
 #include <support/SSettingsRegistry.hpp>
-#include <input/SInputListener.hpp>
 #include <video/CSceneGraph.hpp>
-#include <support/Console.hpp>
-
-#include <core/SEngineInstance.hpp>
 
 #include <support/SProfiler.hpp>
 
@@ -246,6 +239,9 @@ namespace Kiaro
             if (al_get_next_event(mWindowEventQueue, &windowEvent))
                 switch (windowEvent.type)
                 {
+                    default:
+                        break;
+
                     case ALLEGRO_EVENT_DISPLAY_CLOSE:
                     {
                         Core::SEngineInstance::getPointer()->kill();

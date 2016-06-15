@@ -72,13 +72,13 @@ namespace Kiaro
 
         TEST(SGameWorld, SingletonConstructor)
         {
-            SGameWorld* world = SGameWorld::getPointer();
+            SGameWorld::getPointer();
 
-            EXPECT_TRUE(sGameWorld);
+            EXPECT_TRUE(sGameWorld != nullptr);
             SGameWorld::destroy();
 
             SObjectRegistry::destroy();
-            EXPECT_FALSE(sGameWorld);
+            EXPECT_TRUE(sGameWorld == nullptr);
         }
 
         TEST(SGameWorld, Lookup)

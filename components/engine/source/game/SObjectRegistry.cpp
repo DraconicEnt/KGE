@@ -77,9 +77,9 @@ namespace Kiaro
             return this->removeObject(object->mID);
         }
 
-        Common::U32 SObjectRegistry::getNextObjectID(void)
+        Common::U64 SObjectRegistry::getNextObjectID(void)
         {
-            Common::U32 result = mObjects.size();
+            Common::U64 result = mObjects.size();
 
             if (mAvailableIDs.size() != 0)
             {

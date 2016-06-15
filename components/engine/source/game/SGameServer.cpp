@@ -14,11 +14,7 @@
 
 #include <game/messages/messages.hpp>
 
-#include <support/Console.hpp>
-
 #include <support/SProfiler.hpp>
-
-#include <core/SEngineInstance.hpp>
 
 namespace Kiaro
 {
@@ -87,7 +83,6 @@ namespace Kiaro
 
         SGameServer::~SGameServer(void)
         {
-            // FIXME (Robert MacGregor#9): Call IServer destructor?
             assert(mSimulation);
             assert(mUpdatePulse);
 

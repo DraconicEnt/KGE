@@ -15,9 +15,9 @@ namespace Kiaro
 
         void CMove::reset(void)
         {
-            this->mX = 0;
-            this->mY = 0;
-            this->mZ = 0;
+            mX = 0;
+            mY = 0;
+            mZ = 0;
 
             for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
                 mTriggers[iteration] = false;

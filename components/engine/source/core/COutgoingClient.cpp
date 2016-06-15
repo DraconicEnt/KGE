@@ -10,8 +10,6 @@
 
 #include <net/stages.hpp>
 
-#include <game/messages/messages.hpp>
-
 #include <core/SEngineInstance.hpp>
 
 namespace Kiaro
@@ -21,6 +19,7 @@ namespace Kiaro
         void COutgoingClient::onConnected(void)
         {
             CONSOLE_INFO("Established connection to remote host.");
+
             // Dispatch our own handshake in response
             Game::Messages::HandShake handShake;
             this->send(&handShake, true);

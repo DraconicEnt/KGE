@@ -70,10 +70,10 @@ namespace Kiaro
 
         Support::String IIncomingClient::getIPAddressString(void) const
         {
-            // TODO (Robert MacGregor#9): Make sure that the STL handles this correctly?
             Common::C8 temporaryBuffer[18];
             enet_address_get_host_ip(&mInternalClient->address, temporaryBuffer, 18);
-            return temporaryBuffer;
+
+            return Support::String(temporaryBuffer);
         }
 
         void IIncomingClient::setConnectionStage(const STAGE_NAME& in)

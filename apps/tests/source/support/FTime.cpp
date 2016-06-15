@@ -43,7 +43,7 @@ namespace Kiaro
                     EXPECT_EQ(iteration, FTime::startTimer());
 
                 // Then cleanup
-                for (Common::U8 iteration = std::numeric_limits<Common::U8>::max() - 1; iteration > 0; iteration--)
+                for (Common::S32 iteration = std::numeric_limits<Common::U8>::max() - 1; iteration > 0; iteration--)
                     EXPECT_NO_THROW(FTime::stopTimer(iteration));
             }
         }

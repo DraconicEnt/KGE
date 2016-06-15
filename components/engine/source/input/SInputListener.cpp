@@ -56,6 +56,9 @@ namespace Kiaro
         {
             switch(code)
             {
+                default:
+                    throw std::runtime_error("Received unknown Allegro key code!");
+
                 case ALLEGRO_KEY_A:
                     return CEGUI::Key::Scan::A;
 
@@ -231,14 +234,14 @@ namespace Kiaro
         void SInputListener::scanJoysticks(void)
         {
             al_reconfigure_joysticks();
-            const Common::U32 joystickCount = al_get_num_joysticks();
+            const Common::S32 joystickCount = al_get_num_joysticks();
             CONSOLE_INFOF("%u joysticks detected.", joystickCount);
 
-            for (Common::U32 joystickID = 0; joystickID < joystickCount; joystickID++)
+            for (Common::S32 joystickID = 0; joystickID < joystickCount; joystickID++)
             {
                 ALLEGRO_JOYSTICK* joystick = al_get_joystick(joystickID);
-                const Common::U32 stickCount = al_get_joystick_num_sticks(joystick);
-                const Common::U32 buttonCount = al_get_joystick_num_buttons(joystick);
+                const Common::S32 stickCount = al_get_joystick_num_sticks(joystick);
+                const Common::S32 buttonCount = al_get_joystick_num_buttons(joystick);
                 CONSOLE_DEBUGF("Joystick %u ------------", joystickID);
                 CONSOLE_DEBUGF("  Name: %s", al_get_joystick_name(joystick));
                 CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
@@ -290,6 +293,9 @@ namespace Kiaro
                 {
                     switch (event.type)
                     {
+                        default:
+                            break;
+
                         case ALLEGRO_EVENT_KEY_UP:
                         case ALLEGRO_EVENT_KEY_DOWN:
                         {
@@ -298,11 +304,10 @@ namespace Kiaro
                             {
                                 auto it = mKeyResponders.find(AllegroKeyToCEGUI(event.keyboard.keycode));
 
-                                if (it != mKeyResponders.end())
-                                    if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
-                                        (*it).second->invoke(true);
-                                    else
-                                        (*it).second->invoke(false);
+                                if (it != mKeyResponders.end() && event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
+                                    (*it).second->invoke(true);
+                                else if (it != mKeyResponders.end())
+                                    (*it).second->invoke(false);
 
                                 break;
                             }
@@ -319,6 +324,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_JOYSTICK_CONFIGURATION:
                         {
                             CONSOLE_INFO("Detected change in joystick configuration.");
+
                             this->scanJoysticks();
                             break;
                         }

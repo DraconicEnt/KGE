@@ -33,24 +33,13 @@
 
 #include <support/tasking/SAsynchronousTaskManager.hpp>
 #include <support/tasking/SAsynchronousSchedulerTask.hpp>
-#include <filesystem/SResourceProvider.hpp>
 #include <input/SInputListener.hpp>
 #include <support/SSettingsRegistry.hpp>
 
 #include <core/config.hpp>
-#include <game/SGameServer.hpp>
-
-#include <net/IOutgoingClient.hpp>
 #include <net/IIncomingClient.hpp>
 
-#include <support/FTime.hpp>
-#include <support/SSynchronousScheduler.hpp>
-
 #include <video/CSceneGraph.hpp>
-
-#include <support/Console.hpp>
-
-#include <core/COutgoingClient.hpp>
 
 #include <support/SProfiler.hpp>
 

@@ -27,7 +27,11 @@ namespace Kiaro
         {
             // Ensure our file exists
             FILE* handle = fopen("existingFile.dat", "w");
-            EXPECT_TRUE(handle);
+            EXPECT_TRUE(handle != nullptr);
+
+            // We can't continue the test if we didn't even get a valid handle
+            if (!handle)
+                return;
 
             fwrite(&Pi, sizeof(Common::F32), 1, handle);
             fwrite(&Uber, sizeof(Common::U32), 1, handle);
@@ -36,7 +40,7 @@ namespace Kiaro
             File::MemoryMappedFile file("existingFile.dat", File::ACCESS_MODE::READ);
 
             file.open();
-            EXPECT_TRUE(file.mAddress);
+            EXPECT_TRUE(file.mAddress != nullptr);
             EXPECT_EQ(sizeof(Common::F32) + sizeof(Common::S32), file.mLength);
 
             // If we're at this point, we should be able to read off Pi and then Uber in the memory
@@ -53,7 +57,7 @@ namespace Kiaro
             file.mLength = 16;
             file.open();
 
-            EXPECT_TRUE(file.mAddress);
+            EXPECT_TRUE(file.mAddress != nullptr);
             Common::F32& someFloat = *reinterpret_cast<Common::F32*>(file.mAddress);
             someFloat = 15;
 

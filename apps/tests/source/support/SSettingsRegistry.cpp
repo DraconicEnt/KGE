@@ -37,7 +37,8 @@ namespace Kiaro
 
         TEST(SSettingsRegistry, Persistance)
         {
-            SSettingsRegistry* settings = SSettingsRegistry::getPointer();
+            SSettingsRegistry::getPointer();
+
             // Write a test block
             SSettingsRegistry::destroy();
         }

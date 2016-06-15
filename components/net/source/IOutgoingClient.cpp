@@ -10,8 +10,6 @@
  */
 
 #include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include <iostream>
 
 #include <enet/enet.h>
@@ -19,8 +17,6 @@
 #include <support/Console.hpp>
 
 #include <net/IOutgoingClient.hpp>
-
-#include <support/CBitStream.hpp>
 
 #include <net/config.hpp>
 #include <net/IMessage.hpp>
