@@ -33,8 +33,10 @@ Common::S32 main(Common::S32 argc, Common::C8* argv[])
     CONSOLE_INFO("------------------------------------------------");
     CONSOLE_INFOF("Kiaro Game Engine %u.%u.%u", VERSION::MAJOR, VERSION::MINOR, VERSION::REVISION);
     CONSOLE_INFO("------------------------------------------------");
+
     // Create our parser as a pointer so we can destroy it when entering the engine
-    Kiaro::Support::CommandLineParser commandLineParser(argc, argv);
+    Kiaro::Support::CommandLineParser commandLineParser(argc, const_cast<const Common::C8**>(argv));
+
     // Register all of the descriptions
     commandLineParser.setFlagDescription("-h", "Displays this help text.");
     commandLineParser.setFlagDescription("-game", "<game name> : Start up the engine with a given game.");
