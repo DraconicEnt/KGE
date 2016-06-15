@@ -11,8 +11,6 @@
 
 #include <gtest/gtest.h>
 
-#include <support/CBitStream.hpp>
-
 namespace Kiaro
 {
     namespace Support

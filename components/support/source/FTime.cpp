@@ -9,6 +9,7 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
+#include <chrono>
 #include <numeric>
 #include <algorithm>
 
@@ -17,7 +18,6 @@
 #include <support/String.hpp>
 
 #include <support/types.hpp>
-#include <support/platform/time.hpp>
 
 namespace Kiaro
 {
@@ -25,12 +25,12 @@ namespace Kiaro
     {
         namespace FTime
         {
-            static Support::Stack<Common::U64> sTimerStack;
+            static Support::Stack<std::chrono::time_point<std::chrono::high_resolution_clock>> sTimerStack;
             static Common::U32 sCurrentSimTime = 0;
 
             Support::FTime::timer startTimer(void)
             {
-                sTimerStack.push(Platform::Time::getCurrentTimeMicroseconds());
+                sTimerStack.push(std::chrono::high_resolution_clock::now());
                 return sTimerStack.size();
             }
 
@@ -49,32 +49,16 @@ namespace Kiaro
                     throw std::runtime_error(errorString);
                 }
 
-                const Common::U64 lastTimeMicroseconds = sTimerStack.top();
-                const Common::U64 currentTimeMicroseconds = Platform::Time::getCurrentTimeMicroseconds();
-                // NOTE (Robert MacGregor#1): Prevents the conversion calculation below from potentially being unrepresentable
-                Common::U64 deltaTimeMicroseconds = currentTimeMicroseconds - lastTimeMicroseconds;
+                const auto lastTimePoint = sTimerStack.top();
+
+                std::chrono::duration<Common::F32> deltaTimePoint = std::chrono::high_resolution_clock::now() - lastTimePoint;
 
                 // Only add deltas if we're the upper most timer
                 if(timerIdentifier == 1)
-                    sCurrentSimTime += deltaTimeMicroseconds;
+                    sCurrentSimTime += deltaTimePoint.count() * 1000000;
 
-                deltaTimeMicroseconds = std::max(static_cast<Common::U64>(100), deltaTimeMicroseconds);
-                Common::F32 result = (Common::F32)(deltaTimeMicroseconds) / 1000000.f;
                 sTimerStack.pop();
-                return result;
-            }
-
-            Common::U64 getTimerResolutionMicroseconds(void)
-            {
-                //timespec tp;
-                //clock_getres(CLOCK_MONOTONIC, &tp);
-                //return tp.tv_nsec;
-                return 0;
-            }
-
-            Common::U64 getSimTimeMicroseconds(void)
-            {
-                return sCurrentSimTime;
+                return deltaTimePoint.count();
             }
 
             Common::U64 getSimTimeMilliseconds(void)

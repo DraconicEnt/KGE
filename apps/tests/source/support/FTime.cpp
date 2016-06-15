@@ -11,11 +11,9 @@
 
 #include <chrono>
 #include <thread>
-#include <numeric>
 
 #include <gtest/gtest.h>
 
-#include <support/Stack.hpp>
 #include <support/FTime.hpp>
 
 namespace Kiaro

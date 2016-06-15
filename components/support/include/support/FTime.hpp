@@ -33,9 +33,6 @@ namespace Kiaro
              */
             Common::F32 stopTimer(const timer& timerIdentifier);
 
-            Common::U64 getTimerResolutionMicroseconds(void) NOTHROW;
-
-            Common::U64 getSimTimeMicroseconds(void) NOTHROW;
             Common::U64 getSimTimeMilliseconds(void) NOTHROW;
         } // End NameSpace Time
     } // End NameSpace Support
