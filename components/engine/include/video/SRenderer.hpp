@@ -20,16 +20,18 @@ namespace Kiaro
         class CScheduledEvent;
     }
 
-    namespace Video
+    namespace Engine
     {
-        class CSceneGraph;
-
-        /**
-         *  @brief The SRenderer is a singleton used to control the core aspects of graphical output of the engine.
-         *  It provides an interface for windowing as well as code to deal with window events such as resizing.
-         */
-        class SRenderer : public Support::ISingleton<SRenderer>
+        namespace Video
         {
+            class CSceneGraph;
+
+            /**
+             *  @brief The SRenderer is a singleton used to control the core aspects of graphical output of the engine.
+             *  It provides an interface for windowing as well as code to deal with window events such as resizing.
+             */
+            class SRenderer : public Support::ISingleton<SRenderer>
+            {
                 // Public Members
             public:
                 //! The color drawn that is drawn when there is pixel space without anything in it.
@@ -40,29 +42,30 @@ namespace Kiaro
 
                 // Private Members
             private:
-                //! The Irrlichr context.
-                irr::IrrlichtDevice* mIrrlichtDevice;
+                //! The Irrlicht context.
+                irr::IrrlichtDevice *mIrrlichtDevice;
                 //! Irrlicht's video driver.
-                irr::video::IVideoDriver* mVideo;
+                irr::video::IVideoDriver *mVideo;
                 //! Irrlicht's scene manager.
-                irr::scene::ISceneManager* mSceneManager;
+                irr::scene::ISceneManager *mSceneManager;
 
                 //! The primary scene used to render the main game.
-                CSceneGraph* mMainScene;
+                CSceneGraph *mMainScene;
                 //! The scene to render.
-                CSceneGraph* mCurrentScene;
+                CSceneGraph *mCurrentScene;
 
                 //! A pointer to the Allegro display we are using.
-                ALLEGRO_DISPLAY* mDisplay;
+                ALLEGRO_DISPLAY *mDisplay;
                 //! A pointer to the event queue for our Allegro display.
-                ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
+                ALLEGRO_EVENT_QUEUE *mWindowEventQueue;
 
                 //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
-                Support::CScheduledEvent* mTimePulse;
+                Support::CScheduledEvent *mTimePulse;
 
                 // Public Methods
             public:
                 SRenderer(void);
+
                 ~SRenderer(void);
 
                 //! Draws a single frame to the Allegro display.
@@ -73,24 +76,25 @@ namespace Kiaro
                  *  @param graph A pointer to the scene graph to be rendering. If this is NULL,
                  *  then no scene is rendered.
                  */
-                void setSceneGraph(CSceneGraph* graph);
+                void setSceneGraph(CSceneGraph *graph);
 
                 /**
                  *  @brief Sets the resolution of the display, if there is one.
                  *  @param resolution The new resolution to use.
                  */
-                void setResolution(const Support::Dimension2DU& resolution);
+                void setResolution(const Support::Dimension2DU &resolution);
 
                 /**
                  *  @brief Returns the pointer to the internally used Irrlicht device.
                  *  @return A pointer to the internally used Irrlicht device.
                  */
-                irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
+                irr::IrrlichtDevice *getIrrlichtDevice(void) const NOTHROW;
 
-                ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
+                ALLEGRO_DISPLAY *getDisplay(void) NOTHROW;
 
-                CSceneGraph* getMainScene(void);
-                CSceneGraph* getCurrentScene(void);
+                CSceneGraph *getMainScene(void);
+
+                CSceneGraph *getCurrentScene(void);
 
                 // Private Methods
             private:
@@ -106,11 +110,12 @@ namespace Kiaro
                  *  @return A Common::S32 representing the status code of renderer initialization.
                  *  @retval 0 for success. Anything else for failure.
                  */
-                Common::S32 initializeRenderer(const Support::Dimension2DU& resolution);
+                Common::S32 initializeRenderer(const Support::Dimension2DU &resolution);
 
                 //! Process all pending events for the game window, such as window resizing.
                 void processWindowEvents(void);
-        };
+            };
+        }
     } // End NameSpace Video
 } // End NameSpace Kiaro
 #endif // _INCLUDE_VIDEO_SRENDERER_HPP_

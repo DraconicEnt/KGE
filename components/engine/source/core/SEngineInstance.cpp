@@ -46,6 +46,7 @@
 #include <sound/SSoundManager.hpp>
 
 #include <game/messages/messages.hpp>
+#include <gui/SGUIManager.hpp>
 
 namespace Kiaro
 {
@@ -126,7 +127,7 @@ namespace Kiaro
             if (this->initializeRenderer() != 0)
                 return 2;
 
-            if (this->initializeGUI() != 0)
+            if (!this->isDedicated() && this->initializeGUI() != 0)
                 return 3;
 
             // Only init sound if we're not a dedicated server.
@@ -134,8 +135,10 @@ namespace Kiaro
                 this->initializeSound();
 
             this->initializeNetwork();
+
             // Initialize the time pulses
             this->initializeScheduledEvents();
+
             mRunning = true;
             this->runGameLoop();
             return 1;
@@ -156,7 +159,7 @@ namespace Kiaro
         }
 
         SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-            mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
+        mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
         {
         }
 
@@ -177,7 +180,7 @@ namespace Kiaro
             Support::SSettingsRegistry::destroy();
             PHYSFS_deinit();
             enet_deinitialize();
-            Video::SRenderer::destroy();
+            Engine::Video::SRenderer::destroy();
             al_uninstall_system();
         }
 
@@ -194,12 +197,15 @@ namespace Kiaro
 
         int SEngineInstance::initializeGUI(void)
         {
+            Engine::GUI::SGUIManager::getPointer();
+
             return 0;
         }
 
         Common::U32 SEngineInstance::initializeRenderer(void)
         {
-            Video::SRenderer* renderer = Video::SRenderer::getPointer();
+            Engine::Video::SRenderer::getPointer();
+
             return 0;
         }
 

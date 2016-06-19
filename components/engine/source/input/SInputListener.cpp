@@ -17,6 +17,8 @@
 #include <support/Console.hpp>
 
 #include <support/SProfiler.hpp>
+#include <gui/SGUIManager.hpp>
+#include <gui/CGUIContext.hpp>
 
 namespace Kiaro
 {
@@ -40,6 +42,8 @@ namespace Kiaro
             al_install_joystick();
             al_register_event_source(mInputQueue, al_get_keyboard_event_source());
             al_register_event_source(mInputQueue, al_get_joystick_event_source());
+            al_register_event_source(mInputQueue, al_get_mouse_event_source());
+
             CONSOLE_INFO("Initialized input subsystem.");
             this->scanJoysticks();
         }
@@ -57,7 +61,12 @@ namespace Kiaro
             switch(code)
             {
                 default:
-                    throw std::runtime_error("Received unknown Allegro key code!");
+                    CONSOLE_DEBUGF("Received unknown Allegro key code: %u", code);
+                    break;
+
+                // Ignored keycodes
+                case ALLEGRO_KEY_PRINTSCREEN:
+                    break;
 
                 case ALLEGRO_KEY_A:
                     return CEGUI::Key::Scan::A;
@@ -263,7 +272,7 @@ namespace Kiaro
 
         void SInputListener::setMouseCaptureEnabled(const bool enabled)
         {
-            Video::SRenderer* renderer = Video::SRenderer::getPointer();
+            Engine::Video::SRenderer* renderer = Engine::Video::SRenderer::getPointer();
 
             if (renderer->mHasDisplay)
             {
@@ -281,8 +290,11 @@ namespace Kiaro
             al_get_mouse_state(&mouseState);
             ALLEGRO_KEYBOARD_STATE keyboardState;
             al_get_keyboard_state(&keyboardState);
+
             CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
-            guiContext.injectMousePosition(mouseState.x, mouseState.y);
+
+            Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::getPointer();
+            gui->getContext("main")->setCursorPosition(Support::Vector2DF(mouseState.x, mouseState.y));
 
             // Process keyboard events
             while (!al_is_event_queue_empty(mInputQueue))
@@ -317,6 +329,17 @@ namespace Kiaro
                                 guiContext.injectKeyDown(AllegroKeyToCEGUI(event.keyboard.keycode));
                             else
                                 guiContext.injectKeyUp(AllegroKeyToCEGUI(event.keyboard.keycode));
+
+                            break;
+                        }
+
+                        case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+                        case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+                        {
+                            if (event.mouse.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                                guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
+                            else
+                                guiContext.injectMouseButtonUp(CEGUI::MouseButton::LeftButton);
 
                             break;
                         }

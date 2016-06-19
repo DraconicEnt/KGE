@@ -60,6 +60,10 @@ namespace Kiaro
         //! A typedef to an std::wstring.
         typedef std::wstring WString;
 
+        typedef irr::core::vector3df Vector3DF;
+
+        typedef irr::core::vector2df Vector2DF;
+
         //! A typedef to a 2D vector type that represents dimensions.
         template <typename storedType>
         using Dimension2D = irr::core::dimension2d<storedType>;

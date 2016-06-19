@@ -16,55 +16,58 @@
 
 namespace Kiaro
 {
-    namespace Video
+    namespace Engine
     {
-        CSceneGraph::CSceneGraph(Video::SRenderer* renderer)
+        namespace Video
         {
-            mRoot = renderer->getIrrlichtDevice()->getSceneManager()->addEmptySceneNode();
-        }
+            CSceneGraph::CSceneGraph(Engine::Video::SRenderer *renderer)
+            {
+                mRoot = renderer->getIrrlichtDevice()->getSceneManager()->addEmptySceneNode();
+            }
 
-        CSceneGraph::~CSceneGraph(void)
-        {
-            assert(mRoot);
+            CSceneGraph::~CSceneGraph(void)
+            {
+                assert(mRoot);
 
-            mRoot->removeAll();
-            mRoot->remove();
-            mRoot = nullptr;
-            CONSOLE_INFO("Destroyed a scene graph.");
-        }
+                mRoot->removeAll();
+                mRoot->remove();
+                mRoot = nullptr;
+                CONSOLE_INFO("Destroyed a scene graph.");
+            }
 
-        void CSceneGraph::add(irr::scene::ISceneNode* node)
-        {
-            mRoot->addChild(node);
-        }
+            void CSceneGraph::add(irr::scene::ISceneNode *node)
+            {
+                mRoot->addChild(node);
+            }
 
-        void CSceneGraph::add(Game::Entities::IEntity* entity)
-        {
-            for (irr::scene::ISceneNode* node: entity->mSceneNodes)
-                this->add(node);
-        }
+            void CSceneGraph::add(Game::Entities::IEntity *entity)
+            {
+                for (irr::scene::ISceneNode *node: entity->mSceneNodes)
+                    this->add(node);
+            }
 
-        bool CSceneGraph::isVisible(void)
-        {
-            return mRoot->isVisible();
-        }
+            bool CSceneGraph::isVisible(void)
+            {
+                return mRoot->isVisible();
+            }
 
-        void CSceneGraph::setVisible(const bool visible)
-        {
-            mRoot->setVisible(visible);
-        }
+            void CSceneGraph::setVisible(const bool visible)
+            {
+                mRoot->setVisible(visible);
+            }
 
-        /*
-                const Common::ColorRGBA &CSceneGraph::getClearColor(void)
-                {
-                    return mClearColor;
-                }
+            /*
+                    const Common::ColorRGBA &CSceneGraph::getClearColor(void)
+                    {
+                        return mClearColor;
+                    }
 
-                void CSceneGraph::setClearColor(const Common::ColorRGBA &color)
-                {
-                    mClearColor = color;
-                }
-                */
+                    void CSceneGraph::setClearColor(const Common::ColorRGBA &color)
+                    {
+                        mClearColor = color;
+                    }
+                    */
 
-    } // End NameSpace Engine
+        } // End NameSpace Engine
+    }
 } // End NameSpace Kiaro

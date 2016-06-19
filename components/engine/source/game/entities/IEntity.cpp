@@ -71,7 +71,7 @@ namespace Kiaro
                 Game::SGameWorld::getPointer()->addEntity(this);
 
                 // Also register the entity with our current scene graph
-                Video::SRenderer::getPointer()->getCurrentScene()->add(this);
+                Engine::Video::SRenderer::getPointer()->getCurrentScene()->add(this);
             }
         } // End Namespace Entities
     } // End Namespace Game
