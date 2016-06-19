@@ -13,6 +13,9 @@
 #include <support/support.hpp>
 #include <support/ISingleton.hpp>
 
+#include <video/CDisplay.hpp>
+#include <support/UnorderedSet.hpp>
+
 namespace Kiaro
 {
     namespace Support
@@ -33,87 +36,92 @@ namespace Kiaro
             class SRenderer : public Support::ISingleton<SRenderer>
             {
                 // Public Members
-            public:
-                //! The color drawn that is drawn when there is pixel space without anything in it.
-                Common::ColorRGBA mClearColor;
+                public:
+                    //! The color drawn that is drawn when there is pixel space without anything in it.
+                    Common::ColorRGBA mClearColor;
 
-                //! A boolean representing whether or not the renderer has a display. It won't have a display in dedicated mode.
-                const bool mHasDisplay;
+                    //! A boolean representing whether or not the renderer has a display. It won't have a display in dedicated mode.
+                    const bool mHasDisplay;
 
                 // Private Members
-            private:
-                //! The Irrlicht context.
-                irr::IrrlichtDevice *mIrrlichtDevice;
-                //! Irrlicht's video driver.
-                irr::video::IVideoDriver *mVideo;
-                //! Irrlicht's scene manager.
-                irr::scene::ISceneManager *mSceneManager;
+                private:
+                    //! The Irrlicht context.
+                    irr::IrrlichtDevice *mIrrlichtDevice;
+                    //! Irrlicht's video driver.
+                    irr::video::IVideoDriver *mVideo;
+                    //! Irrlicht's scene manager.
+                    irr::scene::ISceneManager *mSceneManager;
 
-                //! The primary scene used to render the main game.
-                CSceneGraph *mMainScene;
-                //! The scene to render.
-                CSceneGraph *mCurrentScene;
+                    //! The primary scene used to render the main game.
+                    CSceneGraph *mMainScene;
+                    //! The scene to render.
+                    CSceneGraph *mCurrentScene;
 
-                //! A pointer to the Allegro display we are using.
-                ALLEGRO_DISPLAY *mDisplay;
-                //! A pointer to the event queue for our Allegro display.
-                ALLEGRO_EVENT_QUEUE *mWindowEventQueue;
+                    //! A pointer to the Allegro display we are using.
+                    ALLEGRO_DISPLAY *mDisplay;
+                    //! A pointer to the event queue for our Allegro display.
+                    ALLEGRO_EVENT_QUEUE *mWindowEventQueue;
 
-                //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
-                Support::CScheduledEvent *mTimePulse;
+                    //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
+                    Support::CScheduledEvent *mTimePulse;
+
+                    Support::UnorderedSet<CDisplay*> mDisplays;
 
                 // Public Methods
-            public:
-                SRenderer(void);
+                public:
+                    SRenderer(void);
 
-                ~SRenderer(void);
+                    ~SRenderer(void);
 
-                //! Draws a single frame to the Allegro display.
-                void drawFrame(void);
+                    //! Draws a single frame to the Allegro display.
+                    void drawFrame(void);
 
-                /**
-                 *  @brief Sets the scene graph to render.
-                 *  @param graph A pointer to the scene graph to be rendering. If this is NULL,
-                 *  then no scene is rendered.
-                 */
-                void setSceneGraph(CSceneGraph *graph);
+                    /**
+                     *  @brief Sets the scene graph to render.
+                     *  @param graph A pointer to the scene graph to be rendering. If this is NULL,
+                     *  then no scene is rendered.
+                     */
+                    void setSceneGraph(CSceneGraph *graph);
 
-                /**
-                 *  @brief Sets the resolution of the display, if there is one.
-                 *  @param resolution The new resolution to use.
-                 */
-                void setResolution(const Support::Dimension2DU &resolution);
+                    /**
+                     *  @brief Sets the resolution of the display, if there is one.
+                     *  @param resolution The new resolution to use.
+                     */
+                    void setResolution(const Support::Dimension2DU &resolution);
 
-                /**
-                 *  @brief Returns the pointer to the internally used Irrlicht device.
-                 *  @return A pointer to the internally used Irrlicht device.
-                 */
-                irr::IrrlichtDevice *getIrrlichtDevice(void) const NOTHROW;
+                    /**
+                     *  @brief Returns the pointer to the internally used Irrlicht device.
+                     *  @return A pointer to the internally used Irrlicht device.
+                     */
+                    irr::IrrlichtDevice *getIrrlichtDevice(void) const NOTHROW;
 
-                ALLEGRO_DISPLAY *getDisplay(void) NOTHROW;
+                    ALLEGRO_DISPLAY *getDisplay(void) NOTHROW;
 
-                CSceneGraph *getMainScene(void);
+                    CSceneGraph *getMainScene(void);
 
-                CSceneGraph *getCurrentScene(void);
+                    CSceneGraph *getCurrentScene(void);
+
+                    CDisplay* createDisplay(const Support::String& title);
+
 
                 // Private Methods
-            private:
-                /**
-                 *  @brief Initializes the GUI subsystem and returns a status code.
-                 *  @return A Common::S32 representing the status code of GUI initialization.
-                 *  @retval 0 for success. Anything else for failure.
-                 */
-                Common::S32 initializeGUI(void);
+                private:
+                    /**
+                     *  @brief Initializes the GUI subsystem and returns a status code.
+                     *  @return A Common::S32 representing the status code of GUI initialization.
+                     *  @retval 0 for success. Anything else for failure.
+                     */
+                    Common::S32 initializeGUI(void);
 
-                /**
-                 *  @brief Initializes the renderer itself and returns a status code.
-                 *  @return A Common::S32 representing the status code of renderer initialization.
-                 *  @retval 0 for success. Anything else for failure.
-                 */
-                Common::S32 initializeRenderer(const Support::Dimension2DU &resolution);
+                    /**
+                     *  @brief Initializes the renderer itself and returns a status code.
+                     *  @return A Common::S32 representing the status code of renderer initialization.
+                     *  @retval 0 for success. Anything else for failure.
+                     */
+                    Common::S32 initializeRenderer(const Support::Dimension2DU &resolution);
 
-                //! Process all pending events for the game window, such as window resizing.
-                void processWindowEvents(void);
+                    //! Process all pending events for the game window, such as window resizing.
+                    void processWindowEvents(void);
             };
         }
     } // End NameSpace Video

@@ -30,6 +30,8 @@
 
 #include <gui/SGUIManager.hpp>
 
+#include <allegro5/allegro_opengl.h>
+
 namespace Kiaro
 {
     namespace Engine
@@ -157,6 +159,7 @@ namespace Kiaro
 
                 CONSOLE_INFOF("Irrlicht version is %s.", mIrrlichtDevice->getVersion());
                 CONSOLE_INFO("Initialized renderer.");
+
                 return 0;
             }
 
@@ -248,6 +251,14 @@ namespace Kiaro
                     }
             }
 
+            CDisplay* SRenderer::createDisplay(const Support::String& title)
+            {
+                CDisplay* result = new CDisplay(title);
+
+                mDisplays.insert(mDisplays.end(), result);
+                return result;
+            }
+
             ALLEGRO_DISPLAY *SRenderer::getDisplay(void)
             {
                 return mDisplay;
@@ -256,6 +267,8 @@ namespace Kiaro
             void SRenderer::drawFrame(void)
             {
                 PROFILER_BEGIN(Render);
+                al_set_current_opengl_context(mDisplay);
+
                 mVideo->beginScene(true, true, mClearColor);
 
                 if (mCurrentScene)
@@ -272,6 +285,26 @@ namespace Kiaro
 
                 this->processWindowEvents();
                 al_inhibit_screensaver(true);
+
+                // Draw the aux displays
+                // FIXME: Currently there is buffering problems with multiple displays
+                for (CDisplay* display: mDisplays)
+                {
+                    al_set_current_opengl_context(display->mDisplay);
+
+                    mVideo->beginScene(true, true, mClearColor);
+
+                    if (mCurrentScene)
+                        mSceneManager->drawAll();
+
+                    GUI::SGUIManager::getPointer()->draw();
+
+                    mVideo->endScene();
+
+                    #if !defined(ENGINE_WIN)
+                    al_flip_display();
+                    #endif
+                }
 
                 PROFILER_END(Render);
             }
