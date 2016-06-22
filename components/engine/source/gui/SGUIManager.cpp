@@ -1,5 +1,12 @@
-/*
+/**
+ *  @file SGUIManager.cpp
+ *  @brief Source file implementing the SGUIManager singleton class.
  *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <gui/SGUIManager.hpp>
@@ -10,17 +17,15 @@
 #include <filesystem/SResourceProvider.hpp>
 #include <support/SSettingsRegistry.hpp>
 
-#include <CEGUI/RendererModules/OpenGL/GLRenderer.h>
-
 namespace Kiaro
 {
     namespace Engine
     {
         namespace GUI
         {
-            static SGUIManager *sInstance = nullptr;
+            static SGUIManager* sInstance = nullptr;
 
-            SGUIManager *SGUIManager::getPointer(void)
+            SGUIManager* SGUIManager::getPointer(void)
             {
                 if (!sInstance)
                     sInstance = new SGUIManager();
@@ -41,8 +46,7 @@ namespace Kiaro
 
             void SGUIManager::setResolution(const Support::Dimension2DU &resolution)
             {
-                CEGUI::System::getSingleton().notifyDisplaySizeChanged(
-                        CEGUI::Sizef(resolution.Width, resolution.Height));
+                CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Sizef(resolution.Width, resolution.Height));
             }
 
             SGUIManager::SGUIManager(void)

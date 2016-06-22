@@ -1,6 +1,6 @@
 /**
  *  @file SInputListener.cpp
- *  @brief Include file defining the Server and related functions.
+ *  @brief Source file implementing the SInputListener singleton class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -18,13 +18,12 @@
 
 #include <support/SProfiler.hpp>
 #include <gui/SGUIManager.hpp>
-#include <gui/CGUIContext.hpp>
 
 namespace Kiaro
 {
     namespace Input
     {
-        void SInputListener::setKeyResponder(const CEGUI::Key::Scan key, KeyResponderDelegate* responder)
+        void SInputListener::setKeyResponder(const CEGUI::Key::Scan key, AnalogResponderDelegate* responder)
         {
             if (!responder)
             {
@@ -40,11 +39,14 @@ namespace Kiaro
             al_install_mouse();
             al_install_keyboard();
             al_install_joystick();
+
             al_register_event_source(mInputQueue, al_get_keyboard_event_source());
             al_register_event_source(mInputQueue, al_get_joystick_event_source());
             al_register_event_source(mInputQueue, al_get_mouse_event_source());
 
             CONSOLE_INFO("Initialized input subsystem.");
+
+            // Perform the initial joystick scan
             this->scanJoysticks();
         }
 
@@ -54,6 +56,8 @@ namespace Kiaro
             al_uninstall_keyboard();
             al_uninstall_joystick();
             al_destroy_event_queue(mInputQueue);
+
+            CONSOLE_INFO("Destroyed input subsystem.");
         }
 
         static inline CEGUI::Key::Scan AllegroKeyToCEGUI(const Common::U32 code)
@@ -242,13 +246,46 @@ namespace Kiaro
 
         void SInputListener::scanJoysticks(void)
         {
-            al_reconfigure_joysticks();
+            // Check for any joysticks that were removed
+            if (al_reconfigure_joysticks())
+            {
+                CONSOLE_INFO("Joystick configuration changed.");
+
+                Support::UnorderedSet<ALLEGRO_JOYSTICK*> removedJoysticks;
+                for (ALLEGRO_JOYSTICK* joystick: mAttachedJoysticks)
+                    if (!al_get_joystick_active(joystick))
+                    {
+                        CONSOLE_INFOF("Detected removed joystick: %s", al_get_joystick_name(joystick));
+                        removedJoysticks.insert(removedJoysticks.end(), joystick);
+
+                        // Emit the event that the joystick was removed
+                        mJoystickConfigEventSet.invoke(joystick, false);
+                    }
+
+                // Now delete the removed joysticks
+                for (ALLEGRO_JOYSTICK* removedJoystick: removedJoysticks)
+                {
+                    mButtonResponders.erase(removedJoystick);
+                    mAttachedJoysticks.erase(removedJoystick);
+
+                    al_release_joystick(removedJoystick);
+                }
+            }
+
             const Common::S32 joystickCount = al_get_num_joysticks();
             CONSOLE_INFOF("%u joysticks detected.", joystickCount);
 
-            for (Common::S32 joystickID = 0; joystickID < joystickCount; joystickID++)
+            for (Common::S32 joystickID = 0; joystickID < joystickCount; ++joystickID)
             {
                 ALLEGRO_JOYSTICK* joystick = al_get_joystick(joystickID);
+
+                // Detect any added joysticks
+                if (mAttachedJoysticks.find(joystick) == mAttachedJoysticks.end())
+                {
+                    mAttachedJoysticks.insert(mAttachedJoysticks.end(), joystick);
+                    CONSOLE_INFO("New joystick attached");
+                }
+
                 const Common::S32 stickCount = al_get_joystick_num_sticks(joystick);
                 const Common::S32 buttonCount = al_get_joystick_num_buttons(joystick);
                 CONSOLE_DEBUGF("Joystick %u ------------", joystickID);
@@ -256,13 +293,13 @@ namespace Kiaro
                 CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
                 CONSOLE_DEBUGF("  Button Count: %u", buttonCount);
 
-                for (Common::U32 buttonID = 0; buttonID < buttonCount; buttonID++)
+                for (Common::U32 buttonID = 0; buttonID < buttonCount; ++buttonID)
                 {
                     CONSOLE_DEBUGF("  Button %u -----------", buttonID);
                     CONSOLE_DEBUGF("    Name: %s", al_get_joystick_button_name(joystick, buttonID));
                 }
 
-                for (Common::U32 stickID = 0; stickID < stickCount; stickID++)
+                for (Common::U32 stickID = 0; stickID < stickCount; ++stickID)
                 {
                     CONSOLE_DEBUGF("  Stick %u -----------", stickID);
                     CONSOLE_DEBUGF("    Name: %s", al_get_joystick_stick_name(joystick, stickID));
@@ -293,10 +330,13 @@ namespace Kiaro
 
             CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
 
+            // TODO: This is bound to go weird in some situations probably; like breaking responders for non-typable keys (like F1-F12)
+            mTyping = guiContext.getInputCaptureWindow() != nullptr;
+
             Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::getPointer();
             gui->getContext("main")->setCursorPosition(Support::Vector2DF(mouseState.x, mouseState.y));
 
-            // Process keyboard events
+            // Process input events
             while (!al_is_event_queue_empty(mInputQueue))
             {
                 ALLEGRO_EVENT event;
@@ -308,6 +348,7 @@ namespace Kiaro
                         default:
                             break;
 
+                        // Keyboard key events
                         case ALLEGRO_EVENT_KEY_UP:
                         case ALLEGRO_EVENT_KEY_DOWN:
                         {
@@ -317,9 +358,9 @@ namespace Kiaro
                                 auto it = mKeyResponders.find(AllegroKeyToCEGUI(event.keyboard.keycode));
 
                                 if (it != mKeyResponders.end() && event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
-                                    (*it).second->invoke(true);
+                                    (*it).second->invoke(1.0f);
                                 else if (it != mKeyResponders.end())
-                                    (*it).second->invoke(false);
+                                    (*it).second->invoke(0.0f);
 
                                 break;
                             }
@@ -333,6 +374,7 @@ namespace Kiaro
                             break;
                         }
 
+                        // Mouse Events
                         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
                         case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
                         {
@@ -344,11 +386,31 @@ namespace Kiaro
                             break;
                         }
 
+                        // Joystick events
                         case ALLEGRO_EVENT_JOYSTICK_CONFIGURATION:
                         {
                             CONSOLE_INFO("Detected change in joystick configuration.");
 
                             this->scanJoysticks();
+                            break;
+                        }
+
+                        case ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN:
+                        case ALLEGRO_EVENT_JOYSTICK_BUTTON_UP:
+                        {
+                            if (mButtonResponders.find(event.joystick.id) != mButtonResponders.end())
+                            {
+                                ALLEGRO_JOYSTICK* joystick = event.joystick.id;
+
+                                if (mButtonResponders[joystick].find(event.joystick.button) != mButtonResponders[joystick].end())
+                                    mButtonResponders[joystick][event.joystick.button]->invoke(event.joystick.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN);
+                            }
+
+                            break;
+                        }
+
+                        case ALLEGRO_EVENT_JOYSTICK_AXIS:
+                        {
                             break;
                         }
                     }

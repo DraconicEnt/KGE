@@ -1,6 +1,6 @@
 /**
  *  @file CBulletDebugDrawer.hpp
- *  @brief Include file declaring the CBulletDebugDrawer class and its methods.
+ *  @brief Include file declaring the CBulletDebugDrawer class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -9,8 +9,8 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#ifndef _INCLUDE_ENGINE_CBULLETDEBUGDRAWER_HPP_
-#define _INCLUDE_ENGINE_CBULLETDEBUGDRAWER_HPP_
+#ifndef _INCLUDE_ENGINE_VIDEO_CBULLETDEBUGDRAWER_HPP_
+#define _INCLUDE_ENGINE_VIDEO_CBULLETDEBUGDRAWER_HPP_
 
 #include <LinearMath/btIDebugDraw.h>
 #include <irrlicht.h>
@@ -19,30 +19,39 @@
 
 namespace Kiaro
 {
-    namespace Video
+    namespace Engine
     {
-        /**
-         *  @brief The CBulletDebugDrawer is a interface class to Bullet for rendering debug information about
-         *  the physical simulation to the scene.
-         */
-        class CBulletDebugDrawer : public btIDebugDraw
+        namespace Video
         {
+            /**
+             *  @brief The CBulletDebugDrawer is a interface class to Bullet for rendering debug information about
+             *  the physical simulation to the scene.
+             */
+            class CBulletDebugDrawer : public btIDebugDraw
+            {
                 // Public Methods
-            public:
-                CBulletDebugDrawer(irr::IrrlichtDevice* irrlicht);
+                public:
+                    CBulletDebugDrawer(irr::IrrlichtDevice* irrlicht);
 
-                virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
-                virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, Kiaro::Common::S32 lifeTime, const btVector3& color);
-                virtual void reportErrorWarning(const char* warningString);
-                virtual void draw3dText(const btVector3& location, const char* textString);
-                virtual void setDebugMode(Kiaro::Common::S32 debugMode);
-                virtual int getDebugMode() const;
+                    virtual void drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color);
+
+                    virtual void drawContactPoint(const btVector3 &PointOnB, const btVector3 &normalOnB, btScalar distance,
+                                                  Kiaro::Common::S32 lifeTime, const btVector3 &color);
+
+                    virtual void reportErrorWarning(const char* warningString);
+
+                    virtual void draw3dText(const btVector3 &location, const char* textString);
+
+                    virtual void setDebugMode(Kiaro::Common::S32 debugMode);
+
+                    virtual int getDebugMode() const;
 
                 // Private Members
-            private:
-                Common::S32 mDebugMode;
-                irr::IrrlichtDevice* mIrrlicht;
-        };
+                private:
+                    Common::S32 mDebugMode;
+                    irr::IrrlichtDevice* mIrrlicht;
+            };
+        } // End NameSpace Video
     } // End NameSpace Engine
 } // End NameSpace Kiaro
-#endif // _INCLUDE_ENGINE_CBULLETDEBUGDRAWER_HPP_
+#endif // _INCLUDE_ENGINE_VIDEO_CBULLETDEBUGDRAWER_HPP_

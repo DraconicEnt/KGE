@@ -260,23 +260,25 @@ namespace Kiaro
 
             // Private Members
             private:
-
                 //! A boolean representing whether or not the engine is running
                 bool mRunning;
+
                 //! An enumeration representing the engine run status.
                 MODE_NAME mEngineMode;
 
-                Common::C8* mTargetServerAddress;
+                Support::String mTargetServerAddress;
                 Common::U16 mTargetServerPort;
 
                 //! The name of the currently running game name.
                 Support::String mGameName;
 
+                //! All of the mod names we are running on top of our game, in order.
                 Support::Vector<Support::String> mModNames;
 
                 //! A pointer to the active outgoing client.
                 COutgoingClient* mActiveClient;
 
+                //! A pointer to the scheduled event for the perf stat printout, if enabled.
                 Support::CScheduledEvent* mPerfStatSchedule;
         };
     } // End Namespace Engine
