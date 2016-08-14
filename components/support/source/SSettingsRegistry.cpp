@@ -17,14 +17,20 @@ namespace Kiaro
     {
         void SSettingsRegistry::setDefaultValues(void)
         {
+            // Set Server Defaults
             this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
             this->setValue<Common::U16>("Server::ListenPort", 11595);
             this->setValue<Common::U32>("Server::MaximumClientCount", 32);
+
+            // Video
             this->setValue<bool>("Video::Fullscreen", false);
             this->setValue<irr::core::dimension2d<Common::U32>>("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
             this->setValue<Common::U16>("Video::ActiveFPS", 60);
             this->setValue<Common::U16>("Video::InactiveFPS", 15);
+
+            // Internal System
             this->setValue<Common::U8>("System::WorkerThreadCount", 6);
+            this->setValue<Common::U8>("System::RuntimeThreadCount", 6);
         }
 
         SSettingsRegistry::SSettingsRegistry(void)
@@ -131,6 +137,11 @@ namespace Kiaro
                 al_add_config_comment(config, "System", "WorkerThreadCount dictates how many worker threads will be created for the asynchronous task manager");
                 al_add_config_comment(config, "System", "If WorkerThreadCount=0 then the async tasker is disabled and such tasks will be handled synchronously");
                 al_set_config_value(config, "System", "WorkerThreadCount", tempBuffer);
+
+                // Runtime Thread Count
+                sprintf(tempBuffer, "%u", this->getValue<Common::U8>("System::RuntimeThreadCount"));
+                al_add_config_comment(config, "System", "RuntimeThreadCount dictates how many worker threads will be used for the engine runtime.");
+                al_set_config_value(config, "System", "RuntimeThreadCount", tempBuffer);
 
                 // We're done
                 al_save_config_file("config.cfg", config);

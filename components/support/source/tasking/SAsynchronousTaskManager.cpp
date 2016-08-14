@@ -52,6 +52,7 @@ namespace Kiaro
                     currentWorker->mIsComplete = true;
                     currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
                     currentWorker->mThread->detach();
+
                     mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                 }
 

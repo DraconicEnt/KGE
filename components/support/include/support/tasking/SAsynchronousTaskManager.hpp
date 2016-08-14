@@ -25,8 +25,11 @@ namespace Kiaro
         {
             typedef struct
             {
+                //! The internal thread constructed for this worker context.
                 Support::Thread* mThread;
+                //! The task that we are running for this worker context.
                 Tasking::ITask* mTask;
+                //! An atomic boolean used as a semaphore for thread completion.
                 Support::Atomic<bool> mIsComplete;
 
             } WorkerContext;
