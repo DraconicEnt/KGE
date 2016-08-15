@@ -1,8 +1,9 @@
 /**
  */
 
+#include <algorithm>
+
 #include <support/SSettingsRegistry.hpp>
-#include <support/tasking/SAsynchronousTaskManager.hpp>
 
 #include <support/tasking/SThreadSystem.hpp>
 
@@ -12,6 +13,22 @@ namespace Kiaro
     {
         namespace Tasking
         {
+            static SThreadSystem* sInstance = nullptr;
+
+            SThreadSystem* SThreadSystem::getPointer(void)
+            {
+                if (!sInstance)
+                    sInstance = new SThreadSystem();
+
+                return sInstance;
+            }
+
+            void SThreadSystem::destroy(void)
+            {
+                delete sInstance;
+                sInstance = nullptr;
+            }
+
             static void workerThreadLogic(WorkerContext* context)
             {
                 // TODO (Robert MacGregor #9): Detect thread error?
@@ -28,7 +45,7 @@ namespace Kiaro
                         continue;
                     }
 
-                    context->mIsComplete = context->mTask->tick(0.00f);
+                    context->mIsComplete = context->mTask->mIsComplete = context->mTask->tick(0.00f);
                 }
             }
 
@@ -40,51 +57,71 @@ namespace Kiaro
                 {
                     WorkerContext* currentWorker = new WorkerContext();
 
-                    currentWorker->mTask = nullptr;
+                    currentWorker->mTask = new CThreadSystemTask();
                     currentWorker->mIsComplete = true;
                     currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
                     currentWorker->mThread->detach();
 
                     mInactiveThreads.insert(mInactiveThreads.end(), currentWorker);
                 }
+
+                CONSOLE_INFOF("Initialized with %u worker threads.", threadCount);
+            }
+
+            SThreadSystem::~SThreadSystem(void)
+            {
+
             }
 
             void SThreadSystem::update(void)
             {
-                Support::UnorderedSet<WorkerContext*> completedWorkers;
-
-                // Look for any thread contexts that have completed
-                for (auto it = mActiveThreads.begin(); it != mActiveThreads.end(); it++)
+                // Blow over every thread group we have active for this
+                for (Support::Vector<WorkerContext*>& currentGroup: mPhaseProcessing)
                 {
-                    WorkerContext* context = *it;
+                    Support::UnorderedSet<WorkerContext*> completedThreads;
 
-                    if (context->mIsComplete)
+                    // Count how many threads have completed in this group
+                    Common::U8 completedThreadCount = 0;
+                    for (WorkerContext* context: currentGroup)
+                        if (context->mIsComplete)
+                            ++completedThreadCount;
+
+                    // If everything in the group has completed, we process all the transactions
+                    if (completedThreadCount == currentGroup.size())
                     {
-                        completedWorkers.insert(completedWorkers.end(), context);
-
-                        // Process any transactions
-                        CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
-                        while (!task->mTransactions.empty())
+                        for (WorkerContext* context: currentGroup)
                         {
-                            Support::Queue<EasyDelegate::IDeferredCaller*>& transactionSet = task->mTransactions.front();
-                            task->mTransactions.pop();
+                            mInactiveThreads.push_back(context);
 
-                            while (!transactionSet.empty())
+                            auto activeThreadIter = mActiveThreads.find(context);
+                            assert(activeThreadIter != mActiveThreads.end());
+                            mActiveThreads.erase(activeThreadIter);
+
+                            // Process any transactions
+                            CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
+
+                            assert(task->mDebugMutex.try_lock());
+                            while (!task->mTransactions.empty())
                             {
-                                EasyDelegate::IDeferredCaller* caller = transactionSet.front();
-                                transactionSet.pop();
+                                Support::Queue<EasyDelegate::IDeferredCaller*> transactionSet = task->mTransactions.front();
+                                task->mTransactions.pop();
 
-                                caller->genericDispatch();
+                                while (!transactionSet.empty())
+                                {
+                                    EasyDelegate::IDeferredCaller* caller = transactionSet.front();
+                                    caller->genericDispatch();
+                                    delete caller;
+
+                                    transactionSet.pop();
+                                }
                             }
-                        }
-                    }
-                }
 
-                // Now we move the contexts over
-                for (auto it = completedWorkers.begin(); it != completedWorkers.end(); it++)
-                {
-                    WorkerContext* context = *it;
-                    mInactiveThreads.insert(mInactiveThreads.end(), context);
+                            task->mDebugMutex.unlock();
+                        }
+
+                        // The group is done, so we clear it for this frame
+                        currentGroup.clear();
+                    }
                 }
 
                 // When the active threads is empty, we either completed a phase or this is first update call
@@ -93,22 +130,57 @@ namespace Kiaro
                     ++mCurrentPhase = mCurrentPhase >= mThreadPhases.size() ? 0 : mCurrentPhase;
 
                     // Now we assign the threads for the next phase
-                    const Support::Vector<Support::Vector<ThreadAction>>& currentPhase = mThreadPhases[mCurrentPhase];
+                    Support::Vector<Support::Vector<ThreadAction>>& currentPhase = mThreadPhases[mCurrentPhase];
 
-                    const Common::U8 division = currentPhase.size() / mInactiveThreads.size();
-                    const Common::U8 spillOver = currentPhase.size() % mInactiveThreads.size();
+                    // Create the phase mirror (this is used to submit transactions)
+                    // FIXME: Perhaps just clear existing phases and allocate any extras needed? mCurrentPhase will never count more.
+                    mPhaseProcessing.clear();
 
-                    /* TODO: Phase processing assignment */
+                    for (Common::U8 iteration = 0; iteration < currentPhase.size(); iteration++)
+                        mPhaseProcessing.insert(mPhaseProcessing.end(), Support::Vector<WorkerContext*>());
+
+                    Common::U8 availableThreadCount = mInactiveThreads.size();
+
+                    // We map all thread actions across the available threads
+                    Common::U8 maxThreadIndex = 0;
+                    Common::U8 currentThreadIndex = 0;
+
+                    for (Common::U8 threadGroupIndex = 0; threadGroupIndex < currentPhase.size(); ++threadGroupIndex)
+                    {
+                        Support::Vector<ThreadAction>& threadGroup = currentPhase[threadGroupIndex];
+
+                        // Assign each action
+                        for (Common::U8 iteration = 0; iteration < threadGroup.size(); iteration++)
+                        {
+                            WorkerContext* context = mInactiveThreads[currentThreadIndex];
+                            CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
+
+                            mActiveThreads.insert(mActiveThreads.end(), context);
+                            mPhaseProcessing[iteration].insert(mPhaseProcessing[iteration].end(), context);
+
+                            // Push our actions
+                            assert(task->mDebugMutex.try_lock());
+                            task->mThreadActions.push(std::make_pair(threadGroupIndex, threadGroup[iteration]));
+                            task->mDebugMutex.unlock();
+
+                            ++currentThreadIndex %= mInactiveThreads.size();
+                            ++maxThreadIndex = maxThreadIndex >= mInactiveThreads.size() ? mInactiveThreads.size() - 1 : maxThreadIndex;
+                        }
+                    }
+
+                    // Trigger the threads to run only after the assignments are done
+                   for (Common::U8 iteration = 0; iteration < maxThreadIndex; ++iteration)
+                        mInactiveThreads[iteration]->mIsComplete = false;
+
+                    // Erase the threads we are currently using
+                    mInactiveThreads.erase(mInactiveThreads.begin(), mInactiveThreads.begin() + maxThreadIndex);
                 }
             }
 
-            Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& SThreadSystem::addPhase(void)
+            void SThreadSystem::addPhase(Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& newPhase)
             {
-                Support::Vector<Support::Vector<ThreadAction>> newPhase;
-
                 // Return the reference to the actual stored vector, the one above is a temporary stack element
-                mThreadPhases.insert(mThreadPhases.end(), newPhase);
-                return *mThreadPhases.end();
+                mThreadPhases.push_back(newPhase);
             }
 
             Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& SThreadSystem::getPhase(const size_t phase)
@@ -123,15 +195,19 @@ namespace Kiaro
 
             bool CThreadSystemTask::tick(const Common::F32 deltaTimeSeconds)
             {
-                assert(!mThreadActions.empty());
+                assert(mDebugMutex.try_lock());
 
-                SThreadSystem::ThreadAction nextAction = mThreadActions.front();
+                assert(mThreadActions.size() != 0);
+
+                auto nextActionData = mThreadActions.front();
                 mThreadActions.pop();
 
-                Support::Queue<EasyDelegate::IDeferredCaller*> transaction = nextAction->invoke();
+                Support::Queue<EasyDelegate::IDeferredCaller*> transaction = nextActionData.second->invoke();
                 mTransactions.push(transaction);
 
-                return true;
+                mDebugMutex.unlock();
+
+                return mThreadActions.size() == 0;
             }
 
             void CThreadSystemTask::deinitialize(void)

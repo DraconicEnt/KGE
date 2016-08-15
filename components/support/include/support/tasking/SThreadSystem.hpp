@@ -9,6 +9,8 @@
 #include <support/Set.hpp>
 #include <support/UnorderedSet.hpp>
 
+#include <support/tasking/SAsynchronousTaskManager.hpp>
+
 #include <easydelegate/easydelegate.hpp>
 
 namespace Kiaro
@@ -40,14 +42,19 @@ namespace Kiaro
                     //! A set of threads currently executing some code.
                     Support::UnorderedSet<WorkerContext*> mActiveThreads;
                     //! A set of idle threads waiting for something to do.
-                    Support::UnorderedSet<WorkerContext*> mInactiveThreads;
+                    Support::Vector<WorkerContext*> mInactiveThreads;
 
                     //! The thread phases we are operating with.
                     Support::Vector<Support::Vector<Support::Vector<ThreadAction>>> mThreadPhases;
 
+                    //! A mirror of the current phase thread groups.
+                    Support::Vector<Support::Vector<WorkerContext*>> mPhaseProcessing;
+
+                // Public Methods
                 public:
-                    //! A parameter-less constructor.
-                    SThreadSystem(void);
+                    static SThreadSystem* getPointer(void);
+
+                    static void destroy(void);
 
                     //! Update method called from the main thread.
                     void update(void);
@@ -56,7 +63,7 @@ namespace Kiaro
                      *  @brief Adds a new thread phase to this thread system, returning a reference to it.
                      *  @return A reference to the thread phrase.
                      */
-                    Support::Vector<Support::Vector<ThreadAction>>& addPhase(void);
+                    void addPhase(Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& newPhase);
 
                     /**
                      *  @brief Grabs the existing thread phase by phase ID.
@@ -65,6 +72,13 @@ namespace Kiaro
                      */
                     Support::Vector<Support::Vector<ThreadAction>>& getPhase(const size_t phase);
 
+                // Private Methods
+                private:
+                    //! A parameter-less constructor.
+                    SThreadSystem(void);
+
+                    //! Standard destructor.
+                    ~SThreadSystem(void);
             };
 
             /**
@@ -88,10 +102,13 @@ namespace Kiaro
                     //! Deinitializes the task, destroying any associated resources.
                     virtual void deinitialize(void);
 
+                    //! Mutex used for detecting race conditions
+                    Support::Mutex mDebugMutex;
+
                 // Public Members
                 public:
                     //! A queue of actions for this thread to execute.
-                    Support::Queue<SThreadSystem::ThreadAction> mThreadActions;
+                    Support::Queue<std::pair<Common::U8, SThreadSystem::ThreadAction>> mThreadActions;
 
                     //! A queue of generic deferred callers to dispatch for the transaction.
                     Support::Queue<Support::Queue<EasyDelegate::IDeferredCaller*>> mTransactions;

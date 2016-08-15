@@ -28,12 +28,12 @@ namespace Kiaro
              */
             class ITask
             {
-                    // Public Members
+                // Public Members
                 public:
                     //! A boolean representing whether or not this task instance is currently complete.
                     bool mIsComplete;
 
-                    // Public Methods
+                // Public Methods
                 public:
                     //! Initializes the task, allocating any necessary resources.
                     virtual void initialize(void) = 0;
