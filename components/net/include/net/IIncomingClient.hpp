@@ -1,5 +1,5 @@
 /**
- *  @file CClient.h
+ *  @file IIncomingClient.hpp
  *  @brief Include file declaring the CIncomingClient type.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer

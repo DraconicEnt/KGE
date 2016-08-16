@@ -1,6 +1,6 @@
 /**
  *  @file SProfiler.hpp
- *  @brief Include file defining the Kiaro::Support::CBitStream class.
+ *  @brief Include file declaring the SProfiler singleton class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

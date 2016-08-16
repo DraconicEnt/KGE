@@ -1,6 +1,6 @@
 /**
- *  @file CMapDivision.h
- *  @brief Header file defining the Kiaro::Support::MapDivision class.
+ *  @file CMapDivision.hpp
+ *  @brief Header file defining the Kiaro::Support::CMapDivision class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

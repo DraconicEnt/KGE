@@ -1,6 +1,6 @@
 /**
- *  @file SSynchronousSchedulerTask.hpp
- *  @brief Include file declaring the Support::Tasking::SAsynchronousScheduler singleton type.
+ *  @file SAsynchronousSchedulerTask.hpp
+ *  @brief Include file declaring the SAsynchronousSchedulerTask singleton class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

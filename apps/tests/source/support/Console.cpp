@@ -1,6 +1,6 @@
 /**
- *  @file CBitStream.cpp
- *  @brief Source file containing coding for the BitStream tests.
+ *  @file Console.cpp
+ *  @brief Source file containing coding for the Console tests.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

@@ -1,6 +1,6 @@
 /**
  *  @file SSynchronousTaskManager.hpp
- *  @brief Include file declaring the Support::Tasking::SSynchrnousTaskManager singleton type.
+ *  @brief Include file declaring the Support::Tasking::SSynchronousTaskManager singleton type.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

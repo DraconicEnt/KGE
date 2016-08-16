@@ -1,6 +1,6 @@
 /**
  *  @file INetworkPersistable.hpp
- *  @brief Include file defining the NetworkPersistableBase base class.
+ *  @brief Include file defining the INetworkPersistableBase interface class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

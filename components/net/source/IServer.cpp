@@ -1,6 +1,6 @@
 /**
- *  @file ServerSingleton.cpp
- *  @brief Include file defining the Server and related functions.
+ *  @file IServer.cpp
+ *  @brief Source file implementing the IServer interface class methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

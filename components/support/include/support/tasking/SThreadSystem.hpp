@@ -1,4 +1,12 @@
 /**
+ *  @file SThreadSystem.hpp
+ *  @brief Include file declaring the SThreadSystem singleton class and its methods.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_SUPPORT_TASKING_STHREADSYSTEM_HPP_
@@ -26,12 +34,13 @@ namespace Kiaro
              *  @detail The threaded runtime is arranged into a series of phases that have thread groups that execute concurrent
              *  to one another in a read only game state environment. Instead of writing changes directly to the game state,
              *  we use EasyDelegate to defer calls into a queue and dispatch that as a single transaction once the main thread is
-             *  ready to.
+             *  ready to and a thread group within the current phase has completed.
              */
             class SThreadSystem
             {
                 // Public Members
                 public:
+                    //! A pointer to a stored thread action to execute.
                     typedef EasyDelegate::DelegateSet<Support::Queue<EasyDelegate::IDeferredCaller*>>::StoredDelegateType* ThreadAction;
 
                 // Private Members
@@ -82,7 +91,10 @@ namespace Kiaro
             };
 
             /**
-             *  @brief A task context for the thread system to make worker threads execute.
+             *  @brief A task context for the thread system to make worker threads execute using.
+             *  @detail The CThreadSystem instance essentially just cycles through any thread actions left to complete for
+             *  this thread and returns false when there is finally no actions left to execute, causing the executing thread
+             *  to go into a idle sleeping state.
              */
             class CThreadSystemTask : public ITask
             {

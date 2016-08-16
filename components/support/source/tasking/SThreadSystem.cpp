@@ -1,7 +1,13 @@
 /**
+ *  @file SThreadSystem.cpp
+ *  @brief Source implementation for the SThreadSystem singleton class.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
-
-#include <algorithm>
 
 #include <support/SSettingsRegistry.hpp>
 
@@ -45,7 +51,10 @@ namespace Kiaro
                         continue;
                     }
 
-                    context->mIsComplete = context->mTask->mIsComplete = context->mTask->tick(0.00f);
+                    // Give the compiler a big hint about the type of object we're using here
+                    CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
+
+                    context->mIsComplete = task->mIsComplete = task->tick(0.00f);
                 }
             }
 

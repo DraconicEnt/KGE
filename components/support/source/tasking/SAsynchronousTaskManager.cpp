@@ -1,11 +1,18 @@
 /**
+ *  @file SAsynchronousTasKmanager.cpp
+ *  @brief Source file implementing the SAsynchronousTaskManager singleton class methods.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <chrono>
 #include <thread>
 
 #include <support/Console.hpp>
-//#include <core/config.hpp>
 #include <support/SSettingsRegistry.hpp>
 
 #include <support/tasking/SSynchronousTaskManager.hpp>
