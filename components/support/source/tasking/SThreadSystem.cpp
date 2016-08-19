@@ -85,10 +85,10 @@ namespace Kiaro
             void SThreadSystem::update(void)
             {
                 // Blow over every thread group we have active for this
+                Support::UnorderedSet<WorkerContext*> doneContexts;
+
                 for (Support::Vector<WorkerContext*>& currentGroup: mPhaseProcessing)
                 {
-                    Support::UnorderedSet<WorkerContext*> completedThreads;
-
                     // Count how many threads have completed in this group
                     Common::U8 completedThreadCount = 0;
                     for (WorkerContext* context: currentGroup)
@@ -100,11 +100,7 @@ namespace Kiaro
                     {
                         for (WorkerContext* context: currentGroup)
                         {
-                            mInactiveThreads.push_back(context);
-
-                            auto activeThreadIter = mActiveThreads.find(context);
-                            assert(activeThreadIter != mActiveThreads.end());
-                            mActiveThreads.erase(activeThreadIter);
+                            doneContexts.insert(doneContexts.end(), context);
 
                             // Process any transactions
                             CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
@@ -131,6 +127,23 @@ namespace Kiaro
                         // The group is done, so we clear it for this frame
                         currentGroup.clear();
                     }
+                    else // If the group is still running, we blow out any contexts still in it from the done contexts
+                        for (WorkerContext* context: currentGroup)
+                        {
+                            auto contextIter = doneContexts.find(context);
+                            if (contextIter != doneContexts.end())
+                                doneContexts.erase(contextIter);
+                        }
+                }
+
+                // Now we blow through done contexts and do transfers
+                for (WorkerContext* context: doneContexts)
+                {
+                    auto contextIter = mActiveThreads.find(context);
+
+                    assert(contextIter != mActiveThreads.end());
+                    mActiveThreads.erase(contextIter);
+                    mInactiveThreads.push_back(context);
                 }
 
                 // When the active threads is empty, we either completed a phase or this is first update call
@@ -165,7 +178,7 @@ namespace Kiaro
                             CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
 
                             mActiveThreads.insert(mActiveThreads.end(), context);
-                            mPhaseProcessing[iteration].insert(mPhaseProcessing[iteration].end(), context);
+                            mPhaseProcessing[threadGroupIndex].insert(mPhaseProcessing[threadGroupIndex].end(), context);
 
                             // Push our actions
                             assert(task->mDebugMutex.try_lock());
