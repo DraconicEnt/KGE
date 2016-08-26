@@ -82,7 +82,7 @@ namespace Kiaro
 
             }
 
-            void SThreadSystem::update(void)
+            bool SThreadSystem::update(void)
             {
                 // Blow over every thread group we have active for this
                 Support::UnorderedSet<WorkerContext*> doneContexts;
@@ -147,8 +147,13 @@ namespace Kiaro
                 }
 
                 // When the active threads is empty, we either completed a phase or this is first update call
+                bool completedFrame = false;
+
                 if (mActiveThreads.size() == 0)
                 {
+                    // If the current phase is the last phase, then we're done processing this frame
+                    completedFrame = mCurrentPhase == mThreadPhases.size() - 1;
+
                     ++mCurrentPhase = mCurrentPhase >= mThreadPhases.size() ? 0 : mCurrentPhase;
 
                     // Now we assign the threads for the next phase
@@ -197,6 +202,8 @@ namespace Kiaro
                     // Erase the threads we are currently using
                     mInactiveThreads.erase(mInactiveThreads.begin(), mInactiveThreads.begin() + maxThreadIndex);
                 }
+
+                return completedFrame;
             }
 
             void SThreadSystem::addPhase(Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& newPhase)
@@ -218,7 +225,6 @@ namespace Kiaro
             bool CThreadSystemTask::tick(const Common::F32 deltaTimeSeconds)
             {
                 assert(mDebugMutex.try_lock());
-
                 assert(mThreadActions.size() != 0);
 
                 auto nextActionData = mThreadActions.front();

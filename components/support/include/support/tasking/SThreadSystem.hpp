@@ -65,8 +65,13 @@ namespace Kiaro
 
                     static void destroy(void);
 
-                    //! Update method called from the main thread.
-                    void update(void);
+                    /**
+                     *  @brief Used to update the threading logic. If all actions for the current phase are completed, this sets up
+                     *  execution for the next phase as well as dispatching pending transactions. If there are tasks still running,
+                     *  this call does nothing.
+                     *  @return True for if a frame (all phases have completed) has completed on this call. False otherwise.
+                     */
+                    bool update(void);
 
                     /**
                      *  @brief Adds a new thread phase to this thread system, returning a reference to it.

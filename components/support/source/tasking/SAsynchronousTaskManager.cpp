@@ -26,9 +26,7 @@ namespace Kiaro
         {
             static void workerThreadLogic(WorkerContext* context)
             {
-                // TODO (Robert MacGregor #9): Detect thread error?
-                if (!context)
-                    return;
+                assert(context);
 
                 // Keep running, wait for tasks
                 while (true)
@@ -135,7 +133,7 @@ namespace Kiaro
                 if (!task)
                     throw std::runtime_error("SAsynchronousTaskManager: Cannot remove a NULL task.");
 
-                for (WorkerContext* currentWorker : mActiveWorkers)
+                for (WorkerContext* currentWorker: mActiveWorkers)
                     if (currentWorker->mTask == task)
                     {
                         currentWorker->mIsComplete = true;
