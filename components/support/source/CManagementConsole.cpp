@@ -50,6 +50,7 @@ namespace Kiaro
                     // Evaluate
                     Support::String commandName = params[0];
                     params.erase(params.begin());
+
                     // Lookup the command
                     auto it = mCallmap.find(commandName);
 
