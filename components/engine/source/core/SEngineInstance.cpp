@@ -32,7 +32,6 @@
 #include <allegro5/allegro_physfs.h>
 
 #include <support/tasking/SAsynchronousTaskManager.hpp>
-#include <support/tasking/SAsynchronousSchedulerTask.hpp>
 #include <input/SInputListener.hpp>
 #include <support/SSettingsRegistry.hpp>
 
@@ -122,7 +121,6 @@ namespace Kiaro
             // Init the taskers
             Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
             Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
-            asyncTaskManager->addTask(Support::Tasking::SAsynchronousSchedulerTask::getPointer());
 
             if (this->initializeRenderer() != 0)
                 return 2;

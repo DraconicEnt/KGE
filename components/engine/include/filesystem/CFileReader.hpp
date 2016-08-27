@@ -1,6 +1,6 @@
 /**
- *  @file FileReadObject.hpp
- *  @brief Include file defining the Server and related functions.
+ *  @file CFileReader.hpp
+ *  @brief Include file declaring the CFileReader class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -25,7 +25,7 @@ namespace Kiaro
     {
         class CFileReader : public irr::io::IReadFile
         {
-                // Public Methods
+            // Public Methods
             public:
                 CFileReader(const Support::String& filename);
 
@@ -41,7 +41,7 @@ namespace Kiaro
 
                 const irr::io::path& getFileName() const;
 
-                // Private Members
+            // Private Members
             private:
                 const Support::String mFileName;
                 const irr::io::path mIrrlichtPath;

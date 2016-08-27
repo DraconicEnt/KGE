@@ -17,6 +17,7 @@
 #include <support/String.hpp>
 #include <support/common.hpp>
 #include <support/CBitStream.hpp>
+#include <support/types.hpp>
 
 #include <net/stages.hpp>
 
@@ -35,12 +36,12 @@ namespace Kiaro
         //! The IIncomingClient class is a handle for a remote host that has connected to the game server.
         class IIncomingClient
         {
-                // Public Members
+            // Public Members
             public:
                 //! Are we currently connected somewhere?
                 bool mIsConnected;
 
-                // Private Members
+            // Private Members
             private:
                 //! A pointer to the internally used ENet peer.
                 ENetPeer* mInternalClient;
@@ -58,9 +59,12 @@ namespace Kiaro
                  */
                 STAGE_NAME mCurrentConnectionStage;
 
-                Support::CBitStream mOutputBitStream;
+                //! The IIncomingClient's current output CBitStream.
+                Support::CBitStream mReliableStream;
 
-                // Public Methods
+                Support::CBitStream mUnreliableStream;
+
+            // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting an ENetPeer object pointer.
@@ -74,12 +78,20 @@ namespace Kiaro
                 /**
                  *  @brief Sends a message to the given IIncomingClient.
                  *  @param message A pointer to the message to be sent.
-                 *  @param reliable A boolean representing whether or not the
-                 *  message should be sent reliably.
+                 *  @param reliable A boolean representing whether or not the message should be sent reliably.
                  */
-                void send(IMessage* message, const bool reliable) NOTHROW;
+                void send(const IMessage* message, const bool reliable = false) NOTHROW;
 
-                bool getIsOppositeEndian(void) const NOTHROW;
+                /**
+                 *  @brief Sends a message to the given IIncomingClient. This is an alias for the normal send accepting
+                 *  a pointer.
+                 *  @detail When the message is "sent", it isn't immediately sent but rather just written to the IIncomingClient's
+                 *  CBitStream which is sent later.
+                 *  @param message A reference to the message object.
+                 *  @param reliable A boolean representing whether or not the message should be sent reliably. This parameter if not
+                 *  specified defaults to false.
+                 */
+                void send(const IMessage& message, const bool reliable = false) NOTHROW;
 
                 //! Disconnects this client from the server.
                 virtual void disconnect(const Support::String& reason);
@@ -122,6 +134,12 @@ namespace Kiaro
                  *  @see mCurrentConnectionStage
                  */
                 const STAGE_NAME& getConnectionStage(void) const;
+
+                /**
+                 *  @brief Dispatches any queued messages that is waiting for the IIncomingClient for both the reliable and unreliable
+                 *  streams.
+                 */
+                void dispatchQueuedMessages(void);
         };
     } // End Namespace Network
 } // End Namespace Kiaro

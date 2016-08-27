@@ -1,6 +1,6 @@
 /**
- *  @file EntityBase.hpp
- *  @brief Include file defining the Server and related functions.
+ *  @file IEntity.hpp
+ *  @brief Include file declaring the IEntity interface class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

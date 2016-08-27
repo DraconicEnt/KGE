@@ -1,4 +1,12 @@
 /**
+ *  @file CGameClient.hpp
+ *  @brief Include file declaring the CGameClient class methods.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_GAME_CGAMECLIENT_HPP_

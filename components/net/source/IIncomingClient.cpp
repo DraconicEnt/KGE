@@ -20,8 +20,8 @@ namespace Kiaro
 {
     namespace Net
     {
-        IIncomingClient::IIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mIsOppositeEndian(false),
-        mCurrentConnectionStage(STAGE_AUTHENTICATION), mIsConnected(true), mOutputBitStream(NETSTREAM_DEFAULT_SIZE, nullptr, 0, NETSTREAM_RESIZE_FACTOR)
+        IIncomingClient::IIncomingClient(ENetPeer* connecting, IServer* server) : mInternalClient(connecting), mCurrentConnectionStage(STAGE_AUTHENTICATION),
+        mIsConnected(true), mReliableStream(NETSTREAM_DEFAULT_SIZE, nullptr, 0, NETSTREAM_RESIZE_FACTOR), mUnreliableStream(NETSTREAM_DEFAULT_SIZE, nullptr, 0, NETSTREAM_RESIZE_FACTOR)
         {
         }
 
@@ -31,26 +31,17 @@ namespace Kiaro
                 this->disconnect("Destroyed net handle.");
         }
 
-        void IIncomingClient::send(IMessage* packet, const bool reliable)
+        void IIncomingClient::send(const IMessage* packet, const bool reliable)
         {
-            Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
-
             if (reliable)
-                packetFlag = ENET_PACKET_FLAG_RELIABLE;
-
-            // Write the packet data to our stream
-            packet->packEverything(mOutputBitStream);
-            ENetPacket* enetPacket = enet_packet_create(mOutputBitStream.getBlock(), mOutputBitStream.getPointer(), packetFlag);
-
-            // TODO: Optionally dispatch this immediately, otherwise we queue up in the same ENet packet
-            enet_peer_send(mInternalClient, 0, enetPacket);
-
-            mOutputBitStream.setPointer(0);
+                packet->packEverything(mReliableStream);
+            else
+                packet->packEverything(mUnreliableStream);
         }
 
-        bool IIncomingClient::getIsOppositeEndian(void) const
+        void IIncomingClient::send(const IMessage& message, const bool reliable)
         {
-            return mIsOppositeEndian;
+            this->send(&message, reliable);
         }
 
         void IIncomingClient::disconnect(const Support::String& reason)
@@ -84,6 +75,26 @@ namespace Kiaro
         const STAGE_NAME& IIncomingClient::getConnectionStage(void) const
         {
             return mCurrentConnectionStage;
+        }
+
+        void IIncomingClient::dispatchQueuedMessages(void)
+        {
+            ENetPacket* enetPacket = nullptr;
+
+            if (mReliableStream.getPointer() != 0)
+            {
+                enetPacket = enet_packet_create(mUnreliableStream.getBlock(), mUnreliableStream.getPointer(), ENET_PACKET_FLAG_RELIABLE);
+                enet_peer_send(mInternalClient, 0, enetPacket);
+            }
+
+            if (mUnreliableStream.getPointer() != 0)
+            {
+                enetPacket = enet_packet_create(mUnreliableStream.getBlock(), mUnreliableStream.getPointer(), ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+                enet_peer_send(mInternalClient, 0, enetPacket);
+            }
+
+            mReliableStream.setPointer(0);
+            mUnreliableStream.setPointer(0);
         }
     } // End Namespace Network
 } // End Namespace Kiaro

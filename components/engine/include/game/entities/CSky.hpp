@@ -1,6 +1,6 @@
 /**
- *  @file Sky.hpp
- *  @brief Include file defining the Server and related functions.
+ *  @file CSky.hpp
+ *  @brief Include file declaring the CSky class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
@@ -29,11 +29,14 @@ namespace Kiaro
     {
         namespace Entities
         {
+            /**
+             *  @brief Entity class representing a sky object.
+             */
             class CSky : public Game::Entities::IEntity
             {
-                    // Public Methods
+                // Public Methods
                 public:
-                    CSky();
+                    CSky(void);
                     CSky(Support::CBitStream& in);
 
                     ~CSky(void);
@@ -51,12 +54,6 @@ namespace Kiaro
                     {
                         return sizeof(Common::C8) * 4;
                     }
-
-                    // const Common::ColorRGBA &getColor(void);
-
-                    // Private Members
-                private:
-                    // Common::ColorRGBA mColor;
             };
         } // End Namespace Entities
     } // End Namespace Game

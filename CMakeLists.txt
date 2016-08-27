@@ -92,8 +92,8 @@ ENDIF (NOT GTEST_FOUND AND BUILD_UNITTESTS)
 
 # Configure for GNU Compiler
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)
-    # c++11 is necessary for GTest on Windows, apparently.
-    SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
+    # We require C++11 to build anything here
+    SET(CMAKE_CXX_FLAGS "-std=c++11")
 
     # To use std::thread and friends, we must pass -lpthread and -pthread to the compiler and Linker for GCC
     IF (NOT WIN32)

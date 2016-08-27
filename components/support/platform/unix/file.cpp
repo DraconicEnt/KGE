@@ -1,4 +1,12 @@
 /**
+ *  @file file.cpp
+ *  @brief Source file implementing platform Unix specific portions of the file systems in the engine.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <stdexcept>

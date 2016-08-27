@@ -1,9 +1,9 @@
 /**
  *  @file CSky.cpp
- *  @brief Include file defining the Server and related functions.
+ *  @brief Source file implementing the CSky class methods.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
  *  @copyright (c) 2016 Draconic Entity
@@ -23,7 +23,7 @@ namespace Kiaro
     {
         namespace Entities
         {
-            CSky::CSky() : Game::Entities::IEntity(ENTITY_SKY, FLAG_STATIC) //, mColor(0, 0, 0, 0)
+            CSky::CSky(void) : Game::Entities::IEntity(ENTITY_SKY, FLAG_STATIC) //, mColor(0, 0, 0, 0)
             {
                 // addNetworkedProperty("color", mColor);
             }
