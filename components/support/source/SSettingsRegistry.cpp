@@ -28,6 +28,11 @@ namespace Kiaro
             this->setValue("Server::ListenAddress", Support::String("0.0.0.0"));
             this->setValue<Common::U16>("Server::ListenPort", 11595);
             this->setValue<Common::U32>("Server::MaximumClientCount", 32);
+            this->setValue<Common::U32>("Server::MessagesPerTick", 8);
+            this->setValue<Common::U32>("Server::MaxQueuedStreams", 3);
+
+            this->setValue<Common::U32>("Server::MaxOutgoingBandwidth", 0);
+            this->setValue<Common::U32>("Server::MaxIncomingBandwidth", 0);
 
             // Video
             this->setValue<bool>("Video::Fullscreen", false);
@@ -112,6 +117,31 @@ namespace Kiaro
                 sprintf(tempBuffer, "%u", this->getValue<Common::U32>("Server::MaximumClientCount"));
                 al_add_config_comment(config, "Server", "MaximumClientCount specifies the maximum number of remote clients allowed");
                 al_set_config_value(config, "Server", "MaximumClientCount", tempBuffer);
+
+                // Messages per tick
+                sprintf(tempBuffer, "%u", this->getValue<Common::U32>("Server::MessagesPerTick"));
+                al_add_config_comment(config, "Server", "MessagesPerTick specifies the maximum number of messages to process per connected client on a single tick.");
+                al_add_config_comment(config, "Server", "Any messages not processed are queued to wait for the next tick, causing further messages to be buffered.");
+                al_add_config_comment(config, "Server", "If zero, then no limit is enforced.");
+                al_set_config_value(config, "Server", "MessagesPerTick", tempBuffer);
+
+                // Max queued streams
+                sprintf(tempBuffer, "%u", this->getValue<Common::U32>("Server::MaxQueuedStreams"));
+                al_add_config_comment(config, "Server", "MaxQueuedStreams specifies the maximum number of queued message streams for clients before we disconnect them.");
+                al_add_config_comment(config, "Server", "If zero, then no limit is enforced.");
+                al_set_config_value(config, "Server", "MaxQueuedStreams", tempBuffer);
+
+                // Max outgoing bandwidth
+                sprintf(tempBuffer, "%u", this->getValue<Common::U32>("Server::MaxOutgoingBandwidth"));
+                al_add_config_comment(config, "Server", "MaxOutgoingBandwidth specifies the maximum outgoing bandwidth the game server will use. This is specified in bytes/second.");
+                al_add_config_comment(config, "Server", "If zero, then no limit is enforced.");
+                al_set_config_value(config, "Server", "MaxOutgoingBandwidth", tempBuffer);
+
+                // Max incoming bandwidth
+                sprintf(tempBuffer, "%u", this->getValue<Common::U32>("Server::MaxIncomingBandwidth"));
+                al_add_config_comment(config, "Server", "MaxIncomingBandwidth specifies the maximum incoming bandwidth the game server will use. This is specified in bytes/second.");
+                al_add_config_comment(config, "Server", "If zero, then no limit is enforced.");
+                al_set_config_value(config, "Server", "MaxIncomingBandwidth", tempBuffer);
 
                 // Write video section-----------------------
                 al_add_config_section(config, "Video");

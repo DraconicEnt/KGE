@@ -9,8 +9,8 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#ifndef _INCLUDE_KIARO_GAME_SERVERSINGLETON_HPP_
-#define _INCLUDE_KIARO_GAME_SERVERSINGLETON_HPP_
+#ifndef _INCLUDE_KIARO_NET_ISERVER_
+#define _INCLUDE_KIARO_NET_ISERVER_
 
 #include <enet/enet.h>
 
@@ -57,6 +57,7 @@ namespace Kiaro
                 //! A boolean representing whether or not the this server is running.
                 bool mRunning;
 
+                //! The maximum amount of clients we will allow into the game server.
                 Common::U32 mMaximumClientCount;
 
                 //! An unordered set of all clients that passed the authentication stage and are now technically playing.
@@ -147,4 +148,4 @@ namespace Kiaro
         };
     } // End Namespace Network
 } // End Namespace Kiaro
-#endif // _INCLUDE_KIARO_GAME_SERVERSINGLETON_HPP_
+#endif // _INCLUDE_KIARO_NET_ISERVER_

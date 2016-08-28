@@ -143,16 +143,62 @@ namespace Kiaro
             PROFILER_BEGIN(Server);
             Net::IServer::update(0);
             PROFILER_END(Server);
-            //mCurrentGamemode->
+
+            // Dispatch everything we have queued
+            for (Net::IIncomingClient* client: mConnectedClientSet)
+                client->dispatchQueuedMessages();
+        }
+
+        void SGameServer::onClientDisconnected(Net::IIncomingClient* client)
+        {
+            auto searchResult = mQueuedStreams.find(client);
+
+            if (searchResult != mQueuedStreams.end())
+            {
+                // Nuke anything in the queued streams
+                while (mQueuedStreams[client].size() != 0)
+                {
+                    delete mQueuedStreams[client].front();
+                    mQueuedStreams[client].pop();
+                }
+
+                mQueuedStreams.erase(client);
+            }
         }
 
         void SGameServer::onReceivePacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
         {
             Core::SEngineInstance* engine = Core::SEngineInstance::getPointer();
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
-            // The packet whose payload is in incomingStream can contain multiple messages.
-            // TODO: Alleviate DoS issues with a hard max on message counts
-            while (!incomingStream.isFull())
+            const Common::U32 messageLimit = settings->getValue<Common::U32>("Server::MessagesPerTick");
+            const Common::U32 queueLimit = settings->getValue<Common::U32>("Server::MaxQueuedStreams");
+
+            Support::CBitStream& processedStream = incomingStream;
+
+            // If we still have queued streams, make sure we're not exceeding the max stream count
+            if (queueLimit != 0)
+            {
+                auto searchResult = mQueuedStreams.find(sender);
+
+                if (searchResult != mQueuedStreams.end())
+                {
+                    // Too much queued data?
+                    if (mQueuedStreams[sender].size() > queueLimit)
+                    {
+                        // We deal with any queued streams they might have in the disconnect routine
+                        sender->disconnect("Too much queued data.");
+                        return;
+                    }
+
+                    // If the queued stream list isn't empty, we process the first one first
+                    if (mQueuedStreams[sender].size() != 0)
+                        processedStream = *mQueuedStreams[sender].front();
+                }
+            }
+
+            // Process messages in our stream up to the message count
+            for (Common::U32 iteration = 0; (messageLimit != 0 && iteration < messageLimit) && !incomingStream.isFull(); ++iteration)
             {
                 Net::IMessage basePacket;
                 basePacket.unpack(incomingStream);
@@ -175,12 +221,24 @@ namespace Kiaro
 
                 // Not a valid message
                 // TODO (Robert MacGregor#9): IP Address
-                Support::String exceptionText = "SGameServer: Out of stage or unknown message type encountered at stage 0 processing: ";
+                Support::throwFormattedException<std::out_of_range>("SGameServer: Out of stage or unknown message type encountered at stage 0 processing: %u for client <IDENT>", basePacket.getType());
+            }
 
-                exceptionText += basePacket.getType();
-                exceptionText += " for client <ADD IDENTIFIER> ";
+            // If the stream still isn't done, queue it up (and it's not already in the queue...)
+            if (!incomingStream.isFull() && &processedStream == &incomingStream)
+            {
+                auto searchResult = mQueuedStreams.find(sender);
 
-                throw std::out_of_range(exceptionText);
+                if (searchResult == mQueuedStreams.end())
+                    mQueuedStreams[sender] = Support::Queue<Support::CBitStream*>();
+
+                Support::CBitStream* streamCopy = new Support::CBitStream(incomingStream);
+                mQueuedStreams[sender].push(streamCopy);
+            }
+            else if (incomingStream.isFull() && &processedStream != &incomingStream) // But the stream is done and it's a queued stream, we delete it
+            {
+                mQueuedStreams[sender].pop();
+                delete &processedStream;
             }
         }
     } // End NameSpace Game

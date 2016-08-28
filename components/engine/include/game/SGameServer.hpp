@@ -17,6 +17,7 @@
 #include <net/IServer.hpp>
 
 #include <support/SSynchronousScheduler.hpp>
+#include <support/UnorderedMap.hpp>
 
 #include <net/stages.hpp>
 #include <net/IMessage.hpp>
@@ -42,6 +43,9 @@ namespace Kiaro
 
                 //! Scheduled event created for use with the SSynchronousScheduler.
                 Support::CScheduledEvent* mUpdatePulse;
+
+                //! Any queued streams we still haven't processed for any given client.
+                Support::UnorderedMap<Net::IIncomingClient*, Support::Queue<Support::CBitStream*>> mQueuedStreams;
 
             // Public Methods
             public:
@@ -75,6 +79,14 @@ namespace Kiaro
                  *  @param client The client that has passed the authentication process.
                  */
                 void onClientConnected(Net::IIncomingClient* client);
+
+                /**
+                 *  @brief Callback function that is called upon the server's underlaying
+                 *  network subsystem disconnecting a remote host connection.
+                 *  @param client A pointer to a Kiaro::Network::IncomingClientBase representing
+                 *  the disconnected client.
+                 */
+                virtual void onClientDisconnected(Net::IIncomingClient* client);
 
                 /**
                  *  @brief Called by the network component when a client first initiates a connection to the

@@ -211,19 +211,29 @@ namespace Kiaro
                 write(MESSAGE_DEBUG, output);
             }
 
-#define QUOTE_IMPL(T) #T
-#define QUOTE(T) QUOTE_IMPL(T)
 
-#define ASSEMBLE_OUTPUT(format) __FILE__:__LINE__:: format
-#define CONSOLE_ERRORF(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-#define CONSOLE_INFOF(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-#define CONSOLE_WARNINGF(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
-#define CONSOLE_DEBUGF(format, ...) Support::Console::debugf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            #define QUOTE_IMPL(T) #T
+            #define QUOTE(T) QUOTE_IMPL(T)
 
-#define CONSOLE_ERROR(message, ...) Support::Console::error(QUOTE(ASSEMBLE_OUTPUT(message)))
-#define CONSOLE_INFO(message, ...) Support::Console::info(QUOTE(ASSEMBLE_OUTPUT(message)))
-#define CONSOLE_WARNING(message, ...) Support::Console::warning(QUOTE(ASSEMBLE_OUTPUT(message)))
-#define CONSOLE_DEBUG(message, ...) Support::Console::debug(QUOTE(ASSEMBLE_OUTPUT(message)))
+            #define ASSEMBLE_OUTPUT(format) __FILE__:__LINE__:: format
+
+            //! Helper define to emit a formatted console error message.
+            #define CONSOLE_ERRORF(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            //! Helper define to emit a formatted console info message.
+            #define CONSOLE_INFOF(format, ...) Support::Console::infof(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            //! Helper define to emit a formatted console warning message.
+            #define CONSOLE_WARNINGF(format, ...) Support::Console::warningf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+            //! Helper define to emit a formatted console debug message.
+            #define CONSOLE_DEBUGF(format, ...) Support::Console::debugf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
+
+            //! Helper define to emit a regular console error message.
+            #define CONSOLE_ERROR(message, ...) Support::Console::error(QUOTE(ASSEMBLE_OUTPUT(message)))
+            //! Helper define to emit a regular console info message.
+            #define CONSOLE_INFO(message, ...) Support::Console::info(QUOTE(ASSEMBLE_OUTPUT(message)))
+            //! Helper define to emit a regular console warning message.
+            #define CONSOLE_WARNING(message, ...) Support::Console::warning(QUOTE(ASSEMBLE_OUTPUT(message)))
+            //! Helper define to emit a regular console debug message.
+            #define CONSOLE_DEBUG(message, ...) Support::Console::debug(QUOTE(ASSEMBLE_OUTPUT(message)))
         }
     } // End NameSpace Core
 } // End NameSpace Kiaro

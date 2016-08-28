@@ -67,6 +67,8 @@ namespace Kiaro
 
         void IOutgoingClient::processPacket(Support::CBitStream& incomingStream)
         {
+            assert(incomingStream.getSize() != 0);
+
             this->onReceivePacket(incomingStream);
         }
 
@@ -165,6 +167,9 @@ namespace Kiaro
                             enet_packet_destroy(event.packet);
                             break;
                         }
+
+                        assert(event.packet->data);
+                        assert(event.packet->dataLength);
 
                         Support::CBitStream incomingStream(event.packet->data, event.packet->dataLength);
                         this->processPacket(incomingStream);

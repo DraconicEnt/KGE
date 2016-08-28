@@ -90,9 +90,7 @@ namespace Kiaro
                     continue;
                 }
 
-                Support::String exceptionText = "COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: ";
-                exceptionText += basePacket.getType();
-                throw std::out_of_range(exceptionText);
+                Support::throwFormattedException<std::out_of_range>("COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: %u", basePacket.getType());
             }
         }
 

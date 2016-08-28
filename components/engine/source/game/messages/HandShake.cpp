@@ -14,6 +14,8 @@
 #include <game/messages/HandShake.hpp>
 #include <net/IIncomingClient.hpp>
 
+#include <support/support.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -36,7 +38,7 @@ namespace Kiaro
             void HandShake::unpack(Support::CBitStream& in)
             {
                 if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
-                    throw std::underflow_error("Unable to unpack HandShake packet; too small of a payload!");
+                    Support::throwException<std::underflow_error>("Unable to unpack HandShake packet; too small of a payload!");
 
                 in >> mVersionMajor >> mVersionMinor >> mVersionRevision >> mVersionBuild >> mProtocolVersion;
             }

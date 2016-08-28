@@ -28,6 +28,10 @@ namespace Kiaro
     {
         namespace Messages
         {
+            /**
+             *  @brief The SimCommit class is a server only message type that is used to signal to connected game clients that
+             *  the server is done submitting a simulation frame for the time being.
+             */
             class SimCommit : public Net::IMessage
             {
                 // Public Methods

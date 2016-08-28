@@ -83,7 +83,7 @@ namespace Kiaro
 
             if (mReliableStream.getPointer() != 0)
             {
-                enetPacket = enet_packet_create(mUnreliableStream.getBlock(), mUnreliableStream.getPointer(), ENET_PACKET_FLAG_RELIABLE);
+                enetPacket = enet_packet_create(mReliableStream.getBlock(), mReliableStream.getPointer(), ENET_PACKET_FLAG_RELIABLE);
                 enet_peer_send(mInternalClient, 0, enetPacket);
             }
 

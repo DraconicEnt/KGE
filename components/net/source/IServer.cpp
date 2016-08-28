@@ -14,24 +14,30 @@
 #include <net/IServer.hpp>
 #include <net/IIncomingClient.hpp>
 
+#include <support/SSettingsRegistry.hpp>
+
 namespace Kiaro
 {
     namespace Net
     {
         IServer::IServer(const Support::String& listenAddress, const Common::U16 listenPort, const Common::U32 maximumClientCount) :
-            mLastPacketSender(nullptr), mRunning(true), mInternalHost(nullptr), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
+        mLastPacketSender(nullptr), mRunning(true), mInternalHost(nullptr), mListenPort(listenPort), mListenAddress(listenAddress), mMaximumClientCount(maximumClientCount)
         {
             CONSOLE_INFOF("Creating server on %s:%u with %u maximum clients ...", listenAddress.data(), listenPort, maximumClientCount);
             ENetAddress enetAddress;
             enetAddress.port = listenPort;
             enet_address_set_host(&enetAddress, listenAddress.c_str());
-            // FIXME (Robert MacGregor#9): Reliable dispatch of server full messages?
-            mInternalHost = enet_host_create(&enetAddress, maximumClientCount + 1, 2, 0, 0);
+
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+            const Common::U32 maximumOutgoingBandwidth = settings->getValue<Common::U32>("Server::MaxOutgoingBandwidth");
+            const Common::U32 maximumIncomingBandwidth = settings->getValue<Common::U32>("Server::MaxIncomingBandwidth");
+
+            mInternalHost = enet_host_create(&enetAddress, maximumClientCount + 1, 2, maximumIncomingBandwidth, maximumOutgoingBandwidth);
 
             if (!mInternalHost)
             {
                 mRunning = false;
-                throw std::runtime_error("IServer: Failed to create ENet host!");
+                throw std::runtime_error("IServer: Failed to create ENet host! (Is the address/port already bound?)");
             }
         }
 
@@ -74,6 +80,7 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_CONNECT:
                     {
                         CONSOLE_INFO("Received client connect challenge.");
+
                         IIncomingClient* client = this->onReceiveClientChallenge(event.peer);
                         event.peer->data = client;
                         mPendingClientSet.insert(mPendingClientSet.end(), client);
@@ -83,12 +90,15 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_DISCONNECT:
                     {
                         CONSOLE_INFO("Received client disconnect.");
+
                         IIncomingClient* disconnected = reinterpret_cast<IIncomingClient*>(event.peer->data);
                         onClientDisconnected(disconnected);
                         disconnected->mIsConnected = false;
+
                         // TODO (Robert MacGregor#9): Delete from the correct set
                         mConnectedClientSet.erase(disconnected);
                         delete disconnected;
+
                         break;
                     }
 

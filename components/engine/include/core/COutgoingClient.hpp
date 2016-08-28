@@ -14,6 +14,8 @@
 
 #include <net/IOutgoingClient.hpp>
 
+#include <game/CMove.hpp>
+
 namespace Kiaro
 {
     namespace Core
@@ -25,6 +27,12 @@ namespace Kiaro
          */
         class COutgoingClient : public Net::IOutgoingClient
         {
+            // Public Members
+            public:
+                //! The COutgoingClient's current move state.
+                Game::CMove mMoveState;
+
+            // Public Methods
             public:
                 /**
                  *  @brief Pure virtual callback method called by the Net::IOutgoingClient implementation
@@ -50,7 +58,7 @@ namespace Kiaro
                 void scopeHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
                 void simCommitHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
 
-                // Protected Methods
+            // Protected Methods
             protected:
                 /**
                  *  @brief Used internally by the COutGoingClient implementation to process client data
