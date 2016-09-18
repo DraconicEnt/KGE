@@ -22,72 +22,75 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Messages
+        namespace Game
         {
-            Scope::Scope(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender), mScopedCount(0)
+            namespace Messages
             {
-            }
-
-            void Scope::add(const Net::INetworkPersistable* entity)
-            {
-                mScoped.insert(mScoped.end(), entity);
-            }
-
-            void Scope::packEverything(Support::CBitStream& out) const
-            {
-                IMessage::packBaseData<Scope>(out);
-
-                out << static_cast<Common::U32>(mScoped.size());
-
-                for (const Net::INetworkPersistable* currentPersistable : mScoped)
-                    currentPersistable->packEverything(out);
-            }
-
-            void Scope::unpack(Support::CBitStream& in)
-            {
-                if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
-                    throw std::underflow_error("Unable to unpack Scope packet; too small of a payload!");
-
-                in >> mScopedCount;
-                CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);
-
-                for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
+                Scope::Scope(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender), mScopedCount(0)
                 {
-                    // Read off an ID and a type
-                    Common::U32 netID = 0;
-                    Common::U32 type = 0;
-                    in >> type >> netID;
+                }
 
-                    switch(type)
+                void Scope::add(const Net::INetworkPersistable* entity)
+                {
+                    mScoped.insert(mScoped.end(), entity);
+                }
+
+                void Scope::packEverything(Support::CBitStream& out) const
+                {
+                    IMessage::packBaseData<Scope>(out);
+
+                    out << static_cast<Common::U32>(mScoped.size());
+
+                    for (const Net::INetworkPersistable* currentPersistable : mScoped)
+                        currentPersistable->packEverything(out);
+                }
+
+                void Scope::unpack(Support::CBitStream& in)
+                {
+                    if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
+                        throw std::underflow_error("Unable to unpack Scope packet; too small of a payload!");
+
+                    in >> mScopedCount;
+                    CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);
+
+                    for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
                     {
-                        case Game::Entities::ENTITY_TERRAIN:
-                        {
-                            Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);
-                            break;
-                        }
+                        // Read off an ID and a type
+                        Common::U32 netID = 0;
+                        Common::U32 type = 0;
+                        in >> type >> netID;
 
-                        default:
+                        switch(type)
                         {
-                            Support::String message = "Scope: Invalid entity type to unpack: ";
-                            message += type;
-                            throw std::logic_error(message);
-                            break;
+                            case Game::Entities::ENTITY_TERRAIN:
+                            {
+                                Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);
+                                break;
+                            }
+
+                            default:
+                            {
+                                Support::String message = "Scope: Invalid entity type to unpack: ";
+                                message += type;
+                                throw std::logic_error(message);
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            size_t Scope::getMinimumPacketPayloadLength(void) const
-            {
-                return (sizeof(Common::U32) * 1);
-            }
+                size_t Scope::getMinimumPacketPayloadLength(void) const
+                {
+                    return (sizeof(Common::U32) * 1);
+                }
 
-            size_t Scope::getRequiredMemory(void) const
-            {
-                return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 2) + Net::IMessage::getRequiredMemory();
-            }
-        } // End NameSpace Messages
-    } // End NameSpace Game
+                size_t Scope::getRequiredMemory(void) const
+                {
+                    return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 2) + Net::IMessage::getRequiredMemory();
+                }
+            } // End NameSpace Messages
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro

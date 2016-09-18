@@ -19,129 +19,132 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        extern SGameWorld* sGameWorld;
-
-        class TestEntity : public Entities::IEntity
+        namespace Game
         {
-            public:
-                TestEntity(void) : IEntity(Entities::ENTITY_NULL, Entities::FLAG_THINKING | Entities::FLAG_UPDATING)
-                {
-                    this->registerEntity();
-                }
+            extern SGameWorld* sGameWorld;
 
-                TestEntity(Support::CBitStream& in) : IEntity(Entities::ENTITY_NULL, Entities::FLAG_THINKING | Entities::FLAG_UPDATING)
-                {
-                    this->unpack(in);
-                }
+            class TestEntity : public Entities::IEntity
+            {
+                public:
+                    TestEntity(void) : IEntity(Entities::ENTITY_NULL, Entities::FLAG_THINKING | Entities::FLAG_UPDATING)
+                    {
+                        this->registerEntity();
+                    }
 
-                ~TestEntity(void)
-                {
-                }
+                    TestEntity(Support::CBitStream& in) : IEntity(Entities::ENTITY_NULL, Entities::FLAG_THINKING | Entities::FLAG_UPDATING)
+                    {
+                        this->unpack(in);
+                    }
 
-                void packEverything(Support::CBitStream& out) const
-                {
-                }
+                    ~TestEntity(void)
+                    {
+                    }
 
-                void unpack(Support::CBitStream& in)
-                {
-                }
+                    void packEverything(Support::CBitStream& out) const
+                    {
+                    }
 
-                void registerEntity(void)
-                {
-                }
+                    void unpack(Support::CBitStream& in)
+                    {
+                    }
 
-                void update(const Common::F32 deltaTimeSeconds)
-                {
-                }
+                    void registerEntity(void)
+                    {
+                    }
 
-                size_t getRequiredMemory(void) const
-                {
-                    return 5;
-                }
-        };
+                    void update(const Common::F32 deltaTimeSeconds)
+                    {
+                    }
 
-        class TestObject : public Game::IEngineObject
-        {
-            public:
-                TestObject(void) : IEngineObject()
-                {
-                }
-        };
+                    size_t getRequiredMemory(void) const
+                    {
+                        return 5;
+                    }
+            };
 
-        TEST(SGameWorld, SingletonConstructor)
-        {
-            SGameWorld::getPointer();
+            class TestObject : public Game::IEngineObject
+            {
+                public:
+                    TestObject(void) : IEngineObject()
+                    {
+                    }
+            };
 
-            EXPECT_TRUE(sGameWorld != nullptr);
-            SGameWorld::destroy();
+            TEST(SGameWorld, SingletonConstructor)
+            {
+                SGameWorld::getPointer();
 
-            SObjectRegistry::destroy();
-            EXPECT_TRUE(sGameWorld == nullptr);
-        }
+                EXPECT_TRUE(sGameWorld != nullptr);
+                SGameWorld::destroy();
 
-        TEST(SGameWorld, Lookup)
-        {
-            SGameWorld* world = SGameWorld::getPointer();
-            EXPECT_NO_THROW(EXPECT_FALSE(world->getEntity("entity")));
+                SObjectRegistry::destroy();
+                EXPECT_TRUE(sGameWorld == nullptr);
+            }
 
-            TestEntity* entity = new TestEntity();
-            entity->setName("entity");
+            TEST(SGameWorld, Lookup)
+            {
+                SGameWorld* world = SGameWorld::getPointer();
+                EXPECT_NO_THROW(EXPECT_FALSE(world->getEntity("entity")));
 
-            EXPECT_EQ(entity, world->getEntity("entity"));
-            EXPECT_EQ(entity, world->getEntity(entity->mID));
+                TestEntity* entity = new TestEntity();
+                entity->setName("entity");
 
-            SGameWorld::destroy();
-            SObjectRegistry::destroy();
-        }
+                EXPECT_EQ(entity, world->getEntity("entity"));
+                EXPECT_EQ(entity, world->getEntity(entity->mID));
 
-        TEST(SGameWorld, IDAssignment)
-        {
-            SGameWorld* world = SGameWorld::getPointer();
-            TestEntity* entityOne = new TestEntity();
+                SGameWorld::destroy();
+                SObjectRegistry::destroy();
+            }
 
-            EXPECT_EQ(0, entityOne->mID);
-            TestEntity* entityTwo = new TestEntity();
+            TEST(SGameWorld, IDAssignment)
+            {
+                SGameWorld* world = SGameWorld::getPointer();
+                TestEntity* entityOne = new TestEntity();
 
-            EXPECT_EQ(1, entityTwo->mID);
-            TestEntity* entityThree = new TestEntity();
+                EXPECT_EQ(0, entityOne->mID);
+                TestEntity* entityTwo = new TestEntity();
 
-            EXPECT_EQ(2, entityThree->mID);
-            world->removeEntity(entityTwo);
+                EXPECT_EQ(1, entityTwo->mID);
+                TestEntity* entityThree = new TestEntity();
 
-            delete entityTwo;
-            entityTwo = new TestEntity();
+                EXPECT_EQ(2, entityThree->mID);
+                world->removeEntity(entityTwo);
 
-            EXPECT_EQ(1, entityTwo->mID);
-            world->removeEntity(entityTwo);
+                delete entityTwo;
+                entityTwo = new TestEntity();
 
-            delete entityTwo;
+                EXPECT_EQ(1, entityTwo->mID);
+                world->removeEntity(entityTwo);
 
-            SGameWorld::destroy();
-            SObjectRegistry::destroy();
-        }
+                delete entityTwo;
 
-        TEST(SGameWorld, TypeTesting)
-        {
-            SGameWorld* world = SGameWorld::getPointer();
-            TestEntity* entity = new TestEntity();
+                SGameWorld::destroy();
+                SObjectRegistry::destroy();
+            }
 
-            entity->setName("entity");
-            TestObject* object = new TestObject();
+            TEST(SGameWorld, TypeTesting)
+            {
+                SGameWorld* world = SGameWorld::getPointer();
+                TestEntity* entity = new TestEntity();
 
-            object->setName("object");
-            EXPECT_FALSE(world->getEntity("object"));
+                entity->setName("entity");
+                TestObject* object = new TestObject();
 
-            EXPECT_FALSE(world->getEntity(object->mID));
-            EXPECT_EQ(entity, world->getEntity("entity"));
+                object->setName("object");
+                EXPECT_FALSE(world->getEntity("object"));
 
-            EXPECT_EQ(entity, world->getEntity(entity->mID));
+                EXPECT_FALSE(world->getEntity(object->mID));
+                EXPECT_EQ(entity, world->getEntity("entity"));
 
-            SGameWorld::destroy();
-            SObjectRegistry::destroy();
-        }
-    } // End Namespace Support
+                EXPECT_EQ(entity, world->getEntity(entity->mID));
+
+                SGameWorld::destroy();
+                SObjectRegistry::destroy();
+            }
+        } // End Namespace Support
+    }
 } // End namespace Kiaro
 
 

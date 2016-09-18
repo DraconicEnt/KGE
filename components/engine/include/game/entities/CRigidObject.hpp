@@ -20,26 +20,29 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            class CRigidObject : public Game::Entities::IRigidObject
+            namespace Entities
             {
-                    // Public Methods
-                public:
-                    CRigidObject(void);
-                    ~CRigidObject(void);
+                class CRigidObject : public Game::Entities::IRigidObject
+                {
+                        // Public Methods
+                    public:
+                        CRigidObject(void);
+                        ~CRigidObject(void);
 
-                    void packUpdate(Support::CBitStream& out);
-                    void unpackUpdate(Support::CBitStream& in);
-                    void packInitialization(Support::CBitStream& out);
-                    void unpackInitialization(Support::CBitStream& in);
-                    void instantiate(void);
+                        void packUpdate(Support::CBitStream& out);
+                        void unpackUpdate(Support::CBitStream& in);
+                        void packInitialization(Support::CBitStream& out);
+                        void unpackInitialization(Support::CBitStream& in);
+                        void instantiate(void);
 
-                    void update(const Common::F32 deltaTimeSeconds);
-            };
-        } // End Namespace Entities
-    } // End Namespace Game
+                        void update(const Common::F32 deltaTimeSeconds);
+                };
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_GAME_ENTITIES_CRIGIDOBJECT_HPP_

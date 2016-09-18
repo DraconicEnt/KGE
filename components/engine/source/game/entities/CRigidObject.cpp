@@ -14,41 +14,44 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            CRigidObject::CRigidObject(void) : Game::Entities::IRigidObject(Game::Entities::ENTITY_RIGIDPROP)
+            namespace Entities
             {
-            }
+                CRigidObject::CRigidObject(void) : Game::Entities::IRigidObject(Game::Entities::ENTITY_RIGIDPROP)
+                {
+                }
 
-            CRigidObject::~CRigidObject(void)
-            {
-            }
+                CRigidObject::~CRigidObject(void)
+                {
+                }
 
-            void CRigidObject::packUpdate(Support::CBitStream& out)
-            {
-            }
+                void CRigidObject::packUpdate(Support::CBitStream& out)
+                {
+                }
 
-            void CRigidObject::unpackUpdate(Support::CBitStream& in)
-            {
-            }
+                void CRigidObject::unpackUpdate(Support::CBitStream& in)
+                {
+                }
 
-            void CRigidObject::packInitialization(Support::CBitStream& out)
-            {
-            }
+                void CRigidObject::packInitialization(Support::CBitStream& out)
+                {
+                }
 
-            void CRigidObject::unpackInitialization(Support::CBitStream& in)
-            {
-            }
+                void CRigidObject::unpackInitialization(Support::CBitStream& in)
+                {
+                }
 
-            void CRigidObject::instantiate(void)
-            {
-            }
+                void CRigidObject::instantiate(void)
+                {
+                }
 
-            void CRigidObject::update(const Common::F32 deltaTimeSeconds)
-            {
-            }
-        } // End Namespace Entities
-    } // End Namespace Game
+                void CRigidObject::update(const Common::F32 deltaTimeSeconds)
+                {
+                }
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro

@@ -10,16 +10,19 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class CGameAIClient : public CGameClient
+        namespace Game
         {
-            public:
-                CGameAIClient(void);
+            class CGameAIClient : public CGameClient
+            {
+                public:
+                    CGameAIClient(void);
 
-                void disconnect(const Support::String& reason);
-                void send(Net::IMessage* packet, const bool reliable);
-        };
-    } // End NameSpace Game
+                    void disconnect(const Support::String& reason);
+                    void send(Net::IMessage* packet, const bool reliable);
+            };
+        } // End NameSpace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_GAME_CAICLIENT_HPP_

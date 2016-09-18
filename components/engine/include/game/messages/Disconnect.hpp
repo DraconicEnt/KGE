@@ -23,47 +23,50 @@ namespace Kiaro
         class IIncomingClient;
     }
 
-    namespace Game
+    namespace Engine
     {
-        namespace Messages
+        namespace Game
         {
-            class Disconnect : public Net::IMessage
+            namespace Messages
             {
-                    // Public Methods
-                public:
-                    Disconnect(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr) : IMessage(in, sender)
-                    {
-                    }
+                class Disconnect : public Net::IMessage
+                {
+                        // Public Methods
+                    public:
+                        Disconnect(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr) : IMessage(in, sender)
+                        {
+                        }
 
-                    virtual void packEverything(Support::CBitStream& out) const
-                    {
-                        IMessage::packBaseData<Disconnect>(out);
-                        out.writeString(mReason);
-                    }
+                        virtual void packEverything(Support::CBitStream& out) const
+                        {
+                            IMessage::packBaseData<Disconnect>(out);
+                            out.writeString(mReason);
+                        }
 
-                    void unpack(Support::CBitStream& in)
-                    {
-                        if (in.getSize() - in.getPointer() < getMinimumPacketPayloadLength())
-                            throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
+                        void unpack(Support::CBitStream& in)
+                        {
+                            if (in.getSize() - in.getPointer() < getMinimumPacketPayloadLength())
+                                throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
 
-                        mReason = in.popString();
-                    }
+                            mReason = in.popString();
+                        }
 
-                    virtual size_t getMinimumPacketPayloadLength(void) const
-                    {
-                        return sizeof(Common::U32);
-                    }
+                        virtual size_t getMinimumPacketPayloadLength(void) const
+                        {
+                            return sizeof(Common::U32);
+                        }
 
-                    virtual size_t getRequiredMemory(void) const
-                    {
-                        return mReason.length();
-                    }
+                        virtual size_t getRequiredMemory(void) const
+                        {
+                            return mReason.length();
+                        }
 
-                    // Public Members
-                public:
-                    Support::String mReason;
-            };
-        } // End NameSpace Packets
-    } // End NameSpace Game
+                        // Public Members
+                    public:
+                        Support::String mReason;
+                };
+            } // End NameSpace Packets
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_

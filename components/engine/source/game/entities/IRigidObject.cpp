@@ -13,13 +13,16 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            IRigidObject::IRigidObject(const ENTITY_TYPE& type, const Game::Entities::EntityHintMask& hintMask) : Game::Entities::IEntity(type, hintMask)
+            namespace Entities
             {
-            }
-        } // End NameSpace Entities
-    } // End NameSpace Game
+                IRigidObject::IRigidObject(const ENTITY_TYPE& type, const Game::Entities::EntityHintMask& hintMask) : Game::Entities::IEntity(type, hintMask)
+                {
+                }
+            } // End NameSpace Entities
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro

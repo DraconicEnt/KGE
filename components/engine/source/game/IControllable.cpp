@@ -13,15 +13,18 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        IControllable::IControllable(void) : mController(nullptr)
+        namespace Game
         {
-        }
+            IControllable::IControllable(void) : mController(nullptr)
+            {
+            }
 
-        CGameClient* IControllable::getController(void) const
-        {
-            return mController;
+            CGameClient* IControllable::getController(void) const
+            {
+                return mController;
+            }
         }
     }
 }

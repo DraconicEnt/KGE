@@ -18,86 +18,91 @@
 #include <net/stages.hpp>
 
 #include <core/SEngineInstance.hpp>
+#include <core/SCoreRegistry.hpp>
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Engine
     {
-        void COutgoingClient::onConnected(void)
+        namespace Core
         {
-            CONSOLE_INFO("Established connection to remote host.");
-
-            // Dispatch our own handshake in response
-            Game::Messages::HandShake handShake;
-            this->send(&handShake, true);
-        }
-
-        void COutgoingClient::onDisconnected(void)
-        {
-        }
-
-        void COutgoingClient::onConnectFailed(void)
-        {
-        }
-
-        void COutgoingClient::handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
-        {
-            Game::Messages::HandShake receivedHandshake;
-            receivedHandshake.unpack(in);
-            CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
-                          receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
-
-            CONSOLE_INFOF("Server says there is %u datablocks awaiting.", receivedHandshake.mDataBlockCount);
-
-            CONSOLE_INFO("Passed initial authentication.");
-            mConnected = true;
-            this->onAuthenticated();
-            mCurrentStage = Net::STAGE_LOADING;
-        }
-
-        void COutgoingClient::scopeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
-        {
-            Game::Messages::Scope receivedScope;
-            receivedScope.unpack(in);
-        }
-
-        void COutgoingClient::simCommitHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
-        {
-            Game::Messages::SimCommit receivedCommit;
-            receivedCommit.unpack(in);
-        }
-
-        void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
-        {
-            Core::SEngineInstance* engine = Core::SEngineInstance::getPointer();
-
-            while (!incomingStream.isFull())
+            void COutgoingClient::onConnected(void)
             {
-                Net::IMessage basePacket;
-                basePacket.unpack(incomingStream);
+                CONSOLE_INFO("Established connection to remote host.");
 
-                Core::SEngineInstance::MessageHandlerSet::MemberDelegateFuncPtr<COutgoingClient> responder = engine->lookupClientMessageHandler(Net::STAGE_UNSTAGED, basePacket.getType());
-
-                if (responder)
-                {
-                    (this->*responder)(nullptr, incomingStream);
-                    continue;
-                }
-
-                // If we got to this point, look it up by the client's stage
-                responder = engine->lookupClientMessageHandler(static_cast<Net::STAGE_NAME>(mCurrentStage), basePacket.getType());
-                if (responder)
-                {
-                    (this->*responder)(nullptr, incomingStream);
-                    continue;
-                }
-
-                Support::throwFormattedException<std::out_of_range>("COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: %u", basePacket.getType());
+                // Dispatch our own handshake in response
+                Game::Messages::HandShake handShake;
+                this->send(&handShake, true);
             }
-        }
 
-        void COutgoingClient::onAuthenticated(void)
-        {
-        }
-    } // End NameSpace Core
+            void COutgoingClient::onDisconnected(void)
+            {
+            }
+
+            void COutgoingClient::onConnectFailed(void)
+            {
+            }
+
+            void COutgoingClient::handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
+            {
+                Game::Messages::HandShake receivedHandshake;
+                receivedHandshake.unpack(in);
+                CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
+                              receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
+
+                CONSOLE_INFOF("Server says there is %u datablocks awaiting.", receivedHandshake.mDataBlockCount);
+
+                CONSOLE_INFO("Passed initial authentication.");
+                mConnected = true;
+                this->onAuthenticated();
+                mCurrentStage = Net::STAGE_LOADING;
+            }
+
+            void COutgoingClient::scopeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
+            {
+                Game::Messages::Scope receivedScope;
+                receivedScope.unpack(in);
+            }
+
+            void COutgoingClient::simCommitHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
+            {
+                Game::Messages::SimCommit receivedCommit;
+                receivedCommit.unpack(in);
+            }
+
+            void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
+            {
+                Core::SCoreRegistry* registry = Core::SCoreRegistry::getPointer();
+                Core::SEngineInstance* engine = Core::SEngineInstance::getPointer();
+
+                while (!incomingStream.isFull())
+                {
+                    Net::IMessage basePacket;
+                    basePacket.unpack(incomingStream);
+
+                    Core::SCoreRegistry::MessageHandlerSet::MemberDelegateFuncPtr<COutgoingClient> responder = registry->lookupClientMessageHandler(Net::STAGE_UNSTAGED, basePacket.getType());
+
+                    if (responder)
+                    {
+                        (this->*responder)(nullptr, incomingStream);
+                        continue;
+                    }
+
+                    // If we got to this point, look it up by the client's stage
+                    responder = registry->lookupClientMessageHandler(static_cast<Net::STAGE_NAME>(mCurrentStage), basePacket.getType());
+                    if (responder)
+                    {
+                        (this->*responder)(nullptr, incomingStream);
+                        continue;
+                    }
+
+                    Support::throwFormattedException<std::out_of_range>("COutgoingClient: Out of stage or unknown message type encountered at stage 0 processing: %u", basePacket.getType());
+                }
+            }
+
+            void COutgoingClient::onAuthenticated(void)
+            {
+            }
+        } // End NameSpace Core
+    }
 } // End NameSpace Kiaro

@@ -55,10 +55,10 @@ Common::S32 main(Common::S32 argc, Common::C8* argv[])
         }
 
         const Support::String gameName = gameArguments[0];
-        Core::SEngineInstance::MODE_NAME engineMode = Core::SEngineInstance::MODE_CLIENT;
+        Engine::Core::SEngineInstance::MODE_NAME engineMode = Engine::Core::SEngineInstance::MODE_CLIENT;
 
         if (commandLineParser.hasFlag("-dedicated"))
-            engineMode = Core::SEngineInstance::MODE_DEDICATED;
+            engineMode = Engine::Core::SEngineInstance::MODE_DEDICATED;
 
         // Check for the -server <ip address> flag
         Support::String targetServerIP;
@@ -74,11 +74,11 @@ Common::S32 main(Common::S32 argc, Common::C8* argv[])
                 return -3;
             }
 
-            engineMode = Core::SEngineInstance::MODE_CLIENTCONNECT;
+            engineMode = Engine::Core::SEngineInstance::MODE_CLIENTCONNECT;
         }
 
         // Create the Engine Instance
-        Core::SEngineInstance* engineInstance = Core::SEngineInstance::getPointer();
+        Engine::Core::SEngineInstance* engineInstance = Engine::Core::SEngineInstance::getPointer();
 
         // Deal with the -mods flag
         if (commandLineParser.hasFlag("-mods"))
@@ -93,7 +93,7 @@ Common::S32 main(Common::S32 argc, Common::C8* argv[])
 
         engineInstance->start(argc, argv);
         // Release used memory when the start routine eventually returns
-        Core::SEngineInstance::destroy();
+        Engine::Core::SEngineInstance::destroy();
     }
     else
         CONSOLE_INFO("Nothing to do.");

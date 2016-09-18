@@ -47,356 +47,336 @@
 #include <game/messages/messages.hpp>
 #include <gui/SGUIManager.hpp>
 
+#include <core/SCoreRegistry.hpp>
+
 namespace Kiaro
 {
-    namespace Core
+    namespace Engine
     {
-        static SEngineInstance* sInstance = nullptr;
-
-        SEngineInstance* SEngineInstance::getPointer(void)
+        namespace Core
         {
-            if (!sInstance)
-                sInstance = new SEngineInstance;
+            static SEngineInstance* sInstance = nullptr;
 
-            return sInstance;
-        }
-
-        void SEngineInstance::destroy(void)
-        {
-            if (sInstance)
+            SEngineInstance* SEngineInstance::getPointer(void)
             {
-                sInstance->kill();
-                delete sInstance;
+                if (!sInstance)
+                    sInstance = new SEngineInstance;
+
+                return sInstance;
             }
 
-            sInstance = nullptr;
-        }
-
-        void SEngineInstance::setMode(const MODE_NAME& mode)
-        {
-            mEngineMode = mode;
-        }
-
-        void SEngineInstance::setTargetServer(Common::C8* address, Common::U16 port)
-        {
-            mTargetServerAddress = address;
-            mTargetServerPort = port;
-        }
-
-        void SEngineInstance::setGame(const Support::String& gameName)
-        {
-            mGameName = gameName;
-        }
-
-        bool SEngineInstance::isDedicated(void)
-        {
-            return mEngineMode & MODE_DEDICATED;
-        }
-
-        Kiaro::Common::S32 SEngineInstance::start(const Common::S32 argc, Common::C8* argv[])
-        {
-            mRunning = false;
-            al_init();
-            this->initializeFileSystem(argc, argv);
-            // Once the filesystem is initialized, pump Allegro through it
-            al_set_physfs_file_interface();
-            CONSOLE_INFOF("Running game '%s'", mGameName.data());
-            // Mount the data directories
-            Support::Vector<Support::String> mountedDirectories = mModNames;
-            mountedDirectories.push_back(mGameName);
-
-            for (Support::String directory : mountedDirectories)
+            void SEngineInstance::destroy(void)
             {
-                if (PHYSFS_mount(directory.c_str(), nullptr, 1) == 0)
+                if (sInstance)
                 {
-                    mRunning = false;
-                    CONSOLE_ERRORF("'%s'. Reason: '%s'", directory.c_str(), PHYSFS_getLastError());
-                    return -1;
+                    sInstance->kill();
+                    delete sInstance;
                 }
 
-                CONSOLE_INFOF("Mounted game directory '%s' successfully.", directory.c_str());
+                sInstance = nullptr;
             }
 
-            // TODO (Robert MacGregor#9): Return error codes for the netcode
-            // Init the taskers
-            Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
-            Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
-
-            if (this->initializeRenderer() != 0)
-                return 2;
-
-            if (!this->isDedicated() && this->initializeGUI() != 0)
-                return 3;
-
-            // Only init sound if we're not a dedicated server.
-            if (mEngineMode != MODE_DEDICATED)
-                this->initializeSound();
-
-            this->initializeNetwork();
-
-            // Initialize the time pulses
-            this->initializeScheduledEvents();
-
-            mRunning = true;
-            this->runGameLoop();
-            return 1;
-        }
-
-        void SEngineInstance::setMods(const Support::Vector<Support::String>& mods)
-        {
-            mModNames = mods;
-        }
-
-        void SEngineInstance::kill(void)
-        {
-            if (!mRunning)
-                return;
-
-            CONSOLE_INFO("Killed via kill()");
-            mRunning = false;
-        }
-
-        SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-        mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
-        {
-        }
-
-        SEngineInstance::~SEngineInstance(void)
-        {
-            CONSOLE_INFO("Deinitializing ...");
-
-            if (mPerfStatSchedule)
-                mPerfStatSchedule->cancel();
-
-            mPerfStatSchedule = nullptr;
-            // TODO: Check the destroy order
-            //   Net::SClient::destroy();
-
-            Game::SGameServer::destroy();
-            Input::SInputListener::destroy();
-            Support::SSynchronousScheduler::destroy();
-            Support::SSettingsRegistry::destroy();
-            PHYSFS_deinit();
-            enet_deinitialize();
-            Engine::Video::SRenderer::destroy();
-            al_uninstall_system();
-        }
-
-        void SEngineInstance::networkUpdate(void)
-        {
-            // FIXME (Robert MacGregor#9): Pass in the time delta
-            //          Net::SClient* client = Net::SClient::getPointer();
-            // if (mActiveClient)
-            //     mActiveClient->update();
-            Game::SGameServer* server = Game::SGameServer::getPointer();
-            // if (server)
-            //     server->update(0.0f);
-        }
-
-        int SEngineInstance::initializeGUI(void)
-        {
-            Engine::GUI::SGUIManager::getPointer();
-
-            return 0;
-        }
-
-        Common::U32 SEngineInstance::initializeRenderer(void)
-        {
-            Engine::Video::SRenderer::getPointer();
-
-            return 0;
-        }
-
-        Common::U32 SEngineInstance::initializeNetwork(void)
-        {
-            // Catch if the netcode somehow doesn't initialize correctly.
-            if (enet_initialize() < 0)
+            void SEngineInstance::setMode(const MODE_NAME& mode)
             {
-                CONSOLE_ERROR("Failed to initialize the network!");
+                mEngineMode = mode;
+            }
+
+            void SEngineInstance::setTargetServer(Common::C8* address, Common::U16 port)
+            {
+                mTargetServerAddress = address;
+                mTargetServerPort = port;
+            }
+
+            void SEngineInstance::setGame(const Support::String& gameName)
+            {
+                mGameName = gameName;
+            }
+
+            bool SEngineInstance::isDedicated(void)
+            {
+                return mEngineMode & MODE_DEDICATED;
+            }
+
+            Kiaro::Common::S32 SEngineInstance::start(const Common::S32 argc, Common::C8* argv[])
+            {
+                mRunning = false;
+                al_init();
+                this->initializeFileSystem(argc, argv);
+                // Once the filesystem is initialized, pump Allegro through it
+                al_set_physfs_file_interface();
+                CONSOLE_INFOF("Running game '%s'", mGameName.data());
+                // Mount the data directories
+                Support::Vector<Support::String> mountedDirectories = mModNames;
+                mountedDirectories.push_back(mGameName);
+
+                for (Support::String directory : mountedDirectories)
+                {
+                    if (PHYSFS_mount(directory.c_str(), nullptr, 1) == 0)
+                    {
+                        mRunning = false;
+                        CONSOLE_ERRORF("'%s'. Reason: '%s'", directory.c_str(), PHYSFS_getLastError());
+                        return -1;
+                    }
+
+                    CONSOLE_INFOF("Mounted game directory '%s' successfully.", directory.c_str());
+                }
+
+                // TODO (Robert MacGregor#9): Return error codes for the netcode
+                // Init the taskers
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+                Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
+
+                if (this->initializeRenderer() != 0)
+                    return 2;
+
+                if (!this->isDedicated() && this->initializeGUI() != 0)
+                    return 3;
+
+                // Only init sound if we're not a dedicated server.
+                if (mEngineMode != MODE_DEDICATED)
+                    this->initializeSound();
+
+                this->initializeNetwork();
+
+                // Initialize the time pulses
+                this->initializeScheduledEvents();
+
+                mRunning = true;
+                this->runGameLoop();
                 return 1;
             }
 
-            // Initialize the messages
-
-         //   this->registerMessage<Game::Messages::Disconnect>(&SGameServer::handshakeHandler, Net::STAGE_UNSTAGED);
-
-            // Authentication Stage registration
-            this->registerMessage<Game::Messages::HandShake>(&Game::SGameServer::handshakeHandler, &Core::COutgoingClient::handshakeHandler, Net::STAGE_AUTHENTICATION);
-
-            // Loading stage registration
-            this->registerMessage<Game::Messages::Scope>(nullptr, &Core::COutgoingClient::scopeHandler, Net::STAGE_LOADING);
-            this->registerMessage<Game::Messages::SimCommit>(nullptr, &Core::COutgoingClient::simCommitHandler, Net::STAGE_LOADING);
-
-            // Initialize the client or server ends
-            switch (mEngineMode)
+            void SEngineInstance::setMods(const Support::Vector<Support::String>& mods)
             {
-                case MODE_CLIENT:
-                {
-                    mActiveClient = new COutgoingClient();
-                    break;
-                }
-
-                case MODE_CLIENTCONNECT:
-                {
-                    mActiveClient = new COutgoingClient();
-                    mActiveClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
-                    // FIXME (Robert MacGregor#9): Move error check elsewhere since the connection isn't acknowledged until the handshakes occur
-                    // if (!mActiveClient->isConnected())
-                    //     Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with server flag!");
-                    break;
-                }
-
-                case MODE_DEDICATED:
-                {
-                    Game::SGameServer::initialize();
-                    break;
-                }
+                mModNames = mods;
             }
 
-            CONSOLE_INFO("Initialized network.");
-            return 0;
-        }
-
-        SEngineInstance::MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> SEngineInstance::lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id)
-        {
-            auto searchResult = mServerStageMap[stage].find(id);
-
-            if (searchResult == mServerStageMap[stage].end())
-                return nullptr;
-
-            return (*searchResult).second.second;
-        }
-
-        SEngineInstance::MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> SEngineInstance::lookupClientMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id)
-        {
-            auto searchResult = mClientStageMap[stage].find(id);
-
-            if (searchResult == mClientStageMap[stage].end())
-                return nullptr;
-
-            return (*searchResult).second.second;
-        }
-
-        void SEngineInstance::runGameLoop(void)
-        {
-            // Start the Loop
-            Common::F32 deltaTimeSeconds = 0.0f;
-
-            while (mRunning)
+            void SEngineInstance::kill(void)
             {
-                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+                if (!mRunning)
+                    return;
 
-                try
-                {
-                #endif
-
-                    // Update all our subsystems
-                    Support::FTime::timer timerID = Support::FTime::startTimer();
-                    PROFILER_BEGIN(MainLoop);
-                    std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
-                    Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
-
-                    // Pump a time pulse at the scheduler
-                    Support::SSynchronousScheduler::getPointer()->update();
-
-                    // The GUI, video and sound systems run independently of our network time pulse
-                    if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
-                    {
-                        CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
-                        Sound::SSoundManager::getPointer()->update();
-                    }
-
-                    PROFILER_END(MainLoop);
-                    deltaTimeSeconds = Support::FTime::stopTimer(timerID);
-                #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
-                }
-                catch(std::exception& e)
-                {
-                    CONSOLE_ERRORF("An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
-
-                    // Something is probably up, we should leave if we have an active client.
-                    if (mActiveClient)
-                        mActiveClient->disconnect();
-
-                    // Servers just drop off the client that it last processed
-                    Game::SGameServer* server = Game::SGameServer::getPointer();
-
-                    if (server)
-                    {
-                        Net::IIncomingClient* lastClient = server->getLastPacketSender();
-
-                        // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
-                        if (lastClient)
-                            lastClient->disconnect("Internal Exception");
-                    }
-                }
-
-                #endif
-            }
-        }
-
-        Common::U32 SEngineInstance::initializeSound(void)
-        {
-            Sound::SSoundManager::getPointer();
-            return 0;
-        }
-
-        void SEngineInstance::initializeFileSystem(const Common::S32 argc, Common::C8* argv[])
-        {
-            // Initialize the file system
-            PHYSFS_init(argv[0]);
-            PHYSFS_setSaneConfig("Draconic Entity", "KGE", "ZIP", 0, 0);
-            // Remove the search path that points to the same directory as the executable
-            // TODO (Robert MacGregor#9): Research this.
-            Common::C8** searchPaths = PHYSFS_getSearchPath();
-            Common::C8* searchPath = searchPaths[1];
-            PHYSFS_removeFromSearchPath(searchPath);
-            PHYSFS_freeList(searchPaths);
-            // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
-        }
-
-        void SEngineInstance::initializeScheduledEvents(void)
-        {
-            Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
-
-            // Clients get a handful of scheduled events that don't apply for dedicated servers
-            if (mEngineMode != MODE_DEDICATED)
-            {
-                Input::SInputListener* inputListener = Input::SInputListener::getPointer();
-                // Set up input sampling
-                syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
+                CONSOLE_INFO("Killed via kill()");
+                mRunning = false;
             }
 
-            syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
-        }
-
-        void SEngineInstance::setPerfStatEnabled(const bool enabled)
-        {
-            Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
-
-            if (mPerfStatSchedule && enabled)
-                return;
-            else if (!mPerfStatSchedule && enabled)
+            SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
+            mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
             {
-                mPerfStatSchedule = syncScheduler->schedule(4000, true, this, &SEngineInstance::printPerfStat);
-                CONSOLE_INFO("Enabled perf stat.");
             }
-            else if (mPerfStatSchedule && !enabled)
+
+            SEngineInstance::~SEngineInstance(void)
             {
-                mPerfStatSchedule->cancel();
+                CONSOLE_INFO("Deinitializing ...");
+
+                if (mPerfStatSchedule)
+                    mPerfStatSchedule->cancel();
+
                 mPerfStatSchedule = nullptr;
-                CONSOLE_INFO("Disabled perf stat.");
+                // TODO: Check the destroy order
+                //   Net::SClient::destroy();
+
+                Game::SGameServer::destroy();
+                Input::SInputListener::destroy();
+                Support::SSynchronousScheduler::destroy();
+                Support::SSettingsRegistry::destroy();
+                PHYSFS_deinit();
+                enet_deinitialize();
+                Engine::Video::SRenderer::destroy();
+                al_uninstall_system();
             }
-        }
 
-        void SEngineInstance::printPerfStat(void)
-        {
-            Support::SProfiler* profiler = Support::SProfiler::getPointer();
-            auto averages = profiler->getSampleAverages();
-            CONSOLE_INFO("Performance Statistics---------------------------");
+            void SEngineInstance::networkUpdate(void)
+            {
+                // FIXME (Robert MacGregor#9): Pass in the time delta
+                //          Net::SClient* client = Net::SClient::getPointer();
+                // if (mActiveClient)
+                //     mActiveClient->update();
+                Game::SGameServer* server = Game::SGameServer::getPointer();
+                // if (server)
+                //     server->update(0.0f);
+            }
 
-            for (auto average : averages)
-                CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
-        }
-    } // End Namespace Engine
+            int SEngineInstance::initializeGUI(void)
+            {
+                Engine::GUI::SGUIManager::getPointer();
+
+                return 0;
+            }
+
+            Common::U32 SEngineInstance::initializeRenderer(void)
+            {
+                Engine::Video::SRenderer::getPointer();
+
+                return 0;
+            }
+
+            Common::U32 SEngineInstance::initializeNetwork(void)
+            {
+                // Catch if the netcode somehow doesn't initialize correctly.
+                if (enet_initialize() < 0)
+                {
+                    CONSOLE_ERROR("Failed to initialize the network!");
+                    return 1;
+                }
+
+                // Initialize the messages
+
+             //   this->registerMessage<Game::Messages::Disconnect>(&SGameServer::handshakeHandler, Net::STAGE_UNSTAGED);
+
+                SCoreRegistry* registry = SCoreRegistry::getPointer();
+
+                // Initialize the client or server ends
+                switch (mEngineMode)
+                {
+                    case MODE_CLIENT:
+                    {
+                        mActiveClient = new COutgoingClient();
+                        break;
+                    }
+
+                    case MODE_CLIENTCONNECT:
+                    {
+                        mActiveClient = new COutgoingClient();
+                        mActiveClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
+                        // FIXME (Robert MacGregor#9): Move error check elsewhere since the connection isn't acknowledged until the handshakes occur
+                        // if (!mActiveClient->isConnected())
+                        //     Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with server flag!");
+                        break;
+                    }
+
+                    case MODE_DEDICATED:
+                    {
+                        Game::SGameServer::initialize();
+                        break;
+                    }
+                }
+
+                CONSOLE_INFO("Initialized network.");
+                return 0;
+            }
+
+            void SEngineInstance::runGameLoop(void)
+            {
+                // Start the Loop
+                Common::F32 deltaTimeSeconds = 0.0f;
+
+                while (mRunning)
+                {
+                    #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+
+                    try
+                    {
+                    #endif
+
+                        // Update all our subsystems
+                        Support::FTime::timer timerID = Support::FTime::startTimer();
+                        PROFILER_BEGIN(MainLoop);
+                        std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
+                        Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
+
+                        // Pump a time pulse at the scheduler
+                        Support::SSynchronousScheduler::getPointer()->update();
+
+                        // The GUI, video and sound systems run independently of our network time pulse
+                        if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
+                        {
+                            CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
+                            Sound::SSoundManager::getPointer()->update();
+                        }
+
+                        PROFILER_END(MainLoop);
+                        deltaTimeSeconds = Support::FTime::stopTimer(timerID);
+                    #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
+                    }
+                    catch(std::exception& e)
+                    {
+                        CONSOLE_ERRORF("An internal exception of type '%s' has occurred:\n%s", typeid(e).name(), e.what());
+
+                        // Something is probably up, we should leave if we have an active client.
+                        if (mActiveClient)
+                            mActiveClient->disconnect();
+
+                        // Servers just drop off the client that it last processed
+                        Game::SGameServer* server = Game::SGameServer::getPointer();
+
+                        if (server)
+                        {
+                            Net::IIncomingClient* lastClient = server->getLastPacketSender();
+
+                            // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
+                            if (lastClient)
+                                lastClient->disconnect("Internal Exception");
+                        }
+                    }
+
+                    #endif
+                }
+            }
+
+            Common::U32 SEngineInstance::initializeSound(void)
+            {
+                Sound::SSoundManager::getPointer();
+                return 0;
+            }
+
+            void SEngineInstance::initializeFileSystem(const Common::S32 argc, Common::C8* argv[])
+            {
+                // Initialize the file system
+                PHYSFS_init(argv[0]);
+                PHYSFS_setSaneConfig("Draconic Entity", "KGE", "ZIP", 0, 0);
+                // Remove the search path that points to the same directory as the executable
+                // TODO (Robert MacGregor#9): Research this.
+                Common::C8** searchPaths = PHYSFS_getSearchPath();
+                Common::C8* searchPath = searchPaths[1];
+                PHYSFS_removeFromSearchPath(searchPath);
+                PHYSFS_freeList(searchPaths);
+                // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
+            }
+
+            void SEngineInstance::initializeScheduledEvents(void)
+            {
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+
+                // Clients get a handful of scheduled events that don't apply for dedicated servers
+                if (mEngineMode != MODE_DEDICATED)
+                {
+                    Input::SInputListener* inputListener = Input::SInputListener::getPointer();
+                    // Set up input sampling
+                    syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
+                }
+
+                syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
+            }
+
+            void SEngineInstance::setPerfStatEnabled(const bool enabled)
+            {
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+
+                if (mPerfStatSchedule && enabled)
+                    return;
+                else if (!mPerfStatSchedule && enabled)
+                {
+                    mPerfStatSchedule = syncScheduler->schedule(4000, true, this, &SEngineInstance::printPerfStat);
+                    CONSOLE_INFO("Enabled perf stat.");
+                }
+                else if (mPerfStatSchedule && !enabled)
+                {
+                    mPerfStatSchedule->cancel();
+                    mPerfStatSchedule = nullptr;
+                    CONSOLE_INFO("Disabled perf stat.");
+                }
+            }
+
+            void SEngineInstance::printPerfStat(void)
+            {
+                Support::SProfiler* profiler = Support::SProfiler::getPointer();
+                auto averages = profiler->getSampleAverages();
+                CONSOLE_INFO("Performance Statistics---------------------------");
+
+                for (auto average : averages)
+                    CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
+            }
+        } // End Namespace Engine
+    }
 } // End Namespace Kiaro

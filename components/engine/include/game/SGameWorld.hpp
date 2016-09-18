@@ -20,66 +20,69 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class IGameMode;
-
-        namespace Entities
+        namespace Game
         {
-            class IEntity;
-            class CSky;
-        } // End NameSpace Entities
+            class IGameMode;
 
-        class SGameWorld : public Support::ISerializable
-        {
-                friend class Entities::IEntity;
+            namespace Entities
+            {
+                class IEntity;
+                class CSky;
+            } // End NameSpace Entities
 
-                // Private Members
-            private:
-                Support::UnorderedSet<Entities::IEntity*> mEntities;
+            class SGameWorld : public Support::ISerializable
+            {
+                    friend class Entities::IEntity;
 
-                Entities::CSky* mSky;
+                    // Private Members
+                private:
+                    Support::UnorderedSet<Entities::IEntity*> mEntities;
 
-                IGameMode* mGameMode;
+                    Entities::CSky* mSky;
 
-                // Public Members
-            public:
-                typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
-                typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
+                    IGameMode* mGameMode;
 
-                // Public Methods
-            public:
-                static SGameWorld* getPointer(void);
-                static void destroy(void);
+                    // Public Members
+                public:
+                    typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
+                    typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
 
-                void addEntity(Entities::IEntity* entity);
-                void removeEntity(Entities::IEntity* entity);
-                void removeEntity(const Common::U32 id);
+                    // Public Methods
+                public:
+                    static SGameWorld* getPointer(void);
+                    static void destroy(void);
 
-                Entities::IEntity* getEntity(const Common::U32 id) const;
-                Entities::IEntity* getEntity(const Support::String& name) const;
+                    void addEntity(Entities::IEntity* entity);
+                    void removeEntity(Entities::IEntity* entity);
+                    void removeEntity(const Common::U32 id);
 
-                void update(const Common::F32 deltaTimeSeconds);
-                void clear(void);
-                const Entities::CSky* getSky(void);
-                size_t getRequiredMemory(void) const;
+                    Entities::IEntity* getEntity(const Common::U32 id) const;
+                    Entities::IEntity* getEntity(const Support::String& name) const;
 
-                void packEverything(Support::CBitStream& out) const;
-                void unpack(Support::CBitStream& in);
+                    void update(const Common::F32 deltaTimeSeconds);
+                    void clear(void);
+                    const Entities::CSky* getSky(void);
+                    size_t getRequiredMemory(void) const;
 
-                void setGameMode(IGameMode* game);
-                IGameMode* getGameMode(void);
+                    void packEverything(Support::CBitStream& out) const;
+                    void unpack(Support::CBitStream& in);
 
-                iterator begin(void);
-                const_iterator end(void);
+                    void setGameMode(IGameMode* game);
+                    IGameMode* getGameMode(void);
 
-                // Private Methods
-            private:
-                //! Standard constructor
-                SGameWorld(void);
-                //! Standard destructor
-                ~SGameWorld(void);
-        };
-    } // End Namespace Game
+                    iterator begin(void);
+                    const_iterator end(void);
+
+                    // Private Methods
+                private:
+                    //! Standard constructor
+                    SGameWorld(void);
+                    //! Standard destructor
+                    ~SGameWorld(void);
+            };
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_GAME_SGAMEWORLD_HPP_

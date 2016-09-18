@@ -18,61 +18,64 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : IEngineObject(), mType(typeMask),
-                mFlags(hintMask), mNetID(0)
+            namespace Entities
             {
-            }
+                IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : IEngineObject(), mType(typeMask),
+                    mFlags(hintMask), mNetID(0)
+                {
+                }
 
-            IEntity::~IEntity(void)
-            {
-            }
+                IEntity::~IEntity(void)
+                {
+                }
 
-            const Common::U32 IEntity::getTypeMask(void) const
-            {
-                return mType;
-            }
+                const Common::U32 IEntity::getTypeMask(void) const
+                {
+                    return mType;
+                }
 
-            const Common::U32 IEntity::getNetID(void) const
-            {
-                return mNetID;
-            }
+                const Common::U32 IEntity::getNetID(void) const
+                {
+                    return mNetID;
+                }
 
-            void IEntity::packDeltas(Support::CBitStream& out)
-            {
-            }
+                void IEntity::packDeltas(Support::CBitStream& out)
+                {
+                }
 
-            const ENTITY_TYPE& IEntity::getType(void) const
-            {
-                return mType;
-            }
+                const ENTITY_TYPE& IEntity::getType(void) const
+                {
+                    return mType;
+                }
 
-            void IEntity::packEverything(Support::CBitStream& out) const
-            {
-                // Here we pack our net ID and type ID
-                out << mType << mNetID;
-            }
+                void IEntity::packEverything(Support::CBitStream& out) const
+                {
+                    // Here we pack our net ID and type ID
+                    out << mType << mNetID;
+                }
 
-            void IEntity::unpack(Support::CBitStream& in)
-            {
-                in >> mType >> mNetID;
-            }
+                void IEntity::unpack(Support::CBitStream& in)
+                {
+                    in >> mType >> mNetID;
+                }
 
-            void IEntity::setNetID(const Common::U32 identifier)
-            {
-                mNetID = identifier;
-            }
+                void IEntity::setNetID(const Common::U32 identifier)
+                {
+                    mNetID = identifier;
+                }
 
-            void IEntity::registerEntity(void)
-            {
-                Game::SGameWorld::getPointer()->addEntity(this);
+                void IEntity::registerEntity(void)
+                {
+                    Game::SGameWorld::getPointer()->addEntity(this);
 
-                // Also register the entity with our current scene graph
-                Engine::Video::SRenderer::getPointer()->getCurrentScene()->add(this);
-            }
-        } // End Namespace Entities
-    } // End Namespace Game
+                    // Also register the entity with our current scene graph
+                    Engine::Video::SRenderer::getPointer()->getCurrentScene()->add(this);
+                }
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro

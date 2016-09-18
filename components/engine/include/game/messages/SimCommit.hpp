@@ -24,26 +24,29 @@ namespace Kiaro
         class NetworkedEntity;
     }
 
-    namespace Game
+    namespace Engine
     {
-        namespace Messages
+        namespace Game
         {
-            /**
-             *  @brief The SimCommit class is a server only message type that is used to signal to connected game clients that
-             *  the server is done submitting a simulation frame for the time being.
-             */
-            class SimCommit : public Net::IMessage
+            namespace Messages
             {
-                // Public Methods
-                public:
-                    SimCommit(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
+                /**
+                 *  @brief The SimCommit class is a server only message type that is used to signal to connected game clients that
+                 *  the server is done submitting a simulation frame for the time being.
+                 */
+                class SimCommit : public Net::IMessage
+                {
+                    // Public Methods
+                    public:
+                        SimCommit(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
 
-                    virtual void packEverything(Support::CBitStream& out) const;
-                    virtual void unpack(Support::CBitStream& in);
-                    size_t getMinimumPacketPayloadLength(void) const;
-                    size_t getRequiredMemory(void) const;
-            };
-        } // End NameSpace Packets
+                        virtual void packEverything(Support::CBitStream& out) const;
+                        virtual void unpack(Support::CBitStream& in);
+                        size_t getMinimumPacketPayloadLength(void) const;
+                        size_t getRequiredMemory(void) const;
+                };
+            } // End NameSpace Packets
+        }
     } // End NameSpace Game
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_GAME_PACKETS_SIMCOMMIT_HPP_

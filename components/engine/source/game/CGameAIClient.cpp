@@ -13,20 +13,23 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        CGameAIClient::CGameAIClient(void) : CGameClient(nullptr)
+        namespace Game
         {
-        }
+            CGameAIClient::CGameAIClient(void) : CGameClient(nullptr)
+            {
+            }
 
-        void CGameAIClient::disconnect(const Support::String& reason)
-        {
-            // TODO (Robert MacGregor#9): Handle AI-disconnect call?
-        }
+            void CGameAIClient::disconnect(const Support::String& reason)
+            {
+                // TODO (Robert MacGregor#9): Handle AI-disconnect call?
+            }
 
-        void CGameAIClient::send(Net::IMessage* packet, const bool reliable)
-        {
-            // TODO (Robert MacGregor#9): Handle AI-packet sends?
-        }
-    } // End NameSpace Game
+            void CGameAIClient::send(Net::IMessage* packet, const bool reliable)
+            {
+                // TODO (Robert MacGregor#9): Handle AI-packet sends?
+            }
+        } // End NameSpace Game
+    }
 } // End Namespace Kiaro

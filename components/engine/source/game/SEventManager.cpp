@@ -13,35 +13,38 @@
 
 namespace Kiaro
 {
-    namespace Core
+    namespace Engine
     {
-        static SEventManager* sInstance = nullptr;
-
-        SEventManager* SEventManager::get(void)
+        namespace Core
         {
-            if (!sInstance)
-                sInstance = new SEventManager;
+            static SEventManager* sInstance = nullptr;
 
-            return sInstance;
-        }
+            SEventManager* SEventManager::get(void)
+            {
+                if (!sInstance)
+                    sInstance = new SEventManager;
 
-        void SEventManager::destroy(void)
-        {
-            delete sInstance;
-            sInstance = nullptr;
-        }
+                return sInstance;
+            }
 
-        void SEventManager::clearEvents(void)
-        {
-        }
+            void SEventManager::destroy(void)
+            {
+                delete sInstance;
+                sInstance = nullptr;
+            }
 
-        SEventManager::SEventManager(void)
-        {
-        }
+            void SEventManager::clearEvents(void)
+            {
+            }
 
-        SEventManager::~SEventManager(void)
-        {
-        }
-    } // End NameSpace Support
+            SEventManager::SEventManager(void)
+            {
+            }
+
+            SEventManager::~SEventManager(void)
+            {
+            }
+        } // End NameSpace Support
+    }
 } // End nameSpace Kiaro
 

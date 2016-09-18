@@ -14,18 +14,21 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            enum ENTITY_TYPE
+            namespace Entities
             {
-                ENTITY_NULL = 0,
-                ENTITY_RIGIDPROP = 1,
-                ENTITY_TERRAIN = 2,
-                ENTITY_SKY = 3,
-            };
-        } // End Namespace Entities
-    } // End Namespace Game
+                enum ENTITY_TYPE
+                {
+                    ENTITY_NULL = 0,
+                    ENTITY_RIGIDPROP = 1,
+                    ENTITY_TERRAIN = 2,
+                    ENTITY_SKY = 3,
+                };
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_GAME_ENTITIES_TYPES_HPP_

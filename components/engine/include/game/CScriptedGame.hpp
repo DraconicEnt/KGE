@@ -16,18 +16,21 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class CScriptedGame : public IGameMode
+        namespace Game
         {
-            // Public Methods
-            public:
-                CScriptedGame(void);
+            class CScriptedGame : public IGameMode
+            {
+                // Public Methods
+                public:
+                    CScriptedGame(void);
 
-                void setup(void);
-                void tearDown(void);
-        };
-    } // End NameSpace Game
+                    void setup(void);
+                    void tearDown(void);
+            };
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro
 
 #endif // _INCLUDE_GAME_SCRIPTEDGAME_HPP_

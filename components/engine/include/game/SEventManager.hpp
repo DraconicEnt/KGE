@@ -23,34 +23,37 @@ namespace Kiaro
         class CClient;
     } // End NameSpace Network
 
-    namespace Core
+    namespace Engine
     {
-        class SEventManager
+        namespace Core
         {
-                // Public Typedefs
-            public:
-                typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientConnectedEventType;
-                typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientDisconnectedEventType;
+            class SEventManager
+            {
+                    // Public Typedefs
+                public:
+                    typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientConnectedEventType;
+                    typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientDisconnectedEventType;
 
-                // Public Members
-            public:
-                const onClientConnectedEventType mOnClientConnectedEvent;
-                const onClientDisconnectedEventType mOnClientDisconnectedEvent;
+                    // Public Members
+                public:
+                    const onClientConnectedEventType mOnClientConnectedEvent;
+                    const onClientDisconnectedEventType mOnClientDisconnectedEvent;
 
-                // Public Methods
-            public:
-                static SEventManager* get(void);
-                static void destroy(void);
+                    // Public Methods
+                public:
+                    static SEventManager* get(void);
+                    static void destroy(void);
 
-                void clearEvents(void);
+                    void clearEvents(void);
 
-                // Private Methods
-            private:
-                //! Parameter-less constructor.
-                SEventManager(void);
-                //! Standard destructor.
-                ~SEventManager(void);
-        }; // End Class EventManager
-    } // End NameSpace Support
+                    // Private Methods
+                private:
+                    //! Parameter-less constructor.
+                    SEventManager(void);
+                    //! Standard destructor.
+                    ~SEventManager(void);
+            }; // End Class EventManager
+        } // End NameSpace Support
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_SUPPORT_EVENTMANAGER_HPP_

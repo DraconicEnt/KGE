@@ -23,92 +23,95 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            CTerrain::CTerrain(const Support::String& terrainFile, const Support::String& textureFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
-            mTerrainFile(terrainFile), mTextureFile(textureFile), mSceneNode(nullptr)
+            namespace Entities
             {
-            }
-
-            CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
-            {
-                this->unpack(in);
-            }
-
-            CTerrain::~CTerrain(void)
-            {
-            }
-
-            void CTerrain::packEverything(Support::CBitStream& out) const
-            {
-                assert(mSceneNode);
-                IEntity::packEverything(out);
-
-                const Common::Vector3DF& position = mSceneNode->getPosition();
-
-                out.writeString(mTerrainFile);
-                out.writeString(mTextureFile);
-                out << position.X << position.Y << position.Z;
-            }
-
-            void CTerrain::unpack(Support::CBitStream& in)
-            {
-                mTerrainFile = in.popString();
-                mTextureFile = in.popString();
-
-                Common::Vector3DF position;
-
-                in >> position.X >> position.Y >> position.Z;
-
-                this->registerEntity();
-
-                if (mSceneNode)
-                    mSceneNode->setPosition(position);
-            }
-
-            void CTerrain::registerEntity(void)
-            {
-                CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
-                FileSystem::CFileReader heightmapHandle(mTerrainFile);
-                irr::IrrlichtDevice* irrlichtDevice = Engine::Video::SRenderer::getPointer()->getIrrlichtDevice();
-                irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&heightmapHandle);
-
-                if (terrain)
+                CTerrain::CTerrain(const Support::String& terrainFile, const Support::String& textureFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
+                mTerrainFile(terrainFile), mTextureFile(textureFile), mSceneNode(nullptr)
                 {
-                    FileSystem::CFileReader textureHandle(mTextureFile);
-
-                    irr::video::ITexture* texture = irrlichtDevice->getVideoDriver()->getTexture(&textureHandle);
-
-                    if (texture)
-                        terrain->setMaterialTexture(0, texture);
-
-                    terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-                    terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
-
-                    mSceneNode = terrain;
-
-                    mSceneNodes.insert(mSceneNodes.end(), mSceneNode);
-                    IEntity::registerEntity();
                 }
-                else
-                    CONSOLE_ERROR("Failed to instantiate using terrain file '%s'", mTerrainFile.data());
-            }
 
-            void CTerrain::setPosition(const Common::Vector3DF& position)
-            {
-                mSceneNode->setPosition(position);
-            }
+                CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
+                {
+                    this->unpack(in);
+                }
 
-            void CTerrain::update(const Common::F32 deltaTimeSeconds)
-            {
-            }
+                CTerrain::~CTerrain(void)
+                {
+                }
 
-            size_t CTerrain::getRequiredMemory(void) const
-            {
-                return sizeof(Common::F32) * 3;
-            }
-        } // End Namespace Entities
-    } // End Namespace Game
+                void CTerrain::packEverything(Support::CBitStream& out) const
+                {
+                    assert(mSceneNode);
+                    IEntity::packEverything(out);
+
+                    const Common::Vector3DF& position = mSceneNode->getPosition();
+
+                    out.writeString(mTerrainFile);
+                    out.writeString(mTextureFile);
+                    out << position.X << position.Y << position.Z;
+                }
+
+                void CTerrain::unpack(Support::CBitStream& in)
+                {
+                    mTerrainFile = in.popString();
+                    mTextureFile = in.popString();
+
+                    Common::Vector3DF position;
+
+                    in >> position.X >> position.Y >> position.Z;
+
+                    this->registerEntity();
+
+                    if (mSceneNode)
+                        mSceneNode->setPosition(position);
+                }
+
+                void CTerrain::registerEntity(void)
+                {
+                    CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
+                    FileSystem::CFileReader heightmapHandle(mTerrainFile);
+                    irr::IrrlichtDevice* irrlichtDevice = Engine::Video::SRenderer::getPointer()->getIrrlichtDevice();
+                    irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&heightmapHandle);
+
+                    if (terrain)
+                    {
+                        FileSystem::CFileReader textureHandle(mTextureFile);
+
+                        irr::video::ITexture* texture = irrlichtDevice->getVideoDriver()->getTexture(&textureHandle);
+
+                        if (texture)
+                            terrain->setMaterialTexture(0, texture);
+
+                        terrain->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+                        terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
+
+                        mSceneNode = terrain;
+
+                        mSceneNodes.insert(mSceneNodes.end(), mSceneNode);
+                        IEntity::registerEntity();
+                    }
+                    else
+                        CONSOLE_ERROR("Failed to instantiate using terrain file '%s'", mTerrainFile.data());
+                }
+
+                void CTerrain::setPosition(const Common::Vector3DF& position)
+                {
+                    mSceneNode->setPosition(position);
+                }
+
+                void CTerrain::update(const Common::F32 deltaTimeSeconds)
+                {
+                }
+
+                size_t CTerrain::getRequiredMemory(void) const
+                {
+                    return sizeof(Common::F32) * 3;
+                }
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro

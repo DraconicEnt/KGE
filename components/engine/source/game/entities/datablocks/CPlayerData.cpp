@@ -7,43 +7,46 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            namespace DataBlocks
+            namespace Entities
             {
-                CPlayerData::CPlayerData(void)
+                namespace DataBlocks
                 {
-                    this->addNetworkedProperty("forwardSpeed", mForwardSpeed);
-                    this->addNetworkedProperty("sidewaysSpeed", mSidewaysSpeed);
-                    this->addNetworkedProperty("backwardSpeed", mBackwardsSpeed);
-                    this->addNetworkedProperty("shapefile", mShapefile);
+                    CPlayerData::CPlayerData(void)
+                    {
+                        this->addNetworkedProperty("forwardSpeed", mForwardSpeed);
+                        this->addNetworkedProperty("sidewaysSpeed", mSidewaysSpeed);
+                        this->addNetworkedProperty("backwardSpeed", mBackwardsSpeed);
+                        this->addNetworkedProperty("shapefile", mShapefile);
+                    }
+
+                    bool CPlayerData::validate(void)
+                    {
+                        if (mForwardSpeed <= 0.0f)
+                        {
+                            CONSOLE_ERRORF("Invalid forwardSpeed! %f <= 0.0f", mForwardSpeed);
+                            return false;
+                        }
+
+                        if (mSidewaysSpeed <= 0.0f)
+                        {
+                            CONSOLE_ERRORF("Invalid sidewaysSpeed! %f <= 0.0f", mSidewaysSpeed);
+                            return false;
+                        }
+
+                        if (mBackwardsSpeed <= 0.0f)
+                        {
+                            CONSOLE_ERRORF("Invalid backwardSpeed! %f <= 0.0f", mBackwardsSpeed);
+                            return false;
+                        }
+
+                        return true;
+                    }
                 }
-
-                bool CPlayerData::validate(void)
-                {
-                    if (mForwardSpeed <= 0.0f)
-                    {
-                        CONSOLE_ERRORF("Invalid forwardSpeed! %f <= 0.0f", mForwardSpeed);
-                        return false;
-                    }
-
-                    if (mSidewaysSpeed <= 0.0f)
-                    {
-                        CONSOLE_ERRORF("Invalid sidewaysSpeed! %f <= 0.0f", mSidewaysSpeed);
-                        return false;
-                    }
-
-                    if (mBackwardsSpeed <= 0.0f)
-                    {
-                        CONSOLE_ERRORF("Invalid backwardSpeed! %f <= 0.0f", mBackwardsSpeed);
-                        return false;
-                    }
-
-                    return true;
-                }
-            }
-        } // End NameSpace DataBlocks
+            } // End NameSpace DataBlocks
+        }
     } // End NameSpace Engine
 } // End NameSpace Kiaro

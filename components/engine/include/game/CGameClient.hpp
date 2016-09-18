@@ -18,30 +18,33 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class IControllable;
-
-        class CGameClient : public Net::IIncomingClient
+        namespace Game
         {
-                // Public Members
-            public:
-                //! The current move state of this client.
-                CMove mMove;
+            class IControllable;
 
-                // Protected Members
-            protected:
-                IControllable* mControlObject;
+            class CGameClient : public Net::IIncomingClient
+            {
+                    // Public Members
+                public:
+                    //! The current move state of this client.
+                    CMove mMove;
 
-                // Public Methods
-            public:
-                CGameClient(Net::RemoteHostContext client);
+                    // Protected Members
+                protected:
+                    IControllable* mControlObject;
 
-                void setControlObject(IControllable* object);
-                IControllable* getControlObject(void) const NOTHROW;
+                    // Public Methods
+                public:
+                    CGameClient(Net::RemoteHostContext client);
 
-                void disconnect(const Support::String& reason);
-        };
-    } // End NameSpace Game
+                    void setControlObject(IControllable* object);
+                    IControllable* getControlObject(void) const NOTHROW;
+
+                    void disconnect(const Support::String& reason);
+            };
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_GAME_CGAMECLIENT_HPP_

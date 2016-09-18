@@ -16,35 +16,38 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Messages
+        namespace Game
         {
-            SimCommit::SimCommit(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender)
+            namespace Messages
             {
-            }
+                SimCommit::SimCommit(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender)
+                {
+                }
 
-            void SimCommit::packEverything(Support::CBitStream& out) const
-            {
-                IMessage::packBaseData<SimCommit>(out);
-            }
+                void SimCommit::packEverything(Support::CBitStream& out) const
+                {
+                    IMessage::packBaseData<SimCommit>(out);
+                }
 
-            void SimCommit::unpack(Support::CBitStream& in)
-            {
-                // FIXME (Robert MacGregor#9): Sim Commit Messages don't contain any values
-                //if (in.getSize() <= getMinimumPacketPayloadLength())
-                //    throw std::runtime_error("Unable to unpack SimCommit packet; too small of a payload!");
-            }
+                void SimCommit::unpack(Support::CBitStream& in)
+                {
+                    // FIXME (Robert MacGregor#9): Sim Commit Messages don't contain any values
+                    //if (in.getSize() <= getMinimumPacketPayloadLength())
+                    //    throw std::runtime_error("Unable to unpack SimCommit packet; too small of a payload!");
+                }
 
-            size_t SimCommit::getMinimumPacketPayloadLength(void) const
-            {
-                return IMessage::getMinimumPacketPayloadLength();
-            }
+                size_t SimCommit::getMinimumPacketPayloadLength(void) const
+                {
+                    return IMessage::getMinimumPacketPayloadLength();
+                }
 
-            size_t SimCommit::getRequiredMemory(void) const
-            {
-                return IMessage::getRequiredMemory();
-            }
-        } // End NameSpace Packets
+                size_t SimCommit::getRequiredMemory(void) const
+                {
+                    return IMessage::getRequiredMemory();
+                }
+            } // End NameSpace Packets
+        }
     } // End NameSpace Game
 } // End NameSpace Kiaro

@@ -7,28 +7,31 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            namespace DataBlocks
+            namespace Entities
             {
-                class CPlayerData : public IDataBlock
+                namespace DataBlocks
                 {
-                    public:
-                        Common::F32 mForwardSpeed;
-                        Common::F32 mSidewaysSpeed;
-                        Common::F32 mBackwardsSpeed;
+                    class CPlayerData : public IDataBlock
+                    {
+                        public:
+                            Common::F32 mForwardSpeed;
+                            Common::F32 mSidewaysSpeed;
+                            Common::F32 mBackwardsSpeed;
 
-                        Support::String mShapefile;
+                            Support::String mShapefile;
 
-                    public:
-                        CPlayerData(void);
+                        public:
+                            CPlayerData(void);
 
-                        bool validate(void);
-                };
-            } // End NameSpace DataBlocks
-        }
-    } // End NameSpace Engine
+                            bool validate(void);
+                    };
+                } // End NameSpace DataBlocks
+            }
+        } // End NameSpace Engine
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_ENGINE_GAME_ENTITIES_DATABLOCKS_CPLAYERDATA_HPP_

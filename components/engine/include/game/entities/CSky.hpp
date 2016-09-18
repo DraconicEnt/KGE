@@ -25,37 +25,40 @@ namespace Kiaro
         class CBitStream;
     }
 
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            /**
-             *  @brief Entity class representing a sky object.
-             */
-            class CSky : public Game::Entities::IEntity
+            namespace Entities
             {
-                // Public Methods
-                public:
-                    CSky(void);
-                    CSky(Support::CBitStream& in);
+                /**
+                 *  @brief Entity class representing a sky object.
+                 */
+                class CSky : public Game::Entities::IEntity
+                {
+                    // Public Methods
+                    public:
+                        CSky(void);
+                        CSky(Support::CBitStream& in);
 
-                    ~CSky(void);
+                        ~CSky(void);
 
-                    virtual void packUpdate(Support::CBitStream& out);
-                    virtual void unpackUpdate(Support::CBitStream& in);
-                    virtual void writeTo(Support::CBitStream& out) const;
-                    virtual void extractFrom(Support::CBitStream& in);
-                    virtual void packInitialization(Support::CBitStream& out);
-                    virtual void unpackInitialization(Support::CBitStream& in);
-                    virtual void registerEntity(void);
-                    virtual void update(const Common::F32 deltaTimeSeconds);
+                        virtual void packUpdate(Support::CBitStream& out);
+                        virtual void unpackUpdate(Support::CBitStream& in);
+                        virtual void writeTo(Support::CBitStream& out) const;
+                        virtual void extractFrom(Support::CBitStream& in);
+                        virtual void packInitialization(Support::CBitStream& out);
+                        virtual void unpackInitialization(Support::CBitStream& in);
+                        virtual void registerEntity(void);
+                        virtual void update(const Common::F32 deltaTimeSeconds);
 
-                    size_t getRequiredMemory(void)
-                    {
-                        return sizeof(Common::C8) * 4;
-                    }
-            };
-        } // End Namespace Entities
-    } // End Namespace Game
+                        size_t getRequiredMemory(void)
+                        {
+                            return sizeof(Common::C8) * 4;
+                        }
+                };
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_GAME_ENTITIES_SKY_HPP_

@@ -16,33 +16,36 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class CGameClient;
-
-        /**
-         *  @brief IControllable is an interface class for objects that may be implemented by
-         *  objects that can be controlled by both Human and computer generated input sources.
-         */
-        class IControllable
+        namespace Game
         {
-            friend class CGameClient;
+            class CGameClient;
 
-            // Protected Members
-            protected:
-                //! Pointer to the controlling client.
-                CGameClient* mController;
+            /**
+             *  @brief IControllable is an interface class for objects that may be implemented by
+             *  objects that can be controlled by both Human and computer generated input sources.
+             */
+            class IControllable
+            {
+                friend class CGameClient;
 
-            // Public Methods
-            public:
-                //! Parameter-less constructor.
-                IControllable(void);
+                // Protected Members
+                protected:
+                    //! Pointer to the controlling client.
+                    CGameClient* mController;
 
-                /**
-                 *  @brief Returns the current
-                 */
-                CGameClient* getController(void) const NOTHROW;
-        };
+                // Public Methods
+                public:
+                    //! Parameter-less constructor.
+                    IControllable(void);
+
+                    /**
+                     *  @brief Returns the current
+                     */
+                    CGameClient* getController(void) const NOTHROW;
+            };
+        }
     }
 }
 #endif // _INCLUDE_GAME_ICONTROLLABLE_HPP_

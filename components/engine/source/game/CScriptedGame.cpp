@@ -12,18 +12,21 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        CScriptedGame::CScriptedGame(void) : IGameMode("Scripted Game")
+        namespace Game
         {
-        }
+            CScriptedGame::CScriptedGame(void) : IGameMode("Scripted Game")
+            {
+            }
 
-        void CScriptedGame::setup(void)
-        {
-        }
+            void CScriptedGame::setup(void)
+            {
+            }
 
-        void CScriptedGame::tearDown(void)
-        {
-        }
-    } // End NameSpace Game
+            void CScriptedGame::tearDown(void)
+            {
+            }
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro

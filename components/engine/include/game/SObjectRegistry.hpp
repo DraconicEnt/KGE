@@ -20,107 +20,110 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class IEngineObject;
-
-        /**
-         *  @brief The SObjectRegistry is the central system with which object ID's and names
-         *  are maintained. It allows lookups by both ID and name, essentially.
-         */
-        class SObjectRegistry
+        namespace Game
         {
-                friend class IEngineObject;
+            class IEngineObject;
 
-                // Private Members
-            private:
-                //! A deque of engine objects for lookup by ID.
-                Support::Deque<IEngineObject*> mObjects;
+            /**
+             *  @brief The SObjectRegistry is the central system with which object ID's and names
+             *  are maintained. It allows lookups by both ID and name, essentially.
+             */
+            class SObjectRegistry
+            {
+                    friend class IEngineObject;
 
-                //! A stack of available object ID's, it is populated when an added object is later removed so that the ID is reused.
-                Support::Stack<Common::U32> mAvailableIDs;
+                    // Private Members
+                private:
+                    //! A deque of engine objects for lookup by ID.
+                    Support::Deque<IEngineObject*> mObjects;
 
-                //! A mapping of names to objects.
-                Support::UnorderedMap<Support::String, IEngineObject*> mNameDictionary;
+                    //! A stack of available object ID's, it is populated when an added object is later removed so that the ID is reused.
+                    Support::Stack<Common::U32> mAvailableIDs;
 
-                // Public Methods
-            public:
-                /**
-                 *  @brief Obtains the pointer to the object registry singleton, creating a new one
-                 *  if one does not already exist.
-                 *  @return A pointer to the SObjectRegistry.
-                 */
-                static SObjectRegistry* getPointer(void);
+                    //! A mapping of names to objects.
+                    Support::UnorderedMap<Support::String, IEngineObject*> mNameDictionary;
 
-                /**
-                 *  @brief Destroys the object registry singleton if there is currently one active.
-                 */
-                static void destroy(void);
+                    // Public Methods
+                public:
+                    /**
+                     *  @brief Obtains the pointer to the object registry singleton, creating a new one
+                     *  if one does not already exist.
+                     *  @return A pointer to the SObjectRegistry.
+                     */
+                    static SObjectRegistry* getPointer(void);
 
-                /**
-                 *  @brief Adds a new object to the registry, using the identifier provided by the
-                 *  object itself to insert it into the internal deque.
-                 *  @param entity The object to add.
-                 */
-                bool addObject(IEngineObject* entity);
+                    /**
+                     *  @brief Destroys the object registry singleton if there is currently one active.
+                     */
+                    static void destroy(void);
 
-                /**
-                 *  @brief Removes an object from the registry, filling its spot with null in the
-                 *  internal deque.
-                 *  @param entity The object to remove.
-                 */
-                bool removeObject(IEngineObject* entity);
+                    /**
+                     *  @brief Adds a new object to the registry, using the identifier provided by the
+                     *  object itself to insert it into the internal deque.
+                     *  @param entity The object to add.
+                     */
+                    bool addObject(IEngineObject* entity);
 
-                /**
-                 *  @brief Removes an object from the registry by ID, filling its spot with null in
-                 *  the internal deque.
-                 *  @param identifier The object ID to remove.
-                 */
-                bool removeObject(const Common::U32 identifier);
+                    /**
+                     *  @brief Removes an object from the registry, filling its spot with null in the
+                     *  internal deque.
+                     *  @param entity The object to remove.
+                     */
+                    bool removeObject(IEngineObject* entity);
 
-                /**
-                 *  @brief Gets an object by ID.
-                 *  @param id The ID to lookup.
-                 *  @return The object corresponding with the provided ID.
-                 */
-                IEngineObject* getObject(const Common::U32 id);
+                    /**
+                     *  @brief Removes an object from the registry by ID, filling its spot with null in
+                     *  the internal deque.
+                     *  @param identifier The object ID to remove.
+                     */
+                    bool removeObject(const Common::U32 identifier);
 
-                /**
-                 *  @brief Gets an object by name.
-                 *  @param name The name to lookup.
-                 *  @return The object corresponding with the provided name.
-                 */
-                IEngineObject* getObject(const Support::String& name);
+                    /**
+                     *  @brief Gets an object by ID.
+                     *  @param id The ID to lookup.
+                     *  @return The object corresponding with the provided ID.
+                     */
+                    IEngineObject* getObject(const Common::U32 id);
 
-                /**
-                 *  @brief Clears the registry of all objects, at which point the
-                 *  internal deque will be filled with null pointers.
-                 */
-                void clear(void);
+                    /**
+                     *  @brief Gets an object by name.
+                     *  @param name The name to lookup.
+                     *  @return The object corresponding with the provided name.
+                     */
+                    IEngineObject* getObject(const Support::String& name);
 
-                // Protected Methods
-            protected:
-                /**
-                 *  @brief Grabs the next available object ID. If there are any previously used ID's now unused, those are
-                 *  used first. Otherwise, we increment and extend the internal deque.
-                 *  @return The next object identifier.
-                 */
-                Common::U64 getNextObjectID(void);
+                    /**
+                     *  @brief Clears the registry of all objects, at which point the
+                     *  internal deque will be filled with null pointers.
+                     */
+                    void clear(void);
 
-                /**
-                 *  @brief Sets the name association of the input object.
-                 *  @param object The object to set the name association of.
-                 *  @param name The name to associate the object with.
-                 *  @remarks If object is null, then the name in the internal map is erased
-                 *  altogether.
-                 */
-                void setNameEntry(IEngineObject* object, const Support::String& name);
+                    // Protected Methods
+                protected:
+                    /**
+                     *  @brief Grabs the next available object ID. If there are any previously used ID's now unused, those are
+                     *  used first. Otherwise, we increment and extend the internal deque.
+                     *  @return The next object identifier.
+                     */
+                    Common::U64 getNextObjectID(void);
 
-                // Private Methods
-            private:
-                //! Standard destructor.
-                ~SObjectRegistry(void);
-        };
+                    /**
+                     *  @brief Sets the name association of the input object.
+                     *  @param object The object to set the name association of.
+                     *  @param name The name to associate the object with.
+                     *  @remarks If object is null, then the name in the internal map is erased
+                     *  altogether.
+                     */
+                    void setNameEntry(IEngineObject* object, const Support::String& name);
+
+                    // Private Methods
+                private:
+                    //! Standard destructor.
+                    ~SObjectRegistry(void);
+            };
+        }
     }
 }
 #endif // _INCLUDE_GAME_SOBJECTREGISTRY_HPP_

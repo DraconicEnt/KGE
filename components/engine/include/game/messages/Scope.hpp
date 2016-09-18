@@ -25,39 +25,42 @@ namespace Kiaro
         class INetworkPersistable;
     }
 
-    namespace Game
+    namespace Engine
     {
-        namespace Messages
+        namespace Game
         {
-            /**
-             *  @brief A message type used to scope entities to specific clients. It basically notifies players
-             *  that a specific thing exists and that they should create the clientside representation of it
-             *  given the parameters packed in the message payload.
-             */
-            class Scope : public Net::IMessage
+            namespace Messages
             {
-                    // Private Members
-                private:
-                    //! A Common::U32 representing the number of scoped entities in this message.
-                    Common::U32 mScopedCount;
+                /**
+                 *  @brief A message type used to scope entities to specific clients. It basically notifies players
+                 *  that a specific thing exists and that they should create the clientside representation of it
+                 *  given the parameters packed in the message payload.
+                 */
+                class Scope : public Net::IMessage
+                {
+                        // Private Members
+                    private:
+                        //! A Common::U32 representing the number of scoped entities in this message.
+                        Common::U32 mScopedCount;
 
-                    //! A Support::UnorderedSet of all entities to pack.
-                    Support::UnorderedSet<const Net::INetworkPersistable*> mScoped;
+                        //! A Support::UnorderedSet of all entities to pack.
+                        Support::UnorderedSet<const Net::INetworkPersistable*> mScoped;
 
-                    // Public Methods
-                public:
-                    Scope(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
-                    void add(const Net::INetworkPersistable* entity);
+                        // Public Methods
+                    public:
+                        Scope(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
+                        void add(const Net::INetworkPersistable* entity);
 
-                    virtual void packEverything(Support::CBitStream& out) const;
+                        virtual void packEverything(Support::CBitStream& out) const;
 
-                    virtual void unpack(Support::CBitStream& in);
+                        virtual void unpack(Support::CBitStream& in);
 
-                    virtual size_t getMinimumPacketPayloadLength(void) const;
+                        virtual size_t getMinimumPacketPayloadLength(void) const;
 
-                    virtual size_t getRequiredMemory(void) const;
-            };
-        } // End NameSpace Messages
-    } // End NameSpace Game
+                        virtual size_t getRequiredMemory(void) const;
+                };
+            } // End NameSpace Messages
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_NET_MESSAGES_SCOPE_HPP_

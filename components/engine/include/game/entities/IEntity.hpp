@@ -32,75 +32,78 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            typedef Common::U32 TypeMask;
-            typedef Common::U32 EntityHintMask;
-
-            /**
-             *  @brief Enumerations representing various bit flags that may be set on an entity's flag set.
-             */
-            enum FLAG_NAME
+            namespace Entities
             {
-                //! A flag that tells the engine that this object needs automated net updating.
-                FLAG_UPDATING = 1,
-                //! A flag that tells the engine that this object needs update pulses.
-                FLAG_THINKING = 2,
-                //! A flag that tells the engine that this object is not scoped. This means it's networked to everyone at all times.
-                FLAG_SCOPING = 4,
-                //! A flag that tells the engine that this object very rarely updates within any context. This essentially disables differential networking.
-                FLAG_STATIC = 8,
-            };
+                typedef Common::U32 TypeMask;
+                typedef Common::U32 EntityHintMask;
 
-            class IEntity : public Net::INetworkPersistable, public Game::IEngineObject
-            {
-                    // Public Methods
-                public:
-                    /**
-                     *  @brief Constructor accepting a Kiaro::Common::U32.
-                     *  @param typeMask A Kiaro::Common::U32 representing the type of this
-                     *  object.
-                     */
-                    IEntity(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
+                /**
+                 *  @brief Enumerations representing various bit flags that may be set on an entity's flag set.
+                 */
+                enum FLAG_NAME
+                {
+                    //! A flag that tells the engine that this object needs automated net updating.
+                    FLAG_UPDATING = 1,
+                    //! A flag that tells the engine that this object needs update pulses.
+                    FLAG_THINKING = 2,
+                    //! A flag that tells the engine that this object is not scoped. This means it's networked to everyone at all times.
+                    FLAG_SCOPING = 4,
+                    //! A flag that tells the engine that this object very rarely updates within any context. This essentially disables differential networking.
+                    FLAG_STATIC = 8,
+                };
 
-                    //! Standard destructor.
-                    ~IEntity(void);
+                class IEntity : public Net::INetworkPersistable, public Game::IEngineObject
+                {
+                        // Public Methods
+                    public:
+                        /**
+                         *  @brief Constructor accepting a Kiaro::Common::U32.
+                         *  @param typeMask A Kiaro::Common::U32 representing the type of this
+                         *  object.
+                         */
+                        IEntity(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
 
-                    /**
-                     *  @brief Gets the type mask of this object.
-                     *  @return A Kiaro::Common::U32 representing the typemask.
-                     */
-                    const Common::U32 getTypeMask(void) const;
+                        //! Standard destructor.
+                        ~IEntity(void);
 
-                    const Common::U32 getNetID(void) const;
+                        /**
+                         *  @brief Gets the type mask of this object.
+                         *  @return A Kiaro::Common::U32 representing the typemask.
+                         */
+                        const Common::U32 getTypeMask(void) const;
 
-                    void setNetID(const Common::U32 identifier);
+                        const Common::U32 getNetID(void) const;
 
-                    virtual void registerEntity(void) = 0;
-                    virtual void update(const Common::F32 deltaTimeSeconds) = 0;
+                        void setNetID(const Common::U32 identifier);
 
-                    virtual void packDeltas(Support::CBitStream& out);
-                    virtual void packEverything(Support::CBitStream& out) const;
-                    virtual void unpack(Support::CBitStream& in);
+                        virtual void registerEntity(void) = 0;
+                        virtual void update(const Common::F32 deltaTimeSeconds) = 0;
 
-                    const ENTITY_TYPE& getType(void) const;
+                        virtual void packDeltas(Support::CBitStream& out);
+                        virtual void packEverything(Support::CBitStream& out) const;
+                        virtual void unpack(Support::CBitStream& in);
 
-                    //virtual void setPosition(const Common::Vector3DF& position) = 0;
+                        const ENTITY_TYPE& getType(void) const;
 
-                    // Public Members
-                public:
-                    const Common::U8 mFlags;
+                        //virtual void setPosition(const Common::Vector3DF& position) = 0;
 
-                    Support::UnorderedSet<irr::scene::ISceneNode*> mSceneNodes;
+                        // Public Members
+                    public:
+                        const Common::U8 mFlags;
 
-                    // Protected Members
-                protected:
-                    ENTITY_TYPE mType;
-                    Common::U32 mNetID;
-            };
-        } // End Namespace Entities
-    } // End Namespace Game
+                        Support::UnorderedSet<irr::scene::ISceneNode*> mSceneNodes;
+
+                        // Protected Members
+                    protected:
+                        ENTITY_TYPE mType;
+                        Common::U32 mNetID;
+                };
+            } // End Namespace Entities
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_GAME_ENTITIES_ENTITYBASE_HPP_

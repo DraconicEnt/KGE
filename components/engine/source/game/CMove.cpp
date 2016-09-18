@@ -13,42 +13,45 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        CMove::CMove(void)
+        namespace Game
         {
-            this->reset();
-        }
+            CMove::CMove(void)
+            {
+                this->reset();
+            }
 
-        void CMove::reset(void)
-        {
-            mX = 0;
-            mY = 0;
-            mZ = 0;
+            void CMove::reset(void)
+            {
+                mX = 0;
+                mY = 0;
+                mZ = 0;
 
-            for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
-                mTriggers[iteration] = false;
-        }
+                for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
+                    mTriggers[iteration] = false;
+            }
 
-        void CMove::packEverything(Support::CBitStream& out) const
-        {
-            out << mX << mY << mZ;
+            void CMove::packEverything(Support::CBitStream& out) const
+            {
+                out << mX << mY << mZ;
 
-            for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
-                out << mTriggers[iteration];
-        }
+                for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
+                    out << mTriggers[iteration];
+            }
 
-        void CMove::unpack(Support::CBitStream& in)
-        {
-            in >> mX >> mY >> mZ;
+            void CMove::unpack(Support::CBitStream& in)
+            {
+                in >> mX >> mY >> mZ;
 
-            for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
-                in >> mTriggers[iteration];
-        }
+                for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
+                    in >> mTriggers[iteration];
+            }
 
-        size_t CMove::getRequiredMemory(void) const
-        {
-            return sizeof(Common::F32) * 3 * sizeof(bool) * sizeof(mTriggers);
+            size_t CMove::getRequiredMemory(void) const
+            {
+                return sizeof(Common::F32) * 3 * sizeof(bool) * sizeof(mTriggers);
+            }
         }
     }
 }

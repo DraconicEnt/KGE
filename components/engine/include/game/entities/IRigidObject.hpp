@@ -20,22 +20,25 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            class IRigidObject : public IEntity
+            namespace Entities
             {
+                class IRigidObject : public IEntity
+                {
                     // Protected Members
-                protected:
-                    irr::scene::ISceneNode* mRender;
-                    btRigidBody* mPhysicalBody;
+                    protected:
+                        irr::scene::ISceneNode* mRender;
+                        btRigidBody* mPhysicalBody;
 
                     // Public Methods
-                public:
-                    IRigidObject(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
-            }; // End Class RigidObjectBase
-        } // End NameSpace Entities
-    } // End NameSpace Game
+                    public:
+                        IRigidObject(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);
+                }; // End Class RigidObjectBase
+            } // End NameSpace Entities
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_GAME_ENTITIES_RIGIDOBJECTBASE_HPP_

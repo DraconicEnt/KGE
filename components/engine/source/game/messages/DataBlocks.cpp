@@ -19,46 +19,49 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Messages
+        namespace Game
         {
-            DataBlocks::DataBlocks(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender), mDataBlockCount(0)
+            namespace Messages
             {
-            }
-
-            void DataBlocks::packEverything(Support::CBitStream& out) const
-            {
-                IMessage::packBaseData<DataBlocks>(out);
-
-                out << mDataBlockCount;
-            }
-
-            void DataBlocks::unpack(Support::CBitStream& in)
-            {
-                if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
-                    Support::throwException<std::underflow_error>("Unable to unpack HandShake packet; too small of a payload!");
-
-                in >> mDataBlockCount;
-                CONSOLE_DEBUGF("Received %u datablocks.", mDataBlockCount);
-
-                // Now we unpack the datablocks
-                for (Common::U32 iteration = 0; iteration < mDataBlockCount; ++iteration)
+                DataBlocks::DataBlocks(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender), mDataBlockCount(0)
                 {
-
                 }
-            }
 
-            size_t DataBlocks::getMinimumPacketPayloadLength(void) const
-            {
-                return sizeof(Common::U32);
-            }
+                void DataBlocks::packEverything(Support::CBitStream& out) const
+                {
+                    IMessage::packBaseData<DataBlocks>(out);
 
-            size_t DataBlocks::getRequiredMemory(void) const
-            {
-                return sizeof(Common::U32) + IMessage::getRequiredMemory();
-            }
-        } // End NameSpace Messages
+                    out << mDataBlockCount;
+                }
+
+                void DataBlocks::unpack(Support::CBitStream& in)
+                {
+                    if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
+                        Support::throwException<std::underflow_error>("Unable to unpack HandShake packet; too small of a payload!");
+
+                    in >> mDataBlockCount;
+                    CONSOLE_DEBUGF("Received %u datablocks.", mDataBlockCount);
+
+                    // Now we unpack the datablocks
+                    for (Common::U32 iteration = 0; iteration < mDataBlockCount; ++iteration)
+                    {
+
+                    }
+                }
+
+                size_t DataBlocks::getMinimumPacketPayloadLength(void) const
+                {
+                    return sizeof(Common::U32);
+                }
+
+                size_t DataBlocks::getRequiredMemory(void) const
+                {
+                    return sizeof(Common::U32) + IMessage::getRequiredMemory();
+                }
+            } // End NameSpace Messages
+        }
     } // End NameSpace Game
 } // End NameSpace Kiaro
 

@@ -19,27 +19,30 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class CEntityGroup : public IEngineObject
+        namespace Game
         {
-                // Private Members
-            private:
-                Support::UnorderedSet<Entities::IEntity*> mEntities;
+            class CEntityGroup : public IEngineObject
+            {
+                    // Private Members
+                private:
+                    Support::UnorderedSet<Entities::IEntity*> mEntities;
 
-                // Public Members
-            public:
-                typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
-                typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
+                    // Public Members
+                public:
+                    typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
+                    typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
 
-                // Public Methods
-            public:
-                iterator begin(void);
-                const_iterator end(void);
+                    // Public Methods
+                public:
+                    iterator begin(void);
+                    const_iterator end(void);
 
-                void add(Entities::IEntity* entity);
-                void remove(Entities::IEntity* entity);
-        };
+                    void add(Entities::IEntity* entity);
+                    void remove(Entities::IEntity* entity);
+            };
+        }
     }
 }
 #endif // _INCLUDE_GAME_CENTITYGROUP_HPP_

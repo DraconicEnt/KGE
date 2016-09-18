@@ -7,34 +7,37 @@
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        namespace Entities
+        namespace Game
         {
-            namespace DataBlocks
+            namespace Entities
             {
-                class IDataBlock : public Net::INetworkPersistable
+                namespace DataBlocks
                 {
-                    public:
-                        template <typename childName>
-                        struct SharedStatics
-                        {
-                            static Common::U32 sDataBlockID;
-                        };
+                    class IDataBlock : public Net::INetworkPersistable
+                    {
+                        public:
+                            template <typename childName>
+                            struct SharedStatics
+                            {
+                                static Common::U32 sDataBlockID;
+                            };
 
-                    public:
-                        /**
-                         *  @brief Checks the datablock for validity.
-                         *  @return A boolean representing whether or not the datablock has valid operational parameters.
-                         */
-                        virtual bool validate(void) = 0;
-                };
+                        public:
+                            /**
+                             *  @brief Checks the datablock for validity.
+                             *  @return A boolean representing whether or not the datablock has valid operational parameters.
+                             */
+                            virtual bool validate(void) = 0;
+                    };
 
-                template <typename childName>
-                typename Common::U32 IDataBlock::SharedStatics<childName>::sDataBlockID = 0;
-            } // End NameSpace DataBlocks
-        }
-    } // End NameSpace Game
+                    template <typename childName>
+                    typename Common::U32 IDataBlock::SharedStatics<childName>::sDataBlockID = 0;
+                } // End NameSpace DataBlocks
+            }
+        } // End NameSpace Game
+    }
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_ENGINE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
 

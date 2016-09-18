@@ -16,33 +16,38 @@
 
 #include "support/common.hpp"
 #include <support/String.hpp>
+#include <support/Console.hpp>
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class IGameMode
+        namespace Game
         {
+            class IGameMode
+            {
                 // Public Members
-            public:
-                const Support::String mName;
+                public:
+                    const Support::String mName;
 
                 // Public Methods
-            public:
-                IGameMode(const Support::String& name = "Unnamed") : mName(name) { }
+                public:
+                    IGameMode(const Support::String& name = "Unnamed") : mName(name) { }
 
-                virtual void setup(void)
-                {
-                    std::cerr << "IGameMode: Gamemode setup not implemented!" << std::endl;
-                }
-                virtual void tearDown(void)
-                {
-                    std::cerr << "IGameMode: Gamemode teardown not implemented!" << std::endl;
-                }
+                    virtual void setup(void)
+                    {
+                        CONSOLE_ERROR("Gamemode setup not implemented!");
+                    }
 
-                virtual void onPlayerKilled(void) { }
+                    virtual void tearDown(void)
+                    {
+                        CONSOLE_ERROR("Gamemode teardown not implemented!");
+                    }
 
-        };
-    } // End Namespace Game
+                    virtual void onPlayerKilled(void) { }
+
+            };
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_GAME_IGAMEMODE_HPP_
