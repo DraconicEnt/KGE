@@ -23,11 +23,12 @@ namespace Kiaro
                             Common::F32 mBackwardsSpeed;
 
                             Support::String mShapefile;
-
                         public:
                             CPlayerData(void);
 
                             bool validate(void);
+
+                            virtual size_t getRequiredMemory(void) const;
                     };
                 } // End NameSpace DataBlocks
             }

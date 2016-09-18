@@ -4,6 +4,10 @@
 #include <game/messages/messages.hpp>
 #include <core/SCoreRegistry.hpp>
 
+#include <support/Console.hpp>
+
+#include <game/entities/datablocks/datablocks.hpp>
+
 namespace Kiaro
 {
     namespace Engine
@@ -26,15 +30,12 @@ namespace Kiaro
                 sInstance = nullptr;
             }
 
-            SCoreRegistry::SCoreRegistry(void)
+            SCoreRegistry::SCoreRegistry(void) : mMessageTypeCounter(0)
             {
-                // Authentication Stage registration
-                this->registerMessage<Game::Messages::HandShake>(&Game::SGameServer::handshakeHandler, &Core::COutgoingClient::handshakeHandler, Net::STAGE_AUTHENTICATION);
+                this->registerMessages();
+                this->registerDatablockTypes();
 
-                // Loading stage registration
-                this->registerMessage<Game::Messages::Scope>(nullptr, &Core::COutgoingClient::scopeHandler, Net::STAGE_LOADING);
-                this->registerMessage<Game::Messages::SimCommit>(nullptr, &Core::COutgoingClient::simCommitHandler, Net::STAGE_LOADING);
-
+                CONSOLE_INFOF("Initialized with %u network message types, %u datablock types.", mMessageMap.size(), mDatablockTypeMap.size());
             }
 
             SCoreRegistry::~SCoreRegistry(void)
@@ -60,6 +61,21 @@ namespace Kiaro
                     return nullptr;
 
                 return (*searchResult).second.second;
+            }
+
+            void SCoreRegistry::registerMessages(void)
+            {
+                // Authentication Stage registration
+                this->registerMessage<Game::Messages::HandShake>(&Game::SGameServer::handshakeHandler, &Core::COutgoingClient::handshakeHandler, Net::STAGE_AUTHENTICATION);
+
+                // Loading stage registration
+                this->registerMessage<Game::Messages::Scope>(nullptr, &Core::COutgoingClient::scopeHandler, Net::STAGE_LOADING);
+                this->registerMessage<Game::Messages::SimCommit>(nullptr, &Core::COutgoingClient::simCommitHandler, Net::STAGE_LOADING);
+            }
+
+            void SCoreRegistry::registerDatablockTypes(void)
+            {
+                this->registerDataBlockType<Game::Entities::DataBlocks::CPlayerData>();
             }
         } // End NameSpace Core
     } // End NameSpace Engine

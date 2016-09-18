@@ -45,6 +45,11 @@ namespace Kiaro
 
                         return true;
                     }
+
+                    size_t CPlayerData::getRequiredMemory(void) const
+                    {
+                        return (sizeof(Common::F32) * 3) + mShapefile.size() + 1;
+                    }
                 }
             } // End NameSpace DataBlocks
         }

@@ -26,7 +26,7 @@ namespace Kiaro
             {
                 HandShake::HandShake(Support::CBitStream* in, Net::IIncomingClient* sender) : IMessage(in, sender),
                 mVersionMajor(VERSION::MAJOR), mVersionMinor(VERSION::MINOR), mVersionRevision(VERSION::REVISION), mVersionBuild(VERSION::BUILD),
-                mProtocolVersion(VERSION::PROTOCOL)
+                mProtocolVersion(VERSION::PROTOCOL), mDataBlockCount(0)
                 {
                 }
 

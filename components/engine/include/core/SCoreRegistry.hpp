@@ -6,6 +6,7 @@
 
 #include <game/SGameServer.hpp>
 #include <core/COutgoingClient.hpp>
+#include <game/entities/datablocks/IDataBlock.hpp>
 
 namespace Kiaro
 {
@@ -13,19 +14,46 @@ namespace Kiaro
     {
         namespace Core
         {
+            /**
+             *  @brief A singleton class representing the central type registrations for messages and datablocks.
+             *  @detail This is used heavily by the netcode to do message & datablock lookups to find the appropriate constructor methods. These constructor
+             *  methods would then be on their own devices to make sense of the current state of the incoming bitstream.
+             */
             class SCoreRegistry
             {
                 public:
-                    typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&> MessageConstructorSet;
+                    //! A typedef representing a pointer to a message constructor.
+                    typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&>::StaticDelegateFuncPtr MessageConstructorPointer;
+                    //! A typedef representing a pointer to a network datablock constructor.
+                    typedef EasyDelegate::DelegateSet<Game::Entities::DataBlocks::IDataBlock*, Support::CBitStream&>::StaticDelegateFuncPtr NetworkDataBlockConstructorPointer;
+                    //! A typedef representing a pointer to a delegate set of message handlers.
                     typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
 
                 private:
+                    //! The current counter value for message types.
+                    Common::U32 mMessageTypeCounter;
+                    //! The current counter value for datablock types.
+                    Common::U32 mDataBlockTypeCounter;
 
-                    Common::U32 mMessageCounter;
+                    //! The message mapping for the server end. This is used to look up the handlers for specific messages at specific network stages.
+                    Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorPointer, MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer>>>> mServerStageMap;
+                    //! The message mapping for the client end. This is used to look up the handlers for specific messages at specific network stages.
+                    Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorPointer, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient>>>> mClientStageMap;
 
-                    Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer>>>> mServerStageMap;
-                    Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient>>>> mClientStageMap;
-                    Support::UnorderedMap<Common::U32, MessageConstructorSet::StaticDelegateFuncPtr> mMessageMap;
+                    //! The general message map mapping message type ID's to their constructors.
+                    Support::UnorderedMap<Common::U32, MessageConstructorPointer> mMessageMap;
+                    //! A mapping of datablock ID's to their constructors.
+                    Support::UnorderedMap<Common::U32, NetworkDataBlockConstructorPointer> mDatablockTypeMap;
+
+                    /**
+                     *  @brief Helper method to register all the known message types to the registry.
+                     */
+                    void registerMessages(void);
+
+                    /**
+                     *  @brief Helper method to register all the known datablock types to the registry.
+                     */
+                    void registerDatablockTypes(void);
 
                 public:
                     static SCoreRegistry* getPointer(void);
@@ -34,19 +62,33 @@ namespace Kiaro
                     template <typename messageClass>
                     void registerMessage(MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> serverHandler, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> clientHandler, const Net::STAGE_NAME stage)
                     {
-                        MessageConstructorSet::StaticDelegateFuncPtr messageConstructor = Net::IMessage::constructMessage<messageClass>;
+                        MessageConstructorPointer messageConstructor = Net::IMessage::constructMessage<messageClass>;
 
-                        Net::IMessage::SharedStatics<messageClass>::sMessageID = mMessageCounter;
+                        assert(Net::IMessage::SharedStatics<messageClass>::sMessageID == -1);
+                        Net::IMessage::SharedStatics<messageClass>::sMessageID = mMessageTypeCounter;
 
-                        mMessageMap[mMessageCounter] = messageConstructor;
+                        mMessageMap[mMessageTypeCounter] = messageConstructor;
 
                         if (serverHandler)
-                            mServerStageMap[stage][mMessageCounter] = std::make_pair(messageConstructor, serverHandler);
+                            mServerStageMap[stage][mMessageTypeCounter] = std::make_pair(messageConstructor, serverHandler);
 
                         if (clientHandler)
-                            mClientStageMap[stage][mMessageCounter] = std::make_pair(messageConstructor, clientHandler);
+                            mClientStageMap[stage][mMessageTypeCounter] = std::make_pair(messageConstructor, clientHandler);
 
-                        ++mMessageCounter;
+                        ++mMessageTypeCounter;
+                    }
+
+                    template <typename datablockClass>
+                    void registerDataBlockType(void)
+                    {
+                        NetworkDataBlockConstructorPointer datablockConstructor = Game::Entities::DataBlocks::IDataBlock::constructNetworkDataBlock<datablockClass>;
+
+                        assert(Game::Entities::DataBlocks::IDataBlock::SharedStatics<datablockClass>::sDataBlockID == -1);
+
+                        Game::Entities::DataBlocks::IDataBlock::SharedStatics<datablockClass>::sDataBlockID = mDataBlockTypeCounter;
+                        mDatablockTypeMap[mDataBlockTypeCounter] = datablockConstructor;
+
+                        ++mDataBlockTypeCounter;
                     }
 
                     MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);

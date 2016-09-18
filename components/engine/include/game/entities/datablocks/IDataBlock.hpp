@@ -21,8 +21,17 @@ namespace Kiaro
                             template <typename childName>
                             struct SharedStatics
                             {
-                                static Common::U32 sDataBlockID;
+                                static Common::S32 sDataBlockID;
                             };
+
+                            template <typename datablockName>
+                            static IDataBlock* constructNetworkDataBlock(Support::CBitStream& payload)
+                            {
+                                IDataBlock* result = new datablockName();
+                                result->unpack(payload);
+
+                                return result;
+                            }
 
                         public:
                             /**
@@ -33,7 +42,7 @@ namespace Kiaro
                     };
 
                     template <typename childName>
-                    typename Common::U32 IDataBlock::SharedStatics<childName>::sDataBlockID = 0;
+                    typename Common::S32 IDataBlock::SharedStatics<childName>::sDataBlockID = -1;
                 } // End NameSpace DataBlocks
             }
         } // End NameSpace Game
