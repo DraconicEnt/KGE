@@ -77,6 +77,7 @@ namespace Kiaro
                           receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
             Game::Messages::HandShake handShake;
+            handShake.mDataBlockCount = mDataBlocks.size();
             sender->send(&handShake, true);
 
             // At this point, the client has passed initial authentication
@@ -240,6 +241,20 @@ namespace Kiaro
                 mQueuedStreams[sender].pop();
                 delete &processedStream;
             }
+        }
+
+        bool SGameServer::addDataBlock(Game::Entities::DataBlocks::IDataBlock* datablock)
+        {
+            // Must be not null
+            assert(datablock);
+            // Must not already be registered
+            assert(mDataBlocks.find(datablock) == mDataBlocks.end());
+
+            if (!datablock->validate())
+                return false;
+
+            mDataBlocks.insert(mDataBlocks.end(), datablock);
+            return true;
         }
     } // End NameSpace Game
 } // End NameSpace Kiaro

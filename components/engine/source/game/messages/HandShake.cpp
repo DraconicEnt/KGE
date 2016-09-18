@@ -32,7 +32,7 @@ namespace Kiaro
             {
                 IMessage::packBaseData<HandShake>(out);
 
-                out << mVersionMajor << mVersionMinor << mVersionRevision << mVersionBuild << mProtocolVersion;
+                out << mDataBlockCount << mVersionMajor << mVersionMinor << mVersionRevision << mVersionBuild << mProtocolVersion;
             }
 
             void HandShake::unpack(Support::CBitStream& in)
@@ -40,17 +40,17 @@ namespace Kiaro
                 if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
                     Support::throwException<std::underflow_error>("Unable to unpack HandShake packet; too small of a payload!");
 
-                in >> mVersionMajor >> mVersionMinor >> mVersionRevision >> mVersionBuild >> mProtocolVersion;
+                in >> mDataBlockCount >> mVersionMajor >> mVersionMinor >> mVersionRevision >> mVersionBuild >> mProtocolVersion;
             }
 
             size_t HandShake::getMinimumPacketPayloadLength(void) const
             {
-                return (sizeof(Common::U32) * 2) + (sizeof(Common::U8) * 3);
+                return (sizeof(Common::U32) * 2) + (sizeof(Common::U8) * 4);
             }
 
             size_t HandShake::getRequiredMemory(void) const
             {
-                return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 2) + IMessage::getRequiredMemory();
+                return (sizeof(Common::U8) * 3) + (sizeof(Common::U32) * 3) + IMessage::getRequiredMemory();
             }
         } // End NameSpace Messages
     } // End NameSpace Game

@@ -66,6 +66,18 @@ namespace Kiaro
                     MODE_DEDICATED = 2,
                 }; // End Enum ENGINE_MODE
 
+
+                typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&> MessageConstructorSet;
+                typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
+
+            // Private Members
+            private:
+                Common::U32 mMessageCounter;
+
+                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer>>>> mServerStageMap;
+                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient>>>> mClientStageMap;
+                Support::UnorderedMap<Common::U32, MessageConstructorSet::StaticDelegateFuncPtr> mMessageMap;
+
             // Public Methods
             public:
                 /**
@@ -146,15 +158,6 @@ namespace Kiaro
                  *  @param enabled Whether or not the performance statistic reporting should occur.
                  */
                 void setPerfStatEnabled(const bool enabled);
-
-                typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&> MessageConstructorSet;
-                typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
-
-                Common::U32 mMessageCounter;
-
-                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer>>>> mServerStageMap;
-                Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorSet::StaticDelegateFuncPtr, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient>>>> mClientStageMap;
-                Support::UnorderedMap<Common::U32, MessageConstructorSet::StaticDelegateFuncPtr> mMessageMap;
 
                 template <typename messageClass>
                 void registerMessage(MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> serverHandler, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> clientHandler, const Net::STAGE_NAME stage)

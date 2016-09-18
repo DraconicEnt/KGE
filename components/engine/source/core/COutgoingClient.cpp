@@ -47,6 +47,8 @@ namespace Kiaro
             CONSOLE_INFOF("Server version is %u.%u.%u.%u.", receivedHandshake.mVersionMajor,
                           receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
+            CONSOLE_INFOF("Server says there is %u datablocks awaiting.", receivedHandshake.mDataBlockCount);
+
             CONSOLE_INFO("Passed initial authentication.");
             mConnected = true;
             this->onAuthenticated();

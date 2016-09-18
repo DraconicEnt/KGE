@@ -9,13 +9,16 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#ifndef _INCLUDE_GAME_MESSAGES_HANDSHAKE_HPP_
-#define _INCLUDE_GAME_MESSAGES_HANDSHAKE_HPP_
+#ifndef _INCLUDE_GAME_MESSAGES_DATABLOCKS_HPP_
+#define _INCLUDE_GAME_MESSAGES_DATABLOCKS_HPP_
 
 #include <stdexcept>
 
+#include <support/Set.hpp>
 #include <support/common.hpp>
 #include <net/IMessage.hpp>
+
+#include <game/entities/datablocks/IDataBlock.hpp>
 
 namespace Kiaro
 {
@@ -32,26 +35,19 @@ namespace Kiaro
              *  @brief The handshake class represents your basic authentication message with the engine. Whatever information is required
              *  for a client to be allowed into the game session should be passed in on this message.
              */
-            class HandShake : public Net::IMessage
+            class DataBlocks : public Net::IMessage
             {
                 // Private Members
                 public:
-                    //! The major version of the engine.
-                    Common::U8 mVersionMajor;
-                    //! The minor version of the engine.
-                    Common::U8 mVersionMinor;
-                    //! The revision of the engine.
-                    Common::U8 mVersionRevision;
-                    //! The build # of the engine.
-                    Common::U32 mVersionBuild;
-                    //! The network protocol version.
-                    Common::U32 mProtocolVersion;
-                    //! The number of datablocks waiting to be received.
+                    //! The number of datablocks contained in this message.
                     Common::U32 mDataBlockCount;
+
+                    //! The datablocks to be transferred.
+                    Support::Set<Game::Entities::DataBlocks::IDataBlock*> mDataBlocks;
 
                 // Public Methods
                 public:
-                    HandShake(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
+                    DataBlocks(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr);
                     virtual void packEverything(Support::CBitStream& out) const;
 
                     void unpack(Support::CBitStream& in);

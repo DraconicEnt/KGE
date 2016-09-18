@@ -28,10 +28,8 @@ namespace Kiaro
          */
         class IMessage : public Support::ISerializable
         {
-                // Public Members
+            // Public Members
             public:
-                static const Common::U8 sAcceptedStage = 0;
-
                 //! A pointer to a Client instance that sent the data. If this is NULL, then the origin was a Server.
                 IIncomingClient* mSender;
 
@@ -50,7 +48,7 @@ namespace Kiaro
                     static Common::U32 sMessageID;
                 };
 
-                // Private Members
+            // Private Members
             private:
                 //! The type identifier of this message.
                 Common::U32 mType;

@@ -99,8 +99,6 @@ namespace Kiaro
                 protected:
                     ENTITY_TYPE mType;
                     Common::U32 mNetID;
-
-                    Support::Set<CES::IComponent*> mComponents;
             };
         } // End Namespace Entities
     } // End Namespace Game

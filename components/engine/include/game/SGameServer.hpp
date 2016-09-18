@@ -22,6 +22,8 @@
 #include <net/stages.hpp>
 #include <net/IMessage.hpp>
 
+#include <game/entities/datablocks/IDataBlock.hpp>
+
 namespace Kiaro
 {
     namespace Game
@@ -46,6 +48,9 @@ namespace Kiaro
 
                 //! Any queued streams we still haven't processed for any given client.
                 Support::UnorderedMap<Net::IIncomingClient*, Support::Queue<Support::CBitStream*>> mQueuedStreams;
+
+                //! Vector of all datablocks available.
+                Support::Set<Game::Entities::DataBlocks::IDataBlock*> mDataBlocks;
 
             // Public Methods
             public:
@@ -112,6 +117,8 @@ namespace Kiaro
                 void initialScope(Net::IIncomingClient* client);
 
                 void handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in);
+
+                bool addDataBlock(Game::Entities::DataBlocks::IDataBlock* datablock);
 
             // Protected Methods
             protected:

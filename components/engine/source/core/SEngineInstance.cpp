@@ -295,6 +295,7 @@ namespace Kiaro
                     PROFILER_BEGIN(MainLoop);
                     std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
                     Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
+
                     // Pump a time pulse at the scheduler
                     Support::SSynchronousScheduler::getPointer()->update();
 
