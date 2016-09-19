@@ -56,7 +56,7 @@ namespace Kiaro
                 symbols.mInitialize = reinterpret_cast<ExtensionSymbols::extensionInitializePointer>(dlsym(handle, "extensionInitialize"));
                 symbols.mDeinitialize = reinterpret_cast<ExtensionSymbols::extensionInitializePointer>(dlsym(handle, "extensionDeinitialize"));
 
-                mExtensionMap[absolutePath] = symbols;
+                mExtensionMap[filename] = symbols;
 
                 symbols.mInitialize();
 
