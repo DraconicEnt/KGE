@@ -2,8 +2,8 @@
  *  @file IRigidOBject.hpp
  *  @brief Include file defining IRigidOBject class.
  *
- *  This software is licensed under the GNU Lesser General Public License version 3.
- *  Please refer to gpl.txt and lgpl.txt for more information.
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
  *  @copyright (c) 2016 Draconic Entity
@@ -21,6 +21,12 @@ namespace Kiaro
             {
                 IRigidObject::IRigidObject(const ENTITY_TYPE& type, const Game::Entities::EntityHintMask& hintMask) : Game::Entities::IEntity(type, hintMask)
                 {
+
+                }
+
+                void IRigidObject::registerNetworkedProperties(void)
+                {
+                    this->addNetworkedProperty("position", mPosition);
                 }
             } // End NameSpace Entities
         } // End NameSpace Game

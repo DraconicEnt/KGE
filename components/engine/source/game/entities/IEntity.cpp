@@ -25,7 +25,7 @@ namespace Kiaro
             namespace Entities
             {
                 IEntity::IEntity(const ENTITY_TYPE& typeMask, const EntityHintMask& hintMask) : IEngineObject(), mType(typeMask),
-                    mFlags(hintMask), mNetID(0)
+                mFlags(hintMask), mNetID(0)
                 {
                 }
 
@@ -43,24 +43,14 @@ namespace Kiaro
                     return mNetID;
                 }
 
-                void IEntity::packDeltas(Support::CBitStream& out)
-                {
-                }
-
                 const ENTITY_TYPE& IEntity::getType(void) const
                 {
                     return mType;
                 }
 
-                void IEntity::packEverything(Support::CBitStream& out) const
-                {
-                    // Here we pack our net ID and type ID
-                    out << mType << mNetID;
-                }
-
                 void IEntity::unpack(Support::CBitStream& in)
                 {
-                    in >> mType >> mNetID;
+                    Net::INetworkPersistable::unpack(in);
                 }
 
                 void IEntity::setNetID(const Common::U32 identifier)

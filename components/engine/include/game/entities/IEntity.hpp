@@ -58,7 +58,7 @@ namespace Kiaro
 
                 class IEntity : public Net::INetworkPersistable, public Game::IEngineObject
                 {
-                        // Public Methods
+                    // Public Methods
                     public:
                         /**
                          *  @brief Constructor accepting a Kiaro::Common::U32.
@@ -69,6 +69,26 @@ namespace Kiaro
 
                         //! Standard destructor.
                         ~IEntity(void);
+
+                        template <typename childName>
+                        struct SharedStatics
+                        {
+                            static Common::S32 sEntityTypeID;
+                        };
+
+                        template <typename entityName>
+                        static IEntity* constructNetworkEntity(Support::CBitStream& payload)
+                        {
+                            IEntity* result = new entityName(payload);
+                            return result;
+                        }
+
+                        template <typename entityType>
+                        void packBaseData(Support::CBitStream& out) const
+                        {
+                            static Common::U32 sLastPacketID = 0;
+                            out << IEntity::SharedStatics<entityType>::sEntityTypeID << (sLastPacketID++);
+                        }
 
                         /**
                          *  @brief Gets the type mask of this object.
@@ -83,15 +103,11 @@ namespace Kiaro
                         virtual void registerEntity(void) = 0;
                         virtual void update(const Common::F32 deltaTimeSeconds) = 0;
 
-                        virtual void packDeltas(Support::CBitStream& out);
-                        virtual void packEverything(Support::CBitStream& out) const;
                         virtual void unpack(Support::CBitStream& in);
 
                         const ENTITY_TYPE& getType(void) const;
 
-                        //virtual void setPosition(const Common::Vector3DF& position) = 0;
-
-                        // Public Members
+                    // Public Members
                     public:
                         const Common::U8 mFlags;
 
@@ -102,6 +118,9 @@ namespace Kiaro
                         ENTITY_TYPE mType;
                         Common::U32 mNetID;
                 };
+
+                template <typename childName>
+                typename Common::S32 IEntity::SharedStatics<childName>::sEntityTypeID = -1;
             } // End Namespace Entities
         } // End Namespace Game
     }

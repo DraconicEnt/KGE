@@ -32,10 +32,12 @@ namespace Kiaro
                 CTerrain::CTerrain(const Support::String& terrainFile, const Support::String& textureFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
                 mTerrainFile(terrainFile), mTextureFile(textureFile), mSceneNode(nullptr)
                 {
+                    this->registerNetworkedProperties();
                 }
 
                 CTerrain::CTerrain(Support::CBitStream& in) : IRigidObject(ENTITY_TERRAIN)
                 {
+                    this->registerNetworkedProperties();
                     this->unpack(in);
                 }
 
@@ -46,28 +48,19 @@ namespace Kiaro
                 void CTerrain::packEverything(Support::CBitStream& out) const
                 {
                     assert(mSceneNode);
+
+                    this->packBaseData<CTerrain>(out);
                     IEntity::packEverything(out);
-
-                    const Common::Vector3DF& position = mSceneNode->getPosition();
-
-                    out.writeString(mTerrainFile);
-                    out.writeString(mTextureFile);
-                    out << position.X << position.Y << position.Z;
                 }
 
                 void CTerrain::unpack(Support::CBitStream& in)
                 {
-                    mTerrainFile = in.popString();
-                    mTextureFile = in.popString();
-
-                    Common::Vector3DF position;
-
-                    in >> position.X >> position.Y >> position.Z;
+                    IEntity::unpack(in);
 
                     this->registerEntity();
 
                     if (mSceneNode)
-                        mSceneNode->setPosition(position);
+                        mSceneNode->setPosition(mPosition);
                 }
 
                 void CTerrain::registerEntity(void)
@@ -110,6 +103,13 @@ namespace Kiaro
                 size_t CTerrain::getRequiredMemory(void) const
                 {
                     return sizeof(Common::F32) * 3;
+                }
+
+                void CTerrain::registerNetworkedProperties(void)
+                {
+                    IRigidObject::registerNetworkedProperties();
+                    this->addNetworkedProperty("textureFile", mTextureFile);
+                    this->addNetworkedProperty("terrainFile", mTerrainFile);
                 }
             } // End Namespace Entities
         } // End Namespace Game

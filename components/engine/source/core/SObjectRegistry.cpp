@@ -9,7 +9,7 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#include <game/SObjectRegistry.hpp>
+#include <core/SObjectRegistry.hpp>
 
 #include <game/IEngineObject.hpp>
 
@@ -17,7 +17,7 @@ namespace Kiaro
 {
     namespace Engine
     {
-        namespace Game
+        namespace Core
         {
             SObjectRegistry* sObjectRegistry = nullptr;
 
@@ -40,7 +40,7 @@ namespace Kiaro
                 this->clear();
             }
 
-            bool SObjectRegistry::addObject(IEngineObject* object)
+            bool SObjectRegistry::addObject(Game::IEngineObject* object)
             {
                 assert(object);
                 assert(object->mID <= mObjects.size());
@@ -68,7 +68,7 @@ namespace Kiaro
                 return true;
             }
 
-            void SObjectRegistry::setNameEntry(IEngineObject* object, const Support::String& name)
+            void SObjectRegistry::setNameEntry(Game::IEngineObject* object, const Support::String& name)
             {
                 assert(!name.empty());
 
@@ -81,7 +81,7 @@ namespace Kiaro
                 mNameDictionary[name] = object;
             }
 
-            bool SObjectRegistry::removeObject(IEngineObject* object)
+            bool SObjectRegistry::removeObject(Game::IEngineObject* object)
             {
                 return this->removeObject(object->mID);
             }
@@ -99,12 +99,12 @@ namespace Kiaro
                 return result;
             }
 
-            IEngineObject* SObjectRegistry::getObject(const Common::U32 id)
+            Game::IEngineObject* SObjectRegistry::getObject(const Common::U32 id)
             {
                 return id >= mObjects.size() ? nullptr : mObjects[id];
             }
 
-            IEngineObject* SObjectRegistry::getObject(const Support::String& name)
+            Game::IEngineObject* SObjectRegistry::getObject(const Support::String& name)
             {
                 auto it = mNameDictionary.find(name);
                 return it == mNameDictionary.end() ? nullptr : (*it).second;
@@ -113,7 +113,7 @@ namespace Kiaro
             void SObjectRegistry::clear(void)
             {
                 // Destroy each object in the registry and fill its spot with a null pointer
-                for (IEngineObject*& object : mObjects)
+                for (Game::IEngineObject*& object : mObjects)
                 {
                     if (object)
                         delete object;

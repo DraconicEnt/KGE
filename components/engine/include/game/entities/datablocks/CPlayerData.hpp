@@ -29,6 +29,8 @@ namespace Kiaro
                             bool validate(void);
 
                             virtual size_t getRequiredMemory(void) const;
+
+                            virtual void registerNetworkedProperties(void);
                     };
                 } // End NameSpace DataBlocks
             }

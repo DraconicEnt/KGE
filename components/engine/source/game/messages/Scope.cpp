@@ -20,6 +20,8 @@
 
 #include <game/entities/entities.hpp>
 
+#include <core/SCoreRegistry.hpp>
+
 namespace Kiaro
 {
     namespace Engine
@@ -55,6 +57,8 @@ namespace Kiaro
                     in >> mScopedCount;
                     CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);
 
+                    Core::SCoreRegistry* registry = Core::SCoreRegistry::getPointer();
+
                     for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
                     {
                         // Read off an ID and a type
@@ -62,21 +66,13 @@ namespace Kiaro
                         Common::U32 type = 0;
                         in >> type >> netID;
 
-                        switch(type)
+                        // Construct the entity
+                        if (!registry->constructEntity(type, in))
                         {
-                            case Game::Entities::ENTITY_TERRAIN:
-                            {
-                                Game::Entities::CTerrain* terrain = new Game::Entities::CTerrain(in);
-                                break;
-                            }
-
-                            default:
-                            {
-                                Support::String message = "Scope: Invalid entity type to unpack: ";
-                                message += type;
-                                throw std::logic_error(message);
-                                break;
-                            }
+                            Support::String message = "Scope: Invalid entity type to unpack: ";
+                            message += type;
+                            throw std::logic_error(message);
+                            break;
                         }
                     }
                 }

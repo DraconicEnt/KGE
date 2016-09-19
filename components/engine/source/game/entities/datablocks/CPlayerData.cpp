@@ -17,10 +17,7 @@ namespace Kiaro
                 {
                     CPlayerData::CPlayerData(void)
                     {
-                        this->addNetworkedProperty("forwardSpeed", mForwardSpeed);
-                        this->addNetworkedProperty("sidewaysSpeed", mSidewaysSpeed);
-                        this->addNetworkedProperty("backwardSpeed", mBackwardsSpeed);
-                        this->addNetworkedProperty("shapefile", mShapefile);
+                        this->registerNetworkedProperties();
                     }
 
                     bool CPlayerData::validate(void)
@@ -49,6 +46,14 @@ namespace Kiaro
                     size_t CPlayerData::getRequiredMemory(void) const
                     {
                         return (sizeof(Common::F32) * 3) + mShapefile.size() + 1;
+                    }
+
+                    void CPlayerData::registerNetworkedProperties(void)
+                    {
+                        this->addNetworkedProperty("forwardSpeed", mForwardSpeed);
+                        this->addNetworkedProperty("sidewaysSpeed", mSidewaysSpeed);
+                        this->addNetworkedProperty("backwardSpeed", mBackwardsSpeed);
+                        this->addNetworkedProperty("shapefile", mShapefile);
                     }
                 }
             } // End NameSpace DataBlocks

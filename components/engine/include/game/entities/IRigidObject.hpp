@@ -33,6 +33,10 @@ namespace Kiaro
                         irr::scene::ISceneNode* mRender;
                         btRigidBody* mPhysicalBody;
 
+                        Support::Vector3DF mPosition;
+
+                        virtual void registerNetworkedProperties(void);
+
                     // Public Methods
                     public:
                         IRigidObject(const ENTITY_TYPE& type, const EntityHintMask& hintMask = 0);

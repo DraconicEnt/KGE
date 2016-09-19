@@ -34,9 +34,9 @@ namespace Kiaro
 
             class SGameWorld : public Support::ISerializable
             {
-                    friend class Entities::IEntity;
+                friend class Entities::IEntity;
 
-                    // Private Members
+                // Private Members
                 private:
                     Support::UnorderedSet<Entities::IEntity*> mEntities;
 
@@ -44,12 +44,12 @@ namespace Kiaro
 
                     IGameMode* mGameMode;
 
-                    // Public Members
+                // Public Members
                 public:
                     typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
                     typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
 
-                    // Public Methods
+                // Public Methods
                 public:
                     static SGameWorld* getPointer(void);
                     static void destroy(void);
@@ -75,7 +75,7 @@ namespace Kiaro
                     iterator begin(void);
                     const_iterator end(void);
 
-                    // Private Methods
+                // Private Methods
                 private:
                     //! Standard constructor
                     SGameWorld(void);

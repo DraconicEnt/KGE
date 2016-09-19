@@ -18,34 +18,37 @@
 #include <support/String.hpp>
 #include <support/common.hpp>
 
+#include <game/IEngineObject.hpp>
+
 namespace Kiaro
 {
     namespace Engine
     {
-        namespace Game
+        namespace Core
         {
-            class IEngineObject;
 
             /**
-             *  @brief The SObjectRegistry is the central system with which object ID's and names
-             *  are maintained. It allows lookups by both ID and name, essentially.
+             *  @brief The SObjectRegistry is the central system with which object ID's and names are maintained. It allows lookups by
+             *  both ID and name, essentially.
+             *  @detail All engine objects are persisted in this singleton. So not only are game world objects put in this singleton,
+             *  you have miscellaneous objects that need to be persisted in some way and are not necessarily networked.
              */
             class SObjectRegistry
             {
-                    friend class IEngineObject;
+                friend class Game::IEngineObject;
 
-                    // Private Members
+                // Private Members
                 private:
                     //! A deque of engine objects for lookup by ID.
-                    Support::Deque<IEngineObject*> mObjects;
+                    Support::Deque<Game::IEngineObject*> mObjects;
 
                     //! A stack of available object ID's, it is populated when an added object is later removed so that the ID is reused.
                     Support::Stack<Common::U32> mAvailableIDs;
 
                     //! A mapping of names to objects.
-                    Support::UnorderedMap<Support::String, IEngineObject*> mNameDictionary;
+                    Support::UnorderedMap<Support::String, Game::IEngineObject*> mNameDictionary;
 
-                    // Public Methods
+                // Public Methods
                 public:
                     /**
                      *  @brief Obtains the pointer to the object registry singleton, creating a new one
@@ -64,14 +67,14 @@ namespace Kiaro
                      *  object itself to insert it into the internal deque.
                      *  @param entity The object to add.
                      */
-                    bool addObject(IEngineObject* entity);
+                    bool addObject(Game::IEngineObject* entity);
 
                     /**
                      *  @brief Removes an object from the registry, filling its spot with null in the
                      *  internal deque.
                      *  @param entity The object to remove.
                      */
-                    bool removeObject(IEngineObject* entity);
+                    bool removeObject(Game::IEngineObject* entity);
 
                     /**
                      *  @brief Removes an object from the registry by ID, filling its spot with null in
@@ -85,14 +88,14 @@ namespace Kiaro
                      *  @param id The ID to lookup.
                      *  @return The object corresponding with the provided ID.
                      */
-                    IEngineObject* getObject(const Common::U32 id);
+                    Game::IEngineObject* getObject(const Common::U32 id);
 
                     /**
                      *  @brief Gets an object by name.
                      *  @param name The name to lookup.
                      *  @return The object corresponding with the provided name.
                      */
-                    IEngineObject* getObject(const Support::String& name);
+                    Game::IEngineObject* getObject(const Support::String& name);
 
                     /**
                      *  @brief Clears the registry of all objects, at which point the
@@ -100,7 +103,7 @@ namespace Kiaro
                      */
                     void clear(void);
 
-                    // Protected Methods
+                // Protected Methods
                 protected:
                     /**
                      *  @brief Grabs the next available object ID. If there are any previously used ID's now unused, those are
@@ -116,9 +119,9 @@ namespace Kiaro
                      *  @remarks If object is null, then the name in the internal map is erased
                      *  altogether.
                      */
-                    void setNameEntry(IEngineObject* object, const Support::String& name);
+                    void setNameEntry(Game::IEngineObject* object, const Support::String& name);
 
-                    // Private Methods
+                // Private Methods
                 private:
                     //! Standard destructor.
                     ~SObjectRegistry(void);

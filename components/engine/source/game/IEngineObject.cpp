@@ -11,7 +11,7 @@
 
 #include <game/IEngineObject.hpp>
 
-#include <game/SObjectRegistry.hpp>
+#include <core/SObjectRegistry.hpp>
 
 namespace Kiaro
 {
@@ -19,9 +19,9 @@ namespace Kiaro
     {
         namespace Game
         {
-            IEngineObject::IEngineObject(void) : mID(SObjectRegistry::getPointer()->getNextObjectID())
+            IEngineObject::IEngineObject(void) : mID(Core::SObjectRegistry::getPointer()->getNextObjectID())
             {
-                SObjectRegistry::getPointer()->addObject(this);
+                Core::SObjectRegistry::getPointer()->addObject(this);
             }
 
             const Support::String& IEngineObject::getName(void)
@@ -36,7 +36,7 @@ namespace Kiaro
             void IEngineObject::setName(const Support::String& name)
             {
                 mName = name;
-                SObjectRegistry::getPointer()->setNameEntry(this, name);
+                Core::SObjectRegistry::getPointer()->setNameEntry(this, name);
             }
         }
     }

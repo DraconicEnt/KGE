@@ -7,6 +7,7 @@
 #include <game/SGameServer.hpp>
 #include <core/COutgoingClient.hpp>
 #include <game/entities/datablocks/IDataBlock.hpp>
+#include <game/entities/entities.hpp>
 
 namespace Kiaro
 {
@@ -26,6 +27,8 @@ namespace Kiaro
                     typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&>::StaticDelegateFuncPtr MessageConstructorPointer;
                     //! A typedef representing a pointer to a network datablock constructor.
                     typedef EasyDelegate::DelegateSet<Game::Entities::DataBlocks::IDataBlock*, Support::CBitStream&>::StaticDelegateFuncPtr NetworkDataBlockConstructorPointer;
+                    //! A typedef representing a pointer to a entity constructor.
+                    typedef EasyDelegate::DelegateSet<Game::Entities::IEntity*, Support::CBitStream&>::StaticDelegateFuncPtr NetworkEntityConstructorPointer;
                     //! A typedef representing a pointer to a delegate set of message handlers.
                     typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
 
@@ -34,6 +37,8 @@ namespace Kiaro
                     Common::U32 mMessageTypeCounter;
                     //! The current counter value for datablock types.
                     Common::U32 mDataBlockTypeCounter;
+                    //! The current counter value for network entity types.
+                    Common::U32 mEntityTypeCounter;
 
                     //! The message mapping for the server end. This is used to look up the handlers for specific messages at specific network stages.
                     Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, std::pair<MessageConstructorPointer, MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer>>>> mServerStageMap;
@@ -44,6 +49,9 @@ namespace Kiaro
                     Support::UnorderedMap<Common::U32, MessageConstructorPointer> mMessageMap;
                     //! A mapping of datablock ID's to their constructors.
                     Support::UnorderedMap<Common::U32, NetworkDataBlockConstructorPointer> mDatablockTypeMap;
+                    //! A mapping of datablock ID's to their constructors.
+                    Support::UnorderedMap<Common::U32, NetworkEntityConstructorPointer> mEntityTypeMap;
+
 
                     /**
                      *  @brief Helper method to register all the known message types to the registry.
@@ -55,9 +63,13 @@ namespace Kiaro
                      */
                     void registerDatablockTypes(void);
 
+                    void registerEntityTypes(void);
+
                 public:
                     static SCoreRegistry* getPointer(void);
                     static void destroy(void);
+
+                    Game::Entities::IEntity* constructEntity(const Common::U32 id, Support::CBitStream& payload);
 
                     template <typename messageClass>
                     void registerMessage(MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> serverHandler, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> clientHandler, const Net::STAGE_NAME stage)
@@ -89,6 +101,19 @@ namespace Kiaro
                         mDatablockTypeMap[mDataBlockTypeCounter] = datablockConstructor;
 
                         ++mDataBlockTypeCounter;
+                    }
+
+                    template <typename entityClass>
+                    void registerEntityType(void)
+                    {
+                        NetworkEntityConstructorPointer entityConstructor = Game::Entities::IEntity::constructNetworkEntity<entityClass>;
+
+                        assert(Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID == -1);
+
+                        Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID  = mEntityTypeCounter;
+                        mEntityTypeMap[mEntityTypeCounter] = entityConstructor;
+
+                        ++mEntityTypeCounter;
                     }
 
                     MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);

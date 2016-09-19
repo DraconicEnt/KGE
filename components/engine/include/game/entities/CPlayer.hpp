@@ -1,30 +1,36 @@
 /**
- *  @file Player.hpp
- *  @brief Include file defining the Server and related functions.
+ *  @file CPlayer.hpp
+ *  @brief Include file declaring the CPlayer class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.
  *
- *  @author Draconic Entertainment
- *  @copyright (c) 2016 Draconic Entertainment
+ *  @author Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
  */
 
-#ifndef _INCLUDE_KIARO_GAME_PLAYER_HPP_
-#define _INCLUDE_KIARO_GAME_PLAYER_HPP_
+#ifndef _INCLUDE_KIARO_GAME_ENTITIES_CPLAYER_HPP_
+#define _INCLUDE_KIARO_GAME_ENTITIES_CPLAYER_HPP_
 
 #include "EngineCommon.hpp"
 
-#include <game/entities/RigidObjectBase.hpp>
+#include <game/entities/IRigidObject.hpp>
 
 namespace Kiaro
 {
-    namespace Game
+    namespace Engine
     {
-        class Player : public Kiaro::Game::RigidObjectBase
+        namespace Game
         {
-                // Public Methods
-            public:
-        };
-    } // End Namespace Game
+            namespace Entities
+            {
+                class CPlayer : public IRigidObject
+                {
+                    // Public Methods
+                    public:
+                };
+            }
+        } // End Namespace Game
+    }
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_GAME_PLAYER_HPP_

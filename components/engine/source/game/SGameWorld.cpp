@@ -15,7 +15,7 @@
 
 #include <game/IGameMode.hpp>
 #include <game/SGameWorld.hpp>
-#include <game/SObjectRegistry.hpp>
+#include <core/SObjectRegistry.hpp>
 
 namespace Kiaro
 {
@@ -73,7 +73,7 @@ namespace Kiaro
                 if (it == mEntities.end())
                     mEntities.insert(mEntities.end(), entity);
 
-                SObjectRegistry::getPointer()->addObject(entity);
+                Core::SObjectRegistry::getPointer()->addObject(entity);
             }
 
             void SGameWorld::removeEntity(Entities::IEntity* entity)
@@ -81,26 +81,26 @@ namespace Kiaro
                 assert(entity);
 
                 mEntities.erase(entity);
-                SObjectRegistry::getPointer()->removeObject(entity);
+                Core::SObjectRegistry::getPointer()->removeObject(entity);
             }
 
             void SGameWorld::removeEntity(const Common::U32 id)
             {
-                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(id));
+                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(Core::SObjectRegistry::getPointer()->getObject(id));
                 mEntities.erase(erased);
             }
 
             Entities::IEntity* SGameWorld::getEntity(const Common::U32 id) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(id));
+                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getPointer()->getObject(id));
                 return result;
             }
 
             Entities::IEntity* SGameWorld::getEntity(const Support::String& name) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(SObjectRegistry::getPointer()->getObject(name));
+                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getPointer()->getObject(name));
                 return result;
             }
 

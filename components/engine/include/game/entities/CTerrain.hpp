@@ -31,20 +31,12 @@ namespace Kiaro
         {
             namespace Entities
             {
-                enum TERRAIN_PROPERTY
-                {
-                    TERRAIN_NULL = 0,
-                    TERRAIN_POSITION = 1,
-                    TERRAIN_SCALE = 2,
-                    TERRAIN_TERRAINFILE = 3,
-                };
-
                 /**
-                 *  @brief
+                 *  @brief A class representing a terrain block.
                  */
                 class CTerrain : public IRigidObject
                 {
-                        // Public Methods
+                    // Public Methods
                     public:
                         /**
                          *  @brief Constructor accepting a path to a terrain file.
@@ -63,26 +55,54 @@ namespace Kiaro
                         //! Standard destructor.
                         ~CTerrain(void);
 
+                        /**
+                         *  @brief Packs everything about the terrain block into the CBitStream.
+                         *  @param out A reference to the CBitStream to write to.
+                         */
                         virtual void packEverything(Kiaro::Support::CBitStream& out) const;
+
+                        /**
+                         *  @brief Unpacks new information from the input CBitStream.
+                         *  @param in A reference to the CBitStream to unpack from.
+                         */
                         virtual void unpack(Kiaro::Support::CBitStream& in);
+
+                        /**
+                         *  @brief Registers the terrain block to the game world once prepared.
+                         */
                         virtual void registerEntity(void);
+
+                        /**
+                         *  @brief Pushes an update to the terrain block. Note that the terrain has no update routine, so this is simply
+                         *  a no-op and is simply implemented to satisify virtual method requirements.
+                         *  @param deltaTimeSeconds The time in seconds that has passed since the last update.
+                         */
                         virtual void update(const Kiaro::Common::F32 deltaTimeSeconds);
+
+                        /**
+                         *  @brief Returns the amount of bytes required to pack the terrain block into a CBitStream.
+                         *  @return The amount of bytes required to pack the terrain block.
+                         */
                         virtual size_t getRequiredMemory(void) const;
 
+                        /**
+                         *  @brief Sets the position of the terrain block.
+                         *  @param position The new position to go to.
+                         */
                         void setPosition(const Common::Vector3DF& position);
 
+                        virtual void registerNetworkedProperties(void);
 
-                        // Private Members
+                    // Private Members
                     private:
                         //! The Irrlicht scene node associated with this terrain.
                         irr::scene::ITerrainSceneNode* mSceneNode;
 
-                        //! The path to the loaded terrain file.
+                        //! The path to the loaded terrain file heightmap.
                         Support::String mTerrainFile;
 
+                        //! The path to the loaded terrain file texture.
                         Support::String mTextureFile;
-
-                        static Support::Map<Support::String, size_t> sNetworkedProperties;
                 };
             } // End Namespace Entities
         } // End Namespace Game
