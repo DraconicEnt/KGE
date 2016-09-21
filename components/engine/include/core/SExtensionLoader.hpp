@@ -61,6 +61,9 @@ namespace Kiaro
                     //! Standard destructor.
                     ~SExtensionLoader(void);
 
+                    ExtensionSymbols internalLoadExtension(const Support::String& filename);
+                    void internalUnloadExtension(ExtensionSymbols* symbols);
+
                     void deleteExtension(const Support::String& filename);
                     ExtensionSymbols* findExtension(const Support::String& filename);
             };

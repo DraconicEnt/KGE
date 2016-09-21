@@ -1,9 +1,6 @@
 /**
  */
 
-// FIXME: Implement in a cross-platform manner
-#include <dlfcn.h>
-
 #include <core/SExtensionLoader.hpp>
 
 #include <support/common.hpp>
@@ -46,25 +43,13 @@ namespace Kiaro
                 absolutePath += "/";
                 absolutePath += filename;
 
-                void* handle = dlopen(absolutePath.data(), RTLD_LAZY);
+                ExtensionSymbols symbols = this->internalLoadExtension(absolutePath);
 
-                if (!handle)
+                if (!symbols.mHandle)
                     return false;
 
-                ExtensionSymbols symbols;
-                symbols.mHandle = handle;
-                symbols.mInitialize = reinterpret_cast<ExtensionSymbols::extensionInitializePointer>(dlsym(handle, "extensionInitialize"));
-                symbols.mDeinitialize = reinterpret_cast<ExtensionSymbols::extensionInitializePointer>(dlsym(handle, "extensionDeinitialize"));
-
-                // Invalid symbols, we can't do jack in this case.
-                if (!symbols.mInitialize || !symbols.mDeinitialize)
-                {
-                    dlclose(handle);
-                    return false;
-                }
-
+                // Register into the extension map and return
                 mExtensionMap[filename] = symbols;
-
                 symbols.mInitialize();
 
                 return true;
@@ -76,7 +61,7 @@ namespace Kiaro
                 if (!symbols)
                     return false;
 
-                bool result = dlclose(symbols->mHandle);
+                this->internalUnloadExtension(symbols);
                 this->deleteExtension(filename);
 
                 return true;
@@ -118,10 +103,10 @@ namespace Kiaro
                 // Just unload everything; the memory will be cleaned up when this class is deleted anyway.
                 for (auto current: mExtensionMap)
                 {
-                    ExtensionSymbols symbols = current.second;
+                    ExtensionSymbols& symbols = current.second;
                     symbols.mDeinitialize();
 
-                    dlclose(symbols.mHandle);
+                    this->internalUnloadExtension(&symbols);
                 }
             }
         }
