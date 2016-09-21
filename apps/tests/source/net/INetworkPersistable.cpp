@@ -28,20 +28,26 @@ namespace Kiaro
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
             Common::U32 networkedUInt = 1337;
+            Support::String networkedString = "This is a string.";
+
             networkedEntity.addNetworkedProperty("float", networkedFloat);
             networkedEntity.addNetworkedProperty("uint", networkedUInt);
+            networkedEntity.addNetworkedProperty("string", networkedString);
 
             // Read them back
             const Common::F32& readFloat = networkedEntity.getNetworkedPropertyValue<Common::F32>("float");
             const Common::U32& readUInt = networkedEntity.getNetworkedPropertyValue<Common::U32>("uint");
+            const Support::String& readString = networkedEntity.getNetworkedPropertyValue<Support::String>("string");
 
             // Check raw values
             EXPECT_EQ(readFloat, networkedFloat);
             EXPECT_EQ(readUInt, networkedUInt);
+            EXPECT_EQ(readString, networkedString);
 
             // Are they of the same address?
             EXPECT_EQ(&readFloat, &networkedFloat);
             EXPECT_EQ(&readUInt, &networkedUInt);
+            EXPECT_EQ(&readString, &networkedString);
         }
 
         TEST(INetworkPersistable, IndirectPropertyWrite)
@@ -50,13 +56,18 @@ namespace Kiaro
 
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
+            Support::String networkedString = "This is a string.";
+
             networkedEntity.addNetworkedProperty("float", networkedFloat);
+            networkedEntity.addNetworkedProperty("string", networkedString);
 
             // Set the value indirectly
             networkedFloat = 5.15f;
+            networkedString = "Bollocks.";
 
             // Are they equal?
-            EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), networkedFloat);
+            EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"), 5.15f);
+            EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Support::String>("string"), "Bollocks.");
         }
 
         TEST(INetworkPersistable, ReadTypes)
@@ -65,9 +76,18 @@ namespace Kiaro
 
             // A couple of networked values
             Common::F32 networkedFloat = 3.14f;
-            networkedEntity.addNetworkedProperty("float", networkedFloat);
+            Support::String networkedString = "This is a string.";
 
-            EXPECT_NO_THROW(networkedEntity.getNetworkedPropertyValue<Common::F32>("float"));
+            networkedEntity.addNetworkedProperty("float", networkedFloat);
+            networkedEntity.addNetworkedProperty("string", networkedString);
+
+            EXPECT_NO_THROW(EXPECT_EQ(3.14f, networkedEntity.getNetworkedPropertyValue<Common::F32>("float")));
+            EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::U32>("float"), std::runtime_error);
+            EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::U8>("float"), std::runtime_error);
+            EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::F64>("float"), std::runtime_error);
+            EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::U64>("float"), std::runtime_error);
+
+            EXPECT_NO_THROW(EXPECT_EQ(networkedEntity.getNetworkedPropertyValue<Support::String>("string"), "This is a string."));
             EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::U32>("float"), std::runtime_error);
             EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::U8>("float"), std::runtime_error);
             EXPECT_THROW(networkedEntity.getNetworkedPropertyValue<Common::F64>("float"), std::runtime_error);

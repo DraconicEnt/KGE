@@ -45,7 +45,7 @@ namespace Kiaro
                 template <typename childName>
                 struct SharedStatics
                 {
-                    static Common::U32 sMessageID;
+                    static Common::S32 sMessageID;
                 };
 
             // Private Members
@@ -86,7 +86,7 @@ namespace Kiaro
         };
 
         template <typename childName>
-        typename Common::U32 IMessage::SharedStatics<childName>::sMessageID = 0;
+        typename Common::S32 IMessage::SharedStatics<childName>::sMessageID = -1;
     } // End Namespace Net
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_NETWORK_IMESSAGE_H_

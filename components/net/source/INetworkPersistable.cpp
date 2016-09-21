@@ -80,6 +80,20 @@ namespace Kiaro
                     break;
                 }
 
+                case Support::PROPERTY_STRING:
+                {
+                    const Support::String& value = *reinterpret_cast<Support::String*>(property.first);
+                    out.writeString(value);
+                    break;
+                }
+
+                case Support::PROPERTY_VECTOR3DF:
+                {
+                    const Common::Vector3DF& value = *reinterpret_cast<Common::Vector3DF*>(property.first);
+                    out.write<Common::Vector3DF>(value);
+                    break;
+                }
+
                 default:
                     throw std::domain_error("INetworkPersistable: Encountered unknown type in packDeltas!");
             }
@@ -135,6 +149,20 @@ namespace Kiaro
                     {
                         Common::U64& out = *reinterpret_cast<Common::U64*>(propertyInformation.first);
                         out = in.pop<Common::U64>();
+                        break;
+                    }
+
+                    case Support::PROPERTY_STRING:
+                    {
+                        Support::String& out = *reinterpret_cast<Support::String*>(propertyInformation.first);
+                        out = in.popString();
+                        break;
+                    }
+
+                    case Support::PROPERTY_VECTOR3DF:
+                    {
+                        Common::Vector3DF& out = *reinterpret_cast<Common::Vector3DF*>(propertyInformation.first);
+                        out = in.pop<Common::Vector3DF>();
                         break;
                     }
 

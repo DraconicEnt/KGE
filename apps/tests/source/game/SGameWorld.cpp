@@ -15,7 +15,7 @@
 
 #include <game/entities/IEntity.hpp>
 #include <game/SGameWorld.hpp>
-#include <game/SObjectRegistry.hpp>
+#include <core/SObjectRegistry.hpp>
 
 namespace Kiaro
 {
@@ -79,7 +79,7 @@ namespace Kiaro
                 EXPECT_TRUE(sGameWorld != nullptr);
                 SGameWorld::destroy();
 
-                SObjectRegistry::destroy();
+                Core::SObjectRegistry::destroy();
                 EXPECT_TRUE(sGameWorld == nullptr);
             }
 
@@ -95,7 +95,7 @@ namespace Kiaro
                 EXPECT_EQ(entity, world->getEntity(entity->mID));
 
                 SGameWorld::destroy();
-                SObjectRegistry::destroy();
+                Core::SObjectRegistry::destroy();
             }
 
             TEST(SGameWorld, IDAssignment)
@@ -121,7 +121,7 @@ namespace Kiaro
                 delete entityTwo;
 
                 SGameWorld::destroy();
-                SObjectRegistry::destroy();
+                Core::SObjectRegistry::destroy();
             }
 
             TEST(SGameWorld, TypeTesting)
@@ -141,7 +141,7 @@ namespace Kiaro
                 EXPECT_EQ(entity, world->getEntity(entity->mID));
 
                 SGameWorld::destroy();
-                SObjectRegistry::destroy();
+                Core::SObjectRegistry::destroy();
             }
         } // End Namespace Support
     }
