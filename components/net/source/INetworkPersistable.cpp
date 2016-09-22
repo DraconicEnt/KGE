@@ -54,28 +54,28 @@ namespace Kiaro
             {
                 case Support::PROPERTY_F32:
                 {
-                    const Common::F32& value = *reinterpret_cast<Common::F32*>(property.first);
+                    Common::F32 value = *reinterpret_cast<Common::F32*>(property.first);
                     out.write<Common::F32>(value);
                     break;
                 }
 
                 case Support::PROPERTY_F64:
                 {
-                    const Common::F64& value = *reinterpret_cast<Common::F64*>(property.first);
+                    Common::F64 value = *reinterpret_cast<Common::F64*>(property.first);
                     out.write<Common::F64>(value);
                     break;
                 }
 
                 case Support::PROPERTY_U32:
                 {
-                    const Common::U32& value = *reinterpret_cast<Common::U32*>(property.first);
+                    Common::U32 value = *reinterpret_cast<Common::U32*>(property.first);
                     out.write<Common::U32>(value);
                     break;
                 }
 
                 case Support::PROPERTY_U64:
                 {
-                    const Common::U64& value = *reinterpret_cast<Common::U64*>(property.first);
+                    Common::U64 value = *reinterpret_cast<Common::U64*>(property.first);
                     out.write<Common::U64>(value);
                     break;
                 }
@@ -102,7 +102,7 @@ namespace Kiaro
         void INetworkPersistable::unpack(Support::CBitStream& in)
         {
             // How many properties are there to unpack?
-            const Common::U32& propertyCount = in.pop<Common::U32>();
+            Common::U32 propertyCount = in.pop<Common::U32>();
 
             // Unpack that many properties: If the payload was crafted to have wrong numbers, then the bit stream will throw underflow exceptions
             for (Common::U32 iteration = 0; iteration < propertyCount; iteration++)
