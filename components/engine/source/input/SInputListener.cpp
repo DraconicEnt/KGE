@@ -23,18 +23,7 @@ namespace Kiaro
 {
     namespace Input
     {
-        void SInputListener::setKeyResponder(const CEGUI::Key::Scan key, AnalogResponderDelegate* responder)
-        {
-            if (!responder)
-            {
-                mKeyResponders.erase(key);
-                return;
-            }
-
-            mKeyResponders[key] = responder;
-        }
-
-        SInputListener::SInputListener(void) : mTyping(false), mInputQueue(al_create_event_queue())
+        SInputListener::SInputListener(void) : mTyping(false), mInputQueue(al_create_event_queue()), mInputScheme("")
         {
             al_install_mouse();
             al_install_keyboard();
@@ -246,6 +235,8 @@ namespace Kiaro
 
         void SInputListener::scanJoysticks(void)
         {
+            mJoystickIDs.clear();
+
             // Check for any joysticks that were removed
             if (al_reconfigure_joysticks())
             {
@@ -288,6 +279,10 @@ namespace Kiaro
 
                 const Common::S32 stickCount = al_get_joystick_num_sticks(joystick);
                 const Common::S32 buttonCount = al_get_joystick_num_buttons(joystick);
+
+                // Assign this joystick the ID
+                mJoystickIDs[joystick] = joystickID;
+
                 CONSOLE_DEBUGF("Joystick %u ------------", joystickID);
                 CONSOLE_DEBUGF("  Name: %s", al_get_joystick_name(joystick));
                 CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
@@ -352,18 +347,8 @@ namespace Kiaro
                         case ALLEGRO_EVENT_KEY_UP:
                         case ALLEGRO_EVENT_KEY_DOWN:
                         {
-                            // Responding to regular key events?
-                            if (!mTyping && event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
-                            {
-                                auto it = mKeyResponders.find(AllegroKeyToCEGUI(event.keyboard.keycode));
-
-                                if (it != mKeyResponders.end() && event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
-                                    (*it).second->invoke(1.0f);
-                                else if (it != mKeyResponders.end())
-                                    (*it).second->invoke(0.0f);
-
-                                break;
-                            }
+                            if (!mTyping)
+                                this->dispatchInputResponse(event.keyboard.keycode, INPUT_KEYBOARD, 0, event);
 
                             // We'll just shove keyboard input into CEGUI, then.
                             if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -378,6 +363,8 @@ namespace Kiaro
                         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
                         case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
                         {
+                            this->dispatchInputResponse(event.mouse.button, INPUT_MOUSE, 0, event);
+
                             if (event.mouse.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                                 guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
                             else
@@ -398,19 +385,20 @@ namespace Kiaro
                         case ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN:
                         case ALLEGRO_EVENT_JOYSTICK_BUTTON_UP:
                         {
-                            if (mButtonResponders.find(event.joystick.id) != mButtonResponders.end())
-                            {
-                                ALLEGRO_JOYSTICK* joystick = event.joystick.id;
+                            auto joystickIDSearch = mJoystickIDs.find(event.joystick.id);
+                            assert(joystickIDSearch != mJoystickIDs.end());
 
-                                if (mButtonResponders[joystick].find(event.joystick.button) != mButtonResponders[joystick].end())
-                                    mButtonResponders[joystick][event.joystick.button]->invoke(event.joystick.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN);
-                            }
-
+                            this->dispatchInputResponse(event.joystick.button, INPUT_GAMEPAD, (*joystickIDSearch).second, event);
                             break;
                         }
 
                         case ALLEGRO_EVENT_JOYSTICK_AXIS:
                         {
+                            auto joystickIDSearch = mJoystickIDs.find(event.joystick.id);
+                            assert(joystickIDSearch != mJoystickIDs.end());
+
+                            const Common::U32 inputID = event.joystick.stick + al_get_joystick_num_buttons(event.joystick.id);
+                            this->dispatchInputResponse(inputID, INPUT_GAMEPAD, (*joystickIDSearch).second, event);
                             break;
                         }
                     }
@@ -418,6 +406,85 @@ namespace Kiaro
             }
 
             PROFILER_END(Input);
+        }
+
+        bool SInputListener::setInputScheme(const Support::String& name)
+        {
+            auto search = mInputSchemes.find(name);
+
+            if (search == mInputSchemes.end())
+                return false;
+
+            mInputScheme = name;
+            return true;
+        }
+
+        const Support::String& SInputListener::getInputScheme(void)
+        {
+            return mInputScheme;
+        }
+
+        void SInputListener::setResponder(const Support::String& scheme, const Common::U32 inputCode, const INPUT_DEVICE deviceType, const Common::U32 deviceID, InputEventResponderDelegate* responder)
+        {
+            // We do a check on mouse and keyboard input types, the deviceID should be 0 because we don't individually identify these devices.
+            switch(deviceType)
+            {
+                case INPUT_MOUSE:
+                case INPUT_KEYBOARD:
+                {
+                    if (deviceID != 0)
+                        throw std::runtime_error("When binding mouse and keybord devices, the device ID must be 0!");
+                    break;
+                }
+            }
+
+            // Initialize the scheme if not found
+            auto schemeSearch = mInputSchemes.find(scheme);
+            if (schemeSearch == mInputSchemes.end())
+                mInputSchemes[scheme] =  Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, Support::UnorderedMap<Common::U32, InputEventResponderDelegate*>>>();
+
+            auto& schemeData = mInputSchemes[scheme];
+
+            // Initialize the input device data if not found
+            auto deviceTypeSearch = schemeData.find(deviceType);
+            if (deviceTypeSearch == schemeData.end())
+                schemeData[deviceType] = Support::UnorderedMap<Common::U32, Support::UnorderedMap<Common::U32, InputEventResponderDelegate*>>();
+
+            auto& inputDeviceTypeData = schemeData[deviceType];
+
+            // Initialize the device ID data if not found
+            auto deviceSearch = inputDeviceTypeData.find(deviceID);
+            if (deviceSearch == inputDeviceTypeData.end())
+                inputDeviceTypeData[deviceID] = Support::UnorderedMap<Common::U32, InputEventResponderDelegate*>();
+
+            auto& responderData = inputDeviceTypeData[deviceID];
+
+            // Finally insert the freaking lookup
+            responderData[inputCode] = responder;
+        }
+
+        void SInputListener::dispatchInputResponse(const Common::U32 inputCode, const INPUT_DEVICE deviceType, const Common::U32 deviceID, ALLEGRO_EVENT& event)
+        {
+            auto schemeSearch = mInputSchemes.find(mInputScheme);
+            if (schemeSearch == mInputSchemes.end())
+                return;
+
+            auto& schemeData = (*schemeSearch).second;
+            auto deviceTypeSearch = schemeData.find(deviceType);
+            if (deviceTypeSearch == schemeData.end())
+                return;
+
+            auto& deviceTypeData = (*deviceTypeSearch).second;
+            auto deviceIDSearch = deviceTypeData.find(deviceID);
+            if (deviceIDSearch == deviceTypeData.end())
+                return;
+
+            auto& deviceIDData = (*deviceIDSearch).second;
+            auto inputCodeSearch = deviceIDData.find(inputCode);
+            if (inputCodeSearch == deviceIDData.end())
+                return;
+
+            (*inputCodeSearch).second->invoke(event);
         }
     } // End Namespace Game
 } // End Namespace Kiaro
