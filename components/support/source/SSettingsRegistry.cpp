@@ -33,6 +33,7 @@ namespace Kiaro
 
             this->setValue<Common::U32>("Server::MaxOutgoingBandwidth", 0);
             this->setValue<Common::U32>("Server::MaxIncomingBandwidth", 0);
+            this->setValue<Common::U32>("Server::DatablocksPerTick", 16);
 
             // Video
             this->setValue<bool>("Video::Fullscreen", false);

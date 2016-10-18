@@ -1,5 +1,12 @@
 /**
  *  @file IComponent.cpp
+ *  @brief Source file containing programming for the IComponent class.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #include <ces/IComponent.hpp>
@@ -10,21 +17,24 @@ namespace Kiaro
     {
         namespace CES
         {
-            void IComponent::internalValidate(Support::Set<IComponent*> trail)
+            void IComponent::internalValidate(Support::Vector<IComponent*> trail)
             {
                 // Perform parent analysis
                 for (IComponent* component: mChildren)
-                    if (trail.find(component) != trail.end())
-                        throw std::runtime_error("Children components cannot occur as an eventual parent!");
-                    else
-                        trail.insert(trail.end(), component);
+                {
+                    for (IComponent* trailComponent: trail)
+                        if (trailComponent == component)
+                            throw std::runtime_error("Children components cannot occur as an eventual parent!");
+
+                    trail.insert(trail.end(), component);
+                }
 
                 // Recurse
                 for (IComponent* component: mChildren)
                     component->internalValidate(trail);
             }
 
-            bool IComponent::evaluateChildren(const Support::UnorderedSet<CModelInstance*>& entities, const Support::Set<IComponent*>& children)
+            bool IComponent::evaluateChildren(const Support::UnorderedSet<CModelInstance*>& entities, const Support::Vector<IComponent*>& children)
             {
                 // Evaluate each top level first
                 for (IComponent* component: children)
@@ -73,7 +83,7 @@ namespace Kiaro
                 if (strategy == EVALUATION_SERIAL)
                 {
                     size_t index = 0;
-                    Support::Set<IComponent*> children;
+                    Support::Vector<IComponent*> children;
 
                     this->getChildren(true, children);
 
@@ -85,17 +95,16 @@ namespace Kiaro
                 }
             }
 
-            void IComponent::getChildrenInternal(Support::Set<IComponent*>& output)
+            void IComponent::getChildrenInternal(Support::Vector<IComponent*>& output)
             {
-                // We want to return in the correct order, so we just append first
                 for (IComponent* component: mChildren)
-                    output.insert(output.end(), component);
+                    output.push_back(component);
 
                 for (IComponent* component: mChildren)
                     component->getChildrenInternal(output);
             }
 
-            void IComponent::getChildren(bool recursive, Support::Set<IComponent*>& output)
+            void IComponent::getChildren(bool recursive, Support::Vector<IComponent*>& output)
             {
                 output = mChildren;
 
@@ -106,33 +115,27 @@ namespace Kiaro
                     component->getChildrenInternal(output);
             }
 
-            Support::Set<IComponent*>::iterator IComponent::begin()
+            Support::Vector<IComponent*>::iterator IComponent::begin(void)
             {
                 // FIXME: Calculate this only when the model is modified
+                mRecursiveChildren.clear();
                 this->getChildren(true, mRecursiveChildren);
 
                 return mRecursiveChildren.begin();
             }
 
-            Support::Set<IComponent*>::iterator IComponent::end()
+            Support::Vector<IComponent*>::iterator IComponent::end(void)
             {
                 return mRecursiveChildren.end();
             }
 
-            /**
-             *  @brief Checks the validity of the model from this component downwards and throws an std::runtime_error if a problem
-             *  is found.
-             */
             void IComponent::validate(void)
             {
-                Support::Set<IComponent*> trail;
+                Support::Vector<IComponent*> trail;
                 this->internalValidate(trail);
             }
 
-            /**
-             *  @brief Evaluates just the component in the model.
-             */
-            bool IComponent::evaluateComponent(const Support::UnorderedSet<CModelInstance*>& entities, Support::Set<IComponent*>& root) { return true; }
+            bool IComponent::evaluateComponent(const Support::UnorderedSet<CModelInstance*>& entities, Support::Vector<IComponent*>& root) { return true; }
 
             void IComponent::evaluate(CModelInstance* entity)
             {
@@ -162,6 +165,7 @@ namespace Kiaro
             void IComponent::attachComponent(IComponent* component)
             {
                 component->mRoot = mRoot;
+                mChildren.push_back(component);
             }
         }
     }

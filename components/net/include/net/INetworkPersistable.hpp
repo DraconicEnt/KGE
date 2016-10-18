@@ -53,17 +53,17 @@ namespace Kiaro
          */
         class INetworkPersistable : public Support::ISerializable
         {
-                // Public Members
+            // Public Members
             public:
                 //! A set of all modified network properties
                 Support::UnorderedSet<Support::String> mDirtyNetworkedProperties;
 
-                // Private Members
+            // Private Members
             private:
                 //! A map of string hashes (networked property names) to an std::pair representing the location & typeid hash
                 Support::UnorderedMap<Support::String, std::pair<void*, Support::PROPERTY_TYPE>> mNetworkedProperties;
 
-                // Public Methods
+            // Public Methods
             public:
                 //! Parameterless Constructor.
                 INetworkPersistable(void);
@@ -149,7 +149,7 @@ namespace Kiaro
                  */
                 virtual void unpack(Support::CBitStream& in);
 
-                // Private Methods
+            // Private Methods
             private:
                 /**
                  *  @brief Helper method used to pack arbitrary methods into the INetworkPersistable.

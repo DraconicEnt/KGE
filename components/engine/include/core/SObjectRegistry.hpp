@@ -17,6 +17,7 @@
 #include <support/UnorderedMap.hpp>
 #include <support/String.hpp>
 #include <support/common.hpp>
+#include <support/ISingleton.hpp>
 
 #include <game/IEngineObject.hpp>
 
@@ -33,7 +34,7 @@ namespace Kiaro
              *  @detail All engine objects are persisted in this singleton. So not only are game world objects put in this singleton,
              *  you have miscellaneous objects that need to be persisted in some way and are not necessarily networked.
              */
-            class SObjectRegistry
+            class SObjectRegistry : public Support::ISingleton<SObjectRegistry>
             {
                 friend class Game::IEngineObject;
 
@@ -50,18 +51,6 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    /**
-                     *  @brief Obtains the pointer to the object registry singleton, creating a new one
-                     *  if one does not already exist.
-                     *  @return A pointer to the SObjectRegistry.
-                     */
-                    static SObjectRegistry* getPointer(void);
-
-                    /**
-                     *  @brief Destroys the object registry singleton if there is currently one active.
-                     */
-                    static void destroy(void);
-
                     /**
                      *  @brief Adds a new object to the registry, using the identifier provided by the
                      *  object itself to insert it into the internal deque.
@@ -121,8 +110,11 @@ namespace Kiaro
                      */
                     void setNameEntry(Game::IEngineObject* object, const Support::String& name);
 
-                // Private Methods
-                private:
+                // Protected Methods
+                protected:
+                    //! Parameter-less constructor.
+                    SObjectRegistry(void);
+
                     //! Standard destructor.
                     ~SObjectRegistry(void);
             };

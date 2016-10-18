@@ -153,5 +153,49 @@ namespace Kiaro
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
                 EXPECT_EQ(sFloatList[iteration], stream.pop<Common::F32>());
         }
+
+        TEST(BitStream, EndianSwapping)
+        {
+            CBitStream stream(32);
+            stream.mInverseEndian = true;
+
+            Common::F32 sourceFloatVal = 3.14f;
+            Common::U32 sourceIntVal = 1337;
+            Common::U64 sourceLongVal = 69;
+            Common::U16 sourceShortVal = 11595;
+
+            stream << sourceFloatVal << sourceIntVal << sourceLongVal << sourceShortVal;
+            stream.setPointer(0);
+
+            // Ensure the source values weren't swapped
+            EXPECT_EQ(3.14f, sourceFloatVal);
+            EXPECT_EQ(1337, sourceIntVal);
+            EXPECT_EQ(69, sourceLongVal);
+            EXPECT_EQ(11595, sourceShortVal);
+
+            // Read out new values and ensure they're not equal (because the values should be different)
+            Common::F32 outputFloatVal = 3.14f;
+            Common::U32 outputIntVal = 1337;
+            Common::U64 outputLongVal = 69;
+            Common::U16 outputShortVal = 11595;
+
+            stream >> outputFloatVal >> outputIntVal >> outputLongVal >> outputShortVal;
+
+            EXPECT_NE(sourceFloatVal, outputFloatVal);
+            EXPECT_NE(sourceIntVal, outputIntVal);
+            EXPECT_NE(sourceLongVal, outputLongVal);
+            EXPECT_NE(sourceShortVal, outputShortVal);
+
+            // Now test the endianness of our values
+            SwapEndian(sourceFloatVal);
+            SwapEndian(sourceIntVal);
+            SwapEndian(sourceLongVal);
+            SwapEndian(sourceShortVal);
+
+            EXPECT_EQ(sourceFloatVal, outputFloatVal);
+            EXPECT_EQ(sourceIntVal, outputIntVal);
+            EXPECT_EQ(sourceLongVal, outputLongVal);
+            EXPECT_EQ(sourceShortVal, outputShortVal);
+        }
     } // End Namespace Support
 } // End namespace Kiaro

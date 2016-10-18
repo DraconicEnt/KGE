@@ -39,14 +39,14 @@ namespace Kiaro
         namespace Video
         {
             SRenderer::SRenderer(void) : mIrrlichtDevice(nullptr), mClearColor(Common::ColorRGBA(0, 0, 0, 0)),
-                                         mHasDisplay(!Core::SEngineInstance::getPointer()->isDedicated()),
+                                         mHasDisplay(!Core::SEngineInstance::instantiate()->isDedicated()),
                                          mVideo(nullptr), mSceneManager(nullptr), mMainScene(nullptr),
                                          mCurrentScene(nullptr), mDisplay(nullptr), mWindowEventQueue(nullptr),
                                          mTimePulse(nullptr)
             {
                 CONSOLE_INFO("Initializing renderer subsystem.");
 
-                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getPointer();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
                 irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>(
                         "Video::Resolution");
                 this->initializeRenderer(resolution);
@@ -72,7 +72,7 @@ namespace Kiaro
                 irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
                 irr::SIrrlichtCreationParameters creationParameters;
 
-                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getPointer();
+                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
 
                 if (mHasDisplay)
                 {
@@ -152,7 +152,7 @@ namespace Kiaro
                 {
                     const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
 
-                    mTimePulse = Support::SSynchronousScheduler::getPointer()->schedule(Support::FPSToMS(activeFPS), true,
+                    mTimePulse = Support::SSynchronousScheduler::instantiate()->schedule(Support::FPSToMS(activeFPS), true,
                                                                                         this,
                                                                                         &SRenderer::drawFrame);
                 }
@@ -178,7 +178,7 @@ namespace Kiaro
             {
                 al_resize_display(mDisplay, resolution.Width, resolution.Height);
                 mIrrlichtDevice->getVideoDriver()->OnResize(resolution);
-                GUI::SGUIManager::getPointer()->setResolution(resolution);
+                GUI::SGUIManager::instantiate()->setResolution(resolution);
                 al_acknowledge_resize(mDisplay);
             }
 
@@ -210,7 +210,7 @@ namespace Kiaro
 
                         case ALLEGRO_EVENT_DISPLAY_CLOSE:
                         {
-                            Core::SEngineInstance::getPointer()->kill();
+                            Core::SEngineInstance::instantiate()->kill();
                             break;
                         }
 
@@ -232,7 +232,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
                         {
                             CONSOLE_INFO("Window unfocused.");
-                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getPointer();
+                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
                             const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
 
                             mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
@@ -242,7 +242,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
                         {
                             CONSOLE_INFO("Window focused.");
-                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getPointer();
+                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
                             const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
 
                             mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
@@ -274,7 +274,7 @@ namespace Kiaro
                 if (mCurrentScene)
                     mSceneManager->drawAll();
 
-                GUI::SGUIManager::getPointer()->draw();
+                GUI::SGUIManager::instantiate()->draw();
 
                 mVideo->endScene();
 
@@ -297,7 +297,7 @@ namespace Kiaro
                     if (mCurrentScene)
                         mSceneManager->drawAll();
 
-                    GUI::SGUIManager::getPointer()->draw();
+                    GUI::SGUIManager::instantiate()->draw();
 
                     mVideo->endScene();
 

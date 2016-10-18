@@ -33,6 +33,8 @@ namespace Kiaro
             PROPERTY_U16,
 
             PROPERTY_DIMENSION,
+
+            PROPERTY_VECTOR3DF,
         };
 
         /**
@@ -133,6 +135,12 @@ namespace Kiaro
         struct TypeIDResolver<irr::core::dimension2d<Common::U32>>
         {
             static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_DIMENSION;
+        };
+
+        template<>
+        struct TypeIDResolver<Common::Vector3DF>
+        {
+            static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_VECTOR3DF;
         };
     }
 }

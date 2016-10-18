@@ -14,6 +14,7 @@
 
 #include <support/types.hpp>
 #include <support/UnorderedMap.hpp>
+#include <support/ISingleton.hpp>
 
 #include <CEGUI/RendererModules/Irrlicht/Renderer.h>
 
@@ -28,7 +29,7 @@ namespace Kiaro
             /**
              * @brief The SGUIManager provides access to GUI context creation and dialog/GUI instantiation
              */
-            class SGUIManager
+            class SGUIManager : public Support::ISingleton<SGUIManager>
             {
                 // Private Members
                 private:
@@ -42,17 +43,6 @@ namespace Kiaro
                     Support::UnorderedMap<Support::String, CGUIContext*> mContexts;
 
                 public:
-                    /**
-                     * @brief Returns a pointer to the SGUIManager singleton pointer.
-                     * @return The SGUIManager singleton pointer. If there is no existing instance, one is created.
-                     */
-                    static SGUIManager* getPointer(void);
-
-                    /**
-                     * @brief Destroys the SGUIManager singleton if there is one.
-                     */
-                    static void destroy(void);
-
                     void draw(void);
 
                     void setResolution(const Support::Dimension2DU& resolution);
@@ -87,10 +77,12 @@ namespace Kiaro
                      */
                     CGUIContext* getContext(const Support::String& name);
 
-                // Private Methods
-                private:
+                // Protected Methods
+                protected:
                     //! Parameter-less constructor.
                     SGUIManager(void);
+                    //! Standard destructor.
+                    ~SGUIManager(void);
             };
         }
     } // End NameSpace Video

@@ -35,7 +35,7 @@ namespace Kiaro
          */
         class CScheduledEvent
         {
-                // Private Members
+            // Private Members
             private:
                 //! A boolean representing whether or not this scheduled event has been cancelled.
                 bool mCancelled;
@@ -49,7 +49,7 @@ namespace Kiaro
                 //! How much time to wait in milliseconds before dispatching.
                 Common::U64 mWaitTimeMS;
 
-                // Public Methods
+            // Public Methods
             public:
                 /**
                  *  @brief Constructor accepting a deferred caller, the time to wait and a recurring state.
@@ -103,7 +103,7 @@ namespace Kiaro
                  *  @return A boolean representing whether or not the scheduled event was flagged for
                  *  cancellation.
                  */
-                const bool isCancelled(void) NOTHROW;
+                bool isCancelled(void) NOTHROW;
 
                 /**
                  *  @brief Returns whether or not this scheduled event is flagged to operate on a
@@ -112,14 +112,14 @@ namespace Kiaro
                  *  @return A boolean representing whether or the scheduled event is flagged to operate
                  *  on a recurring basis.
                  */
-                const bool isRecurring(void) NOTHROW;
+                bool isRecurring(void) NOTHROW;
 
                 /**
                  *  @brief Returns the time delta that the scheduled event is set to execute on.
                  *  If it is a recurring event, this is the time delta between executions.
                  *  @return A Common::U64 representing the wait time in milliseconds.
                  */
-                const Common::U64 getWaitTimeMS(void) NOTHROW;
+                Common::U64 getWaitTimeMS(void) NOTHROW;
         };
 
         /**
@@ -129,12 +129,12 @@ namespace Kiaro
          */
         class SSynchronousScheduler : public ISingleton<SSynchronousScheduler>
         {
-                // Private Members
+            // Private Members
             private:
                 //! A set of scheduled events for processing.
                 Support::UnorderedSet<CScheduledEvent*> mScheduledEventSet;
 
-                // Public Methods
+            // Public Methods
             public:
                 /**
                  *  @brief Schedules a call using a pointer to a class member method.
@@ -188,6 +188,14 @@ namespace Kiaro
                  *  per main loop iteration.
                  */
                 void update(void);
+
+            // Protected Methods
+            protected:
+                //! Parameter-less constructor.
+                SSynchronousScheduler(void);
+
+                //! Standard destructor.
+                ~SSynchronousScheduler(void);
         };
     } // End NameSpace Support
 } // End NameSpace Kiaro

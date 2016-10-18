@@ -17,6 +17,7 @@
 
 #include <physfs.h>
 
+#include <support/FEndian.hpp>
 #include <support/common.hpp>
 #include <support/String.hpp>
 
@@ -33,7 +34,7 @@ namespace Kiaro
          */
         class CBitStream
         {
-                // Private members
+            // Private members
             private:
                 //! A pointer to the start of the contiguous memory block this bit stream is working with.
                 Common::U8* mMemoryBlock;
@@ -49,7 +50,12 @@ namespace Kiaro
 
                 size_t mResizeLength;
 
-                // Public methods
+            // Public Members
+            public:
+                //! Whether or not the endianness of written and read data should be reversed. This is useful for bit streams that are writing to the network.
+                bool mInverseEndian;
+
+            // Public methods
             public:
                 /**
                  *  @brief A constructor accepting a pointer to an ISerializable object to pack into this
@@ -92,6 +98,10 @@ namespace Kiaro
                     inType& output = *reinterpret_cast<inType*>(&mMemoryBlock[mPointer]);
                     output = input;
 
+                    // Resolve the endian swap if we need to
+                    if (mInverseEndian)
+                        SwapEndian(output);
+
                     mPointer += sizeof(inType);
                 }
 
@@ -122,6 +132,11 @@ namespace Kiaro
                         throw std::underflow_error("Stack Underflow");
 
                     outType& result = this->top<outType>();
+
+                    // NOTE: We will rewrite the actual value in the stream when we do this, but this should only be read once anyway
+                    if (mInverseEndian)
+                        SwapEndian(result);
+
                     mPointer += sizeof(outType);
                     return result;
                 }

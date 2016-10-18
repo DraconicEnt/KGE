@@ -26,29 +26,29 @@ namespace Kiaro
          */
         static inline void SwapEndianU32Ref(Common::U32& from)
         {
-#if ENGINE_INLINE_ASM<1
-            from =  ((255 & from) << 24) |          // First Byte to fourth position
-                    ((65280 & from) << 8) |         // Second byte to third position
-                    ((16711680 & from) >> 8) |      // Third byte to second position
-                    ((4278190080 & from) >> 24);    // Fourth byte to first position
-#else
-#if defined(_MSC_VER)
-            __asm
-            {
-                push eax;
-                mov eax, from;
-                BSWAP eax;
-                mov from, eax;
-                pop eax;
-            }
-#else
-            asm ("movl %0, %%eax; BSWAP %%eax; movl %%eax, %1"
-                 :"=r"(from)
-                 :"r"(from)
-                 :"%eax"
-                );
-#endif
-#endif
+            #if ENGINE_INLINE_ASM<1
+                        from =  ((255 & from) << 24) |          // First Byte to fourth position
+                                ((65280 & from) << 8) |         // Second byte to third position
+                                ((16711680 & from) >> 8) |      // Third byte to second position
+                                ((4278190080 & from) >> 24);    // Fourth byte to first position
+            #else
+            #if defined(_MSC_VER)
+                        __asm
+                        {
+                            push eax;
+                            mov eax, from;
+                            BSWAP eax;
+                            mov from, eax;
+                            pop eax;
+                        }
+            #else
+                        asm ("movl %0, %%eax; BSWAP %%eax; movl %%eax, %1"
+                             :"=r"(from)
+                             :"r"(from)
+                             :"%eax"
+                            );
+            #endif
+            #endif
         }
 
         /**
@@ -72,33 +72,33 @@ namespace Kiaro
          */
         static inline void SwapEndianU64Ref(Common::U64& from)
         {
-#if ENGINE_INLINE_ASM<1
-            from =  ((255 & from) << 56) |                      // First Byte to eighth position
-                    ((65280 & from) << 40) |                    // Second byte to seventh position
-                    ((16711680 & from) << 24) |                 // Third byte to sixth position
-                    ((4278190080 & from) << 8) |                // Fourth byte to fifth position
-                    ((1095216660480 & from) >> 8) |             // Fifth byte to fourth position
-                    ((280375465082880 & from) >> 24) |          // Sixth byte to third position
-                    ((71776119061217280ULL & from) >> 40) |     // Seventh byte to second position
-                    ((18374686479671623680ULL & from) >> 56);   // Eighth byte to first position
-#elif ENGINE_INLINE_ASM>1 && _ENGINE_64BIT>1
-#if defined(_MSC_VER)
-            __asm
-            {
-                push rax;
-                mov rax, from;
-                BSWAP rax;
-                mov from, rax;
-                pop rax;
-            }
-#else
-            asm ("mov %0, %%rax; BSWAP %%rax; mov %%rax, %1"
-                 :"=r"(from)
-                 :"r"(from)
-                 :"%rax"
-                );
-#endif
-#endif
+            #if ENGINE_INLINE_ASM<1
+                        from =  ((255 & from) << 56) |                      // First Byte to eighth position
+                                ((65280 & from) << 40) |                    // Second byte to seventh position
+                                ((16711680 & from) << 24) |                 // Third byte to sixth position
+                                ((4278190080 & from) << 8) |                // Fourth byte to fifth position
+                                ((1095216660480 & from) >> 8) |             // Fifth byte to fourth position
+                                ((280375465082880 & from) >> 24) |          // Sixth byte to third position
+                                ((71776119061217280ULL & from) >> 40) |     // Seventh byte to second position
+                                ((18374686479671623680ULL & from) >> 56);   // Eighth byte to first position
+            #elif ENGINE_INLINE_ASM>1 && _ENGINE_64BIT>1
+            #if defined(_MSC_VER)
+                        __asm
+                        {
+                            push rax;
+                            mov rax, from;
+                            BSWAP rax;
+                            mov from, rax;
+                            pop rax;
+                        }
+            #else
+                        asm ("mov %0, %%rax; BSWAP %%rax; mov %%rax, %1"
+                             :"=r"(from)
+                             :"r"(from)
+                             :"%rax"
+                            );
+            #endif
+            #endif
         }
 
         /**
@@ -121,27 +121,27 @@ namespace Kiaro
          */
         static inline void SwapEndianU16Ref(Kiaro::Common::U16& from)
         {
-#if ENGINE_INLINE_ASM<1
-            from =  ((255 & from) << 8) |   // First Byte to second position
-                    ((65280 & from) >> 8);  // Second byte to first position
-#else
-#if defined(_MSC_VER)
-            __asm
-            {
-                push ax;
-                mov ax, from;
-                BSWAP ax;
-                mov from, ax;
-                pop ax;
-            }
-#else
-            asm ("movw %0, %%ax; BSWAP %%ax; movw %%ax, %1"
-                 :"=r"(from)
-                 :"r"(from)
-                 :"%ax"
-                );
-#endif
-#endif
+            #if ENGINE_INLINE_ASM<1
+                        from =  ((255 & from) << 8) |   // First Byte to second position
+                                ((65280 & from) >> 8);  // Second byte to first position
+            #else
+            #if defined(_MSC_VER)
+                        __asm
+                        {
+                            push ax;
+                            mov ax, from;
+                            BSWAP ax;
+                            mov from, ax;
+                            pop ax;
+                        }
+            #else
+                        asm ("movw %0, %%ax; BSWAP %%ax; movw %%ax, %1"
+                             :"=r"(from)
+                             :"r"(from)
+                             :"%ax"
+                            );
+            #endif
+            #endif
         }
 
         /**
@@ -189,6 +189,7 @@ namespace Kiaro
         static inline void SwapEndianArbitrary(void* from, const Common::U32& size)
         {
             Common::U8* array = reinterpret_cast<Common::U8*>(from);
+
             // Create a copy of the array to read from
             Common::U8* copy_from = reinterpret_cast<Common::U8*>(malloc(size));
             memcpy(copy_from, from, size);
@@ -197,6 +198,67 @@ namespace Kiaro
                 array[i] = copy_from[size - i];
 
             free(copy_from);
+        }
+
+        template <size_t dataSize>
+        struct EndianSwapResolver
+        {
+            /**
+             *  @brief The default endian swap resolver. This uses a slow software approach, but generally this shouldn't
+             *  ever be fallen back to anyway (Except on platforms that have strange data type sizes).
+             *  @param input A pointer to the primitive data to be endian swapped.
+             *  @warning If this fallback is being used in the netcode, incompatibilities between platforms will be a problem.
+             *  @todo Add a way to specify whether or not this fallback behavior is desirable.
+             */
+            static void resolve(void* input)
+            {
+                SwapEndianArbitrary(input, dataSize);
+            }
+        };
+
+        template <>
+        struct EndianSwapResolver<4>
+        {
+            /**
+             *  @brief The endian swap resolver for primitive types that are 4 bytes in length.
+             *  @param input A pointer to the primitive data to be endian swapped.
+             */
+            static void resolve(void* input)
+            {
+                SwapEndianU32Ref(*reinterpret_cast<Common::U32*>(input));
+            }
+        };
+
+        template <>
+        struct EndianSwapResolver<6>
+        {
+            /**
+             *  @brief The endian swap resolver for primitive types that are 6 bytes in length.
+             *  @param input A pointer to the primitive data to be endian swapped.
+             */
+            static void resolve(void* input)
+            {
+                SwapEndianU64Ref(*reinterpret_cast<Common::U64*>(input));
+            }
+        };
+
+        template <>
+        struct EndianSwapResolver<2>
+        {
+            /**
+             *  @brief The endian swap resolver for primitive types that are 2 bytes in length.
+             *  @param input A pointer to the primitive data to be endian swapped.
+             */
+            static void resolve(void* input)
+            {
+                SwapEndianU16Ref(*reinterpret_cast<Common::U16*>(input));
+            }
+        };
+
+        template <typename inputType>
+        static void SwapEndian(inputType& input)
+        {
+            EndianSwapResolver<sizeof(inputType)>::resolve(&input);
         }
     }
 }

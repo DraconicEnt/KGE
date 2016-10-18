@@ -256,9 +256,7 @@ namespace Kiaro
                 // Now delete the removed joysticks
                 for (ALLEGRO_JOYSTICK* removedJoystick: removedJoysticks)
                 {
-                    mButtonResponders.erase(removedJoystick);
                     mAttachedJoysticks.erase(removedJoystick);
-
                     al_release_joystick(removedJoystick);
                 }
             }
@@ -304,7 +302,7 @@ namespace Kiaro
 
         void SInputListener::setMouseCaptureEnabled(const bool enabled)
         {
-            Engine::Video::SRenderer* renderer = Engine::Video::SRenderer::getPointer();
+            Engine::Video::SRenderer* renderer = Engine::Video::SRenderer::instantiate();
 
             if (renderer->mHasDisplay)
             {
@@ -328,7 +326,7 @@ namespace Kiaro
             // TODO: This is bound to go weird in some situations probably; like breaking responders for non-typable keys (like F1-F12)
             mTyping = guiContext.getInputCaptureWindow() != nullptr;
 
-            Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::getPointer();
+            Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::instantiate();
             gui->getContext("main")->setCursorPosition(Support::Vector2DF(mouseState.x, mouseState.y));
 
             // Process input events

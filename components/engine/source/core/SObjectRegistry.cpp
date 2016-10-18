@@ -19,20 +19,9 @@ namespace Kiaro
     {
         namespace Core
         {
-            SObjectRegistry* sObjectRegistry = nullptr;
-
-            SObjectRegistry* SObjectRegistry::getPointer(void)
+            SObjectRegistry::SObjectRegistry(void)
             {
-                if (!sObjectRegistry)
-                    sObjectRegistry = new SObjectRegistry();
 
-                return sObjectRegistry;
-            }
-
-            void SObjectRegistry::destroy(void)
-            {
-                delete sObjectRegistry;
-                sObjectRegistry = nullptr;
             }
 
             SObjectRegistry::~SObjectRegistry(void)

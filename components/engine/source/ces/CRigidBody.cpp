@@ -21,7 +21,7 @@ namespace Kiaro
                 {
                     case COMPONENT_PHYSICAL_LOGIC:
                     case COMPONENT_PHYSICAL_ATTRIBUTE:
-                        mChildren.insert(mChildren.end(), component);
+                        IComponent::attachComponent(component);
                         break;
 
                     default:

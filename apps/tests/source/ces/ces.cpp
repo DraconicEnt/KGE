@@ -11,6 +11,7 @@
 
 #include <gtest/gtest.h>
 
+#include <support/Console.hpp>
 #include <support/UnorderedMap.hpp>
 
 #include <ces/ces.hpp>
@@ -40,24 +41,38 @@ namespace Kiaro
                 CES::CMagnetic* magnetic = new CES::CMagnetic(15.0f);
                 simulation->attachComponent(magnetic);
 
+                // Output some helper information
+                CONSOLE_INFOF("Root: 0x%x", root);
+                CONSOLE_INFOF("Rendered: 0x%x", rendered);
+                CONSOLE_INFOF("Simulation: 0x%x", simulation);
+                CONSOLE_INFOF("Buoyancy: 0x%x", buoyancy);
+                CONSOLE_INFOF("Magnetic: 0x%x", magnetic);
+
                 // Components are connected directly to each other, so it doesn't matter when root is finally given the renderable
                 root->attachComponent(rendered);
 
                 auto it = root->begin();
+                auto end = root->end();
+
+                EXPECT_NE(end, it);
                 EXPECT_EQ(rendered, *it);
-                it = ++it;
+                ++it;
 
+                EXPECT_NE(end, it);
                 EXPECT_EQ(simulation, *it);
-                it = ++it;
+                ++it;
 
+                EXPECT_NE(end, it);
                 EXPECT_EQ(buoyancy, *it);
-                it = ++it;
+                ++it;
 
+                EXPECT_NE(end, it);
                 EXPECT_EQ(magnetic, *it);
-                it = ++it;
+                ++it;
 
-                EXPECT_EQ(it, root->end());
+                EXPECT_EQ(end, it);
 
+                // Will automatically recurse the model delete everything
                 delete root;
             }
 
@@ -83,7 +98,7 @@ namespace Kiaro
                 // Components are connected directly to each other, so it doesn't matter when root is finally given the renderable
                 root->attachComponent(rendered);
 
-                Support::Set<CES::IComponent*> components;
+                Support::Vector<CES::IComponent*> components;
                 root->getChildren(true, components);
 
                 auto it = components.begin();
@@ -126,7 +141,7 @@ namespace Kiaro
                 // Components are connected directly to each other, so it doesn't matter when root is finally given the renderable
                 root->attachComponent(rendered);
 
-                Support::Set<CES::IComponent*> components;
+                Support::Vector<CES::IComponent*> components;
                 root->getChildren(true, components);
 
                 auto childrenIt = components.begin();

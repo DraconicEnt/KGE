@@ -14,22 +14,6 @@ namespace Kiaro
     {
         namespace Core
         {
-            static SCoreRegistry* sInstance = nullptr;
-
-            SCoreRegistry* SCoreRegistry::getPointer(void)
-            {
-                if (!sInstance)
-                    sInstance = new SCoreRegistry();
-
-                return sInstance;
-            }
-
-            void SCoreRegistry::destroy(void)
-            {
-                delete sInstance;
-                sInstance = nullptr;
-            }
-
             Game::Entities::IEntity* SCoreRegistry::constructEntity(const Common::U32 id, Support::CBitStream& payload)
             {
                 auto search = mEntityTypeMap.find(id);

@@ -67,7 +67,7 @@ namespace Kiaro
                 {
                     CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
                     FileSystem::CFileReader heightmapHandle(mTerrainFile);
-                    irr::IrrlichtDevice* irrlichtDevice = Engine::Video::SRenderer::getPointer()->getIrrlichtDevice();
+                    irr::IrrlichtDevice* irrlichtDevice = Engine::Video::SRenderer::instantiate()->getIrrlichtDevice();
                     irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&heightmapHandle);
 
                     if (terrain)

@@ -76,10 +76,6 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    SRenderer(void);
-
-                    ~SRenderer(void);
-
                     //! Draws a single frame to the Allegro display.
                     void drawFrame(void);
 
@@ -100,16 +96,15 @@ namespace Kiaro
                      *  @brief Returns the pointer to the internally used Irrlicht device.
                      *  @return A pointer to the internally used Irrlicht device.
                      */
-                    irr::IrrlichtDevice *getIrrlichtDevice(void) const NOTHROW;
+                    irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
 
-                    ALLEGRO_DISPLAY *getDisplay(void) NOTHROW;
+                    ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
 
-                    CSceneGraph *getMainScene(void);
+                    CSceneGraph* getMainScene(void);
 
-                    CSceneGraph *getCurrentScene(void);
+                    CSceneGraph* getCurrentScene(void);
 
                     CDisplay* createDisplay(const Support::String& title);
-
 
                 // Private Methods
                 private:
@@ -129,6 +124,14 @@ namespace Kiaro
 
                     //! Process all pending events for the game window, such as window resizing.
                     void processWindowEvents(void);
+
+                // Protected Methods
+                protected:
+                    //! Parameter-less constructor.
+                    SRenderer(void);
+
+                    //! Standard destructor.
+                    ~SRenderer(void);
             };
         }
     } // End NameSpace Video

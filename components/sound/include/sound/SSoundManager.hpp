@@ -13,6 +13,7 @@
 
 #include <support/String.hpp>
 #include <support/UnorderedMap.hpp>
+#include <support/ISingleton.hpp>
 
 #include <sound/CSoundSource.hpp>
 
@@ -23,20 +24,17 @@ namespace Kiaro
         /**
          *  @brief Singleton class for the sound management programming of the engine.
          */
-        class SSoundManager
+        class SSoundManager : public Support::ISingleton<SSoundManager>
         {
-                // Private Members
+            // Private Members
             private:
                 //! Pointer to the FMod sound system.
                 FMOD::System* mFMod;
 
                 Support::UnorderedMap<Support::String, CSoundSource*> mSoundRegistry;
 
-                // Public Methods
+            // Public Methods
             public:
-                static SSoundManager* getPointer(void);
-                static void destroy(void);
-
                 /**
                  *  @brief Gets a sound source associated with the given filename.
                  *  @param filename The name of the sound file to source from
@@ -46,8 +44,8 @@ namespace Kiaro
 
                 void update(void);
 
-                // Private Methods
-            private:
+            // Protected Methods
+            protected:
                 /**
                  *  @brief Parameter-less constructor.
                  */

@@ -33,22 +33,13 @@ namespace Kiaro
          */
         class SSettingsRegistry : public Support::ISingleton<SSettingsRegistry>
         {
-                // Private Members
+            // Private Members
             private:
                 //! An unordered map mapping the setting name hashes to a pair representing the memory location and type.
                 Support::UnorderedMap<Support::String, std::pair<void*, Support::PROPERTY_TYPE>> mStoredProperties;
 
-                // Public Methods
+            // Public Methods
             public:
-                /**
-                 *  @brief Returns the pointer to the SSettingsRegistry, creating and initializing it if
-                 *  necessary before returning.
-                 *  @return A pointer to the SSettingsRegistry instance.
-                 */
-                // static SSettingsRegistry* getPointer(void);
-                //! Destroys the singleton instance, if available.
-                // static void destroy(void);
-
                 /**
                  *  @brief Initializes and sets defaults for all of the settings kept in the settings
                  *  registry.
@@ -131,10 +122,11 @@ namespace Kiaro
 
                 void setStringValue(const Support::String& name, const Support::String& value);
 
-                // Private Methods
-            public:
+            // Protected Methods
+            protected:
                 //! Parameter-less constructor.
                 SSettingsRegistry(void);
+
                 //! Standard destructor.
                 ~SSettingsRegistry(void);
         };

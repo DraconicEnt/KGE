@@ -28,7 +28,7 @@ namespace Kiaro
             enetAddress.port = listenPort;
             enet_address_set_host(&enetAddress, listenAddress.c_str());
 
-            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+            Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
             const Common::U32 maximumOutgoingBandwidth = settings->getValue<Common::U32>("Server::MaxOutgoingBandwidth");
             const Common::U32 maximumIncomingBandwidth = settings->getValue<Common::U32>("Server::MaxIncomingBandwidth");
 

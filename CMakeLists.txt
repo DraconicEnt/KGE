@@ -57,6 +57,7 @@ FIND_PACKAGE(FMod REQUIRED)
 FIND_PACKAGE(ENet REQUIRED)
 FIND_PACKAGE(Bullet REQUIRED)
 FIND_PACKAGE(PythonInterp REQUIRED)
+FIND_PACKAGE(CURL REQUIRED)
 
 # GCC 4.9 implements std::regex, some versions prior implement a buggy version, so force a dep on boost::regex if we we're using < 4.9
 IF (CMAKE_COMPILER_IS_GNUCC AND CMAKE_COMPILER_IS_GNUCXX)

@@ -14,6 +14,7 @@
 
 #include <easydelegate/easydelegate.hpp>
 
+#include <support/ISingleton.hpp>
 #include <support/common.hpp>
 
 namespace Kiaro
@@ -27,27 +28,24 @@ namespace Kiaro
     {
         namespace Core
         {
-            class SEventManager
+            class SEventManager : public Support::ISingleton<SEventManager>
             {
-                    // Public Typedefs
+                // Public Typedefs
                 public:
                     typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientConnectedEventType;
                     typedef EasyDelegate::DelegateSet<void, Net::CClient*> onClientDisconnectedEventType;
 
-                    // Public Members
+                // Public Members
                 public:
                     const onClientConnectedEventType mOnClientConnectedEvent;
                     const onClientDisconnectedEventType mOnClientDisconnectedEvent;
 
-                    // Public Methods
+                // Public Methods
                 public:
-                    static SEventManager* get(void);
-                    static void destroy(void);
-
                     void clearEvents(void);
 
-                    // Private Methods
-                private:
+                // Protected Methods
+                protected:
                     //! Parameter-less constructor.
                     SEventManager(void);
                     //! Standard destructor.

@@ -16,6 +16,7 @@
 
 #include <net/IServer.hpp>
 
+#include <support/ISingleton.hpp>
 #include <support/SSynchronousScheduler.hpp>
 #include <support/UnorderedMap.hpp>
 
@@ -35,7 +36,7 @@ namespace Kiaro
             /**
              *  @brief Singleton class representing a running game server.
              */
-            class SGameServer : public Net::IServer
+            class SGameServer : public Support::ISingleton<SGameServer>, public Net::IServer
             {
                 // Private Members
                 private:
@@ -60,17 +61,6 @@ namespace Kiaro
                      *  @brief Initializes and starts a new game server.
                      */
                     static void initialize(void);
-
-                    /**
-                     *  @brief Obtains a pointer to the running game server. If there isn't one,
-                     *  nullptr is returned.
-                     */
-                    static SGameServer* getPointer(void);
-
-                    /**
-                     *  @brief Destroys the running game server if there is one.
-                     */
-                    static void destroy(void);
 
                     /**
                      *  @brief Sets the running gamemode of this server.
@@ -126,8 +116,6 @@ namespace Kiaro
                 protected:
                     void onReceivePacket(Support::CBitStream& in, Net::IIncomingClient* sender);
 
-                // Private Methods
-                private:
                     /**
                      *  @brief Constructor accepting a listen address, port & maximum client count.
                      *  @param listenAddress The IP address to listen on.

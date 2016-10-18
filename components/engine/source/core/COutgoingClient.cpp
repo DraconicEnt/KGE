@@ -72,8 +72,8 @@ namespace Kiaro
 
             void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
             {
-                Core::SCoreRegistry* registry = Core::SCoreRegistry::getPointer();
-                Core::SEngineInstance* engine = Core::SEngineInstance::getPointer();
+                Core::SCoreRegistry* registry = Core::SCoreRegistry::instantiate();
+                Core::SEngineInstance* engine = Core::SEngineInstance::instantiate();
 
                 while (!incomingStream.isFull())
                 {

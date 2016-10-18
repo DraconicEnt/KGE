@@ -17,22 +17,6 @@ namespace Kiaro
     {
         namespace Core
         {
-            static SEventManager* sInstance = nullptr;
-
-            SEventManager* SEventManager::get(void)
-            {
-                if (!sInstance)
-                    sInstance = new SEventManager;
-
-                return sInstance;
-            }
-
-            void SEventManager::destroy(void)
-            {
-                delete sInstance;
-                sInstance = nullptr;
-            }
-
             void SEventManager::clearEvents(void)
             {
             }

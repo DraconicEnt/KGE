@@ -20,18 +20,19 @@ namespace Kiaro
     namespace Support
     {
         CBitStream::CBitStream(ISerializable* in) : mTotalSize(in->getRequiredMemory()), mMemoryBlock(new Common::U8[in->getRequiredMemory()]),
-        mPointer(0), mOwnsMemoryBlock(true), mResizeLength(0)
+        mPointer(0), mOwnsMemoryBlock(true), mResizeLength(0), mInverseEndian(false)
         {
             in->packEverything(*this);
         }
 
         CBitStream::CBitStream(void* initializer, const size_t initializerLength, const size_t resizeLength) : mMemoryBlock((Common::U8*)initializer),
-        mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false), mResizeLength(resizeLength)
+        mTotalSize(initializerLength), mPointer(0), mOwnsMemoryBlock(false), mResizeLength(resizeLength), mInverseEndian(false)
         {
         }
 
         CBitStream::CBitStream(const size_t sizeInBytes, const void* initializer, size_t initializerLength, const size_t resizeLength) :
-        mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true), mResizeLength(resizeLength)
+        mMemoryBlock(new Common::U8[sizeInBytes]), mPointer(0), mTotalSize(sizeInBytes), mOwnsMemoryBlock(true), mResizeLength(resizeLength),
+        mInverseEndian(false)
         {
             memset(mMemoryBlock, 0x00, sizeInBytes);
 
@@ -43,8 +44,6 @@ namespace Kiaro
             {
                 // Only copy what we can actually store.
                 initializerLength = initializerLength >= sizeInBytes ? sizeInBytes - 1 : initializerLength;
-
-                // Perform the copy.
                 memcpy(mMemoryBlock, initializer, initializerLength);
 
                 // Make sure we the pointer is set to the next available space
@@ -63,7 +62,7 @@ namespace Kiaro
         {
             assert(mPointer <= mTotalSize);
 
-            // FIXME: The check below may cause a SIGSEGV if we're out on the heap
+            // FIXME: The check below may cause a SIGSEGV if we're out on the heap and the input string (and length) comes from an untrusted source
             // FIXME: If mResizeLength < string length, this will cause erroneous writes
 
             // Is it properly NULL terminated?
@@ -85,8 +84,8 @@ namespace Kiaro
             // Write off the string length so we can properly unpack later
             this->write<Common::U32>(static_cast<Common::U32>(stringLength));
 
-            //if (mPointer >= mTotalSize || mTotalSize - mPointer < stringLength)
-            //    throw std::overflow_error("Stack Overflow");
+            if (mPointer >= mTotalSize || mTotalSize - mPointer < totalLength)
+                throw std::overflow_error("Stack Overflow");
 
             memcpy(&mMemoryBlock[mPointer], string, stringLength + 1);
             mPointer += stringLength + 1; // NULL byte again
@@ -171,8 +170,9 @@ namespace Kiaro
         template <>
         void CBitStream::write(const Common::Vector3DF& input)
         {
-            //if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType))
-            //    throw std::overflow_error("Stack Overflow");
+            if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(Common::F32) * 3)
+                throw std::overflow_error("Stack Overflow");
+
             this->write(input.X);
             this->write(input.Y);
             this->write(input.Z);

@@ -34,10 +34,8 @@ namespace Kiaro
         SProfiler::SProfiler(const size_t sampleCount) : mSample(0), mSampleCount(sampleCount)
         {
             // Populate the set
-            Support::UnorderedMap<Support::String, Common::F32> inserted;
-
             for (size_t iteration = 0; iteration < mSampleCount; ++iteration)
-                mSamples.insert(mSamples.end(), inserted);
+                mSamples.insert(mSamples.end(), Support::UnorderedMap<Support::String, Common::F32>());
         }
 
         SProfiler::~SProfiler(void)
@@ -69,7 +67,7 @@ namespace Kiaro
                 throw std::runtime_error("No such profiler context!");
         }
 
-        const Common::F32& SProfiler::getSample(const Support::String& name, const size_t sample)
+        Common::F32 SProfiler::getSample(const Support::String& name, const size_t sample)
         {
             if (sample >= mSampleCount || mSamples[sample].find(name) == mSamples[sample].end())
                 throw std::out_of_range("No such sample!");
@@ -82,12 +80,11 @@ namespace Kiaro
             if(mSampleNames.find(name) == mSampleNames.end())
                 throw std::out_of_range("No such sample!");
 
-            Common::F32 sum = 0;
-
+            Common::F32 sampleSum = 0;
             for (size_t iteration = 0; iteration < mSampleCount; iteration++)
-                sum += mSamples[iteration][name];
+                sampleSum += mSamples[iteration][name];
 
-            return sum / mSampleCount;
+            return sampleSum / mSampleCount;
         }
 
         const Support::UnorderedSet<Support::String>& SProfiler::getSampleNames(void)
@@ -99,7 +96,7 @@ namespace Kiaro
         {
             Support::Set<std::pair<Support::String, Common::F32>> result;
 
-            for (const std::string& name : mSampleNames)
+            for (const std::string& name: mSampleNames)
                 result.insert(std::make_pair(name, this->getAverage(name)));
 
             return result;

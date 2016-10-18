@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
 #define _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
 
+#include <support/ISingleton.hpp>
 #include <support/CBitStream.hpp>
 #include <support/UnorderedSet.hpp>
 #include <support/String.hpp>
@@ -32,7 +33,7 @@ namespace Kiaro
                 class CSky;
             } // End NameSpace Entities
 
-            class SGameWorld : public Support::ISerializable
+            class SGameWorld : public Support::ISingleton<SGameWorld>, public Support::ISerializable
             {
                 friend class Entities::IEntity;
 
@@ -51,9 +52,6 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    static SGameWorld* getPointer(void);
-                    static void destroy(void);
-
                     void addEntity(Entities::IEntity* entity);
                     void removeEntity(Entities::IEntity* entity);
                     void removeEntity(const Common::U32 id);
@@ -75,10 +73,11 @@ namespace Kiaro
                     iterator begin(void);
                     const_iterator end(void);
 
-                // Private Methods
-                private:
+                // Protected Methods
+                protected:
                     //! Standard constructor
                     SGameWorld(void);
+
                     //! Standard destructor
                     ~SGameWorld(void);
             };

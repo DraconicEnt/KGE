@@ -112,8 +112,9 @@ namespace Kiaro
                 mConnected = true;
                 mPort = targetPort;
                 this->onConnected();
+
                 // Add our update to the scheduler
-                mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &IOutgoingClient::update);
+                mUpdatePulse = Support::SSynchronousScheduler::instantiate()->schedule(32, true, this, &IOutgoingClient::update);
                 return;
             }
 

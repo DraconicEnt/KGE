@@ -57,7 +57,7 @@ namespace Kiaro
                     in >> mScopedCount;
                     CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);
 
-                    Core::SCoreRegistry* registry = Core::SCoreRegistry::getPointer();
+                    Core::SCoreRegistry* registry = Core::SCoreRegistry::instantiate();
 
                     for (Common::U32 iteration = 0; iteration < mScopedCount; ++iteration)
                     {

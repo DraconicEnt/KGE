@@ -55,7 +55,7 @@ namespace Kiaro
                 if (mDialog)
                     mDialog->hide();
 
-                SGUIManager* manager = SGUIManager::getPointer();
+                SGUIManager* manager = SGUIManager::instantiate();
 
                 // First, do we have a dialog in-memory already?
                 auto searchResult = mDialogs.find(name);

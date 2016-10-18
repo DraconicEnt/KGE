@@ -4,6 +4,8 @@
 #ifndef _INCLUDE_KIARO_ENGINE_CORE_SCOREREGISTRY_HPP_
 #define _INCLUDE_KIARO_ENGINE_CORE_SCOREREGISTRY_HPP_
 
+#include <support/ISingleton.hpp>
+
 #include <game/SGameServer.hpp>
 #include <core/COutgoingClient.hpp>
 #include <game/entities/datablocks/IDataBlock.hpp>
@@ -20,7 +22,7 @@ namespace Kiaro
              *  @detail This is used heavily by the netcode to do message & datablock lookups to find the appropriate constructor methods. These constructor
              *  methods would then be on their own devices to make sense of the current state of the incoming bitstream.
              */
-            class SCoreRegistry
+            class SCoreRegistry : public Support::ISingleton<SCoreRegistry>
             {
                 public:
                     //! A typedef representing a pointer to a message constructor.
@@ -66,9 +68,6 @@ namespace Kiaro
                     void registerEntityTypes(void);
 
                 public:
-                    static SCoreRegistry* getPointer(void);
-                    static void destroy(void);
-
                     Game::Entities::IEntity* constructEntity(const Common::U32 id, Support::CBitStream& payload);
 
                     template <typename messageClass>
@@ -119,7 +118,7 @@ namespace Kiaro
                     MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);
                     MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> lookupClientMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);
 
-                private:
+                protected:
                     ~SCoreRegistry(void);
                     SCoreRegistry(void);
             };

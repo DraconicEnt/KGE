@@ -55,27 +55,6 @@ namespace Kiaro
     {
         namespace Core
         {
-            static SEngineInstance* sInstance = nullptr;
-
-            SEngineInstance* SEngineInstance::getPointer(void)
-            {
-                if (!sInstance)
-                    sInstance = new SEngineInstance;
-
-                return sInstance;
-            }
-
-            void SEngineInstance::destroy(void)
-            {
-                if (sInstance)
-                {
-                    sInstance->kill();
-                    delete sInstance;
-                }
-
-                sInstance = nullptr;
-            }
-
             void SEngineInstance::setMode(const MODE_NAME& mode)
             {
                 mEngineMode = mode;
@@ -123,8 +102,8 @@ namespace Kiaro
 
                 // TODO (Robert MacGregor#9): Return error codes for the netcode
                 // Init the taskers
-                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
-                Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getPointer();
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::instantiate();
+                Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::instantiate();
 
                 if (this->initializeRenderer() != 0)
                     return 2;
@@ -192,21 +171,21 @@ namespace Kiaro
                 //          Net::SClient* client = Net::SClient::getPointer();
                 // if (mActiveClient)
                 //     mActiveClient->update();
-                Game::SGameServer* server = Game::SGameServer::getPointer();
+                Game::SGameServer::initialize();
                 // if (server)
                 //     server->update(0.0f);
             }
 
             int SEngineInstance::initializeGUI(void)
             {
-                Engine::GUI::SGUIManager::getPointer();
+                Engine::GUI::SGUIManager::instantiate();
 
                 return 0;
             }
 
             Common::U32 SEngineInstance::initializeRenderer(void)
             {
-                Engine::Video::SRenderer::getPointer();
+                Engine::Video::SRenderer::instantiate();
 
                 return 0;
             }
@@ -224,7 +203,7 @@ namespace Kiaro
 
              //   this->registerMessage<Game::Messages::Disconnect>(&SGameServer::handshakeHandler, Net::STAGE_UNSTAGED);
 
-                SCoreRegistry* registry = SCoreRegistry::getPointer();
+                SCoreRegistry* registry = SCoreRegistry::instantiate();
 
                 // Initialize the client or server ends
                 switch (mEngineMode)
@@ -273,16 +252,16 @@ namespace Kiaro
                         Support::FTime::timer timerID = Support::FTime::startTimer();
                         PROFILER_BEGIN(MainLoop);
                         std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
-                        Support::Tasking::SAsynchronousTaskManager::getPointer()->tick();
+                        Support::Tasking::SAsynchronousTaskManager::instantiate()->tick();
 
                         // Pump a time pulse at the scheduler
-                        Support::SSynchronousScheduler::getPointer()->update();
+                        Support::SSynchronousScheduler::instantiate()->update();
 
                         // The GUI, video and sound systems run independently of our network time pulse
                         if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
                         {
                             CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
-                            Sound::SSoundManager::getPointer()->update();
+                            Sound::SSoundManager::instantiate()->update();
                         }
 
                         PROFILER_END(MainLoop);
@@ -316,7 +295,7 @@ namespace Kiaro
 
             Common::U32 SEngineInstance::initializeSound(void)
             {
-                Sound::SSoundManager::getPointer();
+                Sound::SSoundManager::instantiate();
                 return 0;
             }
 
@@ -336,12 +315,12 @@ namespace Kiaro
 
             void SEngineInstance::initializeScheduledEvents(void)
             {
-                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::instantiate();
 
                 // Clients get a handful of scheduled events that don't apply for dedicated servers
                 if (mEngineMode != MODE_DEDICATED)
                 {
-                    Input::SInputListener* inputListener = Input::SInputListener::getPointer();
+                    Input::SInputListener* inputListener = Input::SInputListener::instantiate();
                     // Set up input sampling
                     syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
                 }
@@ -351,7 +330,7 @@ namespace Kiaro
 
             void SEngineInstance::setPerfStatEnabled(const bool enabled)
             {
-                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getPointer();
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::instantiate();
 
                 if (mPerfStatSchedule && enabled)
                     return;

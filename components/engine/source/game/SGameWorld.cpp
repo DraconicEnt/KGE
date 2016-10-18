@@ -23,22 +23,6 @@ namespace Kiaro
     {
         namespace Game
         {
-            SGameWorld* sGameWorld = nullptr;
-
-            SGameWorld* SGameWorld::getPointer(void)
-            {
-                if (!sGameWorld)
-                    sGameWorld = new SGameWorld();
-
-                return sGameWorld;
-            }
-
-            void SGameWorld::destroy(void)
-            {
-                delete sGameWorld;
-                sGameWorld = nullptr;
-            }
-
             void SGameWorld::update(const Common::F32 deltaTimeSeconds)
             {
                 // FIXME: Implement bitmask checking for updated entities
@@ -73,7 +57,7 @@ namespace Kiaro
                 if (it == mEntities.end())
                     mEntities.insert(mEntities.end(), entity);
 
-                Core::SObjectRegistry::getPointer()->addObject(entity);
+                Core::SObjectRegistry::instantiate()->addObject(entity);
             }
 
             void SGameWorld::removeEntity(Entities::IEntity* entity)
@@ -81,26 +65,26 @@ namespace Kiaro
                 assert(entity);
 
                 mEntities.erase(entity);
-                Core::SObjectRegistry::getPointer()->removeObject(entity);
+                Core::SObjectRegistry::instantiate()->removeObject(entity);
             }
 
             void SGameWorld::removeEntity(const Common::U32 id)
             {
-                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(Core::SObjectRegistry::getPointer()->getObject(id));
+                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(Core::SObjectRegistry::instantiate()->getObject(id));
                 mEntities.erase(erased);
             }
 
             Entities::IEntity* SGameWorld::getEntity(const Common::U32 id) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getPointer()->getObject(id));
+                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::instantiate()->getObject(id));
                 return result;
             }
 
             Entities::IEntity* SGameWorld::getEntity(const Support::String& name) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getPointer()->getObject(name));
+                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::instantiate()->getObject(name));
                 return result;
             }
 

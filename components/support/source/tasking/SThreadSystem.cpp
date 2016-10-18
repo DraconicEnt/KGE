@@ -60,7 +60,7 @@ namespace Kiaro
 
             SThreadSystem::SThreadSystem(void) : mCurrentPhase(254)
             {
-                const Common::U8 threadCount = Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::RuntimeThreadCount");
+                const Common::U8 threadCount = Support::SSettingsRegistry::instantiate()->getValue<Common::U8>("System::RuntimeThreadCount");
 
                 for (Common::U8 iteration = 0; iteration < threadCount; ++iteration)
                 {

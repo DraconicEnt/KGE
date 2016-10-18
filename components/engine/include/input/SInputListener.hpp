@@ -95,11 +95,6 @@ namespace Kiaro
 
             // Public Methods
             public:
-                //! Parameter-less constructor.
-                SInputListener(void);
-                //! Standard destructor.
-                ~SInputListener(void);
-
                 //! Updating the input subsystem allows for it to process keyboard, joystick and other user input events.
                 void update(void);
 
@@ -151,6 +146,14 @@ namespace Kiaro
                  *  @param event A reference to the input event created by allegro.
                  */
                 void dispatchInputResponse(const Common::U32 inputCode, const INPUT_DEVICE deviceType, const Common::U32 deviceID, ALLEGRO_EVENT& event);
+
+            // Protected Methods
+            protected:
+                //! Parameter-less constructor.
+                SInputListener(void);
+
+                //! Standard destructor.
+                ~SInputListener(void);
         };
     } // End Namespace Game
 } // End Namespace Kiaro

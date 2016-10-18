@@ -11,21 +11,6 @@ namespace Kiaro
     {
         namespace Core
         {
-            static SExtensionLoader* sInstance = nullptr;
-
-            SExtensionLoader* SExtensionLoader::getPointer(void)
-            {
-                if (!sInstance)
-                    sInstance = new SExtensionLoader();
-                return sInstance;
-            }
-
-            void SExtensionLoader::destroy(void)
-            {
-                delete sInstance;
-                sInstance = nullptr;
-            }
-
             bool SExtensionLoader::loadExtension(const Support::String& filename)
             {
                 // Use physFS to validate the path

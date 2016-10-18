@@ -73,7 +73,7 @@ namespace Kiaro
             TEST(SThreadSystem, Transactions)
             {
                 // We initialize the runtime thread count to something predictable
-                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
                 settings->setValue<Common::U8>("System::RuntimeThreadCount", 25);
 
                 // Initialize the thread system and two phases

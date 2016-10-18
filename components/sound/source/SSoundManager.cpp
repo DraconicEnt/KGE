@@ -21,22 +21,6 @@ namespace Kiaro
 {
     namespace Sound
     {
-        static SSoundManager* mInstance = nullptr;
-
-        SSoundManager* SSoundManager::getPointer(void)
-        {
-            if (!mInstance)
-                mInstance = new SSoundManager();
-
-            return mInstance;
-        }
-
-        void SSoundManager::destroy(void)
-        {
-            delete mInstance;
-            mInstance = nullptr;
-        }
-
         static FMOD_RESULT F_CALLBACK fmodOpen(const Common::C8* name, Common::U32* filesize, void** handle, void* userdata)
         {
             if (!PHYSFS_exists(name))

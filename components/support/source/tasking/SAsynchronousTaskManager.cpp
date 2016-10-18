@@ -42,7 +42,7 @@ namespace Kiaro
                 }
             }
 
-            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::getPointer()->getValue<Common::U8>("System::WorkerThreadCount"))
+            SAsynchronousTaskManager::SAsynchronousTaskManager(void) : mPoolSize(Support::SSettingsRegistry::instantiate()->getValue<Common::U8>("System::WorkerThreadCount"))
             {
                 if (mPoolSize == 0)
                 {
@@ -120,7 +120,7 @@ namespace Kiaro
                 // Config demands that we don't do anything asynchronously, so we delegate to the synchronous tasker
                 if (mPoolSize == 0)
                 {
-                    SSynchronousTaskManager::getPointer()->addTask(task);
+                    SSynchronousTaskManager::instantiate()->addTask(task);
                     return false;
                 }
 

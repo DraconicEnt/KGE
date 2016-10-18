@@ -72,20 +72,9 @@ namespace Kiaro
                     }
             };
 
-            TEST(SGameWorld, SingletonConstructor)
-            {
-                SGameWorld::getPointer();
-
-                EXPECT_TRUE(sGameWorld != nullptr);
-                SGameWorld::destroy();
-
-                Core::SObjectRegistry::destroy();
-                EXPECT_TRUE(sGameWorld == nullptr);
-            }
-
             TEST(SGameWorld, Lookup)
             {
-                SGameWorld* world = SGameWorld::getPointer();
+                SGameWorld* world = SGameWorld::instantiate();
                 EXPECT_NO_THROW(EXPECT_FALSE(world->getEntity("entity")));
 
                 TestEntity* entity = new TestEntity();
@@ -100,9 +89,9 @@ namespace Kiaro
 
             TEST(SGameWorld, IDAssignment)
             {
-                SGameWorld* world = SGameWorld::getPointer();
-                TestEntity* entityOne = new TestEntity();
+                SGameWorld* world = SGameWorld::instantiate();
 
+                TestEntity* entityOne = new TestEntity();
                 EXPECT_EQ(0, entityOne->mID);
                 TestEntity* entityTwo = new TestEntity();
 
@@ -126,7 +115,7 @@ namespace Kiaro
 
             TEST(SGameWorld, TypeTesting)
             {
-                SGameWorld* world = SGameWorld::getPointer();
+                SGameWorld* world = SGameWorld::instantiate();
                 TestEntity* entity = new TestEntity();
 
                 entity->setName("entity");

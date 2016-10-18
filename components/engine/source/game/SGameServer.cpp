@@ -32,31 +32,12 @@ namespace Kiaro
     {
         namespace Game
         {
-            static SGameServer* sInstance = nullptr;
-
             void SGameServer::initialize(void)
             {
-                if (!sInstance)
-                {
-                    Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
-                    sInstance = new SGameServer(settings->getValue<Support::String>("Server::ListenAddress"),
-                                                settings->getValue<Common::U16>("Server::ListenPort"),
-                                                settings->getValue<Common::U32>("Server::MaximumClientCount"));
-                }
-            }
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
 
-            SGameServer* SGameServer::getPointer(void)
-            {
-                return sInstance;
-            }
-
-            void SGameServer::destroy(void)
-            {
-                if (sInstance)
-                {
-                    delete sInstance;
-                    sInstance = nullptr;
-                }
+                SGameServer::instantiate(settings->getValue<Support::String>("Server::ListenAddress"), settings->getValue<Common::U16>("Server::ListenPort"),
+                settings->getValue<Common::U32>("Server::MaximumClientCount"));
             }
 
             Net::IIncomingClient* SGameServer::onReceiveClientChallenge(Net::RemoteHostContext client)
@@ -70,7 +51,7 @@ namespace Kiaro
                 mSimulation = new Phys::CSimulation();
 
                 // Add our update to the scheduler
-                mUpdatePulse = Support::SSynchronousScheduler::getPointer()->schedule(32, true, this, &SGameServer::update);
+                mUpdatePulse = Support::SSynchronousScheduler::instantiate()->schedule(32, true, this, &SGameServer::update);
 
                 Entities::CTerrain* terrain = new Entities::CTerrain("textures/terrain-heightmap.bmp", "textures/terrain-texture.jpg");
                 terrain->registerEntity();
@@ -119,7 +100,7 @@ namespace Kiaro
             void SGameServer::initialScope(Net::IIncomingClient* client)
             {
                 Game::Messages::Scope scope;
-                Game::SGameWorld* world = Game::SGameWorld::getPointer();
+                Game::SGameWorld* world = Game::SGameWorld::instantiate();
 
                 for (auto it = world->begin(); it != world->end(); it++)
                 {
@@ -176,8 +157,8 @@ namespace Kiaro
 
             void SGameServer::onReceivePacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
             {
-                Core::SEngineInstance* engine = Core::SEngineInstance::getPointer();
-                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
+                Core::SEngineInstance* engine = Core::SEngineInstance::instantiate();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
 
                 const Common::U32 messageLimit = settings->getValue<Common::U32>("Server::MessagesPerTick");
                 const Common::U32 queueLimit = settings->getValue<Common::U32>("Server::MaxQueuedStreams");
@@ -211,7 +192,7 @@ namespace Kiaro
                     Net::IMessage basePacket;
                     basePacket.unpack(incomingStream);
 
-                    Core::SCoreRegistry* registry = Core::SCoreRegistry::getPointer();
+                    Core::SCoreRegistry* registry = Core::SCoreRegistry::instantiate();
                     auto responder = registry->lookupServerMessageHandler(Net::STAGE_UNSTAGED, basePacket.getType());
 
                     if (responder)

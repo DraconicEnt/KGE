@@ -8,7 +8,7 @@
 #include <physfs.h>
 
 #include <support/String.hpp>
-
+#include <support/ISingleton.hpp>
 #include <support/UnorderedMap.hpp>
 
 namespace Kiaro
@@ -23,7 +23,7 @@ namespace Kiaro
              *  They must conform to an expected standard in order to be loadable, which primarily regards having several static
              *  methods declared and loadable through dlsym.
              */
-            class SExtensionLoader
+            class SExtensionLoader : public Support::ISingleton<SExtensionLoader>
             {
                 // Public Members
                 public:
@@ -46,26 +46,25 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    static SExtensionLoader* getPointer(void);
-                    static void destroy(void);
-
                     bool loadExtension(const Support::String& filename);
                     bool unloadExtension(const Support::String& filename);
                     bool reloadExtension(const Support::String& filename);
 
                 // Private Methods
                 private:
-                    //! Parameter-less constructor.
-                    SExtensionLoader(void);
-
-                    //! Standard destructor.
-                    ~SExtensionLoader(void);
-
                     ExtensionSymbols internalLoadExtension(const Support::String& filename);
                     void internalUnloadExtension(ExtensionSymbols* symbols);
 
                     void deleteExtension(const Support::String& filename);
                     ExtensionSymbols* findExtension(const Support::String& filename);
+
+                // Protected Methods
+                protected:
+                    //! Parameter-less constructor.
+                    SExtensionLoader(void);
+
+                    //! Standard destructor.
+                    ~SExtensionLoader(void);
             };
         }
     }

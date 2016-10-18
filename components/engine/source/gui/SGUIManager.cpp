@@ -23,22 +23,6 @@ namespace Kiaro
     {
         namespace GUI
         {
-            static SGUIManager* sInstance = nullptr;
-
-            SGUIManager* SGUIManager::getPointer(void)
-            {
-                if (!sInstance)
-                    sInstance = new SGUIManager();
-
-                return sInstance;
-            }
-
-            void SGUIManager::destroy(void)
-            {
-                delete sInstance;
-                sInstance = nullptr;
-            }
-
             void SGUIManager::draw(void)
             {
                 CEGUI::System::getSingleton().renderAllGUIContexts();
@@ -52,7 +36,7 @@ namespace Kiaro
             SGUIManager::SGUIManager(void)
             {
                 CONSOLE_INFO("Initializing GUI subsystem.");
-                irr::IrrlichtDevice *irrlicht = Video::SRenderer::getPointer()->getIrrlichtDevice();
+                irr::IrrlichtDevice *irrlicht = Video::SRenderer::instantiate()->getIrrlichtDevice();
 
                 try
                 {
@@ -78,12 +62,17 @@ namespace Kiaro
                 }
 
                 // Make sure the resolution is right
-                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getPointer();
+                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
                 irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>(
                         "Video::Resolution");
                 this->setResolution(resolution);
 
                 CONSOLE_INFO("Initialized the GUI system.");
+            }
+
+            SGUIManager::~SGUIManager(void)
+            {
+
             }
 
             CGUIContext* SGUIManager::createContext(const Support::String& name)

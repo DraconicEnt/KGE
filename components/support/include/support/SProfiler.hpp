@@ -91,7 +91,7 @@ namespace Kiaro
                  *  @throw std::out_of_range Thrown when either the resource or sample number
                  *  are not found.
                  */
-                const Common::F32& getSample(const Support::String& name, const size_t sample);
+                Common::F32 getSample(const Support::String& name, const size_t sample);
 
                 /**
                  *  @brief Returns the average of the given resource across all currently recorded

@@ -19,6 +19,7 @@
 #include <support/support.hpp>
 #include <support/Vector.hpp>
 #include <support/common.hpp>
+#include <support/ISingleton.hpp>
 #include <support/SSynchronousScheduler.hpp>
 
 #include <game/SGameServer.hpp>
@@ -53,7 +54,7 @@ namespace Kiaro
              *  @brief The SEngineInstance class is the core of the entire game
              *  engine architecture.
              */
-            class SEngineInstance
+            class SEngineInstance : public Support::ISingleton<SEngineInstance>
             {
                 // Public Members
                 public:
@@ -70,20 +71,6 @@ namespace Kiaro
 
                 // Public Methods
                 public:
-                    /**
-                     *  @brief Returns an instance to the engine instance singleton, allocating it
-                     *  if necessary.
-                     *  @return A pointer to the currently allocated SEngineInstance. If
-                     *  this is the first call, then a new SEngineInstance will be allocated.
-                     */
-                    static SEngineInstance* getPointer(void);
-
-                    /**
-                     *  @brief Destroys the engine instance singleton, performing any necessary
-                     *  cleanup procedures before exiting gracefully.
-                     */
-                    static void destroy(void);
-
                     /**
                      *  @brief Sets the running mode of the game engine.
                      *  @param mode The mode enumeration value to use when starting
@@ -151,11 +138,6 @@ namespace Kiaro
 
                 // Private Methods
                 private:
-                    //! Privately declared standard constructor to enforce singleton behavior.
-                    SEngineInstance(void);
-                    //! Privately declared standard destructor to enforce singleton behavior.
-                    ~SEngineInstance(void);
-
                     void networkUpdate(void);
 
                     /**
@@ -229,6 +211,13 @@ namespace Kiaro
                     void initializeFileSystem(const Common::S32 argc, Common::C8* argv[]);
 
                     void initializeScheduledEvents(void);
+
+                // Protected Methods
+                protected:
+                    //! Privately declared standard constructor to enforce singleton behavior.
+                    SEngineInstance(void);
+                    //! Privately declared standard destructor to enforce singleton behavior.
+                    ~SEngineInstance(void);
 
                 // Private Members
                 private:

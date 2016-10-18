@@ -59,19 +59,29 @@ namespace Kiaro
             mCancelled = true;
         }
 
-        const bool CScheduledEvent::isCancelled(void)
+        bool CScheduledEvent::isCancelled(void)
         {
             return mCancelled;
         }
 
-        const bool CScheduledEvent::isRecurring(void)
+        bool CScheduledEvent::isRecurring(void)
         {
             return mRecurring;
         }
 
-        const Common::U64 CScheduledEvent::getWaitTimeMS(void)
+        Common::U64 CScheduledEvent::getWaitTimeMS(void)
         {
             return mWaitTimeMS;
+        }
+
+        SSynchronousScheduler::SSynchronousScheduler(void)
+        {
+
+        }
+
+        SSynchronousScheduler::~SSynchronousScheduler(void)
+        {
+
         }
 
         CScheduledEvent* SSynchronousScheduler::schedule(EasyDelegate::IDeferredCaller* deferredCaller, const Common::U32 waitTimeMS, const bool recurring)
