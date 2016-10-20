@@ -38,12 +38,12 @@ namespace Kiaro
                     return mType;
                 }
 
-                const Common::U32 IEntity::getNetID(void) const
+                Common::U32 IEntity::getNetID(void) const
                 {
                     return mNetID;
                 }
 
-                const ENTITY_TYPE& IEntity::getType(void) const
+                Common::U32 IEntity::getTypeID(void) const
                 {
                     return mType;
                 }

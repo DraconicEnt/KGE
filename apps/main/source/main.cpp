@@ -78,7 +78,7 @@ Common::S32 main(Common::S32 argc, Common::C8* argv[])
         }
 
         // Create the Engine Instance
-        Engine::Core::SEngineInstance* engineInstance = Engine::Core::SEngineInstance::getPointer();
+        Engine::Core::SEngineInstance* engineInstance = Engine::Core::SEngineInstance::instantiate();
 
         // Deal with the -mods flag
         if (commandLineParser.hasFlag("-mods"))

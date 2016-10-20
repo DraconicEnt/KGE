@@ -81,9 +81,11 @@ namespace Kiaro
                 mRunning = false;
                 al_init();
                 this->initializeFileSystem(argc, argv);
+
                 // Once the filesystem is initialized, pump Allegro through it
                 al_set_physfs_file_interface();
                 CONSOLE_INFOF("Running game '%s'", mGameName.data());
+
                 // Mount the data directories
                 Support::Vector<Support::String> mountedDirectories = mModNames;
                 mountedDirectories.push_back(mGameName);
@@ -159,8 +161,10 @@ namespace Kiaro
                 Input::SInputListener::destroy();
                 Support::SSynchronousScheduler::destroy();
                 Support::SSettingsRegistry::destroy();
+
                 PHYSFS_deinit();
                 enet_deinitialize();
+
                 Engine::Video::SRenderer::destroy();
                 al_uninstall_system();
             }
@@ -304,12 +308,14 @@ namespace Kiaro
                 // Initialize the file system
                 PHYSFS_init(argv[0]);
                 PHYSFS_setSaneConfig("Draconic Entity", "KGE", "ZIP", 0, 0);
+
                 // Remove the search path that points to the same directory as the executable
                 // TODO (Robert MacGregor#9): Research this.
                 Common::C8** searchPaths = PHYSFS_getSearchPath();
                 Common::C8* searchPath = searchPaths[1];
                 PHYSFS_removeFromSearchPath(searchPath);
                 PHYSFS_freeList(searchPaths);
+
                 // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
             }
 
@@ -321,6 +327,7 @@ namespace Kiaro
                 if (mEngineMode != MODE_DEDICATED)
                 {
                     Input::SInputListener* inputListener = Input::SInputListener::instantiate();
+
                     // Set up input sampling
                     syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
                 }

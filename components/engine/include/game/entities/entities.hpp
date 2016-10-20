@@ -16,5 +16,6 @@
 
 #include <game/entities/CRigidObject.hpp>
 #include <game/entities/CTerrain.hpp>
+#include <game/entities/CPlayer.hpp>
 
 #endif // _INCLUDE_GAME_ENTITIES_ENTITIES_HPP_

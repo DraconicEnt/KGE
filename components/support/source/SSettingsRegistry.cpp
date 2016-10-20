@@ -44,6 +44,7 @@ namespace Kiaro
             // Internal System
             this->setValue<Common::U8>("System::WorkerThreadCount", 6);
             this->setValue<Common::U8>("System::RuntimeThreadCount", 6);
+            this->setValue<Common::U32>("System::ArenaAllocationSize", 256);
         }
 
         SSettingsRegistry::SSettingsRegistry(void)
@@ -180,6 +181,10 @@ namespace Kiaro
                 sprintf(tempBuffer, "%u", this->getValue<Common::U8>("System::RuntimeThreadCount"));
                 al_add_config_comment(config, "System", "RuntimeThreadCount dictates how many worker threads will be used for the engine runtime.");
                 al_set_config_value(config, "System", "RuntimeThreadCount", tempBuffer);
+
+                sprintf(tempBuffer, "%u", this->getValue<Common::U32>("System::ArenaAllocationSize"));
+                al_add_config_comment(config, "System", "ArenaAllocationSize is an experimental feature.");
+                al_set_config_value(config, "System", "ArenaAllocationSize", tempBuffer);
 
                 // We're done
                 al_save_config_file("config.cfg", config);

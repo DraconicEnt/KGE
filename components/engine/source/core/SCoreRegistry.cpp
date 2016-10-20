@@ -76,6 +76,7 @@ namespace Kiaro
             void SCoreRegistry::registerEntityTypes(void)
             {
                 this->registerEntityType<Game::Entities::CTerrain>();
+                this->registerEntityType<Game::Entities::CPlayer>();
             }
         } // End NameSpace Core
     } // End NameSpace Engine

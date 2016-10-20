@@ -74,8 +74,8 @@ namespace Kiaro
 
             bool SExtensionLoader::reloadExtension(const Support::String& filename)
             {
-                // FIXME: Not implemented
-                return true;
+                throw std::runtime_error("Not implemented");
+                return false;
             }
 
             SExtensionLoader::SExtensionLoader(void)

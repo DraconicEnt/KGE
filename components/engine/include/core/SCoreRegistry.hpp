@@ -1,4 +1,12 @@
 /**
+ *  @file IEntity.cpp
+ *  @brief Source file implementing the IEntity interface class methods.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Robert MacGregor
+ *  @copyright (c) 2016 Draconic Entity
  */
 
 #ifndef _INCLUDE_KIARO_ENGINE_CORE_SCOREREGISTRY_HPP_
@@ -54,7 +62,6 @@ namespace Kiaro
                     //! A mapping of datablock ID's to their constructors.
                     Support::UnorderedMap<Common::U32, NetworkEntityConstructorPointer> mEntityTypeMap;
 
-
                     /**
                      *  @brief Helper method to register all the known message types to the registry.
                      */
@@ -65,11 +72,20 @@ namespace Kiaro
                      */
                     void registerDatablockTypes(void);
 
+                    /**
+                     *  @brief Helper method to register all of the known entity types to the registry.
+                     */
                     void registerEntityTypes(void);
 
                 public:
                     Game::Entities::IEntity* constructEntity(const Common::U32 id, Support::CBitStream& payload);
 
+                    /**
+                     *  @brief Registers a networked message type to be instantiated indirectly across a network.
+                     *  @param serverHandler Server side programming handler. If nullptr, then there is no serverside handler for this message type.
+                     *  @param clientHandler Client side programming handler. If nullptr, then there is no clientside handler for this message type.
+                     *  @param stage The stage at which this message type and handlers are valid at.
+                     */
                     template <typename messageClass>
                     void registerMessage(MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> serverHandler, MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> clientHandler, const Net::STAGE_NAME stage)
                     {
@@ -89,6 +105,9 @@ namespace Kiaro
                         ++mMessageTypeCounter;
                     }
 
+                    /**
+                     *  @brief Registers a networked datablock type to be instantiated indirectly across a network.
+                     */
                     template <typename datablockClass>
                     void registerDataBlockType(void)
                     {
@@ -102,6 +121,9 @@ namespace Kiaro
                         ++mDataBlockTypeCounter;
                     }
 
+                    /**
+                     *  @brief Registers a networked entity type to be instantiated indirectly across a network.
+                     */
                     template <typename entityClass>
                     void registerEntityType(void)
                     {
@@ -115,12 +137,39 @@ namespace Kiaro
                         ++mEntityTypeCounter;
                     }
 
+                    /**
+                     *  @brief Retrieves the type ID for the specified entity.
+                     *  @return The type ID of the entity.
+                     */
+                    template <typename entityClass>
+                    Common::S32 getEntityTypeID(void)
+                    {
+                        assert(Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID != -1);
+                        return Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID;
+                    }
+
+                    /**
+                     *  @brief Looks up a server message handler, returning the method pointer to the handler.
+                     *  @param stage The stage at which we are trying to retrieve for.
+                     *  @param id The ID of the message to lookup.
+                     *  @return A pointer to the message handler to call. If no handler, nullptr is returned.
+                     */
                     MessageHandlerSet::MemberDelegateFuncPtr<Game::SGameServer> lookupServerMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);
+
+                    /**
+                     *  @brief Looks up a client message handler, returning the method pointer to the handler.
+                     *  @param stage The stage at which we are trying to retrieve for.
+                     *  @param id The ID of the message to lookup.
+                     *  @return A pointer to the message handler to call. If no handler, nullptr is returned.
+                     */
                     MessageHandlerSet::MemberDelegateFuncPtr<Core::COutgoingClient> lookupClientMessageHandler(const Net::STAGE_NAME stage, const Common::U32 id);
 
+                // Protected Methods
                 protected:
-                    ~SCoreRegistry(void);
+                    //! Parameter-less constructor.
                     SCoreRegistry(void);
+                    //! Standard destructor.
+                    ~SCoreRegistry(void);
             };
         } // End NameSpace Core
     } // End NameSpace Engine

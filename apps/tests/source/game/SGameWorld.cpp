@@ -17,6 +17,8 @@
 #include <game/SGameWorld.hpp>
 #include <core/SObjectRegistry.hpp>
 
+#include <game/entities/entities.hpp>
+
 namespace Kiaro
 {
     namespace Engine
