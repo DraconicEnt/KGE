@@ -33,6 +33,7 @@ namespace Kiaro
             {
                 assert(object);
                 assert(object->mID <= mObjects.size());
+
                 const Common::U32& identifier = object->mID;
 
                 if (object->mID == mObjects.size())

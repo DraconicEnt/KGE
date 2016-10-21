@@ -21,7 +21,7 @@ namespace Kiaro
         {
             IEngineObject::IEngineObject(void) : mID(Core::SObjectRegistry::instantiate()->getNextObjectID())
             {
-                Core::SObjectRegistry::instantiate()->addObject(this);
+
             }
 
             const Support::String& IEngineObject::getName(void)

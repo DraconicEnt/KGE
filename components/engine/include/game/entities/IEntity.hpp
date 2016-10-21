@@ -187,7 +187,7 @@ namespace Kiaro
                                         const Common::U32 arenaAllocationSize = ENGINE_ENTITY_ARENA_ALLOCATION_SIZE;
                                     #endif
 
-                                    SharedStatics<className>::sEntityArena = reinterpret_cast<className*>(malloc(sizeof(className)));
+                                    SharedStatics<className>::sEntityArena = reinterpret_cast<className*>(malloc(sizeof(className) * arenaAllocationSize));
                                     SharedStatics<className>::sArenaSize = arenaAllocationSize;
                                 }
 

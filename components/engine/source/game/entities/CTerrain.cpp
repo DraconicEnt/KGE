@@ -57,8 +57,6 @@ namespace Kiaro
                 {
                     IEntity::unpack(in);
 
-                    this->registerEntity();
-
                     if (mSceneNode)
                         mSceneNode->setPosition(mPosition);
                 }
@@ -83,8 +81,8 @@ namespace Kiaro
                         terrain->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 
                         mSceneNode = terrain;
-
                         mSceneNodes.insert(mSceneNodes.end(), mSceneNode);
+
                         IEntity::registerEntity();
                     }
                     else
