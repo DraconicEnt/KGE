@@ -9,6 +9,8 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
+#include <core/SObjectRegistry.hpp>
+
 #include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 #include <game/SGameWorld.hpp>
@@ -61,6 +63,7 @@ namespace Kiaro
                 void IEntity::registerEntity(void)
                 {
                     Game::SGameWorld::instantiate()->addEntity(this);
+                    Core::SObjectRegistry::instantiate()->addObject(this);
 
                     // Also register the entity with our current scene graph
                     Engine::Video::SRenderer::instantiate()->getCurrentScene()->add(this);
