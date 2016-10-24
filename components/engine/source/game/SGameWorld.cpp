@@ -35,7 +35,7 @@ namespace Kiaro
                 }
             }
 
-            const Entities::CSky* SGameWorld::getSky(void)
+            Entities::CSky* SGameWorld::getSky(void)
             {
                 return mSky;
             }
@@ -57,7 +57,7 @@ namespace Kiaro
                 if (it == mEntities.end())
                     mEntities.insert(mEntities.end(), entity);
 
-                Core::SObjectRegistry::instantiate()->addObject(entity);
+                Core::SObjectRegistry::getInstance()->addObject(entity);
             }
 
             void SGameWorld::removeEntity(Entities::IEntity* entity)
@@ -65,26 +65,28 @@ namespace Kiaro
                 assert(entity);
 
                 mEntities.erase(entity);
-                Core::SObjectRegistry::instantiate()->removeObject(entity);
+                Core::SObjectRegistry::getInstance()->removeObject(entity);
             }
 
-            void SGameWorld::removeEntity(const Common::U32 id)
+            Entities::IEntity* SGameWorld::removeEntity(const Common::U32 id)
             {
-                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(Core::SObjectRegistry::instantiate()->getObject(id));
+                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(Core::SObjectRegistry::getInstance()->getObject(id));
                 mEntities.erase(erased);
+
+                return erased;
             }
 
             Entities::IEntity* SGameWorld::getEntity(const Common::U32 id) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::instantiate()->getObject(id));
+                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getInstance()->getObject(id));
                 return result;
             }
 
             Entities::IEntity* SGameWorld::getEntity(const Support::String& name) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::instantiate()->getObject(name));
+                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getInstance()->getObject(name));
                 return result;
             }
 

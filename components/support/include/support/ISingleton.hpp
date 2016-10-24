@@ -59,7 +59,7 @@ namespace Kiaro
                  *  @return A pointer to the singleton instance.
                  */
                 template <typename... parameters>
-                static childClass* instantiate(parameters... params)
+                static childClass* getInstance(parameters... params)
                 {
                     if (!sInstance)
                         sInstance = new InstantiationWrapper(params...);

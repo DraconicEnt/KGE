@@ -90,7 +90,7 @@ namespace Kiaro
                 Support::Vector<Support::String> mountedDirectories = mModNames;
                 mountedDirectories.push_back(mGameName);
 
-                for (Support::String directory : mountedDirectories)
+                for (Support::String directory: mountedDirectories)
                 {
                     if (PHYSFS_mount(directory.c_str(), nullptr, 1) == 0)
                     {
@@ -104,8 +104,8 @@ namespace Kiaro
 
                 // TODO (Robert MacGregor#9): Return error codes for the netcode
                 // Init the taskers
-                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::instantiate();
-                Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::instantiate();
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getInstance();
+                Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getInstance();
 
                 if (this->initializeRenderer() != 0)
                     return 2;
@@ -169,27 +169,16 @@ namespace Kiaro
                 al_uninstall_system();
             }
 
-            void SEngineInstance::networkUpdate(void)
-            {
-                // FIXME (Robert MacGregor#9): Pass in the time delta
-                //          Net::SClient* client = Net::SClient::getPointer();
-                // if (mActiveClient)
-                //     mActiveClient->update();
-                Game::SGameServer::initialize();
-                // if (server)
-                //     server->update(0.0f);
-            }
-
             int SEngineInstance::initializeGUI(void)
             {
-                Engine::GUI::SGUIManager::instantiate();
+                Engine::GUI::SGUIManager::getInstance();
 
                 return 0;
             }
 
             Common::U32 SEngineInstance::initializeRenderer(void)
             {
-                Engine::Video::SRenderer::instantiate();
+                Engine::Video::SRenderer::getInstance();
 
                 return 0;
             }
@@ -203,11 +192,7 @@ namespace Kiaro
                     return 1;
                 }
 
-                // Initialize the messages
-
-             //   this->registerMessage<Game::Messages::Disconnect>(&SGameServer::handshakeHandler, Net::STAGE_UNSTAGED);
-
-                SCoreRegistry* registry = SCoreRegistry::instantiate();
+                SCoreRegistry* registry = SCoreRegistry::getInstance();
 
                 // Initialize the client or server ends
                 switch (mEngineMode)
@@ -247,7 +232,6 @@ namespace Kiaro
                 while (mRunning)
                 {
                     #if _ENGINE_USE_GLOBAL_EXCEPTION_CATCH_ > 0
-
                     try
                     {
                     #endif
@@ -256,16 +240,16 @@ namespace Kiaro
                         Support::FTime::timer timerID = Support::FTime::startTimer();
                         PROFILER_BEGIN(MainLoop);
                         std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
-                        Support::Tasking::SAsynchronousTaskManager::instantiate()->tick();
+                        Support::Tasking::SAsynchronousTaskManager::getInstance()->tick();
 
                         // Pump a time pulse at the scheduler
-                        Support::SSynchronousScheduler::instantiate()->update();
+                        Support::SSynchronousScheduler::getInstance()->update();
 
                         // The GUI, video and sound systems run independently of our network time pulse
                         if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
                         {
                             CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
-                            Sound::SSoundManager::instantiate()->update();
+                            Sound::SSoundManager::getInstance()->update();
                         }
 
                         PROFILER_END(MainLoop);
@@ -299,7 +283,7 @@ namespace Kiaro
 
             Common::U32 SEngineInstance::initializeSound(void)
             {
-                Sound::SSoundManager::instantiate();
+                Sound::SSoundManager::getInstance();
                 return 0;
             }
 
@@ -321,23 +305,21 @@ namespace Kiaro
 
             void SEngineInstance::initializeScheduledEvents(void)
             {
-                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::instantiate();
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getInstance();
 
                 // Clients get a handful of scheduled events that don't apply for dedicated servers
                 if (mEngineMode != MODE_DEDICATED)
                 {
-                    Input::SInputListener* inputListener = Input::SInputListener::instantiate();
+                    Input::SInputListener* inputListener = Input::SInputListener::getInstance();
 
                     // Set up input sampling
                     syncScheduler->schedule(Support::FPSToMS(75.0f), true, inputListener, &Input::SInputListener::update);
                 }
-
-                syncScheduler->schedule(ENGINE_TICKRATE, true, this, &SEngineInstance::networkUpdate);
             }
 
             void SEngineInstance::setPerfStatEnabled(const bool enabled)
             {
-                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::instantiate();
+                Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getInstance();
 
                 if (mPerfStatSchedule && enabled)
                     return;
@@ -360,7 +342,7 @@ namespace Kiaro
                 auto averages = profiler->getSampleAverages();
                 CONSOLE_INFO("Performance Statistics---------------------------");
 
-                for (auto average : averages)
+                for (auto average: averages)
                     CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
             }
         } // End Namespace Engine

@@ -62,11 +62,11 @@ namespace Kiaro
 
                 void IEntity::registerEntity(void)
                 {
-                    Game::SGameWorld::instantiate()->addEntity(this);
-                    Core::SObjectRegistry::instantiate()->addObject(this);
+                    Game::SGameWorld::getInstance()->addEntity(this);
+                    Core::SObjectRegistry::getInstance()->addObject(this);
 
                     // Also register the entity with our current scene graph
-                    Engine::Video::SRenderer::instantiate()->getCurrentScene()->add(this);
+                    Engine::Video::SRenderer::getInstance()->getCurrentScene()->add(this);
                 }
             } // End Namespace Entities
         } // End Namespace Game

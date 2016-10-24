@@ -22,7 +22,8 @@ namespace Kiaro
     namespace Sound
     {
         /**
-         *  @brief Singleton class for the sound management programming of the engine.
+         *  @brief Singleton class for the sound management programming of the engine. This singleton provides loading and memory caching
+         *  of sound resources as well as asynchronous loading of said sound resources.
          */
         class SSoundManager : public Support::ISingleton<SSoundManager>
         {
@@ -31,6 +32,7 @@ namespace Kiaro
                 //! Pointer to the FMod sound system.
                 FMOD::System* mFMod;
 
+                //! A map of all loaded sound resources.
                 Support::UnorderedMap<Support::String, CSoundSource*> mSoundRegistry;
 
             // Public Methods
@@ -42,6 +44,9 @@ namespace Kiaro
                  */
                 CSoundSource* getSoundSource(const Support::String& filename);
 
+                /**
+                 *  @brief Performs any update logic that may be necessary to drive the backend sound systems.
+                 */
                 void update(void);
 
             // Protected Methods

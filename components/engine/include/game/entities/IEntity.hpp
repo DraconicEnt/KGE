@@ -76,6 +76,7 @@ namespace Kiaro
 
                     // Protected Members
                     protected:
+                        //! The entity type.
                         ENTITY_TYPE mType;
 
                         //! The network ID of this entity.
@@ -147,6 +148,10 @@ namespace Kiaro
                          */
                         Common::U32 getNetID(void) const;
 
+                        /**
+                         *  @brief Sets the network identifier of this entity.
+                         *  @param identifier The identifier to use for this entity.
+                         */
                         void setNetID(const Common::U32 identifier);
 
                         /**
@@ -157,90 +162,39 @@ namespace Kiaro
                         virtual void registerEntity(void) = 0;
 
                         /**
-                         *  @brief Pushes an update time pulse to the entity
+                         *  @brief Pushes an update time pulse to the entity.
+                         *  @param deltaTimeSeconds The time in seconds since the last update.
                          */
                         virtual void update(const Common::F32 deltaTimeSeconds) = 0;
 
+                        /**
+                         *  @brief Unpacks entity data from the CBitStream.
+                         *  @param in The input CBitStream to unpack from.
+                         */
                         virtual void unpack(Support::CBitStream& in);
 
+                        /**
+                         *  @brief Returns the type ID of the entity.
+                         *  @param The type ID of this entity.
+                         */
                         Common::U32 getTypeID(void) const;
 
-                        template <typename className, typename... parameters>
-                        static className* instantiate(parameters... params)
-                        {
-                            className* result = nullptr;
-
-                            #ifndef ENGINE_ENTITY_ARENA_ALLOCATIONS
-                                result = new className(params...);
-
-                                #ifdef ENGINE_ENTITY_TRACKER
-                                    SharedStatics<className>::sEntities.insert(SharedStatics<className>::sEntities.end(), result);
-                                #endif
-                            #else
-                                // Reallocate the ring
-                                if (!SharedStatics<className>::sEntityArena)
-                                {
-                                    #ifndef ENGINE_ENTITY_ARENA_ALLOCATION_SIZE
-                                        Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
-                                        const Common::U32 arenaAllocationSize = settings->getValue<Common::U32>("System::ArenaAllocationSize");
-                                    #else
-                                        const Common::U32 arenaAllocationSize = ENGINE_ENTITY_ARENA_ALLOCATION_SIZE;
-                                    #endif
-
-                                    SharedStatics<className>::sEntityArena = reinterpret_cast<className*>(malloc(sizeof(className) * arenaAllocationSize));
-                                    SharedStatics<className>::sArenaSize = arenaAllocationSize;
-                                }
-
-                                // If we exceed the ring buffer size, we are screwed beyond belief since we can't simply resize and invalidate pointers by moving our buffer
-                                assert(SharedStatics<className>::sEntityCount < SharedStatics<className>::sArenaSize);
-
-                                if (!SharedStatics<className>::sFreedIndices.size())
-                                    result = &SharedStatics<className>::sEntityArena[SharedStatics<className>::sEntityCount++];
-                                else
-                                {
-                                    size_t index = SharedStatics<className>::sFreedIndices.top();
-                                    result = &SharedStatics<className>::sEntityArena[index];
-                                    SharedStatics<className>::sFreedIndices.pop();
-                                }
-
-                                new (result) className(params...);
-                            #endif
-
-                            assert(result);
-                            return result;
-                        }
-
-                        template <typename className>
-                        static inline void update(Common::F32 deltaTime)
-                        {
-                            #ifndef ENGINE_ENTITY_ARENA_ALLOCATIONS
-                            throw std::runtime_error("Cannot update individual types when the engine is compiled without ring allocations.");
-                            #else
-                            for (size_t iteration = 0; iteration < SharedStatics<className>::sEntityCount; ++iteration)
-                            {
-                                className& entity = SharedStatics<className>::sEntityArena[iteration];
-
-                                // The flags should never be NULL
-                                if (!entity.mFlags)
-                                    continue;
-
-                                entity.update(deltaTime);
-                            }
-                            #endif
-                        }
-
+                        /**
+                         *  @brief Destroys the entity.
+                         *  @warning This MUST be used over deleting entities directly using the inbuilt delete operator. This is because if the engine
+                         *  is built with using the arena allocator, then the usual delete semantics will not work properly.
+                         */
                         template <typename className>
                         void destroy(void)
                         {
                             #ifndef ENGINE_ENTITY_ARENA_ALLOCATIONS
-                            delete this;
+                                delete this;
                             #else
+                                const size_t freedIndex = reinterpret_cast<size_t>(this - SharedStatics<className>::sEntityArena) / sizeof(className);
+                                SharedStatics<className>::sFreedIndices.push(freedIndex);
+                                memset(&SharedStatics<className>::sEntityArena[freedIndex], 0x00, sizeof(className));
 
-                            const size_t freedIndex = reinterpret_cast<size_t>(this - SharedStatics<className>::sEntityArena) / sizeof(className);
-                            SharedStatics<className>::sFreedIndices.push(freedIndex);
-                            memset(&SharedStatics<className>::sEntityArena[freedIndex], 0x00, sizeof(className));
-
-                            ::operator delete(this);
+                                ::operator delete(this);
                             #endif
                         }
                 };

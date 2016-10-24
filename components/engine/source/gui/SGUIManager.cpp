@@ -36,7 +36,7 @@ namespace Kiaro
             SGUIManager::SGUIManager(void)
             {
                 CONSOLE_INFO("Initializing GUI subsystem.");
-                irr::IrrlichtDevice *irrlicht = Video::SRenderer::instantiate()->getIrrlichtDevice();
+                irr::IrrlichtDevice *irrlicht = Video::SRenderer::getInstance()->getIrrlichtDevice();
 
                 try
                 {
@@ -62,7 +62,7 @@ namespace Kiaro
                 }
 
                 // Make sure the resolution is right
-                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
+                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
                 irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>(
                         "Video::Resolution");
                 this->setResolution(resolution);

@@ -72,14 +72,15 @@ namespace Kiaro
 
             void COutgoingClient::onReceivePacket(Support::CBitStream& incomingStream)
             {
-                Core::SCoreRegistry* registry = Core::SCoreRegistry::instantiate();
-                Core::SEngineInstance* engine = Core::SEngineInstance::instantiate();
+                Core::SCoreRegistry* registry = Core::SCoreRegistry::getInstance();
+                Core::SEngineInstance* engine = Core::SEngineInstance::getInstance();
 
                 while (!incomingStream.isFull())
                 {
                     Net::IMessage basePacket;
                     basePacket.unpack(incomingStream);
 
+                    // Look up handlers for unstaged messages first
                     Core::SCoreRegistry::MessageHandlerSet::MemberDelegateFuncPtr<COutgoingClient> responder = registry->lookupClientMessageHandler(Net::STAGE_UNSTAGED, basePacket.getType());
 
                     if (responder)
@@ -88,7 +89,7 @@ namespace Kiaro
                         continue;
                     }
 
-                    // If we got to this point, look it up by the client's stage
+                    // Then staged messages
                     responder = registry->lookupClientMessageHandler(static_cast<Net::STAGE_NAME>(mCurrentStage), basePacket.getType());
                     if (responder)
                     {

@@ -76,7 +76,7 @@ namespace Kiaro
 
             TEST(SGameWorld, Lookup)
             {
-                SGameWorld* world = SGameWorld::instantiate();
+                SGameWorld* world = SGameWorld::getInstance();
                 EXPECT_NO_THROW(EXPECT_FALSE(world->getEntity("entity")));
 
                 TestEntity* entity = new TestEntity();
@@ -91,7 +91,7 @@ namespace Kiaro
 
             TEST(SGameWorld, IDAssignment)
             {
-                SGameWorld* world = SGameWorld::instantiate();
+                SGameWorld* world = SGameWorld::getInstance();
 
                 TestEntity* entityOne = new TestEntity();
                 EXPECT_EQ(0, entityOne->mID);
@@ -117,7 +117,7 @@ namespace Kiaro
 
             TEST(SGameWorld, TypeTesting)
             {
-                SGameWorld* world = SGameWorld::instantiate();
+                SGameWorld* world = SGameWorld::getInstance();
                 TestEntity* entity = new TestEntity();
 
                 entity->setName("entity");

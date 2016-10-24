@@ -19,7 +19,7 @@ namespace Kiaro
     {
         namespace Game
         {
-            IEngineObject::IEngineObject(void) : mID(Core::SObjectRegistry::instantiate()->getNextObjectID())
+            IEngineObject::IEngineObject(void) : mID(Core::SObjectRegistry::getInstance()->getNextObjectID())
             {
 
             }
@@ -36,7 +36,7 @@ namespace Kiaro
             void IEngineObject::setName(const Support::String& name)
             {
                 mName = name;
-                Core::SObjectRegistry::instantiate()->setNameEntry(this, name);
+                Core::SObjectRegistry::getInstance()->setNameEntry(this, name);
             }
         }
     }

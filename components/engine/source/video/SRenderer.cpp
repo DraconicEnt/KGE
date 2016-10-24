@@ -39,14 +39,14 @@ namespace Kiaro
         namespace Video
         {
             SRenderer::SRenderer(void) : mIrrlichtDevice(nullptr), mClearColor(Common::ColorRGBA(0, 0, 0, 0)),
-                                         mHasDisplay(!Core::SEngineInstance::instantiate()->isDedicated()),
+                                         mHasDisplay(!Core::SEngineInstance::getInstance()->isDedicated()),
                                          mVideo(nullptr), mSceneManager(nullptr), mMainScene(nullptr),
                                          mCurrentScene(nullptr), mDisplay(nullptr), mWindowEventQueue(nullptr),
                                          mTimePulse(nullptr)
             {
                 CONSOLE_INFO("Initializing renderer subsystem.");
 
-                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
                 irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>(
                         "Video::Resolution");
                 this->initializeRenderer(resolution);
@@ -67,12 +67,12 @@ namespace Kiaro
                 }
             }
 
-            Common::S32 SRenderer::initializeRenderer(const Support::Dimension2DU &resolution)
+            Common::S32 SRenderer::initializeRenderer(const Support::Dimension2DU& resolution)
             {
                 irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
                 irr::SIrrlichtCreationParameters creationParameters;
 
-                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
+                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
 
                 if (mHasDisplay)
                 {
@@ -104,13 +104,13 @@ namespace Kiaro
                     al_set_new_window_title("Auxiliary Display ");
                     al_hide_mouse_cursor(mDisplay);
 
-    #if defined(ENGINE_UNIX)
-                    XID windowID = al_get_x_window_id(mDisplay);
-                    creationParameters.WindowId = reinterpret_cast<void *>(windowID);
-    #elif defined(ENGINE_WIN)
-                    HWND windowHandle = al_get_win_window_handle(mDisplay);
-                                    creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
-    #endif
+                    #if defined(ENGINE_UNIX)
+                        XID windowID = al_get_x_window_id(mDisplay);
+                        creationParameters.WindowId = reinterpret_cast<void *>(windowID);
+                    #elif defined(ENGINE_WIN)
+                        HWND windowHandle = al_get_win_window_handle(mDisplay);
+                                creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
+                    #endif
                 }
                 else
                     videoDriver = irr::video::EDT_NULL;
@@ -121,13 +121,13 @@ namespace Kiaro
                 creationParameters.DriverType = videoDriver;
                 creationParameters.Doublebuffer = true;
 
-    #if defined(ENGINE_WIN)
-                // The standard Win32 windowing should work here
-                creationParameters.DeviceType = irr::EIDT_WIN32;
-    #else
-                // We should be using SDL on Linux with this as the GLX routines used in the X implementation are not supported by NVidia drivers
-                creationParameters.DeviceType = irr::EIDT_SDL;
-    #endif
+                #if defined(ENGINE_WIN)
+                    // The standard Win32 windowing should work here
+                    creationParameters.DeviceType = irr::EIDT_WIN32;
+                #else
+                    // We should be using SDL on Linux with this as the GLX routines used in the X implementation are not supported by NVidia drivers
+                    creationParameters.DeviceType = irr::EIDT_SDL;
+                #endif
 
                 creationParameters.WindowSize = resolution;
 
@@ -152,7 +152,7 @@ namespace Kiaro
                 {
                     const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
 
-                    mTimePulse = Support::SSynchronousScheduler::instantiate()->schedule(Support::FPSToMS(activeFPS), true,
+                    mTimePulse = Support::SSynchronousScheduler::getInstance()->schedule(Support::FPSToMS(activeFPS), true,
                                                                                         this,
                                                                                         &SRenderer::drawFrame);
                 }
@@ -163,7 +163,7 @@ namespace Kiaro
                 return 0;
             }
 
-            void SRenderer::setSceneGraph(CSceneGraph *graph)
+            void SRenderer::setSceneGraph(CSceneGraph* graph)
             {
                 if (mCurrentScene)
                     mCurrentScene->setVisible(false);
@@ -174,11 +174,11 @@ namespace Kiaro
                     mCurrentScene->setVisible(true);
             }
 
-            void SRenderer::setResolution(const Support::Dimension2DU &resolution)
+            void SRenderer::setResolution(const Support::Dimension2DU& resolution)
             {
                 al_resize_display(mDisplay, resolution.Width, resolution.Height);
                 mIrrlichtDevice->getVideoDriver()->OnResize(resolution);
-                GUI::SGUIManager::instantiate()->setResolution(resolution);
+                GUI::SGUIManager::getInstance()->setResolution(resolution);
                 al_acknowledge_resize(mDisplay);
             }
 
@@ -187,12 +187,12 @@ namespace Kiaro
                 return mIrrlichtDevice;
             }
 
-            CSceneGraph *SRenderer::getMainScene(void)
+            CSceneGraph* SRenderer::getMainScene(void)
             {
                 return mMainScene;
             }
 
-            CSceneGraph *SRenderer::getCurrentScene(void)
+            CSceneGraph* SRenderer::getCurrentScene(void)
             {
                 return mCurrentScene;
             }
@@ -210,7 +210,7 @@ namespace Kiaro
 
                         case ALLEGRO_EVENT_DISPLAY_CLOSE:
                         {
-                            Core::SEngineInstance::instantiate()->kill();
+                            Core::SEngineInstance::getInstance()->kill();
                             break;
                         }
 
@@ -232,7 +232,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
                         {
                             CONSOLE_INFO("Window unfocused.");
-                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
+                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
                             const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
 
                             mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
@@ -242,7 +242,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
                         {
                             CONSOLE_INFO("Window focused.");
-                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::instantiate();
+                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
                             const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
 
                             mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
@@ -259,7 +259,7 @@ namespace Kiaro
                 return result;
             }
 
-            ALLEGRO_DISPLAY *SRenderer::getDisplay(void)
+            ALLEGRO_DISPLAY* SRenderer::getDisplay(void)
             {
                 return mDisplay;
             }
@@ -274,14 +274,14 @@ namespace Kiaro
                 if (mCurrentScene)
                     mSceneManager->drawAll();
 
-                GUI::SGUIManager::instantiate()->draw();
+                GUI::SGUIManager::getInstance()->draw();
 
                 mVideo->endScene();
 
                 // FIXME: On Windows, we don't want to call al_flip_display because of framerate issues. We should figure out why that is.
-    #if !defined(ENGINE_WIN)
-                al_flip_display();
-    #endif
+                #if !defined(ENGINE_WIN)
+                    al_flip_display();
+                #endif
 
                 this->processWindowEvents();
                 al_inhibit_screensaver(true);
@@ -297,12 +297,12 @@ namespace Kiaro
                     if (mCurrentScene)
                         mSceneManager->drawAll();
 
-                    GUI::SGUIManager::instantiate()->draw();
+                    GUI::SGUIManager::getInstance()->draw();
 
                     mVideo->endScene();
 
                     #if !defined(ENGINE_WIN)
-                    al_flip_display();
+                        al_flip_display();
                     #endif
                 }
 

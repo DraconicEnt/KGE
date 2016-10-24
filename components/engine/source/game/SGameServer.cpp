@@ -34,9 +34,9 @@ namespace Kiaro
         {
             void SGameServer::initialize(void)
             {
-                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
 
-                SGameServer::instantiate(settings->getValue<Support::String>("Server::ListenAddress"), settings->getValue<Common::U16>("Server::ListenPort"),
+                SGameServer::getInstance(settings->getValue<Support::String>("Server::ListenAddress"), settings->getValue<Common::U16>("Server::ListenPort"),
                 settings->getValue<Common::U32>("Server::MaximumClientCount"));
             }
 
@@ -51,7 +51,7 @@ namespace Kiaro
                 mSimulation = new Phys::CSimulation();
 
                 // Add our update to the scheduler
-                mUpdatePulse = Support::SSynchronousScheduler::instantiate()->schedule(32, true, this, &SGameServer::update);
+                mUpdatePulse = Support::SSynchronousScheduler::getInstance()->schedule(32, true, this, &SGameServer::update);
             }
 
             void SGameServer::handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
@@ -97,7 +97,7 @@ namespace Kiaro
             void SGameServer::initialScope(Net::IIncomingClient* client)
             {
                 Game::Messages::Scope scope;
-                Game::SGameWorld* world = Game::SGameWorld::instantiate();
+                Game::SGameWorld* world = Game::SGameWorld::getInstance();
 
                 for (auto it = world->begin(); it != world->end(); it++)
                 {
@@ -154,8 +154,8 @@ namespace Kiaro
 
             void SGameServer::onReceivePacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
             {
-                Core::SEngineInstance* engine = Core::SEngineInstance::instantiate();
-                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
+                Core::SEngineInstance* engine = Core::SEngineInstance::getInstance();
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
 
                 const Common::U32 messageLimit = settings->getValue<Common::U32>("Server::MessagesPerTick");
                 const Common::U32 queueLimit = settings->getValue<Common::U32>("Server::MaxQueuedStreams");
@@ -189,7 +189,7 @@ namespace Kiaro
                     Net::IMessage basePacket;
                     basePacket.unpack(incomingStream);
 
-                    Core::SCoreRegistry* registry = Core::SCoreRegistry::instantiate();
+                    Core::SCoreRegistry* registry = Core::SCoreRegistry::getInstance();
                     auto responder = registry->lookupServerMessageHandler(Net::STAGE_UNSTAGED, basePacket.getType());
 
                     if (responder)

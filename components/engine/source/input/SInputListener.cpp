@@ -302,7 +302,7 @@ namespace Kiaro
 
         void SInputListener::setMouseCaptureEnabled(const bool enabled)
         {
-            Engine::Video::SRenderer* renderer = Engine::Video::SRenderer::instantiate();
+            Engine::Video::SRenderer* renderer = Engine::Video::SRenderer::getInstance();
 
             if (renderer->mHasDisplay)
             {
@@ -326,7 +326,7 @@ namespace Kiaro
             // TODO: This is bound to go weird in some situations probably; like breaking responders for non-typable keys (like F1-F12)
             mTyping = guiContext.getInputCaptureWindow() != nullptr;
 
-            Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::instantiate();
+            Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::getInstance();
             gui->getContext("main")->setCursorPosition(Support::Vector2DF(mouseState.x, mouseState.y));
 
             // Process input events

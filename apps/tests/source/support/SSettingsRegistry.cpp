@@ -19,7 +19,7 @@ namespace Kiaro
     {
         TEST(SSettingsRegistry, SetGet)
         {
-            SSettingsRegistry* settings = SSettingsRegistry::instantiate();
+            SSettingsRegistry* settings = SSettingsRegistry::getInstance();
             Common::U32 integerSetting = 1337;
             Common::F32 floatSetting = 3.14f;
             EXPECT_NO_THROW(settings->setValue("integer", integerSetting));
@@ -37,7 +37,7 @@ namespace Kiaro
 
         TEST(SSettingsRegistry, Persistance)
         {
-            SSettingsRegistry::instantiate();
+            SSettingsRegistry::getInstance();
 
             // Write a test block
             SSettingsRegistry::destroy();

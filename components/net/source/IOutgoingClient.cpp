@@ -114,7 +114,7 @@ namespace Kiaro
                 this->onConnected();
 
                 // Add our update to the scheduler
-                mUpdatePulse = Support::SSynchronousScheduler::instantiate()->schedule(32, true, this, &IOutgoingClient::update);
+                mUpdatePulse = Support::SSynchronousScheduler::getInstance()->schedule(32, true, this, &IOutgoingClient::update);
                 return;
             }
 

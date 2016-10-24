@@ -53,25 +53,25 @@ namespace Kiaro
                 // Private Members
                 private:
                     //! The Irrlicht context.
-                    irr::IrrlichtDevice *mIrrlichtDevice;
+                    irr::IrrlichtDevice* mIrrlichtDevice;
                     //! Irrlicht's video driver.
-                    irr::video::IVideoDriver *mVideo;
+                    irr::video::IVideoDriver* mVideo;
                     //! Irrlicht's scene manager.
-                    irr::scene::ISceneManager *mSceneManager;
+                    irr::scene::ISceneManager* mSceneManager;
 
                     //! The primary scene used to render the main game.
-                    CSceneGraph *mMainScene;
+                    CSceneGraph* mMainScene;
                     //! The scene to render.
-                    CSceneGraph *mCurrentScene;
+                    CSceneGraph* mCurrentScene;
 
                     //! A pointer to the Allegro display we are using.
-                    ALLEGRO_DISPLAY *mDisplay;
+                    ALLEGRO_DISPLAY* mDisplay;
                     //! A pointer to the event queue for our Allegro display.
-                    ALLEGRO_EVENT_QUEUE *mWindowEventQueue;
+                    ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
 
                     //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
-                    Support::CScheduledEvent *mTimePulse;
-
+                    Support::CScheduledEvent* mTimePulse;
+                    //! A set of auxilliary displays to also draw to.
                     Support::UnorderedSet<CDisplay*> mDisplays;
 
                 // Public Methods
@@ -84,13 +84,13 @@ namespace Kiaro
                      *  @param graph A pointer to the scene graph to be rendering. If this is NULL,
                      *  then no scene is rendered.
                      */
-                    void setSceneGraph(CSceneGraph *graph);
+                    void setSceneGraph(CSceneGraph* graph);
 
                     /**
                      *  @brief Sets the resolution of the display, if there is one.
                      *  @param resolution The new resolution to use.
                      */
-                    void setResolution(const Support::Dimension2DU &resolution);
+                    void setResolution(const Support::Dimension2DU& resolution);
 
                     /**
                      *  @brief Returns the pointer to the internally used Irrlicht device.
@@ -98,12 +98,31 @@ namespace Kiaro
                      */
                     irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
 
+                    /**
+                     *  @brief Returns a pointer to the main display.
+                     *  @return A pointer to the ALLEGRO_DISPLAY for our main window.
+                     */
                     ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
 
+                    /**
+                     *  @brief Returns a pointer to the main scene graph. This is where the normal game sim will operate in.
+                     *  @return A pointer to the main CSceneGraph instance.
+                     */
                     CSceneGraph* getMainScene(void);
 
+                    /**
+                     *  @brief Returns a pointer to the currently rendered scene.
+                     *  @return A pointer to the currently rendered scene.
+                     */
                     CSceneGraph* getCurrentScene(void);
 
+                    /**
+                     *  @brief Creates an auxilliary display, particularly useful when we're running on a multi-display PC.
+                     *  @param title The window title to use.
+                     *  @return A pointer to the display that was created.
+                     *  @warning Auxilliary displays do not function correctly right now. The way the graphics libraries we are using
+                     *  are written (particularly CEGUI), they may not work without switching out for a more compatible library.
+                     */
                     CDisplay* createDisplay(const Support::String& title);
 
                 // Private Methods
@@ -120,7 +139,7 @@ namespace Kiaro
                      *  @return A Common::S32 representing the status code of renderer initialization.
                      *  @retval 0 for success. Anything else for failure.
                      */
-                    Common::S32 initializeRenderer(const Support::Dimension2DU &resolution);
+                    Common::S32 initializeRenderer(const Support::Dimension2DU& resolution);
 
                     //! Process all pending events for the game window, such as window resizing.
                     void processWindowEvents(void);
