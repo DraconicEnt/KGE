@@ -11,6 +11,9 @@
  *  @todo Generalize this library to be architecture neutral.
  */
 
+#include <stdio.h>
+
+#include <support/Console.hpp>
 #include <support/String.hpp>
 
 namespace Kiaro
@@ -136,17 +139,19 @@ namespace Kiaro
         struct CPUInfo
         {
             //! The CPU stepping.
-            Common::U8 mStepping;
+            Common::U16 mStepping;
             //! The CPU model.
-            Common::U8 mModel;
+            Common::U16 mModel;
             //! The CPU family.
-            Common::U8 mFamily;
+            Common::U16 mFamily;
             //! The CPU type.
-            Common::U8 mType;
+            Common::U16 mType;
             //! The CPU extended model.
-            Common::U8 mExtendedModel;
+            Common::U16 mExtendedModel;
             //! The CPU extended family.
-            Common::U8 mExtendedFamily;
+            Common::U16 mExtendedFamily;
+            //! The number of CPU cores present on the machine.
+            Common::U16 mCoreCount;
         };
 
         /**
@@ -167,7 +172,6 @@ namespace Kiaro
                     mov eax, 1;
                     cpuid;
                     mov outputBits, eax;
-
 
                     pop eax;
                     pop ecx;
@@ -191,6 +195,22 @@ namespace Kiaro
             output.mType = ((1 << 13) | (1 << 12)) & outputBits;
             output.mExtendedModel = 0xFF00000000 & outputBits;
             output.mExtendedFamily = 0xFF000000000 & outputBits;
+
+            // On Linux we have /proc/cpuinfo to determine the number of online cores
+            // FIXME: Is there any Linux kernel calls we can use specifically for this?
+            FILE* handle = popen("cat /proc/cpuinfo | grep \"processor\" | wc -l", "r");
+
+            if (!handle)
+                output.mCoreCount = 0;
+            else
+            {
+                char buffer[32];
+                fgets(buffer, 32, handle);
+                buffer[31] = 0x00;
+
+                output.mCoreCount = atoi(buffer);
+                pclose(handle);
+            }
         }
 
         /**
@@ -252,6 +272,29 @@ namespace Kiaro
             bool mHTT;
         };
 
+        static Common::F32 getSystemMemoryTotal(void)
+        {
+            // On Linux we have /proc/cpuinfo to determine the number of online cores
+            // FIXME: Is there any Linux kernel calls we can use specifically for this?
+            FILE* handle = popen("cat /proc/meminfo | grep MemTotal | awk '{print $2}'", "r");
+
+            if (!handle)
+                return 0.0f;
+            else
+            {
+                char buffer[32];
+                fgets(buffer, 32, handle);
+                buffer[31] = 0x00;
+
+                // The data is in kB so we convert to GB
+                Common::F32 result = (atof(buffer) / 1024) / 1024;
+                pclose(handle);
+                return result;
+            }
+
+            return 0.0f;
+        }
+
         static void getCPUSupportedFeatures(CPUSupportedFeatures& output)
         {
             Common::U32 outputEdx = 0;
@@ -295,6 +338,38 @@ namespace Kiaro
             output.mSSE42 = outputEdx & CPUFeature_SSE42;
             output.mAVX = outputEdx & CPUFeature_AVX;
             output.mSSE3 = outputEdx & CPUFeature_SSE3;
+        }
+
+        //! Static instance of CPU info.
+        static CPUInfo sCPUInfo;
+        //! Static instance of all supported CPU features.
+        static CPUSupportedFeatures sCPUSupportedFeatures;
+
+        static void getCPUInformation()
+        {
+            getCPUInfo(sCPUInfo);
+            getCPUSupportedFeatures(sCPUSupportedFeatures);
+
+            // Print CPU data to stdout
+            Support::String cpuVendorID;
+            getCPUVendorID(cpuVendorID);
+
+            Support::String cpuBrand;
+            getCPUBrand(cpuBrand);
+            cpuBrand = cpuBrand.empty() ? "<Unable to get Brand>" : cpuBrand;
+
+            CONSOLE_INFO("CPU Information Begin -----------------------------------------");
+            CONSOLE_INFOF("CPU Vendor ID: %s", cpuVendorID.data());
+            CONSOLE_INFOF("CPU Brand: %s", cpuBrand.data());
+            CONSOLE_INFOF("Model: %u, Family: %u, Type: %u", sCPUInfo.mModel, sCPUInfo.mFamily, sCPUInfo.mType);
+            CONSOLE_INFOF("Extended Model: %u, Extended Family: %u", sCPUInfo.mExtendedModel, sCPUInfo.mExtendedFamily);
+            CONSOLE_INFOF("Stepping: %u", sCPUInfo.mStepping);
+            CONSOLE_INFOF("CPU Core Count: %u", sCPUInfo.mCoreCount);
+            CONSOLE_INFOF("Total System Memory: %f GB", getSystemMemoryTotal());
+
+            // Microarchitecture specific data
+            CONSOLE_INFOF("HTT: %u, Clfsh: %u", sCPUSupportedFeatures.mHTT, sCPUSupportedFeatures.mClfsh);
+            CONSOLE_INFO("CPU Information End -------------------------------------------");
         }
     } // End NameSpace Support
 } // End NameSpace Kiaro

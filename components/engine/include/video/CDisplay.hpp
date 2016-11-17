@@ -16,7 +16,7 @@
 #include <support/types.hpp>
 
 #include <CEGUI/CEGUI.h>
-#include <CEGUI/RendererModules/OpenGL/GLRenderer.h>
+//#include <CEGUI/RendererModules/OpenGL/GLRenderer.h>
 
 namespace Kiaro
 {

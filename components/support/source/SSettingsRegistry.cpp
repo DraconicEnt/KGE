@@ -76,7 +76,6 @@ namespace Kiaro
                         const Common::C8* configValue = al_get_config_value(config, configSectionName, configEntryName);
 
                         // TODO: Actually resolve types?
-                        CONSOLE_INFOF("%s -> %s", variableName.data(), configValue);
                         this->setStringValue(variableName.data(), Support::String(configValue));
 
                         // Get the next entry

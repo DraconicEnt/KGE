@@ -48,6 +48,7 @@
 #include <gui/SGUIManager.hpp>
 
 #include <core/SCoreRegistry.hpp>
+#include <support/FCPUInfo.hpp>
 
 namespace Kiaro
 {
@@ -78,6 +79,9 @@ namespace Kiaro
 
             Kiaro::Common::S32 SEngineInstance::start(const Common::S32 argc, Common::C8* argv[])
             {
+                // Before doing anything, read CPU data
+                Support::getCPUInformation();
+
                 mRunning = false;
                 al_init();
                 this->initializeFileSystem(argc, argv);
