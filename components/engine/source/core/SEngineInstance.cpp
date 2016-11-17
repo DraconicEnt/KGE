@@ -48,7 +48,7 @@
 #include <gui/SGUIManager.hpp>
 
 #include <core/SCoreRegistry.hpp>
-#include <support/FCPUInfo.hpp>
+#include <support/FSystemInfo.hpp>
 
 namespace Kiaro
 {
