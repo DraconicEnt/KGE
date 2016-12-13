@@ -12,11 +12,11 @@ FILETYPE VFT_APP
 	 {
 		 BLOCK "040904E4"
 		 {
-			 VALUE "CompanyName", "Draconic Entertainment"
+			 VALUE "CompanyName", "Draconic Entity"
 			 VALUE "FileVersion", "0.1.0"
 			 VALUE "FileDescription", "Kiaro Game Engine Base Application"
 			 VALUE "InternalName", "Ragora"
-			 VALUE "LegalCopyright", "Copyright (c) 2014 Draconic Entertainment."
+			 VALUE "LegalCopyright", "Copyright (c) 2016 Draconic Entity."
 			 VALUE "LegalTrademarks", " "
 			 VALUE "OriginalFilename", "kiaro.exe"
 			 VALUE "ProductName", "Kiaro Game Engine"
