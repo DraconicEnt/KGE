@@ -122,6 +122,7 @@ namespace Kiaro
                     this->initializeSound();
 
                 this->initializeNetwork();
+                this->initializeManagementConsole();
 
                 // Initialize the time pulses
                 this->initializeScheduledEvents();
@@ -146,7 +147,7 @@ namespace Kiaro
             }
 
             SEngineInstance::SEngineInstance(void) : mEngineMode(MODE_CLIENT), mTargetServerAddress("127.0.0.1"), mTargetServerPort(11595),
-            mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr)
+            mRunning(false), mActiveClient(nullptr), mPerfStatSchedule(nullptr), mManagementConsole(nullptr)
             {
             }
 
@@ -226,6 +227,28 @@ namespace Kiaro
 
                 CONSOLE_INFO("Initialized network.");
                 return 0;
+            }
+
+            Common::U32 SEngineInstance::initializeManagementConsole(void)
+            {
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
+
+                if (!settings->getValue<bool>("System::ManagementConsoleEnabled"))
+                    return 0;
+
+                mManagementConsole = new Support::CManagementConsole();
+
+              //  <void, &
+               // auto glambda = [](auto a, auto&& b) { return a < b; };
+
+
+                // Initialize the base capabilities
+                mManagementConsole->registerFunction("test", [](const Support::Vector<Support::String>)
+                {
+
+                });
+
+                CONSOLE_INFO("Management console initialized.");
             }
 
             void SEngineInstance::runGameLoop(void)

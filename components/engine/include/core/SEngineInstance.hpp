@@ -27,6 +27,8 @@
 
 #include <net/IMessage.hpp>
 
+#include <support/CManagementConsole.hpp>
+
 namespace Kiaro
 {
     namespace Net
@@ -68,6 +70,32 @@ namespace Kiaro
                         //! Run as a console-only server; pretty helpful for CLI only boxes.
                         MODE_DEDICATED = 2,
                     }; // End Enum ENGINE_MODE
+
+                // Private Members
+                private:
+                    //! A boolean representing whether or not the engine is running
+                    bool mRunning;
+
+                    //! An enumeration representing the engine run status.
+                    MODE_NAME mEngineMode;
+
+                    Support::String mTargetServerAddress;
+                    Common::U16 mTargetServerPort;
+
+                    //! The name of the currently running game name.
+                    Support::String mGameName;
+
+                    //! All of the mod names we are running on top of our game, in order.
+                    Support::Vector<Support::String> mModNames;
+
+                    //! A pointer to the active outgoing client.
+                    COutgoingClient* mActiveClient;
+
+                    //! A pointer to the scheduled event for the perf stat printout, if enabled.
+                    Support::CScheduledEvent* mPerfStatSchedule;
+
+                    //! The management console associated with the engine. If not enabled, this this a nullptr.
+                    Support::CManagementConsole* mManagementConsole;
 
                 // Public Methods
                 public:
@@ -189,6 +217,8 @@ namespace Kiaro
                      */
                     Common::U32 initializeNetwork(void);
 
+                    Common::U32 initializeManagementConsole(void);
+
                     /**
                      *  @brief A subroutine that is called to initialize the sound code.
                      *  @return The status code of the sound system initialization.
@@ -218,29 +248,6 @@ namespace Kiaro
                     SEngineInstance(void);
                     //! Privately declared standard destructor to enforce singleton behavior.
                     ~SEngineInstance(void);
-
-                // Private Members
-                private:
-                    //! A boolean representing whether or not the engine is running
-                    bool mRunning;
-
-                    //! An enumeration representing the engine run status.
-                    MODE_NAME mEngineMode;
-
-                    Support::String mTargetServerAddress;
-                    Common::U16 mTargetServerPort;
-
-                    //! The name of the currently running game name.
-                    Support::String mGameName;
-
-                    //! All of the mod names we are running on top of our game, in order.
-                    Support::Vector<Support::String> mModNames;
-
-                    //! A pointer to the active outgoing client.
-                    COutgoingClient* mActiveClient;
-
-                    //! A pointer to the scheduled event for the perf stat printout, if enabled.
-                    Support::CScheduledEvent* mPerfStatSchedule;
             };
         } // End Namespace Engine
     }

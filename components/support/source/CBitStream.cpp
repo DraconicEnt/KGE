@@ -55,7 +55,7 @@ namespace Kiaro
         CBitStream::~CBitStream(void)
         {
             if (mOwnsMemoryBlock)
-                delete[] mMemoryBlock;
+                free(mMemoryBlock);
         }
 
         void CBitStream::writeString(const Common::C8* string, const size_t length)
@@ -147,24 +147,25 @@ namespace Kiaro
             // TODO: Implement as an exception
             assert(newSize > mTotalSize);
 
-            Common::U8* newBlock = new Common::U8[newSize];
-
-            // Only memset the new bytes
-            memset(&newBlock[mPointer + 1], 0x00, newSize - (mPointer + 1));
-
-            // Copy any data we're actually using out of the block
-            memcpy(newBlock, mMemoryBlock, mPointer);
-
-            // Only delete our memory block if we actually own it.
             if (mOwnsMemoryBlock)
-                delete[] mMemoryBlock;
+                mMemoryBlock = reinterpret_cast<Common::U8*>(realloc(mMemoryBlock, newSize));
+            else
+            {
+                Common::U8* newBlock = reinterpret_cast<Common::U8*>(malloc(newSize));
 
-            // Update our stored block information
-            mMemoryBlock = newBlock;
-            mTotalSize = newSize;
+                // Only memset the new bytes
+                memset(&newBlock[mPointer + 1], 0x00, newSize - (mPointer + 1));
 
-            // We definitely own this block now
-            mOwnsMemoryBlock = true;
+                // Copy any data we're actually using out of the block
+                memcpy(newBlock, mMemoryBlock, mPointer);
+
+                // Update our stored block information
+                mMemoryBlock = newBlock;
+                mTotalSize = newSize;
+
+                // We definitely own this block now
+                mOwnsMemoryBlock = true;
+            }
         }
 
         template <>
@@ -197,5 +198,7 @@ namespace Kiaro
         {
             return mTotalSize;
         }
+
+        ISerializable::ISerializable(void) { }
     } // End Namespace Support
 } // End namespace Kiaro

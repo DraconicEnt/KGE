@@ -26,11 +26,13 @@ namespace Kiaro
                 delete entry.second;
         }
 
+        //! A regular expression representing valid call signatures.
         static const Support::Regex mCallSignature("[A-z]( +[A-z]+)*", Support::RegexConstants::Extended);
 
         bool CManagementConsole::eval(const Support::String& input)
         {
             bool success = true;
+
             // Loop for commands
             std::stringstream commandStream(input);
             Support::String commandString;
@@ -88,6 +90,12 @@ namespace Kiaro
         void CManagementConsole::registerFunction(const Support::String& name, ManagementFunction::StaticDelegateFuncPtr staticPointer)
         {
             this->registerFunction(name, new ManagementFunction::StaticDelegateType(staticPointer));
+        }
+
+        void CManagementConsole::registerFunction(const Support::String& name, std::function<void(const Support::Vector<Support::String>&)> lambda)
+        {
+            this->registerFunction(name, new ManagementFunction::StaticDelegateType(lambda.target));
+
         }
     } // End NameSpace Support
 } // End NameSpace Kiaro

@@ -45,6 +45,8 @@ namespace Kiaro
             this->setValue<Common::U8>("System::WorkerThreadCount", 6);
             this->setValue<Common::U8>("System::RuntimeThreadCount", 6);
             this->setValue<Common::U32>("System::ArenaAllocationSize", 256);
+            this->setValue<bool>("System::ManagementConsoleEnabled", true);
+            this->setValue("System::ManagementConsoleBind", Support::String("127.0.0.1"));
         }
 
         SSettingsRegistry::SSettingsRegistry(void)
@@ -185,6 +187,12 @@ namespace Kiaro
                 sprintf(tempBuffer, "%u", this->getValue<Common::U32>("System::ArenaAllocationSize"));
                 al_add_config_comment(config, "System", "ArenaAllocationSize is an experimental feature.");
                 al_set_config_value(config, "System", "ArenaAllocationSize", tempBuffer);
+
+                al_add_config_comment(config, "System", "The management console allows remote connections into the engine, exposing a basic management interface.");
+                al_set_config_value(config, "System", "ManagementConsoleEnabled", this->getValue<bool>("System::ManagementConsoleEnabled") ? "1" : "0");
+
+                al_add_config_comment(config, "System", "ManagementConsoleBind specifies what the management console will bind to, if enabled.");
+                al_set_config_value(config, "System", "ManagementConsoleBind", this->getValue<Support::String>("System::ManagementConsoleBind").data());
 
                 // We're done
                 al_save_config_file("config.cfg", config);

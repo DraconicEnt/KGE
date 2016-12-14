@@ -1,6 +1,6 @@
 /**
  *  @file CMapDivision.cpp
- *  @brief Source file implementing the Kiaro::Support::CMapDivision class methods.
+ *  @brief Source file implementing the CMapDivision class methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

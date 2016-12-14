@@ -48,6 +48,7 @@ namespace Kiaro
                 //! A boolean representing whether or not this bit stream owns the memory block pointed to by mMemoryBlock.
                 bool mOwnsMemoryBlock;
 
+                //! When a resize is necessary, this is the number of bytes we will extend the buffer length by.
                 size_t mResizeLength;
 
             // Public Members
@@ -111,12 +112,31 @@ namespace Kiaro
                  */
                 void write(const ISerializable* in);
 
+                /**
+                 *  @brief Writes a string to the CBitStream, allowing for later unpacking.
+                 *  @param string The string to write into the CBitStream.
+                 */
                 void writeString(const std::string& string);
 
+                /**
+                 *  @brief Writes a regular C string to the CBitStream, allowing for later unpacking.
+                 *  @param string THe string to write into the CBitStream.
+                 *  @param length How long the string is, in bytes excluding the NULL byte.
+                 */
                 void writeString(const Common::C8* string, const size_t length);
 
+                /**
+                 *  @brief Returns a pointer to the string that is currently at the top of the CBitStream.
+                 *  @return A pointer to the raw C string that is currently at the top of the CBitStream.
+                 */
                 const Common::C8* topString(void);
 
+                /**
+                 *  @brief Returns a pointer to the string that is currently at the top of the CBitStream while also
+                 *  popping it from the CBitStream.
+                 *  @return A pointer to the raw C string that is currently at the top of the CBitStream at the time of
+                 *  calling.
+                 */
                 const Common::C8* popString(void);
 
                 /**
@@ -248,7 +268,7 @@ namespace Kiaro
                 // Public methods
             public:
                 //! Parameter-less constructor.
-                ISerializable(void) { }
+                ISerializable(void);
 
                 /**
                  *  @brief Constructor accepting an input bit stream.
