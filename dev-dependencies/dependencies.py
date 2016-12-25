@@ -33,9 +33,14 @@ class Application(object):
         The version of freetype to download.
     """
 
-    CEGUI_VERSION ="0.8.7"
+    CEGUI_VERSION = "0.8.7"
     """
         The version of CEGUI to download.
+    """
+
+    ALLEGRO_VERSION = "5.2.2"
+    """
+        The version of allegro to download.
     """
 
     def install_ubuntu(self):
@@ -65,9 +70,6 @@ class Application(object):
         if os.path.exists("downloaded-deps/freetype-%s.tar.gz" % self.FREETYPE_VERSION) is False:
             print("Downloading FreeType ...")
             urllib.urlretrieve("http://download.savannah.gnu.org/releases/freetype/freetype-%s.tar.gz" % self.FREETYPE_VERSION, "downloaded-deps/freetype-%s.tar.gz" % self.FREETYPE_VERSION)
-            handle = tarfile.open("downloaded-deps/freetype-%s.tar.gz" % self.FREETYPE_VERSION)
-            handle.extractall("downloaded-deps")
-            handle.close()
 
         if os.path.exists("downloaded-deps/cegui-%s.zip" % self.CEGUI_VERSION) is False:
             print("Downloading CEGUI ...")
@@ -76,11 +78,22 @@ class Application(object):
             handle.extractall("downloaded-deps")
             handle.close()
 
+        if os.path.exists("downloaded-deps/allegro-%s.tar.gz" % self.ALLEGRO_VERSION) is False:
+            print("Downloading Allegro ...")
+            urllib.urlretrieve("http://download.gna.org/allegro/allegro/%s/allegro-%s.tar.gz" % (self.ALLEGRO_VERSION, self.ALLEGRO_VERSION), "downloaded-deps/allegro-%s.tar.gz" % self.ALLEGRO_VERSION)
+            handle = tarfile.open("downloaded-deps/allegro-%s.tar.gz" % self.ALLEGRO_VERSION)
+            handle.extractall("downloaded-deps")
+            handle.close()
+
         self.setup_irrlicht()
         self.setup_dependencies()
         self.compile_dependencies()
 
     def compile_dependencies(self):
+        """
+            Handles dependency compilation for each supported platform.
+        """
+
         if "linux" in sys.platform:
             current_cwd = os.getcwd()
 
@@ -99,6 +112,13 @@ class Application(object):
             os.chdir("downloaded-deps/cegui-%s" % self.CEGUI_VERSION)
             if os.system("make -j8 && sudo make install") != 0:
                 print("Failed to compile and install CEGUI!")
+                sys.exit(1)
+            os.chdir(current_cwd)
+
+            # FIXME: This is a hack for allegro for now
+            os.chdir("downloaded-deps/allegro-%s.0" % self.ALLEGRO_VERSION)
+            if os.system("make -j8 && sudo make install") != 0:
+                print("Failed to compile and install Allegro!")
                 sys.exit(1)
             os.chdir(current_cwd)
 
@@ -148,11 +168,12 @@ class Application(object):
         os.chdir(current_cwd)
 
         os.chdir("downloaded-deps/cegui-%s" % self.CEGUI_VERSION)
-        os.system("cmake . -DCMAKE_CXX_FLAGS=\"-lsdl\" -DCEGUI_BUILD_IMAGECODEC_SDL2=off -DCEGUI_BUILD_PYTHON_MODULES=off -DCEGUI_BUILD_LUA_MODULE=off -DCEGUI_BUILD_RENDERER_IRRLICHT=on -DCEGUI_BUILD_IMAGECODEC_SDL2=on")
+        os.system("cmake . -DCEGUI_SAMPLES_ENABLED=off -DCMAKE_CXX_FLAGS=\"-lSDL\" -DCEGUI_BUILD_IMAGECODEC_SDL2=off -DCEGUI_BUILD_PYTHON_MODULES=off -DCEGUI_BUILD_LUA_MODULE=off -DCEGUI_BUILD_RENDERER_IRRLICHT=on")
         os.chdir(current_cwd)
 
-        os.chdir("downloaded-deps/irrlicht-%s" % self.IRRLICHT_VERSION)
-        os.system("cmake . -DWANT_TESTS:string=off -DWANT_EXAMPLES:string=off -DWANT_GLES2=off -DWANT_GLES3=off -DWANT_OPENGL=off -DWANT_SHADERS_GL=off -DWANT_FONT=off -DWANT_AUDIO=off -DWANT_IMAGE=off -DWANT_TTF=off -DWANT_COLOR=off -DWANT_VIDEO=off")
+        # FIXME: This is a hack for Allegro for now
+        os.chdir("downloaded-deps/allegro-%s.0" % self.ALLEGRO_VERSION)
+        os.system("cmake . -DWANT_DEMO=off -DWANT_EXAMPLES=off -DWANT_FONT=off -DWANT_AUDIO=off -DWANT_IMAGE=off -DWANT_TTF=off -DWANT_VIDEO=off -DWANT_GLES2=off -DWANT_D3D=off -DWANT_SHADERS_GL=off -DWANT_SHADERS_D3D=off")
         os.chdir(current_cwd)
 
     def main(self):
