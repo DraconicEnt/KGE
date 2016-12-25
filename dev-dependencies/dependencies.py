@@ -1,6 +1,17 @@
 #!/usr/bin/python
 """
     dependencies.py
+
+    Automatic dependency installer script for Kiaro Game Engine. This script is necessary
+    because there is a couple dependencies that require special compilation procedures
+    to work as intended. These are the following:
+
+    * Irrlicht: Needs compiled with the SDL device enabled.
+    * CEGUI: Needs compiled with friendly licensed components.
+    * FreeType: Certain repository versions can cause CEGUI to fail strangely.
+
+    * TODO: Set this up to use Cmake so we can generate platform specific files to handle
+    the actual compilations (looking at you, Windows).
 """
 
 import os
@@ -13,12 +24,23 @@ import platform
 
 class Application(object):
     IRRLICHT_VERSION = "1.8.4"
+    """
+        The version of Irrlicht to download.
+    """
+
     FREETYPE_VERSION = "2.7"
+    """
+        The version of freetype to download.
+    """
+
     CEGUI_VERSION ="0.8.7"
+    """
+        The version of CEGUI to download.
+    """
 
     def install_ubuntu(self):
         print("Installing for Ubuntu ...")
-        os.system("sudo apt-get install -y libenet-dev libbullet-dev libphysfs-dev libcurl4-openssl-dev git libtinyxml2-dev libfreeimage-dev cmake unzip mercurial")
+        os.system("sudo apt-get install -y libenet-dev libsdl2-image-dev libsdl-dev libbullet-dev libphysfs-dev libcurl4-openssl-dev git libtinyxml2-dev libfreeimage-dev cmake unzip mercurial")
 
     linux_install_handlers = {
         "LinuxMint": install_ubuntu,
@@ -63,15 +85,21 @@ class Application(object):
             current_cwd = os.getcwd()
 
             os.chdir("downloaded-deps/freetype-%s" % self.FREETYPE_VERSION)
-            os.system("make -j8 && sudo make install")
+            if os.system("make -j8 && sudo make install") != 0:
+                print("Failed to compile and install Freetype!")
+                sys.exit(1)
+            os.chdir(current_cwd)
+
+            os.chdir("downloaded-deps/irrlicht-%s/source/Irrlicht" % self.IRRLICHT_VERSION)
+            if os.system("make sharedlib -j8 && sudo make install") != 0:
+                print("Failed to compile and install Irrlicht!")
+                sys.exit(1)
             os.chdir(current_cwd)
 
             os.chdir("downloaded-deps/cegui-%s" % self.CEGUI_VERSION)
-            os.system("make -j8 && sudo make install")
-            os.chdir(current_cwd)
-
-            os.chdir("downloaded-deps/irrlicht-%s" % self.IRRLICHT_VERSION)
-            os.system("make -j8 && sudo make install")
+            if os.system("make -j8 && sudo make install") != 0:
+                print("Failed to compile and install CEGUI!")
+                sys.exit(1)
             os.chdir(current_cwd)
 
     def setup_irrlicht(self):
@@ -120,7 +148,7 @@ class Application(object):
         os.chdir(current_cwd)
 
         os.chdir("downloaded-deps/cegui-%s" % self.CEGUI_VERSION)
-        os.system("cmake . -DCEGUI_BUILD_PYTHON_MODULES=off -DCEGUI_BUILD_LUA_MODULE=off -DCEGUI_BUILD_RENDERER_IRRLICHT=on -DCEGUI_BUILD_IMAGECODEC_SDL2=on")
+        os.system("cmake . -DCMAKE_CXX_FLAGS=\"-lsdl\" -DCEGUI_BUILD_IMAGECODEC_SDL2=off -DCEGUI_BUILD_PYTHON_MODULES=off -DCEGUI_BUILD_LUA_MODULE=off -DCEGUI_BUILD_RENDERER_IRRLICHT=on -DCEGUI_BUILD_IMAGECODEC_SDL2=on")
         os.chdir(current_cwd)
 
         os.chdir("downloaded-deps/irrlicht-%s" % self.IRRLICHT_VERSION)
