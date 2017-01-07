@@ -1,7 +1,7 @@
 /**
  *  @file delegates.hpp
- *  @date 5/25/2016
- *  @version 2.2
+ *  @date 11/17/2016
+ *  @version 3.0
  *  @brief Include file declaring various delegate types.
  *  @author <a href="http://dx.no-ip.org">Robert MacGregor</a>
  *
@@ -9,10 +9,12 @@
  *	information.
  */
 
-#ifndef _INCLUDE_EASYDELEGATE_DELEGATES_HPP_
+#if !defined(_INCLUDE_EASYDELEGATE_DELEGATES_HPP_) && __cplusplus >= 201103L
 #define _INCLUDE_EASYDELEGATE_DELEGATES_HPP_
 
+#include <stdarg.h>
 #include <assert.h>         // assert(expr)
+#include <functional>
 
 #include "types.hpp"
 #include "exceptions.hpp"
@@ -69,14 +71,15 @@ namespace EasyDelegate
              *  @param methodPointer The address of the static method that this delegate
              *  is intended to invoke.
              */
-            StaticDelegate(const MethodPointer methodPointer) : ITypedDelegate<returnType, parameters...>(false), mMethodPointer(methodPointer) { }
+            StaticDelegate(const MethodPointer methodPointer) : ITypedDelegate<returnType, parameters...>(false), mMethodPointer(methodPointer)
+            {
+            }
 
             /**
              *  @brief Standard copy constructor.
              *  @param other A pointer to a StaticDelegate with the same method signature to copy.
              */
-            StaticDelegate(const StaticDelegate<returnType, parameters...>* other) : ITypedDelegate<returnType, parameters...>(false),
-            mMethodPointer(other->mMethodPointer) { }
+            StaticDelegate(const StaticDelegate<returnType, parameters...>* other) : ITypedDelegate<returnType, parameters...>(false), mMethodPointer(other->mMethodPointer) { }
 
             /**
              *  @brief Invokes the StaticDelegate.
@@ -176,9 +179,68 @@ namespace EasyDelegate
             template <typename otherReturn, typename... otherParams>
 			EASYDELEGATE_INLINE bool hasSameThisPointerAs(const StaticDelegate<otherReturn, otherParams...>* other) const EASYDELEGATE_NOEXCEPT { return false; }
 
-        private:
             //! Internal pointer to proc address to be called.
             const MethodPointer mMethodPointer;
+    };
+
+    /**
+     *  @brief A delegate of an std::function. The purpose of this delegate type is to explicitly support lambda functions as delegates.
+     *  @detail While it is redundant to wrap a std::function in a delegate like this, it appears to be the only method of handling lambdas
+     *  within the easy delegate library when dealt with in contexts that want to invoke functions anonymously regardless of their origin (as
+     *  long as signatures are compatible).
+     */
+    template <typename returnType, typename... parameters>
+    class FunctionDelegate : public ITypedDelegate<returnType, parameters...>
+    {
+        public:
+            //! Helper typedef referring to an std::function.
+            typedef std::function<returnType(parameters...)> FunctionType;
+
+            /**
+             *  @brief Constructor accepting an std::function.
+             *  @param function The std::function to call.
+             */
+            FunctionDelegate(const FunctionType function) : ITypedDelegate<returnType, parameters...>(false), mFunction(function) { }
+
+            /**
+             *  @brief Standard copy constructor.
+             *  @param other A pointer to a FunctionDelegate with the same method signature to copy.
+             */
+            FunctionDelegate(const FunctionDelegate<returnType, parameters...>* other) : ITypedDelegate<returnType, parameters...>(false),
+            mFunction(other->mFunction) { }
+
+            /**
+             *  @brief Invokes the FunctionDelegate.
+             *  @param params Anything; It depends on the method signature specified in the template.
+             *  @return Anything; It depends on the function signature specified in the template.
+             *  @throw std::exception Potentially thrown by the method called by this FunctionDelegate.
+             *  @note The call will not throw an exception in any of the EasyDelegate::DelegateException cases
+             *  but rather assert if assertions are enabled.
+             */
+            returnType invoke(parameters... params)
+            {
+                return mFunction(params...);
+            }
+
+            /**
+             *  @brief Returns whether or not this FunctionDelegate calls against the given this pointer.
+             *  @param thisPointer A pointer referring to the object of interest.
+             *  @return A boolean representing whether or not this FunctionDelegate calls a member function
+             *  against the given this pointer.
+             */
+			EASYDELEGATE_INLINE bool hasThisPointer(const void* thisPointer) const EASYDELEGATE_NOEXCEPT { return false; }
+
+            /**
+             *  @brief Returns whether or not this delegate calls the given static method.
+             *  @param methodPointer A pointer to the static method to be checked against.
+             *  @return A boolean representing whether or not this delegate calls the given proc address.
+             *  @note Always returns false for FunctionDelegate types because a FunctionDelegate cannot invoke static functions.
+             */
+            bool callsMethod(const typename StaticDelegate<returnType, parameters...>::StaticMethodPointerType methodPointer) const EASYDELEGATE_NOEXCEPT { return false; }
+
+        private:
+            //! Internal pointer to proc address to be called.
+            const FunctionType mFunction;
     };
 
     /**

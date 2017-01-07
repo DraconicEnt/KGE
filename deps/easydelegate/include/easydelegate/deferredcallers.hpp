@@ -1,7 +1,7 @@
 /**
  *  @file deferredcallers.hpp
- *  @date 5/25/2016
- *  @version 2.2
+ *  @date 11/17/2016
+ *  @version 3.0
  *  @brief Include file declaring the deferred caller types for use in systems where
  *  deferred calls is a necessity.
  *  @author <a href="http://dx.no-ip.org">Robert MacGregor</a>
@@ -10,7 +10,8 @@
  *	information.
  */
 
-#ifndef EASYDELEGATE_NO_DEFERRED_CALLING
+#if !defined(EASYDELEGATE_NO_DEFERRED_CALLING) && __cplusplus >= 201103L
+
 #ifndef _INCLUDE_EASYDELEGATE_DEFERREDCALLERS_HPP_
 #define _INCLUDE_EASYDELEGATE_DEFERREDCALLERS_HPP_
 

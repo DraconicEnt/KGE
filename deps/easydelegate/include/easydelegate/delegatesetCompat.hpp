@@ -9,12 +9,12 @@
  *	information.
  */
 
-#if !defined(_INCLUDE_EASYDELEGATE_DELEGATESET_HPP_) && __cplusplus >= 201103L
+#if !defined(_INCLUDE_EASYDELEGATE_DELEGATESET_HPP_) && __cplusplus < 201103L
 #define _INCLUDE_EASYDELEGATE_DELEGATESET_HPP_
 
 #include <vector>
 #include <functional>
-#include <unordered_set>
+//#include <unordered_set>
 
 #include "types.hpp"
 #include "delegates.hpp"
@@ -31,59 +31,20 @@ namespace EasyDelegate
      *  the creation of StaticDelegate and MemberDelegate types that are compatible with instances
      *  of this new specialized DelegateSet type.
      */
-    template <typename returnType, typename... parameters>
-    class DelegateSet : public std::vector<ITypedDelegate<returnType, parameters...> *>
+    template <typename returnType, unsigned int paramCount, typename paramOneType = int, typename paramTwoType = int, typename paramThreeType = int, typename paramFourType = int, typename paramFiveType = int>
+    class DelegateSet : public std::vector<ITypedDelegate<returnType, paramCount, paramOneType, paramTwoType, paramThreeType, paramFourType, paramFiveType> *>
     {
         public:
-            //! Helper typedef to construct the function pointer signature from the template.
-            typedef returnType (*delegateFuncPtr)(parameters...);
+            typedef ITypedDelegate<returnType, paramCount, paramOneType, paramTwoType, paramThreeType, paramFourType, paramFiveType> StoredDelegateType;
 
-        public:
-            //! Helper typedef for when building static delegates for this set.
-            typedef StaticDelegate<returnType, parameters...> StaticDelegateType;
-            //! Helper typedef for when building member delegates for this set.
-            template <typename classType>
-            using MemberDelegateType = MemberDelegate<classType, returnType, parameters...>;
-
-            //! Helper typedef for when wanting the return type of this set.
-            typedef returnType ReturnType;
-            //! Helper typedef to construct the StaticDelegate signature from the template.
-            typedef ITypedDelegate<returnType, parameters...> StoredDelegateType;
-
-            //! Helper typedef referring to a static function pointer.
-            typedef returnType(*StaticDelegateFuncPtr)(parameters...);
-            //! Helper typedef referring to a member function pointer.
-            template <typename classType>
-            using MemberDelegateFuncPtr = returnType(classType::*)(parameters...);
-
-            //! Helper typedef referring to an std::function.
-            typedef std::function<returnType(parameters...)> FunctionType;
-            //! Helper typedef referring to a function delegate.
-            typedef FunctionDelegate<returnType, parameters...> FunctionDelegateType;
-
-            #ifndef EASYDELEGATE_NO_DEFERRED_CALLING
-                /**
-                 *  @brief A helper typedef to a DeferredMemberCaller that works against the specified
-                 *  class and matches the signatures stored in this delegate set.
-                 */
-                template <typename classType>
-                using DeferredMemberCallerType = DeferredMemberCaller<classType, returnType, parameters...>;
-
-                /**
-                 *  @brief A helper typedef to a DeferredStaticCaller matches the signatures stored in this
-                 *  delegate set.
-                 */
-                typedef DeferredStaticCaller<returnType, parameters...> DeferredStaticCallerType;
-            #endif
-
-            //! Helper typedef to an std::set that is compatible with the return types of delegates stored here.
-            typedef std::vector<returnType> ReturnSetType;
+            typedef typename EasyDelegate::StaticMethodPointer<paramCount>::template Builder<paramOneType, paramTwoType, paramThreeType, paramFourType, paramFiveType>::pointerType StaticDelegateFuncPtr;
+            typedef StaticDelegate<returnType, paramCount, paramOneType, paramTwoType, paramThreeType, paramFourType, paramFiveType> StaticDelegateType;
 
             //! Standard destructor.
             ~DelegateSet(void)
             {
-                for (auto it = this->begin(); it != this->end(); it++)
-                    delete *it;
+                for (size_t currentIndex = 0; currentIndex < this->size(); ++currentIndex)
+                    delete this->operator[](currentIndex);
             }
 
             /**
@@ -98,10 +59,38 @@ namespace EasyDelegate
              *  assert if assertions are enabled.
              *  @note If this throws an exception, the invocation of the set halts.
              */
-            EASYDELEGATE_INLINE void invoke(parameters... params) const
+            EASYDELEGATE_INLINE void invoke(...) const
             {
-                for (auto it = this->begin(); it != this->end(); it++)
-                    (*it)->invoke(params...);
+                va_list parameters;
+                va_start(parameters, paramCount);
+
+                CallParameters<paramOneType, paramTwoType, paramThreeType, paramFourType, paramFiveType> builtParameters;
+                for (size_t iteration = 0; iteration < paramCount; ++iteration)
+                {
+                    switch (iteration)
+                    {
+                        case 0:
+                            builtParameters.mParamOne = va_arg(parameters, paramOneType);
+                            break;
+                        case 1:
+                            builtParameters.mParamTwo = va_arg(parameters, paramTwoType);
+                            break;
+                        case 2:
+                            builtParameters.mParamThree = va_arg(parameters, paramThreeType);
+                            break;
+                        case 3:
+                            builtParameters.mParamFour = va_arg(parameters, paramFourType);
+                            break;
+                        case 4:
+                            builtParameters.mParamFive = va_arg(parameters, paramFiveType);
+                            break;
+                    }
+                }
+
+                va_end(parameters);
+
+                for (size_t currentIndex = 0; currentIndex < this->size(); ++currentIndex)
+                    this->operator[](currentIndex)->invokeParameters(builtParameters);
             }
 
             /**
@@ -117,10 +106,13 @@ namespace EasyDelegate
              *  assert if assertions are enabled.
              *  @note If this throws an exception, the invocation of the set halts.
              */
-            EASYDELEGATE_INLINE void invoke(std::vector<returnType>& out, parameters... params) const
+            EASYDELEGATE_INLINE void invoke(std::vector<returnType>& out, ...) const
             {
-                for (auto it = this->begin(); it != this->end(); it++)
-                    out.push_back((*it)->invoke(params...));
+                va_list parameters;
+                va_start(parameters, paramCount);
+
+                for (size_t currentIndex = 0; currentIndex < this->size(); ++currentIndex)
+                    out.push_back(this->operator[](currentIndex)->invoke(parameters));
             }
 
             /**
@@ -146,6 +138,7 @@ namespace EasyDelegate
              *  @warning If deleteInstances=false, then the delegates written to out will have their ownership transferred to whatever made
              *  the call, so they must be deletated accordingly.
              */
+             /*
             template <typename className>
             EASYDELEGATE_INLINE void removeDelegateByMethod(const MemberDelegateFuncPtr<className> method, const bool& deleteInstances=true, std::vector<StoredDelegateType *>* out=NULL)
             {
@@ -166,9 +159,10 @@ namespace EasyDelegate
                     }
                 }
 
-                for (auto it = erasedIndices.rbegin(); it != erasedIndices.rend(); ++it)
-                    this->erase(this->begin() + (*it));
+                for (size_t iteration = 0; iteration < erasedIndices.size(); ++iteration)
+                    this->erase(this->begin() + erasedIndices[iteration]);
             }
+            */
 
             /**
              *  @brief Removes all delegates from the set that have the given static method address
@@ -201,8 +195,8 @@ namespace EasyDelegate
                     }
                 }
 
-                for (auto it = erasedIndices.rbegin(); it != erasedIndices.rend(); ++it)
-                    this->erase(this->begin() + (*it));
+                for (size_t iteration = 0; iteration < erasedIndices.size(); ++iteration)
+                    this->erase(this->begin() + erasedIndices[iteration]);
             }
 
             /**
@@ -217,6 +211,7 @@ namespace EasyDelegate
              *  @warning If deleteInstances is false and there is no out specified, you will be leaking memory if there is no other
              *  delegate set tracking the removed delegates.
              */
+             /*
             void removeDelegateByThisPointer(const void* thisPtr, const bool& deleteInstances=true, std::vector<StoredDelegateType *>* out=NULL)
             {
                 std::vector<size_t> erasedIndices;
@@ -236,9 +231,10 @@ namespace EasyDelegate
                     }
                 }
 
-                for (auto it = erasedIndices.rbegin(); it != erasedIndices.rend(); ++it)
-                    this->erase(this->begin() + (*it));
+                for (size_t iteration = 0; iteration < erasedIndices.size(); ++iteration)
+                    this->erase(this->begin() + erasedIndices[iteration]);
             }
+            */
 
             /**
              *  @brief Removes a given delegate by its address.
@@ -250,16 +246,16 @@ namespace EasyDelegate
              */
             StoredDelegateType* removeDelegate(StoredDelegateType* instance, const bool& deleteInstance=true)
             {
-                for (auto it = this->begin(); it != this->end(); it++)
+                for (size_t iteration = 0; iteration < this->size(); ++iteration)
                 {
-                    StoredDelegateType* current = *it;
+                    StoredDelegateType* current = this->operator[](iteration);
 
                     if (current == instance)
                     {
                         if (deleteInstance)
                             delete current;
 
-                        this->erase(it);
+                        this->erase(this->begin() + iteration);
 
                         if (deleteInstance)
                             return NULL;

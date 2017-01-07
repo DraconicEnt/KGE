@@ -1,7 +1,7 @@
 /**
  *  @file easydelegate.hpp
- *  @date 5/25/2016
- *  @version 2.2
+ *  @date 11/17/2016
+ *  @version 3.0
  *  @brief Main include file for the EasyDelegate library.
  *  @author <a href="http://dx.no-ip.org">Robert MacGregor</a>
  *
@@ -15,8 +15,15 @@
 // Define __forceinline if we're on GCC
 #if defined(__GNUC__) || defined(__GNUG__)
     #define __forceinline __attribute__((always_inline))
-    #define EASYDELEGATE_NOEXCEPT noexcept
-    #define EASYDELEGATE_CONSTEXPR constexpr
+
+    // These keywords don't mean anything if we're compiling with an old standard
+    #if __cplusplus >= 201103L
+        #define EASYDELEGATE_NOEXCEPT noexcept
+        #define EASYDELEGATE_CONSTEXPR constexpr
+    #else
+        #define EASYDELEGATE_NOEXCEPT
+        #define EASYDELEGATE_CONSTEXPR
+    #endif
 // VS15 and onwards should support these
 #elif _MSC_VER >= 1900
 	#define EASYDELEGATE_NOEXCEPT noexcept
@@ -30,7 +37,7 @@
 #endif
 
 // If we're going to inline stuff, force it
-#ifdef EASYDELEGATE_FORCE_INLINE
+#if defined(EASYDELEGATE_FORCE_INLINE) && __cplusplus >= 201103L
     #define EASYDELEGATE_INLINE __forceinline
 #else
     //! A preprocessor definition for a keyword that forces the inlining of a given method.
@@ -38,9 +45,15 @@
 #endif
 
 #include "types.hpp"
+
+#if __cplusplus >= 201103L
 #include "delegates.hpp"
 #include "delegateset.hpp"
 #include "deferredcallers.hpp"
+#else
+#include "delegatesCompat.hpp"
+#include "delegatesetCompat.hpp"
+#endif
 
 //! Namespace containing all EasyDelegate functionality.
 namespace EasyDelegate

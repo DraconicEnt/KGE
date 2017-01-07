@@ -94,8 +94,7 @@ namespace Kiaro
 
         void CManagementConsole::registerFunction(const Support::String& name, std::function<void(const Support::Vector<Support::String>&)> lambda)
         {
-            this->registerFunction(name, new ManagementFunction::StaticDelegateType(lambda.target));
-
+            this->registerFunction(name, new ManagementFunction::FunctionDelegateType(lambda));
         }
     } // End NameSpace Support
 } // End NameSpace Kiaro
