@@ -26,6 +26,8 @@ namespace Kiaro
             {
                 EXPECT_THROW(PROFILER_END(TestScope), std::runtime_error);
                 Support::SProfiler::destroy();
+
+                FTime::clearTimers();
             }
 
             TEST(SProfiler, BrokenBegin)
@@ -33,6 +35,8 @@ namespace Kiaro
                 EXPECT_NO_THROW(PROFILER_BEGIN(TestScope));
                 EXPECT_THROW(PROFILER_BEGIN(TestScope), std::runtime_error);
                 Support::SProfiler::destroy();
+
+                FTime::clearTimers();
             }
 
             TEST(SProfiler, Measure)
@@ -57,6 +61,8 @@ namespace Kiaro
                 measuredTime = Support::SProfiler::getPointer()->getSample("TestScope", 0);
                 EXPECT_TRUE(measuredTime <= 0.034f && measuredTime >= 0.031f);
                 Support::SProfiler::destroy();
+
+                FTime::clearTimers();
             }
 
             TEST(SProfiler, InvalidSample)
@@ -69,6 +75,8 @@ namespace Kiaro
                 EXPECT_THROW(Support::SProfiler::getPointer()->getSample("RandomScope", 900), std::out_of_range);
 
                 Support::SProfiler::destroy();
+
+                FTime::clearTimers();
             }
 
             TEST(SProfiler, Average)
@@ -93,6 +101,8 @@ namespace Kiaro
                 // We should also report an error if we don't even know what the sample scope is
                 EXPECT_THROW(profiler->getAverage("RandomScope"), std::out_of_range);
                 Support::SProfiler::destroy();
+
+                FTime::clearTimers();
             }
 
             TEST(SProfiler, AverageReport)
@@ -127,6 +137,8 @@ namespace Kiaro
                 }
 
                 Support::SProfiler::destroy();
+
+                FTime::clearTimers();
             }
         }
     } // End Namespace Support

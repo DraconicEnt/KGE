@@ -145,7 +145,7 @@ namespace Kiaro
         void CBitStream::resize(const size_t newSize)
         {
             // TODO: Implement as an exception
-            assert(newSize > mTotalSize);
+            CONSOLE_ASSERT(newSize > mTotalSize, "newSize=%u,mTotalSize=%u", newSize, mTotalSize);
 
             if (mOwnsMemoryBlock)
                 mMemoryBlock = reinterpret_cast<Common::U8*>(realloc(mMemoryBlock, newSize));
@@ -161,11 +161,12 @@ namespace Kiaro
 
                 // Update our stored block information
                 mMemoryBlock = newBlock;
-                mTotalSize = newSize;
 
                 // We definitely own this block now
                 mOwnsMemoryBlock = true;
             }
+
+            mTotalSize = newSize;
         }
 
         template <>

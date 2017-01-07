@@ -17,6 +17,7 @@
 
 #include <physfs.h>
 
+#include <support/Console.hpp>
 #include <support/FEndian.hpp>
 #include <support/common.hpp>
 #include <support/String.hpp>
@@ -89,7 +90,7 @@ namespace Kiaro
                 {
                     static_assert(!std::is_pointer<inType>::value, "Cannot write pointer values to a bit stream!");
 
-                    assert(mPointer <= mTotalSize);
+                    CONSOLE_ASSERT(mPointer <= mTotalSize, "mPointer=%u,mTotalSize=%u", mPointer, mTotalSize);
 
                     if ((mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType)) && mResizeLength == 0)
                         throw std::overflow_error("Stack Overflow");

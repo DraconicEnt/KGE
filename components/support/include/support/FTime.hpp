@@ -24,6 +24,10 @@ namespace Kiaro
         {
             typedef Common::U8 timer;
 
+            /**
+             *  @brief Starts a new timer and returns the identifier to it to be used in stopTimer.
+             *  @return The identifier of the timer that was started.
+             */
             timer startTimer(void);
 
             /**
@@ -32,6 +36,11 @@ namespace Kiaro
              *  @throw std::logic_error When there are no running timers to stop.
              */
             Common::F32 stopTimer(const timer& timerIdentifier);
+
+            /**
+             *  @brief Clears all timers in the timing system.
+             */
+            void clearTimers(void);
 
             Common::U64 getSimTimeMilliseconds(void) NOTHROW;
         } // End NameSpace Time

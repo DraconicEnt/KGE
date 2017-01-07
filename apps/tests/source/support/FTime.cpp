@@ -33,16 +33,20 @@ namespace Kiaro
 
                 // We should be reasonably accurate about the timing
                 EXPECT_TRUE(sleepTimeSeconds <= 0.034f && sleepTimeSeconds >= 0.031f);
+
+                FTime::clearTimers();
             }
 
             TEST(FTime, TimerIdentifiers)
             {
-                for (Common::U8 iteration = 1; iteration < std::numeric_limits<Common::U8>::max(); iteration++)
+                for (Common::S32 iteration = 1; iteration < std::numeric_limits<Common::U8>::max(); iteration++)
                     EXPECT_EQ(iteration, FTime::startTimer());
 
                 // Then cleanup
                 for (Common::S32 iteration = std::numeric_limits<Common::U8>::max() - 1; iteration > 0; iteration--)
                     EXPECT_NO_THROW(FTime::stopTimer(iteration));
+
+                FTime::clearTimers();
             }
         }
     } // End Namespace Support

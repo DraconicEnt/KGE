@@ -9,8 +9,8 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
+#include <support/Console.hpp>
 #include <core/SObjectRegistry.hpp>
-
 #include <game/IEngineObject.hpp>
 
 namespace Kiaro
@@ -60,7 +60,7 @@ namespace Kiaro
 
             void SObjectRegistry::setNameEntry(Game::IEngineObject* object, const Support::String& name)
             {
-                assert(!name.empty());
+                CONSOLE_ASSERT(!name.empty(), "Name parameter was empty.");
 
                 if (!object)
                 {

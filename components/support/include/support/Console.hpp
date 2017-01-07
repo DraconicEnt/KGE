@@ -164,6 +164,17 @@ namespace Kiaro
             }
 
             /**
+             *  @brief Helper method to test for an assertion and write formatted messages to the console.
+             *  @param format The string to format given the varible length parameter list.
+             */
+            template <typename... parameters>
+            static void assertf(bool expressionValue, const Support::String& format, parameters... params)
+            {
+                if (!expressionValue)
+                    errorf(format, params...);
+            }
+
+            /**
              *  @brief Writes an unformatted message to the console as the given message type.
              *  @param type The message type to write as.
              *  @param output The string to write to the console.
@@ -216,7 +227,10 @@ namespace Kiaro
             #define QUOTE(T) QUOTE_IMPL(T)
 
             #define ASSEMBLE_OUTPUT(format) __FILE__:__LINE__:: format
+            #define ASSEMBLE_ASSERTION(expression, format) Failed assertion (expression) at __FILE__:__LINE__:: format
 
+            //! Helper define to perform an assertion that the engine handles.
+            #define CONSOLE_ASSERT(expression, format, ...) Support::Console::assertf(expression, QUOTE(ASSEMBLE_ASSERTION(#expression, format)), ##__VA_ARGS__); assert(expression)
             //! Helper define to emit a formatted console error message.
             #define CONSOLE_ERRORF(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
             //! Helper define to emit a formatted console info message.

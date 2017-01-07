@@ -65,6 +65,11 @@ namespace Kiaro
             {
                 return sCurrentSimTime / 1000ULL;
             }
+
+            void clearTimers(void)
+            {
+                sTimerStack = Support::Stack<std::chrono::time_point<std::chrono::high_resolution_clock>>();
+            }
         } // End NameSpace Time
     } // End NameSpace Support
 } // End NameSpace Kiaro

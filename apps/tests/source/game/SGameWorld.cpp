@@ -52,10 +52,6 @@ namespace Kiaro
                     {
                     }
 
-                    void registerEntity(void)
-                    {
-                    }
-
                     void update(const Common::F32 deltaTimeSeconds)
                     {
                     }
@@ -81,6 +77,7 @@ namespace Kiaro
 
                 TestEntity* entity = new TestEntity();
                 entity->setName("entity");
+                entity->registerEntity();
 
                 EXPECT_EQ(entity, world->getEntity("entity"));
                 EXPECT_EQ(entity, world->getEntity(entity->mID));
@@ -94,11 +91,14 @@ namespace Kiaro
                 SGameWorld* world = SGameWorld::getInstance();
 
                 TestEntity* entityOne = new TestEntity();
+                entityOne->registerEntity();
                 EXPECT_EQ(0, entityOne->mID);
                 TestEntity* entityTwo = new TestEntity();
+                entityTwo->registerEntity();
 
                 EXPECT_EQ(1, entityTwo->mID);
                 TestEntity* entityThree = new TestEntity();
+                entityThree->registerEntity();
 
                 EXPECT_EQ(2, entityThree->mID);
                 world->removeEntity(entityTwo);
@@ -121,6 +121,7 @@ namespace Kiaro
                 TestEntity* entity = new TestEntity();
 
                 entity->setName("entity");
+                entity->registerEntity();
                 TestObject* object = new TestObject();
 
                 object->setName("object");

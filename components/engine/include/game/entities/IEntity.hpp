@@ -159,7 +159,7 @@ namespace Kiaro
                          *  @note For clientside entities to be simulated, these should generally be within the client scope before
                          *  being networked at all.
                          */
-                        virtual void registerEntity(void) = 0;
+                        virtual void registerEntity(void);
 
                         /**
                          *  @brief Pushes an update time pulse to the entity.
