@@ -15,7 +15,7 @@
 #include <support/common.hpp>
 #include <video/SRenderer.hpp>
 
-#include <irrlicht.h>
+#include <osgViewer/Viewer>
 
 #include <game/entities/IEntity.hpp>
 
@@ -33,7 +33,7 @@ namespace Kiaro
             {
             public:
                 //! Parameterless constructor.
-                CSceneGraph(Engine::Video::SRenderer *renderer);
+                CSceneGraph(Engine::Video::SRenderer* renderer);
 
                 //! Standard destructor.
                 ~CSceneGraph(void);
@@ -43,9 +43,9 @@ namespace Kiaro
                  *  scene graph.
                  *  @param node A pointer to the node to add to this scene graph.
                  */
-                void add(irr::scene::ISceneNode *node);
+                void add(osg::Node* node);
 
-                void add(Game::Entities::IEntity *entity);
+                void add(Game::Entities::IEntity* entity);
 
                 bool isVisible(void);
 
@@ -56,7 +56,7 @@ namespace Kiaro
 
             private:
                 //! A pointer to the root scene node.
-                irr::scene::ISceneNode *mRoot;
+                osg::ref_ptr<osg::Group> mGroup;
             };
         }
     } // End NameSpace Engine

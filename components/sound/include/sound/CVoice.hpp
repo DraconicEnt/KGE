@@ -15,6 +15,7 @@
 #include <fmod.hpp>
 
 #include <support/common.hpp>
+#include <support/types.hpp>
 
 namespace Kiaro
 {
@@ -43,10 +44,10 @@ namespace Kiaro
 
                 void setPlaybackTimeMS(const Common::U32& ms);
 
-                void setPositionVelocity(const Common::Vector3DF& position, const Common::Vector3DF& velocity);
+                void setPositionVelocity(const Support::Vector3DF& position, const Support::Vector3DF& velocity);
 
-                Common::Vector3DF getPosition(void);
-                Common::Vector3DF getVelocity(void);
+                Support::Vector3DF getPosition(void);
+                Support::Vector3DF getVelocity(void);
         };
     } // End NameSpace Sound
 } // End NameSpace Kiaro

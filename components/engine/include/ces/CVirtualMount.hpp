@@ -4,9 +4,11 @@
 #ifndef _INCLUDE_CVIRTUALMOUNT_HPP_
 #define _INCLUDE_CVIRTUALMOUNT_HPP_
 
+#include <support/types.hpp>
 #include <support/common.hpp>
 
 #include <ces/IComponent.hpp>
+
 
 namespace Kiaro
 {
@@ -23,10 +25,10 @@ namespace Kiaro
                     int mMountID;
 
                     //! Offset from origin.
-                    Common::Vector3DF mTranslation;
+                    Support::Vector3DF mTranslation;
 
                     //! Euclideon angle for now.
-                    Common::Vector3DF mRotation;
+                    Support::Vector3DF mRotation;
             };
         }
     }

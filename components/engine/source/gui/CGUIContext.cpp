@@ -19,8 +19,9 @@ namespace Kiaro
     {
         namespace GUI
         {
-            CGUIContext::CGUIContext(const Support::String& name) : mGUI(nullptr), mDialog(nullptr), mContext(nullptr), mName(name)
+            CGUIContext::CGUIContext(const Support::String& name) : mName(name)
             {
+                /*
                 CEGUI::System &cegui = CEGUI::System::getSingleton();
 
                 if (name == "main")
@@ -48,10 +49,13 @@ namespace Kiaro
 
                 // Now finally default the cursor to invisible
                 this->setCursorVisible(false);
+                */
             }
 
+            /*
             CEGUI::FrameWindow* CGUIContext::showDialog(const Support::String &name)
             {
+
                 if (mDialog)
                     mDialog->hide();
 
@@ -80,9 +84,11 @@ namespace Kiaro
 
                 return mDialog;
             }
+            */
 
             void CGUIContext::displayMessageBoxOK(const Support::String &title, const Support::String &body)
             {
+                /*
                 try
                 {
                     CEGUI::FrameWindow *dialog = this->showDialog("messageBoxOK");
@@ -99,22 +105,23 @@ namespace Kiaro
                 {
                     // FIXME: Deal with this in some way
                 }
+                */
             }
 
             CGUIContext::~CGUIContext(void)
             {
-                CEGUI::System &cegui = CEGUI::System::getSingleton();
-                cegui.destroyGUIContext(*mContext);
+             //   CEGUI::System &cegui = CEGUI::System::getSingleton();
+              //  cegui.destroyGUIContext(*mContext);
             }
 
             void CGUIContext::setCursorPosition(const Support::Vector2DF& position)
             {
-                mContext->injectMousePosition(position.X, position.Y);
+              //  mContext->injectMousePosition(position.X, position.Y);
             }
 
             void CGUIContext::setCursorVisible(bool visible)
             {
-                mContext->getMouseCursor().setVisible(visible);
+              //  mContext->getMouseCursor().setVisible(visible);
             }
         } // End NameSpace GUI
     } // End NameSpace Engine

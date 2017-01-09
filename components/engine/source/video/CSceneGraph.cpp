@@ -20,54 +20,37 @@ namespace Kiaro
     {
         namespace Video
         {
-            CSceneGraph::CSceneGraph(Engine::Video::SRenderer *renderer)
+            CSceneGraph::CSceneGraph(Engine::Video::SRenderer* renderer)
             {
-                mRoot = renderer->getIrrlichtDevice()->getSceneManager()->addEmptySceneNode();
+                mGroup = new osg::Group();
             }
 
             CSceneGraph::~CSceneGraph(void)
             {
-                assert(mRoot);
-
-                mRoot->removeAll();
-                mRoot->remove();
-                mRoot = nullptr;
                 CONSOLE_INFO("Destroyed a scene graph.");
             }
 
-            void CSceneGraph::add(irr::scene::ISceneNode *node)
+            void CSceneGraph::add(osg::Node* node)
             {
-                mRoot->addChild(node);
+                mGroup->addChild(node);
             }
 
-            void CSceneGraph::add(Game::Entities::IEntity *entity)
+            void CSceneGraph::add(Game::Entities::IEntity* entity)
             {
-                for (irr::scene::ISceneNode *node: entity->mSceneNodes)
+                for (osg::Node* node: entity->mSceneNodes)
                     this->add(node);
             }
 
             bool CSceneGraph::isVisible(void)
             {
-                return mRoot->isVisible();
+                // FIXME: Implement correctly
+                return true;
             }
 
             void CSceneGraph::setVisible(const bool visible)
             {
-                mRoot->setVisible(visible);
+                // FIXME: Implement correctly
             }
-
-            /*
-                    const Common::ColorRGBA &CSceneGraph::getClearColor(void)
-                    {
-                        return mClearColor;
-                    }
-
-                    void CSceneGraph::setClearColor(const Common::ColorRGBA &color)
-                    {
-                        mClearColor = color;
-                    }
-                    */
-
         } // End NameSpace Engine
     }
 } // End NameSpace Kiaro

@@ -16,8 +16,6 @@
 
 #include <game/entities/IEntity.hpp>
 
-#include <irrlicht.h>
-
 namespace Kiaro
 {
     namespace Support

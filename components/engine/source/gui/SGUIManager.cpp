@@ -25,45 +25,27 @@ namespace Kiaro
         {
             void SGUIManager::draw(void)
             {
-                CEGUI::System::getSingleton().renderAllGUIContexts();
+              //  CEGUI::System::getSingleton().renderAllGUIContexts();
             }
 
             void SGUIManager::setResolution(const Support::Dimension2DU &resolution)
             {
-                CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Sizef(resolution.Width, resolution.Height));
+               // CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Sizef(resolution.Width, resolution.Height));
             }
 
             SGUIManager::SGUIManager(void)
             {
                 CONSOLE_INFO("Initializing GUI subsystem.");
-                irr::IrrlichtDevice *irrlicht = Video::SRenderer::getInstance()->getIrrlichtDevice();
 
-                try
-                {
-                    // We don't need the OS cursor
-                    CEGUI::IrrlichtRenderer &renderer = CEGUI::IrrlichtRenderer::create(*irrlicht);
+               // mPlatform = new MyGUI::OpenGLPlatform();
+              //  mPlatform->initialise(nullptr);
 
-                    FileSystem::SResourceProvider *resourceProvider = FileSystem::SResourceProvider::getPointer();
-                    CEGUI::System::create(renderer, resourceProvider, nullptr, nullptr, nullptr, "", "log.txt");
-
-                    resourceProvider->setResourceGroupDirectory("fonts", "fonts/");
-                    resourceProvider->setResourceGroupDirectory("ui", "ui/");
-                    CEGUI::System &cegui = CEGUI::System::getSingleton();
-                    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme", "ui");
-                    CEGUI::FontManager::getSingleton().createFromFile("DejaVuSans-10.font", "fonts");
-
-                    // Create the main context
-                    this->createContext("main");
-                }
-                catch (CEGUI::InvalidRequestException &e)
-                {
-                    CONSOLE_ERROR("Failed to initialize the GUI System. Reason:\n%s", e.what());
-                    return;
-                }
+              //  mMyGUI = new MyGUI::Gui();
+              //  mMyGUI->initialise("core.xml");
 
                 // Make sure the resolution is right
-                Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
-                irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>(
+                Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
+                Support::Dimension2DU resolution = settings->getValue<Support::Dimension2DU>(
                         "Video::Resolution");
                 this->setResolution(resolution);
 
@@ -75,6 +57,7 @@ namespace Kiaro
 
             }
 
+            /*
             CGUIContext* SGUIManager::createContext(const Support::String& name)
             {
                 if (mContexts.find(name) != mContexts.end())
@@ -90,7 +73,9 @@ namespace Kiaro
 
                 return result;
             }
+            */
 
+            /*
             CEGUI::FrameWindow* SGUIManager::loadDialog(const Support::String &name)
             {
                 CEGUI::FrameWindow* result = nullptr;
@@ -104,17 +89,18 @@ namespace Kiaro
 
                 CONSOLE_INFOF("Loading layout for %s: %s", name.data(), fileName.data());
 
-                CEGUI::WindowManager &windowManager = CEGUI::WindowManager::getSingleton();
 
                 // Load the GUI's
-                result = static_cast<CEGUI::FrameWindow *>(windowManager.loadLayoutFromFile(fileName.data())->getChild("Window"));
-                result->hide();
+              //  result = static_cast<CEGUI::FrameWindow *>(windowManager.loadLayoutFromFile(fileName.data())->getChild("Window"));
+              //  result->hide();
 
                 mDialogs[name] = result;
 
                 return result;
             }
+            */
 
+            /*
             CGUIContext* SGUIManager::getContext(const Support::String& name)
             {
                 auto searchResult = mContexts.find(name);
@@ -125,6 +111,7 @@ namespace Kiaro
                 CONSOLE_ERRORF("No such GUI context: %s", name.data());
                 return nullptr;
             }
+            */
 
             bool SGUIManager::loadGUI(const Support::String &name)
             {

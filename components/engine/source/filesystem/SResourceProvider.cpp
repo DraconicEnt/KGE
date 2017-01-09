@@ -27,6 +27,7 @@
  *   OTHER DEALINGS IN THE SOFTWARE.
  ***************************************************************************/
 
+ /*
 #include <stdio.h>
 #include <physfs.h>
 
@@ -287,3 +288,4 @@ namespace Kiaro
         }
     } // End NameSpace Engine
 } // End NameSpace Kiaro
+*/

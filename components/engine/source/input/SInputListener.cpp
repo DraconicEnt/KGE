@@ -49,6 +49,7 @@ namespace Kiaro
             CONSOLE_INFO("Destroyed input subsystem.");
         }
 
+        /*
         static inline CEGUI::Key::Scan AllegroKeyToCEGUI(const Common::U32 code)
         {
             switch(code)
@@ -232,6 +233,7 @@ namespace Kiaro
 
             return CEGUI::Key::Scan::Unknown;
         }
+        */
 
         void SInputListener::scanJoysticks(void)
         {
@@ -306,10 +308,11 @@ namespace Kiaro
 
             if (renderer->mHasDisplay)
             {
-                const bool result = enabled ? al_grab_mouse(renderer->getDisplay()) : al_ungrab_mouse();
+                // FIXME: Process this generically
+               // const bool result = enabled ? al_grab_mouse(renderer->getDisplay()) : al_ungrab_mouse();
 
-                if (!result)
-                    CONSOLE_ERROR("Failed to change mouse capture status.");
+               // if (!result)
+               //     CONSOLE_ERROR("Failed to change mouse capture status.");
             }
         }
 
@@ -321,13 +324,14 @@ namespace Kiaro
             ALLEGRO_KEYBOARD_STATE keyboardState;
             al_get_keyboard_state(&keyboardState);
 
-            CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
+          //  CEGUI::GUIContext& guiContext = CEGUI::System::getSingleton().getDefaultGUIContext();
 
             // TODO: This is bound to go weird in some situations probably; like breaking responders for non-typable keys (like F1-F12)
-            mTyping = guiContext.getInputCaptureWindow() != nullptr;
+           // mTyping = guiContext.getInputCaptureWindow() != nullptr;
+            bool mTyping = false;
 
             Engine::GUI::SGUIManager* gui = Engine::GUI::SGUIManager::getInstance();
-            gui->getContext("main")->setCursorPosition(Support::Vector2DF(mouseState.x, mouseState.y));
+        //    gui->getContext("main")->setCursorPosition(Support::Vector2DF(mouseState.x, mouseState.y));
 
             // Process input events
             while (!al_is_event_queue_empty(mInputQueue))
@@ -349,10 +353,10 @@ namespace Kiaro
                                 this->dispatchInputResponse(event.keyboard.keycode, INPUT_KEYBOARD, 0, event);
 
                             // We'll just shove keyboard input into CEGUI, then.
-                            if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
-                                guiContext.injectKeyDown(AllegroKeyToCEGUI(event.keyboard.keycode));
-                            else
-                                guiContext.injectKeyUp(AllegroKeyToCEGUI(event.keyboard.keycode));
+                          //  if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
+                            //    guiContext.injectKeyDown(AllegroKeyToCEGUI(event.keyboard.keycode));
+                           // else
+                            //    guiContext.injectKeyUp(AllegroKeyToCEGUI(event.keyboard.keycode));
 
                             break;
                         }
@@ -363,10 +367,10 @@ namespace Kiaro
                         {
                             this->dispatchInputResponse(event.mouse.button, INPUT_MOUSE, 0, event);
 
-                            if (event.mouse.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-                                guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
-                            else
-                                guiContext.injectMouseButtonUp(CEGUI::MouseButton::LeftButton);
+                           // if (event.mouse.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+                           //     guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
+                           // else
+                           //     guiContext.injectMouseButtonUp(CEGUI::MouseButton::LeftButton);
 
                             break;
                         }

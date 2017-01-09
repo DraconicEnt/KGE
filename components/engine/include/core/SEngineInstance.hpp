@@ -14,8 +14,6 @@
 
 #include <allegro5/allegro.h>
 
-#include <irrlicht.h>
-
 #include <support/support.hpp>
 #include <support/Vector.hpp>
 #include <support/common.hpp>

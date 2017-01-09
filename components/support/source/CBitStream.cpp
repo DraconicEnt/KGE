@@ -170,14 +170,14 @@ namespace Kiaro
         }
 
         template <>
-        void CBitStream::write(const Common::Vector3DF& input)
+        void CBitStream::write(const Support::Vector3DF& input)
         {
             if (mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(Common::F32) * 3)
                 throw std::overflow_error("Stack Overflow");
 
-            this->write(input.X);
-            this->write(input.Y);
-            this->write(input.Z);
+            this->write(input.x());
+            this->write(input.y());
+            this->write(input.z());
         }
 
         bool CBitStream::isFull(void) const

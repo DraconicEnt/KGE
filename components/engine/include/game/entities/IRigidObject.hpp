@@ -12,9 +12,10 @@
 #ifndef _INCLUDE_KIARO_GAME_ENTITIES_RIGIDOBJECTBASE_HPP_
 #define _INCLUDE_KIARO_GAME_ENTITIES_RIGIDOBJECTBASE_HPP_
 
-#include <irrlicht.h>
+#include <osg/Node>
 #include <btBulletDynamicsCommon.h>
 
+#include <support/types.hpp>
 #include <game/entities/types.hpp>
 #include <game/entities/IEntity.hpp>
 
@@ -30,7 +31,7 @@ namespace Kiaro
                 {
                     // Protected Members
                     protected:
-                        irr::scene::ISceneNode* mRender;
+                        osg::Node* mRender;
                         btRigidBody* mPhysicalBody;
 
                         Support::Vector3DF mPosition;

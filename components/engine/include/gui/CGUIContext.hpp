@@ -15,9 +15,6 @@
 #include <support/types.hpp>
 #include <support/UnorderedMap.hpp>
 
-#include <CEGUI/CEGUI.h>
-#include <CEGUI/RendererModules/Irrlicht/Renderer.h>
-
 namespace Kiaro
 {
     namespace Engine
@@ -39,22 +36,22 @@ namespace Kiaro
                     const Support::String mName;
 
                     //! A pointer to the CEGUI context we're dealing with internally.
-                    CEGUI::GUIContext* mContext;
+                   // CEGUI::GUIContext* mContext;
 
                     //! The root of the GUI system.
-                    CEGUI::Window* mRoot;
+                   // CEGUI::Window* mRoot;
 
                     //! The parent of whatever GUI we're displaying.
-                    CEGUI::Window* mGUI;
+                   // CEGUI::Window* mGUI;
 
                     //! The current dialog we're displaying.
-                    CEGUI::FrameWindow* mDialog;
+                   // CEGUI::FrameWindow* mDialog;
 
                     //! A mapping of dialog names to CEGUI frame window of the dialog.
-                    Support::UnorderedMap<Support::String, CEGUI::FrameWindow*> mDialogs;
+                 //   Support::UnorderedMap<Support::String, CEGUI::FrameWindow*> mDialogs;
 
                     //! A mapping of GUI names to the CEGUI window containing the entire GUI.
-                    Support::UnorderedMap<Support::String, CEGUI::Window*> mGUIs;
+                //    Support::UnorderedMap<Support::String, CEGUI::Window*> mGUIs;
 
                 // Public Methods
                 public:
@@ -82,7 +79,7 @@ namespace Kiaro
                      * @return The frame window of the dialog to be used for setting whatever GUI state is
                      * desired for this dialog.
                      */
-                    CEGUI::FrameWindow* showDialog(const Support::String &name);
+                  //  CEGUI::FrameWindow* showDialog(const Support::String &name);
 
                     /**
                      * @brief Helper method to display a generic message box with some message.

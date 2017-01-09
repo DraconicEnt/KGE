@@ -12,15 +12,14 @@
 #ifndef _INCLUDE_VIDEO_SRENDERER_HPP_
 #define _INCLUDE_VIDEO_SRENDERER_HPP_
 
-#include <irrlicht.h>
-
+#include <osgViewer/Viewer>
 #include <allegro5/allegro.h>
 
 #include <support/common.hpp>
 #include <support/support.hpp>
 #include <support/ISingleton.hpp>
 
-#include <video/CDisplay.hpp>
+#include <video/CGraphicsWindow.hpp>
 #include <support/UnorderedSet.hpp>
 
 namespace Kiaro
@@ -45,34 +44,29 @@ namespace Kiaro
                 // Public Members
                 public:
                     //! The color drawn that is drawn when there is pixel space without anything in it.
-                    Common::ColorRGBA mClearColor;
+                    Support::ColorRGBA mClearColor;
 
                     //! A boolean representing whether or not the renderer has a display. It won't have a display in dedicated mode.
                     const bool mHasDisplay;
 
                 // Private Members
                 private:
-                    //! The Irrlicht context.
-                    irr::IrrlichtDevice* mIrrlichtDevice;
-                    //! Irrlicht's video driver.
-                    irr::video::IVideoDriver* mVideo;
-                    //! Irrlicht's scene manager.
-                    irr::scene::ISceneManager* mSceneManager;
+                    //! The OSG viewer to use.
+                    osgViewer::Viewer* mViewer;
 
                     //! The primary scene used to render the main game.
                     CSceneGraph* mMainScene;
                     //! The scene to render.
                     CSceneGraph* mCurrentScene;
 
-                    //! A pointer to the Allegro display we are using.
-                    ALLEGRO_DISPLAY* mDisplay;
-                    //! A pointer to the event queue for our Allegro display.
-                    ALLEGRO_EVENT_QUEUE* mWindowEventQueue;
-
                     //! The recurring scheduled event representing our frame draw pulse when not in dedicated mode.
                     Support::CScheduledEvent* mTimePulse;
+
                     //! A set of auxilliary displays to also draw to.
-                    Support::UnorderedSet<CDisplay*> mDisplays;
+                    Support::UnorderedSet<CGraphicsWindow*> mDisplays;
+
+                    //! The primary graphics window.
+                    CGraphicsWindow* mPrimaryWindow;
 
                 // Public Methods
                 public:
@@ -96,13 +90,7 @@ namespace Kiaro
                      *  @brief Returns the pointer to the internally used Irrlicht device.
                      *  @return A pointer to the internally used Irrlicht device.
                      */
-                    irr::IrrlichtDevice* getIrrlichtDevice(void) const NOTHROW;
-
-                    /**
-                     *  @brief Returns a pointer to the main display.
-                     *  @return A pointer to the ALLEGRO_DISPLAY for our main window.
-                     */
-                    ALLEGRO_DISPLAY* getDisplay(void) NOTHROW;
+                    osgViewer::Viewer* getViewer(void) const NOTHROW;
 
                     /**
                      *  @brief Returns a pointer to the main scene graph. This is where the normal game sim will operate in.
@@ -123,7 +111,7 @@ namespace Kiaro
                      *  @warning Auxilliary displays do not function correctly right now. The way the graphics libraries we are using
                      *  are written (particularly CEGUI), they may not work without switching out for a more compatible library.
                      */
-                    CDisplay* createDisplay(const Support::String& title);
+                    CGraphicsWindow* createDisplay(const Support::String& title);
 
                 // Private Methods
                 private:
@@ -140,9 +128,6 @@ namespace Kiaro
                      *  @retval 0 for success. Anything else for failure.
                      */
                     Common::S32 initializeRenderer(const Support::Dimension2DU& resolution);
-
-                    //! Process all pending events for the game window, such as window resizing.
-                    void processWindowEvents(void);
 
                 // Protected Methods
                 protected:

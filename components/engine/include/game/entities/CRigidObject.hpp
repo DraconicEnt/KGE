@@ -16,8 +16,6 @@
 
 #include <game/entities/IRigidObject.hpp>
 
-#include <irrlicht.h>
-
 namespace Kiaro
 {
     namespace Engine

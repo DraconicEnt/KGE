@@ -13,9 +13,9 @@
 #define _INCLUDE_ENGINE_VIDEO_CBULLETDEBUGDRAWER_HPP_
 
 #include <LinearMath/btIDebugDraw.h>
-#include <irrlicht.h>
 
 #include <support/common.hpp>
+#include <support/types.hpp>
 
 namespace Kiaro
 {
@@ -31,7 +31,7 @@ namespace Kiaro
             {
                 // Public Methods
                 public:
-                    CBulletDebugDrawer(irr::IrrlichtDevice* irrlicht);
+                    CBulletDebugDrawer(void);
 
                     virtual void drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color);
 
@@ -49,7 +49,6 @@ namespace Kiaro
                 // Private Members
                 private:
                     Common::S32 mDebugMode;
-                    irr::IrrlichtDevice* mIrrlicht;
             };
         } // End NameSpace Video
     } // End NameSpace Engine

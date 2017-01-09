@@ -72,7 +72,7 @@ namespace Kiaro
                         const Common::U8 mFlags;
 
                         //! All scene nodes associated with this entity.
-                        Support::UnorderedSet<irr::scene::ISceneNode*> mSceneNodes;
+                        Support::UnorderedSet<osg::Node*> mSceneNodes;
 
                     // Protected Members
                     protected:

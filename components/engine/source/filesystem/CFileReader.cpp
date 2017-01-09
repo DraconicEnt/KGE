@@ -15,6 +15,7 @@ namespace Kiaro
 {
     namespace FileSystem
     {
+            /*
         CFileReader::CFileReader(const Support::String& filename) : mFileName(filename), mFileHandle(PHYSFS_openRead(filename.data())), mIrrlichtPath(filename.data())
         {
             if (!mFileHandle)
@@ -53,5 +54,6 @@ namespace Kiaro
         {
             return mIrrlichtPath;
         }
+        */
     } // End Namespace Engine
 } // End Namespace Kiaro

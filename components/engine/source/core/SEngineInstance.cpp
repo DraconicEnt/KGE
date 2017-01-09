@@ -16,19 +16,6 @@
 #include <core/SEngineInstance.hpp>
 #include <video/SRenderer.hpp>
 
-#include <irrlicht.h>
-
-#include <CEGUI/CEGUI.h>
-#include <CEGUI/RendererModules/Irrlicht/Renderer.h>
-
-#if defined(ENGINE_UNIX)
-#include <allegro5/allegro_x.h>
-#elif defined(ENGINE_WIN)
-#include <allegro5/allegro_windows.h>
-#else
-#include <allegro5/allegro_osx.h>
-#endif
-
 #include <allegro5/allegro_physfs.h>
 
 #include <support/tasking/SAsynchronousTaskManager.hpp>
@@ -275,7 +262,7 @@ namespace Kiaro
                         // The GUI, video and sound systems run independently of our network time pulse
                         if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
                         {
-                            CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
+                          //  CEGUI::System::getSingleton().injectTimePulse(deltaTimeSeconds);
                             Sound::SSoundManager::getInstance()->update();
                         }
 

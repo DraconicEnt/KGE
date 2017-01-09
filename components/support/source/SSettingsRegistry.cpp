@@ -37,7 +37,7 @@ namespace Kiaro
 
             // Video
             this->setValue<bool>("Video::Fullscreen", false);
-            this->setValue<irr::core::dimension2d<Common::U32>>("Video::Resolution", irr::core::dimension2d<Common::U32>(640, 480));
+            this->setValue<Support::Dimension2DU>("Video::Resolution", Support::Dimension2DU(640, 480));
             this->setValue<Common::U16>("Video::ActiveFPS", 60);
             this->setValue<Common::U16>("Video::InactiveFPS", 15);
 
@@ -153,7 +153,7 @@ namespace Kiaro
                 al_add_config_comment(config, "Video", "Resolution controls the window resolution of the engine");
                 Support::Dimension2DU resolution = this->getValue<Support::Dimension2DU>("Video::Resolution");
 
-                sprintf(tempBuffer, "%ux%u", resolution.Width, resolution.Height);
+                sprintf(tempBuffer, "%ux%u", resolution.x(), resolution.y());
                 al_set_config_value(config, "Video", "Resolution", tempBuffer);
                 al_add_config_comment(config, "Video", "Fullscreen controls whether or not the engine will run full screen");
                 al_set_config_value(config, "Video", "Fullscreen", this->getValue<bool>("Video::Fullscreen") ? "1" : "0");

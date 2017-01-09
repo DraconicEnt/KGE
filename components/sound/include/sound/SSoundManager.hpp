@@ -14,6 +14,7 @@
 #include <support/String.hpp>
 #include <support/UnorderedMap.hpp>
 #include <support/ISingleton.hpp>
+#include <support/types.hpp>
 
 #include <sound/CSoundSource.hpp>
 

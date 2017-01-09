@@ -12,7 +12,11 @@
 #ifndef _INCLUDE_SUPPORT_TYPES_HPP_
 #define _INCLUDE_SUPPORT_TYPES_HPP_
 
-#include <irrlicht.h>
+#include <osg/Vec3f>
+#include <osg/Vec2f>
+#include <osg/Vec2i>
+#include <osg/Vec4>
+#include <osg/ColorMask>
 
 #include <atomic>
 #include <iostream>
@@ -60,16 +64,16 @@ namespace Kiaro
         //! A typedef to an std::wstring.
         typedef std::wstring WString;
 
-        typedef irr::core::vector3df Vector3DF;
+        //! 3D vector typedef.
+        typedef osg::Vec3f Vector3DF;
 
-        typedef irr::core::vector2df Vector2DF;
-
-        //! A typedef to a 2D vector type that represents dimensions.
-        template <typename storedType>
-        using Dimension2D = irr::core::dimension2d<storedType>;
+        //! 2D vector typedef.
+        typedef osg::Vec2f Vector2DF;
 
         //! A typedef to a 2D vector that represents dimensions using an unsigned int.
-        typedef Dimension2D<Common::U32> Dimension2DU;
+        typedef osg::Vec2i Dimension2DU;
+
+        typedef osg::Vec4 ColorRGBA;
     }
 }
 #endif // _INCLUDE_SUPPORT_TYPES_HPP_

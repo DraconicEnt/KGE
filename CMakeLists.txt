@@ -46,12 +46,12 @@ OPTION(USE_BOOST_REGEX "Use boost::regex instead of std::regex." OFF)
 # Options to build specific parts of the engine
 OPTION(BUILD_ENGINE "Build the core game engine." ON)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 # Check our dependencies
-FIND_PACKAGE(Irrlicht REQUIRED)
+FIND_PACKAGE(OpenSceneGraph REQUIRED COMPONENTS osgViewer osgGA)
 FIND_PACKAGE(PhysFS REQUIRED)
-FIND_PACKAGE(CEGUI REQUIRED COMPONENTS IrrlichtRenderer)
+FIND_PACKAGE(MyGUI REQUIRED)
 FIND_PACKAGE(Allegro REQUIRED COMPONENTS Main PhysFS NativeDialog)
 FIND_PACKAGE(FMod REQUIRED)
 FIND_PACKAGE(ENet REQUIRED)

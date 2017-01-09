@@ -5,6 +5,7 @@
 #define _INCLUDE_SUPPORT_TYPERESOLVING_HPP_
 
 #include <support/common.hpp>
+#include <support/types.hpp>
 
 namespace Kiaro
 {
@@ -132,13 +133,13 @@ namespace Kiaro
          *  This is an explicit declaration for the Common::U16 type.
          */
         template<>
-        struct TypeIDResolver<irr::core::dimension2d<Common::U32>>
+        struct TypeIDResolver<Support::Dimension2DU>
         {
             static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_DIMENSION;
         };
 
         template<>
-        struct TypeIDResolver<Common::Vector3DF>
+        struct TypeIDResolver<Support::Vector3DF>
         {
             static const CONSTEXPR PROPERTY_TYPE value = PROPERTY_VECTOR3DF;
         };

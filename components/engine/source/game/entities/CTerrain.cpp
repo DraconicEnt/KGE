@@ -15,6 +15,7 @@
 
 #include <net/IServer.hpp>
 
+#include <support/types.hpp>
 #include <support/CBitStream.hpp>
 
 #include <filesystem/CFileReader.hpp>
@@ -30,7 +31,7 @@ namespace Kiaro
             namespace Entities
             {
                 CTerrain::CTerrain(const Support::String& terrainFile, const Support::String& textureFile) : IRigidObject(ENTITY_TERRAIN, FLAG_STATIC),
-                mTerrainFile(terrainFile), mTextureFile(textureFile), mSceneNode(nullptr)
+                mTerrainFile(terrainFile), mTextureFile(textureFile) //, mSceneNode(nullptr)
                 {
                     this->registerNetworkedProperties();
                 }
@@ -47,7 +48,7 @@ namespace Kiaro
 
                 void CTerrain::packEverything(Support::CBitStream& out) const
                 {
-                    assert(mSceneNode);
+                   // assert(mSceneNode);
 
                     this->packBaseData<CTerrain>(out);
                     IEntity::packEverything(out);
@@ -57,13 +58,15 @@ namespace Kiaro
                 {
                     IEntity::unpack(in);
 
-                    if (mSceneNode)
-                        mSceneNode->setPosition(mPosition);
+                   // if (mSceneNode)
+                   //     mSceneNode->setPosition(mPosition);
                 }
 
                 void CTerrain::registerEntity(void)
                 {
                     CONSOLE_INFOF("Building terrain with file '%s' ...", mTerrainFile.data());
+
+                    /*
                     FileSystem::CFileReader heightmapHandle(mTerrainFile);
                     irr::IrrlichtDevice* irrlichtDevice = Engine::Video::SRenderer::getInstance()->getIrrlichtDevice();
                     irr::scene::ITerrainSceneNode* terrain = irrlichtDevice->getSceneManager()->addTerrainSceneNode(&heightmapHandle);
@@ -87,11 +90,12 @@ namespace Kiaro
                     }
                     else
                         CONSOLE_ERROR("Failed to instantiate using terrain file '%s'", mTerrainFile.data());
+                    */
                 }
 
-                void CTerrain::setPosition(const Common::Vector3DF& position)
+                void CTerrain::setPosition(const Support::Vector3DF& position)
                 {
-                    mSceneNode->setPosition(position);
+                    //mSceneNode->setPosition(position);
                 }
 
                 void CTerrain::update(const Common::F32 deltaTimeSeconds)

@@ -16,8 +16,6 @@
 
 #include <game/entities/IRigidObject.hpp>
 
-#include <irrlicht.h>
-
 namespace Kiaro
 {
     namespace Support
@@ -89,14 +87,14 @@ namespace Kiaro
                          *  @brief Sets the position of the terrain block.
                          *  @param position The new position to go to.
                          */
-                        void setPosition(const Common::Vector3DF& position);
+                        void setPosition(const Support::Vector3DF& position);
 
                         virtual void registerNetworkedProperties(void);
 
                     // Private Members
                     private:
                         //! The Irrlicht scene node associated with this terrain.
-                        irr::scene::ITerrainSceneNode* mSceneNode;
+                        //irr::scene::ITerrainSceneNode* mSceneNode;
 
                         //! The path to the loaded terrain file heightmap.
                         Support::String mTerrainFile;

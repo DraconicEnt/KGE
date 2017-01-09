@@ -21,6 +21,7 @@
 #include <support/FEndian.hpp>
 #include <support/common.hpp>
 #include <support/String.hpp>
+#include <support/types.hpp>
 
 namespace Kiaro
 {

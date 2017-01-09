@@ -11,21 +11,13 @@
 
 #include <video/SRenderer.hpp>
 
-#include <CEGUI/RendererModules/Irrlicht/Renderer.h>
-
-#if defined(ENGINE_UNIX)
-#include <allegro5/allegro_x.h>
-#elif defined(ENGINE_WIN)
-#include <allegro5/allegro_windows.h>
-#else
-#include <allegro5/allegro_osx.h>
-#endif
 
 #include <support/SSynchronousScheduler.hpp>
 
 #include <support/SSettingsRegistry.hpp>
 #include <video/CSceneGraph.hpp>
-
+#include <video/CGraphicsWindow.hpp>
+#include <video/COSGWindow.hpp>
 #include <support/SProfiler.hpp>
 
 #include <gui/SGUIManager.hpp>
@@ -38,111 +30,59 @@ namespace Kiaro
     {
         namespace Video
         {
-            SRenderer::SRenderer(void) : mIrrlichtDevice(nullptr), mClearColor(Common::ColorRGBA(0, 0, 0, 0)),
+            SRenderer::SRenderer(void) : mViewer(nullptr), mClearColor(Support::ColorRGBA(0, 0, 0, 0)),
                                          mHasDisplay(!Core::SEngineInstance::getInstance()->isDedicated()),
-                                         mVideo(nullptr), mSceneManager(nullptr), mMainScene(nullptr),
-                                         mCurrentScene(nullptr), mDisplay(nullptr), mWindowEventQueue(nullptr),
-                                         mTimePulse(nullptr)
+                                         mMainScene(nullptr),mCurrentScene(nullptr), mPrimaryWindow(nullptr), mTimePulse(nullptr)
             {
                 CONSOLE_INFO("Initializing renderer subsystem.");
 
                 Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
-                irr::core::dimension2d<Common::U32> resolution = settings->getValue<irr::core::dimension2d<Common::U32>>(
+                Support::Dimension2DU resolution = settings->getValue<Support::Dimension2DU>(
                         "Video::Resolution");
                 this->initializeRenderer(resolution);
             }
 
             SRenderer::~SRenderer(void)
             {
-                if (mIrrlichtDevice)
+                if (mViewer)
                 {
-                    mIrrlichtDevice->drop();
-                    mIrrlichtDevice = nullptr;
+                    delete mViewer;
+                    mViewer = nullptr;
                 }
 
-                if (mDisplay)
+                if (mPrimaryWindow)
                 {
-                    al_destroy_display(mDisplay);
-                    mDisplay = nullptr;
+                    delete mPrimaryWindow;
+                    mPrimaryWindow = nullptr;
                 }
             }
 
             Common::S32 SRenderer::initializeRenderer(const Support::Dimension2DU& resolution)
             {
-                irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
-                irr::SIrrlichtCreationParameters creationParameters;
-
                 Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
 
                 if (mHasDisplay)
                 {
-                    const Common::S32 monitorCount = al_get_num_video_adapters();
-                    CONSOLE_INFOF("Detected %u monitor(s)", monitorCount);
+                    Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getPointer();
 
-                    // Create the Allegro window and get its ID
-                    Common::S32 displayFlags = ALLEGRO_GENERATE_EXPOSE_EVENTS | ALLEGRO_RESIZABLE;
-                    if (settings->getValue<bool>("Video::Fullscreen"))
-                        displayFlags |= ALLEGRO_FULLSCREEN;
+                    CGraphicsWindow::WindowParameters parameters;
+                    parameters.mTitle = "Kiaro Game Engine";
+                    parameters.mFullscreen = settings->getValue<bool>("Video::Fullscreen");
+                    parameters.mResolution = settings->getValue<Support::Dimension2DU>("Video::Resolution");
 
-                    al_set_new_display_flags(displayFlags);
+                    mPrimaryWindow = new CGraphicsWindow(parameters);
+                    mPrimaryWindow->initialize();
 
-                    CONSOLE_INFOF("Using %ux%u resolution.", resolution.Width, resolution.Height);
-                    mDisplay = al_create_display(resolution.Width, resolution.Height);
+                    mViewer = new osgViewer::Viewer();
+                    mViewer->setThreadingModel(osgViewer::ViewerBase::ThreadingModel::DrawThreadPerContext);
 
-                    // TODO (Robert MacGregor#9): Use a preference for the desired screen
-                    if (!mDisplay)
-                    {
-                        CONSOLE_ERROR("Failed to create Allegro display!");
-                        return 1;
-                    }
+                    COSGWindow* osgWindow = new COSGWindow(mPrimaryWindow);
+                    osg::ref_ptr<osg::Camera> camera = mViewer->getCamera();
+                    camera->setGraphicsContext(osgWindow);
+                    camera->setViewport(0, 0, resolution.x(), resolution.y());
 
-                    mWindowEventQueue = al_create_event_queue();
-                    al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
-
-                    // TODO (Robert MacGregor#9): Rename to game name?
-                    al_set_window_title(mDisplay, "Kiaro Game Engine");
-                    al_set_new_window_title("Auxiliary Display ");
-                    al_hide_mouse_cursor(mDisplay);
-
-                    #if defined(ENGINE_UNIX)
-                        XID windowID = al_get_x_window_id(mDisplay);
-                        creationParameters.WindowId = reinterpret_cast<void *>(windowID);
-                    #elif defined(ENGINE_WIN)
-                        HWND windowHandle = al_get_win_window_handle(mDisplay);
-                                creationParameters.WindowId = reinterpret_cast<void*>(windowHandle);
-                    #endif
+                    mViewer->realize();
                 }
-                else
-                    videoDriver = irr::video::EDT_NULL;
-
-                // Setup the Irrlicht creation request
-                creationParameters.Bits = 32;
-                creationParameters.IgnoreInput = true; // We will use Allegro for this
-                creationParameters.DriverType = videoDriver;
-                creationParameters.Doublebuffer = true;
-
-                #if defined(ENGINE_WIN)
-                    // The standard Win32 windowing should work here
-                    creationParameters.DeviceType = irr::EIDT_WIN32;
-                #else
-                    // We should be using SDL on Linux with this as the GLX routines used in the X implementation are not supported by NVidia drivers
-                    creationParameters.DeviceType = irr::EIDT_SDL;
-                #endif
-
-                creationParameters.WindowSize = resolution;
-
-                mIrrlichtDevice = irr::createDeviceEx(creationParameters);
-
-                if (!mIrrlichtDevice)
-                {
-                    CONSOLE_ERROR("Failed to initialize Irrlicht! (Does your Irrlicht lib support SDL?)");
-                    return 2;
-                }
-
-                // Grab the scene manager and store it to reduce a function call
-                mSceneManager = mIrrlichtDevice->getSceneManager();
-                mVideo = mIrrlichtDevice->getVideoDriver();
-                mSceneManager->setActiveCamera(mSceneManager->addCameraSceneNode());
 
                 // Setup the main scene and make it the active scene
                 mMainScene = mCurrentScene = new CSceneGraph(this);
@@ -157,7 +97,6 @@ namespace Kiaro
                                                                                         &SRenderer::drawFrame);
                 }
 
-                CONSOLE_INFOF("Irrlicht version is %s.", mIrrlichtDevice->getVersion());
                 CONSOLE_INFO("Initialized renderer.");
 
                 return 0;
@@ -176,15 +115,17 @@ namespace Kiaro
 
             void SRenderer::setResolution(const Support::Dimension2DU& resolution)
             {
-                al_resize_display(mDisplay, resolution.Width, resolution.Height);
-                mIrrlichtDevice->getVideoDriver()->OnResize(resolution);
+             //   al_resize_display(mDisplay, resolution.x(), resolution.y());
+
+               // mIrrlichtDevice->getVideoDriver()->OnResize(resolution);
+
                 GUI::SGUIManager::getInstance()->setResolution(resolution);
-                al_acknowledge_resize(mDisplay);
+               // al_acknowledge_resize(mDisplay);
             }
 
-            irr::IrrlichtDevice *SRenderer::getIrrlichtDevice(void) const
+            osgViewer::Viewer* SRenderer::getViewer(void) const
             {
-                return mIrrlichtDevice;
+                return mViewer;
             }
 
             CSceneGraph* SRenderer::getMainScene(void)
@@ -197,97 +138,40 @@ namespace Kiaro
                 return mCurrentScene;
             }
 
-            void SRenderer::processWindowEvents(void)
+            CGraphicsWindow* SRenderer::createDisplay(const Support::String& title)
             {
-                // Query for display events
-                ALLEGRO_EVENT windowEvent;
+             //   CDisplay* result = new CDisplay(title);
 
-                if (al_get_next_event(mWindowEventQueue, &windowEvent))
-                    switch (windowEvent.type)
-                    {
-                        default:
-                            break;
-
-                        case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                        {
-                            Core::SEngineInstance::getInstance()->kill();
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_RESIZE:
-                        {
-                            if (!al_acknowledge_resize(mDisplay))
-                                CONSOLE_WARNING("Failed to resize display!");
-                            else
-                            {
-                                // What is the new display dimensions?
-                                Common::S32 displayWidth = al_get_display_width(mDisplay);
-                                Common::S32 displayHeight = al_get_display_height(mDisplay);
-                                this->setResolution(Support::Dimension2DU(displayWidth, displayHeight));
-                            }
-
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
-                        {
-                            CONSOLE_INFO("Window unfocused.");
-                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
-                            const Common::U16 inactiveFPS = settings->getValue<Common::U16>("Video::InactiveFPS");
-
-                            mTimePulse->setWaitTimeMS(Support::FPSToMS(inactiveFPS), true);
-                            break;
-                        }
-
-                        case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:
-                        {
-                            CONSOLE_INFO("Window focused.");
-                            Support::SSettingsRegistry *settings = Support::SSettingsRegistry::getInstance();
-                            const Common::U16 activeFPS = settings->getValue<Common::U16>("Video::ActiveFPS");
-
-                            mTimePulse->setWaitTimeMS(Support::FPSToMS(activeFPS), true);
-                            break;
-                        }
-                    }
-            }
-
-            CDisplay* SRenderer::createDisplay(const Support::String& title)
-            {
-                CDisplay* result = new CDisplay(title);
-
-                mDisplays.insert(mDisplays.end(), result);
-                return result;
-            }
-
-            ALLEGRO_DISPLAY* SRenderer::getDisplay(void)
-            {
-                return mDisplay;
+              //  mDisplays.insert(mDisplays.end(), result);
+                //return result;
+                return nullptr;
             }
 
             void SRenderer::drawFrame(void)
             {
                 PROFILER_BEGIN(Render);
-                al_set_current_opengl_context(mDisplay);
 
-                mVideo->beginScene(true, true, mClearColor);
+                //al_set_current_opengl_context(mDisplay);
 
-                if (mCurrentScene)
-                    mSceneManager->drawAll();
+                // FIXME: We can properly hook these into the OSG raster
+                mPrimaryWindow->setActiveOpenGLContext();
 
-                GUI::SGUIManager::getInstance()->draw();
+                mViewer->advance();
+                mViewer->updateTraversal();
+                mViewer->renderingTraversals();
 
-                mVideo->endScene();
+                mPrimaryWindow->swapBuffers();
 
-                // FIXME: On Windows, we don't want to call al_flip_display because of framerate issues. We should figure out why that is.
-                #if !defined(ENGINE_WIN)
-                    al_flip_display();
-                #endif
+                //  GUI::SGUIManager::getInstance()->draw();
 
-                this->processWindowEvents();
+               // al_flip_display();
+
+                mPrimaryWindow->processWindowEvents();
                 al_inhibit_screensaver(true);
 
                 // Draw the aux displays
                 // FIXME: Currently there is buffering problems with multiple displays
+                /*
                 for (CDisplay* display: mDisplays)
                 {
                     al_set_current_opengl_context(display->mDisplay);
@@ -305,6 +189,7 @@ namespace Kiaro
                         al_flip_display();
                     #endif
                 }
+                */
 
                 PROFILER_END(Render);
             }

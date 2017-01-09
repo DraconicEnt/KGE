@@ -14,9 +14,7 @@
 #define _INCLUDE_KIARO_ENGINE_SINPUTLISTENERSINGLETON_HPP_
 
 #include <support/common.hpp>
-#include <irrlicht.h>
 
-#include <CEGUI/CEGUI.h>
 #include <physfs.h>
 
 #include <support/UnorderedMap.hpp>

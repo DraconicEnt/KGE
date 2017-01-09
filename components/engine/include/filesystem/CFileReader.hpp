@@ -12,8 +12,6 @@
 #ifndef _INCLUDE_KIARO_ENGINE_FILEREADOBJECT_HPP_
 #define _INCLUDE_KIARO_ENGINE_FILEREADOBJECT_HPP_
 
-#include <irrlicht.h>
-
 #include <physfs.h>
 
 #include <support/support.hpp>
@@ -23,6 +21,7 @@ namespace Kiaro
 {
     namespace FileSystem
     {
+        /*
         class CFileReader : public irr::io::IReadFile
         {
             // Public Methods
@@ -48,6 +47,7 @@ namespace Kiaro
 
                 PHYSFS_File* mFileHandle;
         };
+        */
     } // End Namespace Game
 } // End Namespace Kiaro
 #endif // _INCLUDE_KIARO_ENGINE_FILEREADOBJECT_HPP_

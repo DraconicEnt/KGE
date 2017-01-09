@@ -16,10 +16,6 @@
 #include <support/UnorderedMap.hpp>
 #include <support/ISingleton.hpp>
 
-#include <CEGUI/RendererModules/Irrlicht/Renderer.h>
-
-#include <gui/CGUIContext.hpp>
-
 namespace Kiaro
 {
     namespace Engine
@@ -33,14 +29,13 @@ namespace Kiaro
             {
                 // Private Members
                 private:
-                    //! A mapping of dialog names to CEGUI frame windows representing the main visible dialog window.
-                    Support::UnorderedMap<Support::String, CEGUI::FrameWindow*> mDialogs;
+                   //Support::UnorderedMap<Support::String, CEGUI::FrameWindow*> mDialogs;
 
                     //! A mapping of GUI names to CEGUI windows representing the entire GUI to render.
-                    Support::UnorderedMap<Support::String, CEGUI::Window*> mGUIs;
+                  //  Support::UnorderedMap<Support::String, CEGUI::Window*> mGUIs;
 
                     //! A mapping of context names to instantiated GUI contexts.
-                    Support::UnorderedMap<Support::String, CGUIContext*> mContexts;
+                   // Support::UnorderedMap<Support::String, CGUIContext*> mContexts;
 
                 public:
                     void draw(void);
@@ -56,7 +51,7 @@ namespace Kiaro
                      * @retval nullptr Returned when no dialog could be found with the given name -- no such layout
                      * file could be found.
                      */
-                    CEGUI::FrameWindow* loadDialog(const Support::String &name);
+                   // CEGUI::FrameWindow* loadDialog(const Support::String &name);
 
                     bool loadGUI(const Support::String &name);
 
@@ -67,7 +62,7 @@ namespace Kiaro
                      * specified context name is already in use then the existing context is returned.
                      * @retval nullptr Returned when an error has occurred in creation.
                      */
-                    CGUIContext* createContext(const Support::String& name);
+                   // CGUIContext* createContext(const Support::String& name);
 
                     /**
                      * @brief Returns a GUI context by name.
@@ -75,7 +70,7 @@ namespace Kiaro
                      * @return A pointer to the GUI context that was found.
                      * @retval nullptr Returned when no such context exists by the given name.
                      */
-                    CGUIContext* getContext(const Support::String& name);
+                   // CGUIContext* getContext(const Support::String& name);
 
                 // Protected Methods
                 protected:

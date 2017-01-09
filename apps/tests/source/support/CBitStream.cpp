@@ -11,6 +11,7 @@
 
 #include <gtest/gtest.h>
 
+#include <support/types.hpp>
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
@@ -88,8 +89,8 @@ namespace Kiaro
             CBitStream floatStream(expectedStreamSize);
             PackFloats(floatStream);
 
-            EXPECT_THROW(floatStream.pop<Common::Vector3DF>(), std::underflow_error);
-            EXPECT_THROW(floatStream.top<Common::Vector3DF>(), std::underflow_error);
+            EXPECT_THROW(floatStream.pop<Support::Vector3DF>(), std::underflow_error);
+            EXPECT_THROW(floatStream.top<Support::Vector3DF>(), std::underflow_error);
         }
 
         TEST(BitStream, String)
