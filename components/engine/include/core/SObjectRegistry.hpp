@@ -31,7 +31,7 @@ namespace Kiaro
             /**
              *  @brief The SObjectRegistry is the central system with which object ID's and names are maintained. It allows lookups by
              *  both ID and name, essentially.
-             *  @detail All engine objects are persisted in this singleton. So not only are game world objects put in this singleton,
+             *  @details All engine objects are persisted in this singleton. So not only are game world objects put in this singleton,
              *  you have miscellaneous objects that need to be persisted in some way and are not necessarily networked.
              */
             class SObjectRegistry : public Support::ISingleton<SObjectRegistry>

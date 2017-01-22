@@ -26,7 +26,7 @@ namespace Kiaro
             {
                 class CRigidObject : public Game::Entities::IRigidObject
                 {
-                        // Public Methods
+                    // Public Methods
                     public:
                         CRigidObject(void);
                         ~CRigidObject(void);

@@ -24,7 +24,7 @@ namespace Kiaro
             /**
              * @brief A GUI context essentially another plane of existence for GUI's to operate in. This is useful
              * to operate sub-GUI's, perhaps for rendering on 3D objects in the game world itself.
-             * @detail The context rendering to the main frame buffer will always be called "main". All other
+             * @details The context rendering to the main frame buffer will always be called "main". All other
              * contexts created will always render to a texture when operating, and the active state should be
              * set accordingly to save GPU resources.
              */
@@ -72,7 +72,7 @@ namespace Kiaro
 
                     /**
                      * @brief Pushes a dialog to the screen for the user to see, identified by name.
-                     * @detail Only one dialog can be presented at a time: all dialogs will override each other. Dialogs
+                     * @details Only one dialog can be presented at a time: all dialogs will override each other. Dialogs
                      * are always rendering above the current GUI and are always modal. If the dialog currently isn't
                      * loaded, the following CEGUI layout XML file is parsed to create it: layouts/<name>.layout
                      * @param name The name of the dialog to present to the user.

@@ -26,7 +26,7 @@ namespace Kiaro
         {
             /**
              *  @brief A singleton extension loader used for managing the loadable extensions into the engine.
-             *  @detail These extensions are merely shared object files we load into the game memory and can reload or unload at will.
+             *  @details These extensions are merely shared object files we load into the game memory and can reload or unload at will.
              *  They must conform to an expected standard in order to be loadable, which primarily regards having several static
              *  methods declared and loadable through dlsym.
              */

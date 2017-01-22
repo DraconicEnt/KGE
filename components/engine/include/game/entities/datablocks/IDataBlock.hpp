@@ -17,7 +17,7 @@ namespace Kiaro
                 {
                     /**
                      *  @brief Interface class for all datablock types to derive from.
-                     *  @detail This class is used to represent all datablock types within the engine. Not only that, but it is also used
+                     *  @details This class is used to represent all datablock types within the engine. Not only that, but it is also used
                      *  for type ID tracking within the SCoreRegistry singleton class for use in the netcode when reading datablock payloads.
                      */
                     class IDataBlock : public Net::INetworkPersistable

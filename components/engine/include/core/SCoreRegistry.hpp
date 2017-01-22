@@ -27,7 +27,7 @@ namespace Kiaro
         {
             /**
              *  @brief A singleton class representing the central type registrations for messages and datablocks.
-             *  @detail This is used heavily by the netcode to do message & datablock lookups to find the appropriate constructor methods. These constructor
+             *  @details This is used heavily by the netcode to do message & datablock lookups to find the appropriate constructor methods. These constructor
              *  methods would then be on their own devices to make sense of the current state of the incoming bitstream.
              */
             class SCoreRegistry : public Support::ISingleton<SCoreRegistry>

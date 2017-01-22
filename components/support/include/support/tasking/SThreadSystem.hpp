@@ -31,7 +31,7 @@ namespace Kiaro
              *  @brief The SThreadSystem is a singleton class that arranges the engine runtime into a series of threads in an attempt
              *  to make the engine more properly utilize many core systems while still supporting machines with less processor cores
              *  available at hand.
-             *  @detail The threaded runtime is arranged into a series of phases that have thread groups that execute concurrent
+             *  @details The threaded runtime is arranged into a series of phases that have thread groups that execute concurrent
              *  to one another in a read only game state environment. Instead of writing changes directly to the game state,
              *  we use EasyDelegate to defer calls into a queue and dispatch that as a single transaction once the main thread is
              *  ready to and a thread group within the current phase has completed.
@@ -97,7 +97,7 @@ namespace Kiaro
 
             /**
              *  @brief A task context for the thread system to make worker threads execute using.
-             *  @detail The CThreadSystem instance essentially just cycles through any thread actions left to complete for
+             *  @details The CThreadSystem instance essentially just cycles through any thread actions left to complete for
              *  this thread and returns false when there is finally no actions left to execute, causing the executing thread
              *  to go into a idle sleeping state.
              */

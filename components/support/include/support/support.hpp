@@ -33,6 +33,7 @@
 
 namespace Kiaro
 {
+    //! Core support library providing misc programming.
     namespace Support
     {
         /**

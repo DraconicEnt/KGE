@@ -14,6 +14,7 @@
 
 #include <support/common.hpp>
 #include <support/String.hpp>
+#include <support/types.hpp>
 
 #include <LinearMath/btIDebugDraw.h>
 
@@ -25,9 +26,9 @@ namespace Kiaro
         {
                 // Public Methods
             public:
-                virtual void drawLine(const Common::Vector3DF& from, const Common::Vector3DF& to, const Common::ColorRGBA& color) = 0;
-                virtual void drawContactPoint(const Common::Vector3DF& pointOnB, const Common::Vector3DF& normalOnB, const Common::F32& distance, const Common::S32& lifetime, const Common::ColorRGBA& color) = 0;
-                virtual void draw3dText(const Common::Vector3DF& location, const Support::String& text) = 0;
+                virtual void drawLine(const Support::Vector3DF& from, const Support::Vector3DF& to, const Support::ColorRGBA& color) = 0;
+                virtual void drawContactPoint(const Support::Vector3DF& pointOnB, const Support::Vector3DF& normalOnB, const Common::F32& distance, const Common::S32& lifetime, const Support::ColorRGBA& color) = 0;
+                virtual void draw3dText(const Support::Vector3DF& location, const Support::String& text) = 0;
 
                 // Private Methods
             private:

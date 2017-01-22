@@ -85,7 +85,7 @@ namespace Kiaro
                 /**
                  *  @brief Sends a message to the given IIncomingClient. This is an alias for the normal send accepting
                  *  a pointer.
-                 *  @detail When the message is "sent", it isn't immediately sent but rather just written to the IIncomingClient's
+                 *  @details When the message is "sent", it isn't immediately sent but rather just written to the IIncomingClient's
                  *  CBitStream which is sent later.
                  *  @param message A reference to the message object.
                  *  @param reliable A boolean representing whether or not the message should be sent reliably. This parameter if not

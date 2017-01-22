@@ -26,7 +26,7 @@ namespace Kiaro
         /**
          *  @brief Class that supplies a robust command line parser.
          *
-         *  @detail The CommandLineParser class parses console input where any arguments prepended with
+         *  @details The CommandLineParser class parses console input where any arguments prepended with
          *  a dash is considered a flag while the rest is considered arguments to the flags.
          *
          *  <b>Ex:</b> ./kiaro64_d -game base -server 98.238.10.100 -port 11595

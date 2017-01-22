@@ -24,7 +24,7 @@ namespace Kiaro
             /**
              *  @brief Class representing a move state for any given frame to be used to calculate the controlled object state for the
              *  next frame.
-             *  @detail The CMove is your basic block of networked input. All objects that can be influenced by external input store a
+             *  @details The CMove is your basic block of networked input. All objects that can be influenced by external input store a
              *  CMove instance or read a CMove from their control source every frame to calculate the next object state for the next
              *  frame.
              */

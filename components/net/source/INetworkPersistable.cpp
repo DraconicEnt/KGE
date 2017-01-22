@@ -89,8 +89,8 @@ namespace Kiaro
 
                 case Support::PROPERTY_VECTOR3DF:
                 {
-                    const Common::Vector3DF& value = *reinterpret_cast<Common::Vector3DF*>(property.first);
-                    out.write<Common::Vector3DF>(value);
+                    const Support::Vector3DF& value = *reinterpret_cast<Support::Vector3DF*>(property.first);
+                    out.write<Support::Vector3DF>(value);
                     break;
                 }
 
@@ -161,8 +161,8 @@ namespace Kiaro
 
                     case Support::PROPERTY_VECTOR3DF:
                     {
-                        Common::Vector3DF& out = *reinterpret_cast<Common::Vector3DF*>(propertyInformation.first);
-                        out = in.pop<Common::Vector3DF>();
+                        Support::Vector3DF& out = *reinterpret_cast<Support::Vector3DF*>(propertyInformation.first);
+                        out = in.pop<Support::Vector3DF>();
                         break;
                     }
 

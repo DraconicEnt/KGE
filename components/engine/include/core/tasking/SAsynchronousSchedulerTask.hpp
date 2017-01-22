@@ -14,10 +14,9 @@
 
 #include <easydelegate/easydelegate.hpp>
 
+#include <support/ISingleton.hpp>
 #include <support/common.hpp>
-
 #include <support/support.hpp>
-
 #include <support/tasking/ITask.hpp>
 
 namespace Kiaro
@@ -30,29 +29,26 @@ namespace Kiaro
              *  @brief A class representing a task that may be executed asynchronously from
              *  the rest of the engine.
              */
-            class SAsynchronousSchedulerTask : public Support::Tasking::ITask
+            class SAsynchronousSchedulerTask : public Support::Tasking::ITask, public Support::ISingleton<SSAsynchronousSchedulerTask>
             {
-                    // Public Members
+                // Public Members
                 public:
+                    //! A mutex on the synchronous scheduler.
                     Support::Mutex mMutex;
 
-                    // Private Members
+                // Private Members
                 private:
+                    //! All scheduled tasks to be executed.
                     Support::UnorderedSet<EasyDelegate::IDeferredCaller*> mScheduledTasks;
 
-                    // Public Methods
+                // Public Methods
                 public:
-                    static SAsynchronousSchedulerTask* getPointer(void);
-                    static void destroy(void);
-
                     void initialize(void);
 
                     bool tick(const Common::F32 deltaTime);
 
                     void deinitialize(void);
 
-                    // Private Methods
-                private:
                     SAsynchronousSchedulerTask(void);
                     ~SAsynchronousSchedulerTask(void);
             };

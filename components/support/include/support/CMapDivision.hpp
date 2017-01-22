@@ -37,7 +37,7 @@ namespace Kiaro
         /**
          *  @brief The CMapDivison class is a general data structure intended for use in improving the speed of radius searches
          *  by arranging the map into a series of squares at different scales called "LODs".
-         *  @detail When an object's position is updated, its new square ownership is calculated for each LOD. This allows us to check
+         *  @details When an object's position is updated, its new square ownership is calculated for each LOD. This allows us to check
          *  specific grid sections in some specific distance around a point (if collapsing to square shaped regions is acceptable) to avoid
          *  checking objects not within these squares unnecessarily.
          */

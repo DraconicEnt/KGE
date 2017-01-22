@@ -31,7 +31,7 @@ namespace Kiaro
             {
                 class Disconnect : public Net::IMessage
                 {
-                        // Public Methods
+                    // Public Methods
                     public:
                         Disconnect(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr) : IMessage(in, sender)
                         {

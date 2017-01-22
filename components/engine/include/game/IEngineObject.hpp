@@ -29,17 +29,17 @@ namespace Kiaro
              */
             class IEngineObject
             {
-                    // Public Members
+                // Public Members
                 public:
                     //! The ID of this object.
                     const Common::U32 mID;
 
-                    // Private Members
+                // Private Members
                 private:
                     //! The name of this object.
                     Support::String mName;
 
-                    // Public Methods
+                // Public Methods
                 public:
                     //! Parameter-less constructor.
                     IEngineObject(void);
