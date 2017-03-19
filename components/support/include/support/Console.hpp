@@ -96,7 +96,7 @@ namespace Kiaro
             /**
              *  @brief Writes a formatted message to the console as the given message type.
              *  @param type The message type to write as.
-             *  @param format The string to format given the varible length parameter list.
+             *  @param format The string to format given the variable length parameter list.
              *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
@@ -121,7 +121,7 @@ namespace Kiaro
 
             /**
              *  @brief Helper method to write a warning message to the game console.
-             *  @param format The string to format given the varible length parameter list.
+             *  @param format The string to format given the variable length parameter list.
              *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
@@ -132,7 +132,7 @@ namespace Kiaro
 
             /**
              *  @brief Helper method to write an error message to the game console.
-             *  @param format The string to format given the varible length parameter list.
+             *  @param format The string to format given the variable length parameter list.
              *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
@@ -143,7 +143,7 @@ namespace Kiaro
 
             /**
              *  @brief Helper method to write a debug message to the game console.
-             *  @param format The string to format given the varible length parameter list.
+             *  @param format The string to format given the variable length parameter list.
              *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
@@ -154,24 +154,13 @@ namespace Kiaro
 
             /**
              *  @brief Helper method to write an info string to the game console.
-             *  @param format The string to format given the varible length parameter list.
+             *  @param format The string to format given the variable length parameter list.
              *  @param params The variable length parameter list to format the format string with.
              */
             template <typename... parameters>
             static void infof(const Support::String& format, parameters... params)
             {
                 writef(MESSAGE_INFO, format.c_str(), params...);
-            }
-
-            /**
-             *  @brief Helper method to test for an assertion and write formatted messages to the console.
-             *  @param format The string to format given the varible length parameter list.
-             */
-            template <typename... parameters>
-            static void assertf(bool expressionValue, const Support::String& format, parameters... params)
-            {
-                if (!expressionValue)
-                    errorf(format, params...);
             }
 
             /**
@@ -222,6 +211,27 @@ namespace Kiaro
                 write(MESSAGE_DEBUG, output);
             }
 
+            /**
+             *  @brief Helper method to test for an assertion and write formatted messages to the console.
+             *  @param format The string to format given the variable length parameter list.
+             */
+            static void consoleAssert(bool expressionValue, const Support::String& message)
+            {
+                if (!expressionValue)
+                    error(message);
+            }
+
+            /**
+             *  @brief Helper method to test for an assertion and write formatted messages to the console.
+             *  @param format The string to format given the variable length parameter list.
+             */
+            template <typename... parameters>
+            static void consoleAssertf(bool expressionValue, const Support::String& format, parameters... params)
+            {
+                if (!expressionValue)
+                    errorf(format, params...);
+            }
+
 
             #define QUOTE_IMPL(T) #T
             #define QUOTE(T) QUOTE_IMPL(T)
@@ -230,7 +240,9 @@ namespace Kiaro
             #define ASSEMBLE_ASSERTION(expression, format) Failed assertion (expression) at __FILE__:__LINE__:: format
 
             //! Helper define to perform an assertion that the engine handles.
-            #define CONSOLE_ASSERT(expression, format, ...) Support::Console::assertf(expression, QUOTE(ASSEMBLE_ASSERTION(#expression, format)), ##__VA_ARGS__); assert(expression)
+            #define CONSOLE_ASSERT(expression, message) Support::Console::consoleAssert(expression, QUOTE(ASSEMBLE_ASSERTION(#expression, message))); assert(expression)
+            //! Helper define to perform a formatted assertion.
+            #define CONSOLE_ASSERTF(expression, format, ...) Support::Console::consoleAssertf(expression, QUOTE(ASSEMBLE_ASSERTION(#expression, format)), ##__VA_ARGS__); assert(expression)
             //! Helper define to emit a formatted console error message.
             #define CONSOLE_ERRORF(format, ...) Support::Console::errorf(QUOTE(ASSEMBLE_OUTPUT(format)), ##__VA_ARGS__)
             //! Helper define to emit a formatted console info message.

@@ -33,7 +33,7 @@ namespace Kiaro
          */
         class SProfiler
         {
-                // Private Members
+            // Private Members
             private:
                 //! The current sample number we're on.
                 size_t mSample;
@@ -47,12 +47,12 @@ namespace Kiaro
                 //! A set of all registered sample names.
                 Support::UnorderedSet<Support::String> mSampleNames;
 
-                // PUblic Members
+            // PUblic Members
             public:
                 //! Total number of samples we're operating with.
                 const size_t mSampleCount;
 
-                // Public Methods
+            // Public Methods
             public:
                 /**
                  *  @brief Returns an instance to the profiler singleton.
@@ -114,7 +114,7 @@ namespace Kiaro
                  */
                 Support::Set<std::pair<Support::String, Common::F32>> getSampleAverages(void);
 
-                // Private Methods
+            // Private Methods
             private:
                 SProfiler(const size_t sampleCount = 32);
                 ~SProfiler(void);

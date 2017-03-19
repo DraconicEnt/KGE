@@ -1,6 +1,6 @@
 /**
- *  @file IEntity.cpp
- *  @brief Source file implementing the IEntity interface class methods.
+ *  @file SCoreRegistry.cpp
+ *  @brief Include file declaring the SCoreRegistry singleton class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

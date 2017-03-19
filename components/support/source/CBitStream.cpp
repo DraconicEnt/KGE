@@ -145,7 +145,7 @@ namespace Kiaro
         void CBitStream::resize(const size_t newSize)
         {
             // TODO: Implement as an exception
-            CONSOLE_ASSERT(newSize > mTotalSize, "newSize=%u,mTotalSize=%u", newSize, mTotalSize);
+            CONSOLE_ASSERTF(newSize > mTotalSize, "newSize=%u,mTotalSize=%u", newSize, mTotalSize);
 
             if (mOwnsMemoryBlock)
                 mMemoryBlock = reinterpret_cast<Common::U8*>(realloc(mMemoryBlock, newSize));

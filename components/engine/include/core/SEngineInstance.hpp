@@ -147,6 +147,8 @@ namespace Kiaro
                      */
                     void kill(void);
 
+                    void handleThrottleRequest(void);
+
                     /**
                      *  @brief Returns whether or not the engine is running as a dedicated server at the
                      *  time of this call.

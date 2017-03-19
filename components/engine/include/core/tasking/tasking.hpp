@@ -1,5 +1,5 @@
 /**
- *  @file core.hpp
+ *  @file tasking.hpp
  *  @brief Main include file for the tasking subsystem components.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer

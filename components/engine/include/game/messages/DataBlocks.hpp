@@ -1,6 +1,6 @@
 /**
- *  @file HandShake.hpp
- *  @brief The common include file for the Kiaro application defining things such as error values.
+ *  @file DataBlocks.hpp
+ *  @brief The common include file for datablock declarations.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

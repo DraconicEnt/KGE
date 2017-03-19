@@ -29,9 +29,9 @@ Common::S32 main(Common::S32 argc, Common::C8* argv[])
     // Before we run the tests, we need to initialize PhysicsFS
     PHYSFS_init(argv[0]);
     PHYSFS_setSaneConfig("Draconic Entity", "KGE", "ZIP", 0, 0);
-    RUN_ALL_TESTS();
+    Common::S32 result = RUN_ALL_TESTS();
 
     // Cleanup
     PHYSFS_deinit();
-    return 0;
+    return result;
 }

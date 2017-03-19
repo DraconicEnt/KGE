@@ -9,6 +9,7 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
+#include <support/SProfiler.hpp>
 #include <support/SSettingsRegistry.hpp>
 
 #include <support/tasking/SThreadSystem.hpp>
@@ -19,42 +20,36 @@ namespace Kiaro
     {
         namespace Tasking
         {
-            static SThreadSystem* sInstance = nullptr;
-
-            SThreadSystem* SThreadSystem::getPointer(void)
-            {
-                if (!sInstance)
-                    sInstance = new SThreadSystem();
-
-                return sInstance;
-            }
-
-            void SThreadSystem::destroy(void)
-            {
-                delete sInstance;
-                sInstance = nullptr;
-            }
-
-            static void workerThreadLogic(WorkerContext* context)
+            static void workerThreadLogic(SThreadSystem::CThreadContext* threadContext)
             {
                 // TODO (Robert MacGregor #9): Detect thread error?
-                if (!context)
+                if (!threadContext)
                     return;
 
                 // Keep running, wait for tasks
-                while (true)
+                while (!threadContext->mShouldTerminate)
                 {
-                    if (context->mIsComplete || !context->mTask)
+                    if (threadContext->mIsComplete)
                     {
                         // Nothing to do, just sleep for a moment before restarting the loop.
                         std::this_thread::sleep_for(std::chrono::milliseconds(32));
                         continue;
                     }
 
-                    // Give the compiler a big hint about the type of object we're using here
-                    CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
+                    SThreadSystem::IThreadedTask* currentTask = threadContext->mThreadTasks.front().second;
+                    currentTask->mIsComplete = currentTask->tick(0.00f);
 
-                    context->mIsComplete = task->mIsComplete = task->tick(0.00f);
+                    if (currentTask->mIsComplete)
+                    {
+                        assert(threadContext->mDebugMutex.try_lock());
+
+                        threadContext->mTransactions.push(currentTask->getTransaction());
+                        threadContext->mThreadTasks.pop();
+
+                        threadContext->mDebugMutex.unlock();
+                    }
+
+                    threadContext->mIsComplete = threadContext->mThreadTasks.size() == 0;
                 }
             }
 
@@ -64,13 +59,7 @@ namespace Kiaro
 
                 for (Common::U8 iteration = 0; iteration < threadCount; ++iteration)
                 {
-                    WorkerContext* currentWorker = new WorkerContext();
-
-                    currentWorker->mTask = new CThreadSystemTask();
-                    currentWorker->mIsComplete = true;
-                    currentWorker->mThread = new Support::Thread(workerThreadLogic, currentWorker);
-                    currentWorker->mThread->detach();
-
+                    CThreadContext* currentWorker = new CThreadContext();
                     mInactiveThreads.insert(mInactiveThreads.end(), currentWorker);
                 }
 
@@ -84,32 +73,31 @@ namespace Kiaro
 
             bool SThreadSystem::update(void)
             {
-                // Blow over every thread group we have active for this
-                Support::UnorderedSet<WorkerContext*> doneContexts;
+                PROFILER_BEGIN(ThreadSystem);
 
-                for (Support::Vector<WorkerContext*>& currentGroup: mPhaseProcessing)
+                // Blow over every thread group we have active for this
+                Support::UnorderedSet<CThreadContext*> doneContexts;
+
+                for (Support::Vector<CThreadContext*>& currentGroup: mPhaseProcessing)
                 {
                     // Count how many threads have completed in this group
                     Common::U8 completedThreadCount = 0;
-                    for (WorkerContext* context: currentGroup)
+                    for (CThreadContext* context: currentGroup)
                         if (context->mIsComplete)
                             ++completedThreadCount;
 
                     // If everything in the group has completed, we process all the transactions
                     if (completedThreadCount == currentGroup.size())
                     {
-                        for (WorkerContext* context: currentGroup)
+                        for (CThreadContext* context: currentGroup)
                         {
                             doneContexts.insert(doneContexts.end(), context);
 
-                            // Process any transactions
-                            CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
-
-                            assert(task->mDebugMutex.try_lock());
-                            while (!task->mTransactions.empty())
+                            assert(context->mDebugMutex.try_lock());
+                            while (!context->mTransactions.empty())
                             {
-                                Support::Queue<EasyDelegate::IDeferredCaller*> transactionSet = task->mTransactions.front();
-                                task->mTransactions.pop();
+                                Support::Queue<EasyDelegate::IDeferredCaller*>& transactionSet = context->mTransactions.front();
+                                context->mTransactions.pop();
 
                                 while (!transactionSet.empty())
                                 {
@@ -119,16 +107,17 @@ namespace Kiaro
 
                                     transactionSet.pop();
                                 }
-                            }
 
-                            task->mDebugMutex.unlock();
+                                assert(transactionSet.size() == 0);
+                            }
+                            context->mDebugMutex.unlock();
                         }
 
                         // The group is done, so we clear it for this frame
                         currentGroup.clear();
                     }
                     else // If the group is still running, we blow out any contexts still in it from the done contexts
-                        for (WorkerContext* context: currentGroup)
+                        for (CThreadContext* context: currentGroup)
                         {
                             auto contextIter = doneContexts.find(context);
                             if (contextIter != doneContexts.end())
@@ -137,7 +126,7 @@ namespace Kiaro
                 }
 
                 // Now we blow through done contexts and do transfers
-                for (WorkerContext* context: doneContexts)
+                for (CThreadContext* context: doneContexts)
                 {
                     auto contextIter = mActiveThreads.find(context);
 
@@ -151,20 +140,38 @@ namespace Kiaro
 
                 if (mActiveThreads.size() == 0)
                 {
+                    // Generate phases if we need to.
+                    if (mPendingAddTasks.size() != 0 || mPendingRemoveTasks.size() != 0)
+                    {
+                        for (IThreadedTask* task: mPendingRemoveTasks)
+                            mTasks.erase(task);
+                        for (IThreadedTask* task: mPendingAddTasks)
+                            mTasks.insert(task);
+
+                        mPendingAddTasks.clear();
+                        mPendingRemoveTasks.clear();
+                        this->generatePhases();
+                    }
+
+                    // Don't continue if we don't have any actual phases.
+                    if (mThreadPhases.size() == 0)
+                    {
+                        PROFILER_END(ThreadSystem);
+                        return false;
+                    }
+
                     // If the current phase is the last phase, then we're done processing this frame
                     completedFrame = mCurrentPhase == mThreadPhases.size() - 1;
-
                     ++mCurrentPhase = mCurrentPhase >= mThreadPhases.size() ? 0 : mCurrentPhase;
 
                     // Now we assign the threads for the next phase
-                    Support::Vector<Support::Vector<ThreadAction>>& currentPhase = mThreadPhases[mCurrentPhase];
+                    Support::Vector<Support::Vector<IThreadedTask*>>& currentPhase = mThreadPhases[mCurrentPhase];
 
                     // Create the phase mirror (this is used to submit transactions)
                     // FIXME: Perhaps just clear existing phases and allocate any extras needed? mCurrentPhase will never count more.
                     mPhaseProcessing.clear();
-
                     for (Common::U8 iteration = 0; iteration < currentPhase.size(); iteration++)
-                        mPhaseProcessing.insert(mPhaseProcessing.end(), Support::Vector<WorkerContext*>());
+                        mPhaseProcessing.insert(mPhaseProcessing.end(), Support::Vector<CThreadContext*>());
 
                     Common::U8 availableThreadCount = mInactiveThreads.size();
 
@@ -174,21 +181,20 @@ namespace Kiaro
 
                     for (Common::U8 threadGroupIndex = 0; threadGroupIndex < currentPhase.size(); ++threadGroupIndex)
                     {
-                        Support::Vector<ThreadAction>& threadGroup = currentPhase[threadGroupIndex];
+                        Support::Vector<IThreadedTask*>& threadGroup = currentPhase[threadGroupIndex];
 
                         // Assign each action
                         for (Common::U8 iteration = 0; iteration < threadGroup.size(); iteration++)
                         {
-                            WorkerContext* context = mInactiveThreads[currentThreadIndex];
-                            CThreadSystemTask* task = reinterpret_cast<CThreadSystemTask*>(context->mTask);
+                            CThreadContext* context = mInactiveThreads[currentThreadIndex];
 
                             mActiveThreads.insert(mActiveThreads.end(), context);
                             mPhaseProcessing[threadGroupIndex].insert(mPhaseProcessing[threadGroupIndex].end(), context);
 
                             // Push our actions
-                            assert(task->mDebugMutex.try_lock());
-                            task->mThreadActions.push(std::make_pair(threadGroupIndex, threadGroup[iteration]));
-                            task->mDebugMutex.unlock();
+                            assert(context->mDebugMutex.try_lock());
+                            context->mThreadTasks.push(std::make_pair(threadGroupIndex, threadGroup[iteration]));
+                            context->mDebugMutex.unlock();
 
                             ++currentThreadIndex %= mInactiveThreads.size();
                             ++maxThreadIndex = maxThreadIndex >= mInactiveThreads.size() ? mInactiveThreads.size() - 1 : maxThreadIndex;
@@ -203,44 +209,162 @@ namespace Kiaro
                     mInactiveThreads.erase(mInactiveThreads.begin(), mInactiveThreads.begin() + maxThreadIndex);
                 }
 
+                PROFILER_END(ThreadSystem);
                 return completedFrame;
             }
 
-            void SThreadSystem::addPhase(Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& newPhase)
+            bool SThreadSystem::addTask(IThreadedTask* task)
+            {
+                if (mTasks.find(task) != mTasks.end() || mPendingAddTasks.find(task) != mPendingAddTasks.end())
+                    return false;
+                mPendingAddTasks.insert(task);
+                return true;
+            }
+
+            bool SThreadSystem::removeTask(IThreadedTask* task)
+            {
+                if (mTasks.find(task) == mTasks.end() || mPendingRemoveTasks.find(task) != mPendingRemoveTasks.end())
+                    return false;
+                mPendingRemoveTasks.insert(task);
+                return true;
+            }
+
+            void SThreadSystem::generatePhases(void)
+            {
+                mThreadPhases.clear();
+
+                CONSOLE_DEBUGF("Generating for %u total input tasks.", mTasks.size());
+
+                // First, we group into threading indexes
+                Support::Set<Common::U32> processingIndexes;
+                Support::UnorderedMap<Common::U32, Support::UnorderedSet<IThreadedTask*>> indexGroups;
+                for (IThreadedTask* task: mTasks)
+                {
+                    const Common::U32 processingIndex = task->getProcessingIndex();
+                    if (indexGroups.find(processingIndex) == indexGroups.end())
+                    {
+                        processingIndexes.insert(processingIndex);
+                        indexGroups[processingIndex] = Support::UnorderedSet<IThreadedTask*>();
+                    }
+                    indexGroups[processingIndex].insert(task);
+                }
+
+                // Process for each group and generate phase information
+                for (Common::U32 index: processingIndexes)
+                {
+                    Support::Vector<Support::Vector<IThreadedTask*>> generatedPhase;
+
+                    // For this phase index, we need to generate groups that contain tasks that share resources. This is used
+                    // to determine when data can finally be written to memory safely for this frame via the transaction API
+                    Support::UnorderedMap<Common::U32, Support::UnorderedSet<IThreadedTask*>> sharedResources;
+                    for (IThreadedTask* currentTask: indexGroups[index])
+                        for (const Common::U32 currentResource: currentTask->getResources())
+                            for (IThreadedTask* testedTask: indexGroups[index])
+                            {
+                                if (testedTask == currentTask)
+                                        continue;
+
+                                const Support::UnorderedSet<Common::U32>& testedResources = testedTask->getResources();
+                                for (const Common::U32 testedResource: testedResources)
+                                    if (testedResource == currentResource)
+                                    {
+                                        if (sharedResources.find(testedResource) == sharedResources.end())
+                                            sharedResources[testedResource] = Support::UnorderedSet<IThreadedTask*>();
+
+                                        sharedResources[testedResource].insert(testedTask);
+                                        sharedResources[testedResource].insert(currentTask);
+                                    }
+                            }
+
+                    // Once we know where the resource conflicts are, we use this to generate groups that are as small as possible.
+                    Support::UnorderedSet<IThreadedTask*> conflictedTasks;
+                    for (auto resourceIDTasks: sharedResources)
+                        for (IThreadedTask* task: resourceIDTasks.second)
+                            conflictedTasks.insert(task);
+
+                    CONSOLE_DEBUGF("Found %u resource conflicts in phase %u.", conflictedTasks.size(), index);
+                    Support::UnorderedSet<IThreadedTask*> remainingTasks = Support::UnorderedSet<IThreadedTask*>(indexGroups[index]);
+
+                    // Generate groups on resource conflicts
+                    Support::Vector<IThreadedTask*> conflictedGroup;
+                    for (auto resourceIDTasks: sharedResources)
+                        for (IThreadedTask* task: resourceIDTasks.second)
+                            if (remainingTasks.find(task) != remainingTasks.end())
+                            {
+                                remainingTasks.erase(task);
+                                conflictedGroup.push_back(task);
+                            }
+
+                    if (conflictedGroup.size() != 0)
+                        generatedPhase.push_back(conflictedGroup);
+
+                    // FIXME: We should unify types so we can reduce some code here
+                    // FIXME: We always put everything into the same group at the moment. We need to perform grouping such that tasks
+                    // in the same group are safe to commit when all tasks complete. Thus, the smaller the grouping, the better.
+                    const Common::U32 expectedSize = indexGroups[index].size() - conflictedTasks.size();
+
+                    CONSOLE_ASSERTF(remainingTasks.size() == expectedSize, "Expected %u tasks to be remaining after grouping, but actually had %u!", expectedSize, remainingTasks.size());
+                    for (IThreadedTask* task: remainingTasks)
+                    {
+                        Support::Vector<IThreadedTask*> generatedGroup;
+                        generatedGroup.push_back(task);
+                        generatedPhase.push_back(generatedGroup);
+                    }
+
+                    mThreadPhases.push_back(generatedPhase);
+                }
+
+                CONSOLE_DEBUGF("Generated %u phases.", mThreadPhases.size());
+                Common::U32 phaseIndex = 0;
+                for (auto phaseData: mThreadPhases)
+                {
+                    CONSOLE_DEBUGF("Phase %u has %u groups.", phaseIndex, phaseData.size());
+
+                    Common::U32 groupIndex = 0;
+                    for (auto groupData: phaseData)
+                    {
+                        CONSOLE_DEBUGF("Phase %u, group %u has %u tasks.", phaseIndex, groupIndex, groupData.size());
+                        ++groupIndex;
+                    }
+                    ++phaseIndex;
+                }
+            }
+
+            void SThreadSystem::addPhase(Support::Vector<Support::Vector<IThreadedTask*>>& newPhase)
             {
                 // Return the reference to the actual stored vector, the one above is a temporary stack element
                 mThreadPhases.push_back(newPhase);
             }
 
-            Support::Vector<Support::Vector<SThreadSystem::ThreadAction>>& SThreadSystem::getPhase(const size_t phase)
+            Support::Vector<Support::Vector<SThreadSystem::IThreadedTask*>>& SThreadSystem::getPhase(const size_t phase)
             {
                 return mThreadPhases[phase];
             }
 
-            void CThreadSystemTask::initialize(void)
+            SThreadSystem::CThreadContext::CThreadContext(void) : mIsComplete(true), mShouldTerminate(false)
             {
-
+                mThread = new Support::Thread(workerThreadLogic, this);
+                mThread->detach();
             }
 
-            bool CThreadSystemTask::tick(const Common::F32 deltaTimeSeconds)
+            SThreadSystem::CThreadContext::~CThreadContext(void)
             {
-                assert(mDebugMutex.try_lock());
-                assert(mThreadActions.size() != 0);
+                mShouldTerminate = true;
 
-                auto nextActionData = mThreadActions.front();
-                mThreadActions.pop();
-
-                Support::Queue<EasyDelegate::IDeferredCaller*> transaction = nextActionData.second->invoke();
-                mTransactions.push(transaction);
-
-                mDebugMutex.unlock();
-
-                return mThreadActions.size() == 0;
+                // FIXME: This can cause deadlocks if the thread is in an infinite loop somewhere
+                mThread->join();
             }
 
-            void CThreadSystemTask::deinitialize(void)
+            const Support::Queue<EasyDelegate::IDeferredCaller*> SThreadSystem::IThreadedTask::getTransaction(void)
             {
+                Support::Queue<EasyDelegate::IDeferredCaller*> result = mTransaction;
+                this->clearTransaction();
+                return result;
+            }
 
+            void SThreadSystem::IThreadedTask::clearTransaction(void)
+            {
+                mTransaction = Support::Queue<EasyDelegate::IDeferredCaller*>();
             }
         } // End NameSpace Tasking
     } // End NameSpace Support

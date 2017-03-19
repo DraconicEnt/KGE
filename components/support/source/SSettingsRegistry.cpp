@@ -203,8 +203,60 @@ namespace Kiaro
                 CONSOLE_ERROR("Failed to acquire Allegro config handle!");
 
             // Make sure we clear the heap elements
-            for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); it++)
+            for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); ++it)
                 free(it->second.first);
+        }
+
+        void SSettingsRegistry::dumpSettings(void)
+        {
+            for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); ++it)
+            {
+                auto storedValue = *it;
+                switch (storedValue.second.second)
+                {
+                    case Support::PROPERTY_TYPE::PROPERTY_BOOL:
+                    {
+                        CONSOLE_ERRORF("%s: %s", storedValue.first.data(), *reinterpret_cast<bool*>(storedValue.second.first) ? "True" : "False");
+                        break;
+                    }
+
+                    case Support::PROPERTY_TYPE::PROPERTY_STRING:
+                    {
+                        CONSOLE_ERRORF("%s: %s", storedValue.first.data(), reinterpret_cast<Support::String*>(storedValue.second.first)->data());
+                        break;
+                    }
+
+                    case Support::PROPERTY_TYPE::PROPERTY_F32:
+                    {
+                        CONSOLE_ERRORF("%s: %f", storedValue.first.data(), *reinterpret_cast<Common::F32*>(storedValue.second.first));
+                        break;
+                    }
+
+                    case Support::PROPERTY_TYPE::PROPERTY_F64:
+                    {
+                        CONSOLE_ERRORF("%s: %f", storedValue.first.data(), *reinterpret_cast<Common::F64*>(storedValue.second.first));
+                        break;
+                    }
+
+                    case Support::PROPERTY_TYPE::PROPERTY_U16:
+                    {
+                        CONSOLE_ERRORF("%s: %u", storedValue.first.data(), *reinterpret_cast<Common::U16*>(storedValue.second.first));
+                        break;
+                    }
+
+                    case Support::PROPERTY_TYPE::PROPERTY_U32:
+                    {
+                        CONSOLE_ERRORF("%s: %u", storedValue.first.data(), *reinterpret_cast<Common::U32*>(storedValue.second.first));
+                        break;
+                    }
+
+                    case Support::PROPERTY_TYPE::PROPERTY_U64:
+                    {
+                        CONSOLE_ERRORF("%s: %u", storedValue.first.data(), *reinterpret_cast<Common::U64*>(storedValue.second.first));
+                        break;
+                    }
+                }
+            }
         }
 
         void SSettingsRegistry::setStringValue(const Support::String& name, const Support::String& value)
@@ -233,8 +285,6 @@ namespace Kiaro
                         CONSOLE_ERRORF("Failed to read config value as bool: '%s'. Using default value.", name.data());
                         break;
                     }
-
-                    CONSOLE_INFOF("Test: %s, %u: %s", name.data(), atoi(value.data()), value.data());
 
                     this->setValue<bool>(name.data(), static_cast<bool>(atoi(value.data())));
                     break;
@@ -311,7 +361,7 @@ namespace Kiaro
 
                 default:
                 {
-                    CONSOLE_ERROR("Encountered type");
+                    CONSOLE_ERRORF("Encountered unknown type stored in key %s. Failed to set value.", name.data());
                     break;
                 }
             }

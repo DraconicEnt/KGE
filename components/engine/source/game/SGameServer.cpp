@@ -51,7 +51,7 @@ namespace Kiaro
                 mSimulation = new Phys::CSimulation();
 
                 // Add our update to the scheduler
-                mUpdatePulse = Support::SSynchronousScheduler::getInstance()->schedule(32, true, this, &SGameServer::update);
+                mUpdatePulse = Support::SSynchronousScheduler::getInstance()->schedule(ENGINE_TICKRATE, true, this, &SGameServer::update);
             }
 
             void SGameServer::handshakeHandler(Net::IIncomingClient* sender, Support::CBitStream& in)
@@ -207,8 +207,7 @@ namespace Kiaro
                     }
 
                     // Not a valid message
-                    // TODO (Robert MacGregor#9): IP Address
-                    Support::throwFormattedException<std::out_of_range>("SGameServer: Out of stage or unknown message type encountered at stage 0 processing: %u for client <IDENT>", basePacket.getType());
+                    Support::throwFormattedException<std::out_of_range>("SGameServer: Out of stage or unknown message type encountered at stage 0 processing: %u for client %s", basePacket.getType(), sender->getIPAddressString());
                 }
 
                 // If the stream still isn't done, queue it up (and it's not already in the queue...)

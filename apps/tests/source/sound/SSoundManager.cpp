@@ -18,7 +18,7 @@ namespace Kiaro
         TEST(SSoundManager, SoundRegistry)
         {
             Sound::SSoundManager* manager = Sound::SSoundManager::getInstance();
-            Sound::CSoundSource* sound = manager->getSoundSource("testfile.wav");
+            Sound::ISoundSource* sound = manager->getSoundSource("testfile.wav");
 
             EXPECT_TRUE(sound != nullptr);
             EXPECT_EQ(manager->getSoundSource("testfile.wav"), sound);

@@ -1,5 +1,5 @@
 /**
- *  @file CBitStream.h
+ *  @file CBitStream.hpp
  *  @brief Include file defining the Kiaro::Support::CBitStream class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -91,7 +91,7 @@ namespace Kiaro
                 {
                     static_assert(!std::is_pointer<inType>::value, "Cannot write pointer values to a bit stream!");
 
-                    CONSOLE_ASSERT(mPointer <= mTotalSize, "mPointer=%u,mTotalSize=%u", mPointer, mTotalSize);
+                    CONSOLE_ASSERTF(mPointer <= mTotalSize, "mPointer=%u,mTotalSize=%u", mPointer, mTotalSize);
 
                     if ((mPointer >= mTotalSize || mTotalSize - mPointer < sizeof(inType)) && mResizeLength == 0)
                         throw std::overflow_error("Stack Overflow");
@@ -267,22 +267,10 @@ namespace Kiaro
          */
         class ISerializable
         {
-                // Public methods
+            // Public methods
             public:
                 //! Parameter-less constructor.
                 ISerializable(void);
-
-                /**
-                 *  @brief Constructor accepting an input bit stream.
-                 *  @details When constructed in this manner, the ISerializable is to unpack a full set of instantiation data from
-                 *  the stream which is promptly written to the appropriate member fields. This would be the full set of data that is
-                 *  initially sent to a remote client to notify about the existence of a given game object.
-                 *  @param in The input bit stream.
-                 */
-                ISerializable(Support::CBitStream& in)
-                {
-                    this->unpack(in);
-                }
 
                 /**
                  *  @brief Packs all data about this ISerializable into the CBitStream. This is usually required for

@@ -36,6 +36,10 @@
 
 #include <core/SCoreRegistry.hpp>
 #include <support/FSystemInfo.hpp>
+#include <support/SSignalHandler.hpp>
+#include <support/tasking/SThreadSystem.hpp>
+
+#include <execinfo.h>
 
 namespace Kiaro
 {
@@ -64,10 +68,57 @@ namespace Kiaro
                 return mEngineMode & MODE_DEDICATED;
             }
 
+            static void handleProcessCrash(void)
+            {
+                CONSOLE_ERROR("!!! Received a crash signal! Generating a crash dump !!!");
+
+                void* stackFrames[256];
+                const Common::S32 backtraceSize = backtrace(stackFrames, 256);
+                char** symbolNames = backtrace_symbols(stackFrames, 256);
+
+                #ifdef ENGINE_UNIX
+                CONSOLE_ERROR("System Type: Unix");
+                #else
+                CONSOLE_ERROR("System Type: Windows");
+                #endif // ENGINE_UNIX
+
+                // Dump the current settings info
+                CONSOLE_ERROR("Settings Begin -------------------------------------------");
+                Support::SSettingsRegistry* registry = Support::SSettingsRegistry::getPointer();
+                registry->dumpSettings();
+                CONSOLE_ERROR("Settings End ---------------------------------------------");
+
+                // Dump pertinent build settings
+                CONSOLE_ERROR("Build Settings Begin -------------------------------------");
+                #ifdef ENGINE_ENTITY_ARENA_ALLOCATIONS
+                CONSOLE_ERROR("Entity Arena Allocations are enabled.");
+                CONSOLE_ERRORF("Entity Arena Allocations Size: %u", ENGINE_ENTITY_ARENA_ALLOCATION_SIZE);
+                CONSOLE_ERROR("Build Settings End ---------------------------------------");
+                #endif // ENGINE_ENTITY_ARENA_ALLOCATIONS
+
+                // Dump a back trace
+                CONSOLE_ERRORF("Thread ID: 0x%x", std::this_thread::get_id());
+                CONSOLE_ERRORF("Trace Depth: %u", backtraceSize);
+                for (Common::U32 iteration = 0; iteration < backtraceSize; ++iteration)
+                    CONSOLE_ERRORF("Frame %u: %s", iteration, symbolNames[iteration]);
+                free(symbolNames);
+            }
+
+            void SEngineInstance::handleThrottleRequest(void)
+            {
+                CONSOLE_ERROR("Received a request from the operating system to throttle CPU usage. Support for this is currently unimplemented and will be ignored.");
+            }
+
             Kiaro::Common::S32 SEngineInstance::start(const Common::S32 argc, Common::C8* argv[])
             {
                 // Before doing anything, read CPU data
                 Support::getCPUInformation();
+
+                // Install signal handlers.
+                Support::SSignalHandler* signalHandler = Support::SSignalHandler::getInstance();
+                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Termination] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::kill, this);
+                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Crash] = new Support::SSignalHandler::SignalHandlerType::StaticDelegateType(handleProcessCrash);
+                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::CPUUsage] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::handleThrottleRequest, this);
 
                 mRunning = false;
                 al_init();
@@ -95,6 +146,7 @@ namespace Kiaro
 
                 // TODO (Robert MacGregor#9): Return error codes for the netcode
                 // Init the taskers
+                Support::Tasking::SThreadSystem* threadSystem = Support::Tasking::SThreadSystem::getInstance();
                 Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getInstance();
                 Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getInstance();
 
@@ -153,6 +205,7 @@ namespace Kiaro
                 Input::SInputListener::destroy();
                 Support::SSynchronousScheduler::destroy();
                 Support::SSettingsRegistry::destroy();
+                Support::Tasking::SThreadSystem::destroy();
 
                 PHYSFS_deinit();
                 enet_deinitialize();
@@ -250,9 +303,12 @@ namespace Kiaro
                     {
                     #endif
 
+
                         // Update all our subsystems
                         Support::FTime::timer timerID = Support::FTime::startTimer();
                         PROFILER_BEGIN(MainLoop);
+
+                        Support::Tasking::SThreadSystem::getInstance()->update();
                         std::this_thread::sleep_for(std::chrono::nanoseconds(500000));
                         Support::Tasking::SAsynchronousTaskManager::getInstance()->tick();
 

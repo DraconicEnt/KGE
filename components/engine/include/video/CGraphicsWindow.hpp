@@ -1,6 +1,6 @@
 /**
- *  @file CDisplay.hpp
- *  @brief Include file declaring the CDisplay class and its methods.
+ *  @file CGraphicsWindow.hpp
+ *  @brief Include file declaring the CGraphicsWindow class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

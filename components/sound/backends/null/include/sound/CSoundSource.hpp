@@ -9,14 +9,24 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#include <sound/CSoundSource.hpp>
+#ifndef _INCLUDE_SOUND_CSOUNDSOURCE_HPP_
+#define _INCLUDE_SOUND_CSOUNDSOURCE_HPP_
 
-#include <support/Console.hpp>
+#include <sound/ISoundSource.hpp>
 
 namespace Kiaro
 {
     namespace Sound
     {
+        class CSoundSource : public ISoundSource
+        {
+            public:
+                CSoundSource(const Support::String& filename);
+                ~CSoundSource(void);
 
+                IVoice* play(void);
+        };
     } // End NameSpace Sound
 } // End NameSpace Kiaro
+
+#endif // _INCLUDE_SOUND_CSOUNDSOURCE_HPP_

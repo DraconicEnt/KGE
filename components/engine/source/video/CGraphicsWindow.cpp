@@ -1,6 +1,6 @@
 /**
- *  @file CDisplay.cpp
- *  @brief Source code file implementing the CDisplay class methods.
+ *  @file CGraphicsWindow.cpp
+ *  @brief Source code file implementing the CGraphicsWindow class methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
  *  to LICENSE.txt for more information.

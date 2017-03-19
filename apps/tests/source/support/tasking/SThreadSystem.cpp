@@ -23,52 +23,125 @@ namespace Kiaro
             static bool FirstGameStateValue = false;
             static void setFirstGameStateValue(bool value)
             {
+                CONSOLE_INFOF("Set First Game State: %s", value ? "True" : "False");
                 FirstGameStateValue = value;
             }
 
             static float SecondGameStateValue = 0.0f;
             static void setSecondGameStateValue(float value)
             {
+                CONSOLE_INFOF("Set Second Game State: %f", value);
                 SecondGameStateValue = value;
             }
 
             static char* ThirdGameStateValue = nullptr;
             static void setThirdGameStateValue(const char* value)
             {
+                CONSOLE_INFOF("Set Third Game State: %s", value);
                 ThirdGameStateValue = const_cast<char*>(value);
             }
 
-            static Support::Queue<EasyDelegate::IDeferredCaller*> ActionOne(void)
+            class ActionOne : public SThreadSystem::IThreadedTask
             {
-                Support::Queue<EasyDelegate::IDeferredCaller*> transaction;
-                transaction.push(new EasyDelegate::DeferredStaticCaller<void, bool>(setFirstGameStateValue, true));
+                public:
+                    ActionOne(void)
+                    {
+                        mProcessingIndex = 0;
+                        mResources.insert(1);
+                    }
 
-                return transaction;
-            }
+                    void initialize(void)
+                    {
 
-            static Support::Queue<EasyDelegate::IDeferredCaller*> ActionTwo_PhaseOne(void)
+                    }
+
+                    void deinitialize(void)
+                    {
+
+                    }
+
+                    bool tick(const Common::F32 deltaTimeSeconds)
+                    {
+                        mTransaction.push(new EasyDelegate::DeferredStaticCaller<void, bool>(setFirstGameStateValue, true));
+                        return true;
+                    }
+            };
+
+            class ActionTwoPhaseOne : public SThreadSystem::IThreadedTask
             {
-                Support::Queue<EasyDelegate::IDeferredCaller*> transaction;
-                transaction.push(new EasyDelegate::DeferredStaticCaller<void, float>(setSecondGameStateValue, 3.14f));
+                public:
+                    ActionTwoPhaseOne(void)
+                    {
+                        mProcessingIndex = 0;
+                        mResources.insert(1);
+                    }
 
-                return transaction;
-            }
+                    void initialize(void)
+                    {
 
-            static Support::Queue<EasyDelegate::IDeferredCaller*> ActionTwo_PhaseTwo(void)
+                    }
+
+                    void deinitialize(void)
+                    {
+
+                    }
+
+                    bool tick(const Common::F32 deltaTimeSeconds)
+                    {
+                        mTransaction.push(new EasyDelegate::DeferredStaticCaller<void, float>(setSecondGameStateValue, 3.14f));
+                        return true;
+                    }
+            };
+
+            class ActionTwoPhaseTwo : public SThreadSystem::IThreadedTask
             {
-                Support::Queue<EasyDelegate::IDeferredCaller*> transaction;
-                transaction.push(new EasyDelegate::DeferredStaticCaller<void, float>(setSecondGameStateValue, 3117.0f));
+                public:
+                    ActionTwoPhaseTwo(void)
+                    {
+                        mProcessingIndex = 1;
+                    }
 
-                return transaction;
-            }
+                    void initialize(void)
+                    {
 
-            static Support::Queue<EasyDelegate::IDeferredCaller*> ActionThree(void)
+                    }
+
+                    void deinitialize(void)
+                    {
+
+                    }
+
+                    bool tick(const Common::F32 deltaTimeSeconds)
+                    {
+                        mTransaction.push(new EasyDelegate::DeferredStaticCaller<void, float>(setSecondGameStateValue, 3117.0f));
+                        return true;
+                    }
+            };
+
+            class ActionThree : public SThreadSystem::IThreadedTask
             {
-                Support::Queue<EasyDelegate::IDeferredCaller*> transaction;
-                transaction.push(new EasyDelegate::DeferredStaticCaller<void, const char*>(setThirdGameStateValue, "Test String"));
+                public:
+                    ActionThree(void)
+                    {
+                        mProcessingIndex = 1;
+                    }
 
-                return transaction;
-            }
+                    void initialize(void)
+                    {
+
+                    }
+
+                    void deinitialize(void)
+                    {
+
+                    }
+
+                    bool tick(const Common::F32 deltaTimeSeconds)
+                    {
+                        mTransaction.push(new EasyDelegate::DeferredStaticCaller<void, const char*>(setThirdGameStateValue, "Test String"));
+                        return true;
+                    }
+            };
 
             TEST(SThreadSystem, Transactions)
             {
@@ -77,24 +150,11 @@ namespace Kiaro
                 settings->setValue<Common::U8>("System::RuntimeThreadCount", 25);
 
                 // Initialize the thread system and two phases
-                SThreadSystem* threading = SThreadSystem::getPointer();
-                Support::Vector<Support::Vector<SThreadSystem::ThreadAction>> phaseOne;
-                Support::Vector<Support::Vector<SThreadSystem::ThreadAction>> phaseTwo;
-
-                // Initialize two groups for phase 1
-                Support::Vector<SThreadSystem::ThreadAction> phaseOneGroupOne;
-                phaseOneGroupOne.insert(phaseOneGroupOne.end(), new EasyDelegate::StaticDelegate<Support::Queue<EasyDelegate::IDeferredCaller*>>(ActionTwo_PhaseOne));
-                phaseOneGroupOne.insert(phaseOneGroupOne.end(), new EasyDelegate::StaticDelegate<Support::Queue<EasyDelegate::IDeferredCaller*>>(ActionOne));
-                phaseOne.push_back(phaseOneGroupOne);
-
-                Support::Vector<SThreadSystem::ThreadAction> phaseTwoGroupOne;
-                phaseTwoGroupOne.insert(phaseTwoGroupOne.end(), new EasyDelegate::StaticDelegate<Support::Queue<EasyDelegate::IDeferredCaller*>>(ActionThree));
-                phaseTwoGroupOne.insert(phaseTwoGroupOne.end(), new EasyDelegate::StaticDelegate<Support::Queue<EasyDelegate::IDeferredCaller*>>(ActionTwo_PhaseTwo));
-                phaseTwo.push_back(phaseTwoGroupOne);
-
-                // Register the phases
-                threading->addPhase(phaseOne);
-                threading->addPhase(phaseTwo);
+                SThreadSystem* threading = SThreadSystem::getInstance();
+                threading->addTask(new ActionOne());
+                threading->addTask(new ActionTwoPhaseOne());
+                threading->addTask(new ActionTwoPhaseTwo());
+                threading->addTask(new ActionThree());
 
                 for (Common::U32 iteration = 0; iteration < 8; ++iteration)
                 {

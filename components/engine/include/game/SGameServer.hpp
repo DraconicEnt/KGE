@@ -1,5 +1,5 @@
 /**
- *  @file SGameWorld.hpp
+ *  @file SGameServer.hpp
  *  @brief Include file declaring the SGameServer singleton class and its methods.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -12,6 +12,7 @@
 #ifndef _INCLUDE_GAME_SGAMESERVER_HPP_
 #define _INCLUDE_GAME_SGAMESERVER_HPP_
 
+#include <phys/tasks/CPhysicsSteppingTask.hpp>
 #include <phys/CSimulation.hpp>
 
 #include <net/IServer.hpp>

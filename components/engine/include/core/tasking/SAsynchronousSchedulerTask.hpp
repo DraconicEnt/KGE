@@ -45,6 +45,10 @@ namespace Kiaro
                 public:
                     void initialize(void);
 
+                    /**
+                     *  @brief An update tick for an asynchronously processed scheduler task.
+                     *  @param The delta time that has passed in seconds since the last call.
+                     */
                     bool tick(const Common::F32 deltaTime);
 
                     void deinitialize(void);

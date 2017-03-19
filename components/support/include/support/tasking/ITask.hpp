@@ -28,6 +28,17 @@ namespace Kiaro
              */
             class ITask
             {
+                // Protected Members
+                protected:
+                    //! The resources that this task accesses. This is used for coordinating actions with the multithreaded programming.
+                    Support::UnorderedSet<Common::U32> mResources;
+
+                    //! The processing index to use in the programming. This is used to determine in what order tasks should be executed.
+                    Common::U32 mProcessingIndex;
+
+                    //! The threading weight for this task. This is used strictly in multithreaded scenarios to determine where thread allocations go first.
+                    Common::U32 mThreadWeight;
+
                 // Public Members
                 public:
                     //! A boolean representing whether or not this task instance is currently complete.
@@ -35,8 +46,15 @@ namespace Kiaro
 
                 // Public Methods
                 public:
+                    //! Parameter-less constructor.
+                    ITask(void);
+
                     //! Initializes the task, allocating any necessary resources.
                     virtual void initialize(void) = 0;
+
+                    Common::U32 getProcessingIndex(void);
+                    Common::U32 getThreadWeight(void);
+                    const Support::UnorderedSet<Common::U32>& getResources(void);
 
                     /**
                      *  @brief Ticks the task. This is primarily useful for when the task is being

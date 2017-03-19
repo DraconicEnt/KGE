@@ -1,5 +1,16 @@
-#ifndef _INCLUDE_KIARO_ENGINE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
-#define _INCLUDE_KIARO_ENGINE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
+/**
+ *  @file IDataBlock.hpp
+ *  @brief Interface class for datablocks.
+ *
+ *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  to LICENSE.txt for more information.
+ *
+ *  @author Draconic Entity
+ *  @copyright (c) 2016 Draconic Entity
+ */
+
+#ifndef _INCLUDE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
+#define _INCLUDE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
 
 #include <support/common.hpp>
 
@@ -53,5 +64,5 @@ namespace Kiaro
         } // End NameSpace Game
     }
 } // End NameSpace Kiaro
-#endif // _INCLUDE_KIARO_ENGINE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
+#endif // _INCLUDE_GAME_ENTITIES_DATABLOCKS_IDATABLOCK_HPP_
 

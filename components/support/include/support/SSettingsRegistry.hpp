@@ -120,6 +120,8 @@ namespace Kiaro
                     oldPropertyValue = value;
                 }
 
+                void dumpSettings(void);
+
                 void setStringValue(const Support::String& name, const Support::String& value);
 
             // Protected Methods

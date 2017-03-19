@@ -9,14 +9,15 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#include <fmod.hpp>
+#ifndef _INCLUDE_SOUND_ISOUNDMANAGER_HPP_
+#define _INCLUDE_SOUND_ISOUNDMANAGER_HPP_
 
 #include <support/String.hpp>
 #include <support/UnorderedMap.hpp>
 #include <support/ISingleton.hpp>
 #include <support/types.hpp>
 
-#include <sound/CSoundSource.hpp>
+#include <sound/ISoundSource.hpp>
 
 namespace Kiaro
 {
@@ -26,15 +27,12 @@ namespace Kiaro
          *  @brief Singleton class for the sound management programming of the engine. This singleton provides loading and memory caching
          *  of sound resources as well as asynchronous loading of said sound resources.
          */
-        class SSoundManager : public Support::ISingleton<SSoundManager>
+        class ISoundManager
         {
             // Private Members
             private:
-                //! Pointer to the FMod sound system.
-                FMOD::System* mFMod;
-
                 //! A map of all loaded sound resources.
-                Support::UnorderedMap<Support::String, CSoundSource*> mSoundRegistry;
+                Support::UnorderedMap<Support::String, ISoundSource*> mSoundRegistry;
 
             // Public Methods
             public:
@@ -43,24 +41,14 @@ namespace Kiaro
                  *  @param filename The name of the sound file to source from
                  *  @return A pointer to the created sound source.
                  */
-                CSoundSource* getSoundSource(const Support::String& filename);
+                virtual ISoundSource* getSoundSource(const Support::String& filename) = 0;
 
                 /**
                  *  @brief Performs any update logic that may be necessary to drive the backend sound systems.
                  */
-                void update(void);
-
-            // Protected Methods
-            protected:
-                /**
-                 *  @brief Parameter-less constructor.
-                 */
-                SSoundManager(void);
-
-                /**
-                 *  @brief Standard destructor.
-                 */
-                ~SSoundManager(void);
+                virtual void update(void) = 0;
         };
     } // End NameSpace Sound
 } // End NameSpace Kiaro
+
+#endif // _INCLUDE_SOUND_ISOUNDMANAGER_HPP_

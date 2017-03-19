@@ -46,6 +46,9 @@ OPTION(USE_BOOST_REGEX "Use boost::regex instead of std::regex." OFF)
 # Options to build specific parts of the engine
 OPTION(BUILD_ENGINE "Build the core game engine." ON)
 
+# Component configurations
+SET(AUDIO_BACKEND "null" CACHE STRING "The audio engine to use.")
+
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 # Check our dependencies

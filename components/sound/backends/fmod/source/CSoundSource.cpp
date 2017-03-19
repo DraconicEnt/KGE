@@ -12,7 +12,6 @@
 #include <fmod_errors.h>
 
 #include <sound/CSoundSource.hpp>
-
 #include <support/Console.hpp>
 
 namespace Kiaro
