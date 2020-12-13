@@ -13,7 +13,7 @@ cc_library(
 
     deps = [
         "@curl//:curl",
-
+        "@enet//:enet",
         "//components/support:support"
     ],
     visibility = ["//visibility:public"]

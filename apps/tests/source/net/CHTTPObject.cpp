@@ -15,6 +15,7 @@ namespace Kiaro
         TEST(CHTTPObject, SimpleGET)
         {
             CHTTPObject connection;
+            connection.mRequestType = CHTTPObject::HTTP_REQUEST_GET;
             connection.setURL("https://google.com");
             connection.dispatchRequest();
 

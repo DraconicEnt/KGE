@@ -83,8 +83,10 @@ namespace Kiaro
                     // Count how many threads have completed in this group
                     Common::U8 completedThreadCount = 0;
                     for (CThreadContext* context: currentGroup)
+                    {
                         if (context->mIsComplete)
                             ++completedThreadCount;
+                    }
 
                     // If everything in the group has completed, we process all the transactions
                     if (completedThreadCount == currentGroup.size())
@@ -117,12 +119,14 @@ namespace Kiaro
                         currentGroup.clear();
                     }
                     else // If the group is still running, we blow out any contexts still in it from the done contexts
+                    {
                         for (CThreadContext* context: currentGroup)
                         {
                             auto contextIter = doneContexts.find(context);
                             if (contextIter != doneContexts.end())
                                 doneContexts.erase(contextIter);
                         }
+                    }
                 }
 
                 // Now we blow through done contexts and do transfers
@@ -171,7 +175,9 @@ namespace Kiaro
                     // FIXME: Perhaps just clear existing phases and allocate any extras needed? mCurrentPhase will never count more.
                     mPhaseProcessing.clear();
                     for (Common::U8 iteration = 0; iteration < currentPhase.size(); iteration++)
+                    {
                         mPhaseProcessing.insert(mPhaseProcessing.end(), Support::Vector<CThreadContext*>());
+                    }
 
                     Common::U8 availableThreadCount = mInactiveThreads.size();
 
@@ -202,8 +208,10 @@ namespace Kiaro
                     }
 
                     // Trigger the threads to run only after the assignments are done
-                   for (Common::U8 iteration = 0; iteration < maxThreadIndex; ++iteration)
+                    for (Common::U8 iteration = 0; iteration < maxThreadIndex; ++iteration)
+                    {
                         mInactiveThreads[iteration]->mIsComplete = false;
+                    }
 
                     // Erase the threads we are currently using
                     mInactiveThreads.erase(mInactiveThreads.begin(), mInactiveThreads.begin() + maxThreadIndex);

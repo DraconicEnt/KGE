@@ -1,3 +1,14 @@
+genrule(
+    name = "test",
+    cmd = "ls bazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet",
+    srcs = [
+        "@bullet//:bullet"
+    ],
+    outs = [
+        "ls"
+    ]
+)
+
 cc_library(
     name = "phys",
     srcs = glob(
@@ -10,6 +21,9 @@ cc_library(
     ),
     includes = [
         "include"
+    ],
+    copts = [
+        "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
     ],
     include_prefix = "bullet",
     deps = [

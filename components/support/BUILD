@@ -9,16 +9,23 @@ cc_library(
 
             "platform/common/**/*.cpp"
         ]) + select({
-            "@platforms//os:windows": glob(include=["platform/windows/**/*.cpp"]), 
+            "@platforms//os:windows": glob(include=["platform/windows/**/*.cpp"]),
             "//conditions:default": glob(include=["platform/unix/**/*.cpp"])
         }),
     includes = [
         "include"
     ],
 
+    defines = select({
+        "//conditions:default": [],
+        "//.bazel:intrinsics": [],
+        "//.bazel:no-intrinsics": ["NO_INTRINSICS=1"]
+    }),
+
     deps = [
         "//deps/easydelegate:easydelegate",
-        "@allegro//:allegro"
+        "@allegro//:allegro",
+        "@osg//:osg"
     ],
 
     visibility = ["//visibility:public"]

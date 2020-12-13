@@ -30,6 +30,7 @@ namespace Kiaro
             bool CPhysicsSteppingTask::tick(const Common::F32 deltaTimeSeconds)
             {
                 mSimulation->update(deltaTimeSeconds);
+                return true;
             }
 
             void CPhysicsSteppingTask::deinitialize(void)
@@ -39,4 +40,3 @@ namespace Kiaro
         }
     } // End NameSpace Phys
 } // End NameSpace Kiaro
-

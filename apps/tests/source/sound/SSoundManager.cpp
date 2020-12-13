@@ -30,7 +30,7 @@ namespace Kiaro
         {
             Sound::SSoundManager* manager = Sound::SSoundManager::getInstance();
 
-            EXPECT_TRUE(manager->getSoundSource("nosuchfile.wav") != nullptr);
+            EXPECT_TRUE(manager->getSoundSource("nosuchfile.wav") == nullptr);
             Sound::SSoundManager::destroy();
         }
     } // End Namespace Support

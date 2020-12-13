@@ -35,6 +35,9 @@ namespace Kiaro
                     HTTP_REQUEST_POST,
                 };
 
+                //! The type of request that should be issued.
+                HTTP_REQUEST_TYPE mRequestType;
+
             // Private Members
             private:
                 //! The URI we will be operating against.
@@ -48,9 +51,6 @@ namespace Kiaro
 
                 //! A map mapping POST key, value pairs for a URL encoded POST.
                 Support::UnorderedMap<Support::String, Support::String> mURLEncodedPOSTValues;
-
-                //! The type of request that should be issued.
-                HTTP_REQUEST_TYPE mRequestType;
 
                 /**
                  *  @brief The HTTP transfer context to be used when uploading arbitrary data to the web server.
@@ -167,4 +167,3 @@ namespace Kiaro
         };
     } // End NameSpace Net
 } // End NameSpace Kiaro
-

@@ -32,7 +32,7 @@
 
 // If defined, the engine will use an arena allocation model for all entities in the engine. This offers a large speed boost at the
 // expense of having an entity count high limit that increments on a per entity type basis only.
-#define ENGINE_ENTITY_ARENA_ALLOCATIONS
+// #define ENGINE_ENTITY_ARENA_ALLOCATIONS
 
 // If defined and ENGINE_ENTITY_ARENA_ALLOCATIONS is defined, the engine will use this value for arena size allocations instead of
 // loading it fromt he configuration. This is useful for final distributions.

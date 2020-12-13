@@ -26,7 +26,9 @@ namespace Kiaro
 
             // No bytes left to write to or no bytes left to read
             if (!bytesToWrite || !context->mPOSTPayloadLengthRemaining)
+            {
                 return 0;
+            }
 
             const size_t bytesWritten = context->mPOSTPayloadLengthRemaining < bytesToWrite ? context->mPOSTPayloadLengthRemaining : bytesToWrite;
 
@@ -97,7 +99,9 @@ namespace Kiaro
             auto search = mRequestHeaders.find(headerName);
 
             if (search != mRequestHeaders.end())
+            {
                 mRequestHeaders.erase(search);
+            }
         }
 
         void CHTTPObject::dispatchRequest(void)
@@ -107,7 +111,9 @@ namespace Kiaro
 
             // Initialize the response section
             if (mHTTPTransferContext.mResponse)
+            {
                 free(mHTTPTransferContext.mResponse);
+            }
 
             // We just use realloc on this anyway
             mHTTPTransferContext.mResponse = malloc(1);
@@ -144,7 +150,9 @@ namespace Kiaro
             }
 
             if (requestHeaders)
+            {
                 curl_easy_setopt(curl, CURLOPT_HTTPHEADER, requestHeaders);
+            }
 
             // Setup the data transfer if necessary
             if (mHTTPTransferContext.mPOSTPayload && mRequestType == HTTP_REQUEST_POST)
@@ -165,7 +173,9 @@ namespace Kiaro
 
             // Set the user agent if we have one set
             if (mUserAgent != "")
+            {
                 curl_easy_setopt(curl, CURLOPT_USERAGENT, mUserAgent.data());
+            }
 
             // Finally do something
             curl_easy_perform(curl);
@@ -191,4 +201,3 @@ namespace Kiaro
         }
     } // End NameSpace Net
 } // End NameSpace Kiaro
-

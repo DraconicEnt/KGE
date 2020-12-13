@@ -41,7 +41,7 @@ namespace Kiaro
         {
         }
 
-        Common::S32 getDebugMode()
+        Common::S32 IDebugRenderer::getDebugMode() const
         {
             return 0;
         }

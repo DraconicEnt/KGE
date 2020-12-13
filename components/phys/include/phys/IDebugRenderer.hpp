@@ -24,13 +24,11 @@ namespace Kiaro
     {
         class IDebugRenderer : public btIDebugDraw
         {
-                // Public Methods
             public:
                 virtual void drawLine(const Support::Vector3DF& from, const Support::Vector3DF& to, const Support::ColorRGBA& color) = 0;
                 virtual void drawContactPoint(const Support::Vector3DF& pointOnB, const Support::Vector3DF& normalOnB, const Common::F32& distance, const Common::S32& lifetime, const Support::ColorRGBA& color) = 0;
                 virtual void draw3dText(const Support::Vector3DF& location, const Support::String& text) = 0;
 
-                // Private Methods
             private:
                 void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
                 void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, Common::S32 lifeTime, const btVector3& color);
@@ -43,4 +41,3 @@ namespace Kiaro
     } // End NameSpace Phys
 } // End NameSpace Kiaro
 #endif
-

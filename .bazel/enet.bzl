@@ -2,7 +2,7 @@
 load("@rules_foreign_cc//tools/build_defs:configure.bzl", "configure_make")
 
 configure_make(
-   name = "library",
+   name = "enet",
    lib_source = "@enet//:enet-1.3.17",
 
    static_libraries = [
@@ -12,5 +12,7 @@ configure_make(
    make_commands = [
        "make -j$(nproc)",
        "make install"
-   ]
+   ],
+
+   visibility = ["//visibility:public"]
 )

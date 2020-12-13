@@ -289,6 +289,7 @@ namespace Kiaro
                 });
 
                 CONSOLE_INFO("Management console initialized.");
+                return 0;
             }
 
             void SEngineInstance::runGameLoop(void)

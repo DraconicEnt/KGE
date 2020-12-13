@@ -25,11 +25,11 @@ cmake_external(
    ],
 
    static_libraries = [
+       "libBulletDynamics.a",
+       "libBulletCollision.a",
+       "libBullet3Collision.a",
        "libLinearMath.a",
        "libBullet3Common.a",
-       "libBulletCollision.a",
-       "libBulletDynamics.a",
-       "libBullet3Collision.a"
    ],
    visibility = ["//visibility:public"]
 )
