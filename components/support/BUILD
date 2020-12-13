@@ -23,7 +23,7 @@ cc_library(
     }),
 
     deps = [
-        "//deps/easydelegate:easydelegate",
+        "@easydelegate//:easydelegate",
         "@allegro//:allegro",
         "@osg//:osg"
     ],

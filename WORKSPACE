@@ -15,6 +15,14 @@ load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependen
 
 rules_foreign_cc_dependencies()
 
+# Load EasyDelegate
+git_repository(
+    name = "easydelegate",
+    shallow_since = "1607857580 -0800",
+    remote = "https://github.com/Ragora/EasyDelegate.git",
+    commit = "c94ca0096212ffa43aad9ca0aa5183fb7ebd742a"
+)
+
 # Load rules_python
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
