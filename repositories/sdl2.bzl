@@ -59,13 +59,24 @@ filegroup(
 
 filegroup(
     name = "video_sources",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/video/*.c",
+                "SDL2-2.0.12/src/video/windows/*.c",
+                "SDL2-2.0.12/src/video/windows/*.h",
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/video/*.c",
                 "SDL2-2.0.12/src/video/x11/*.c",
                 "SDL2-2.0.12/src/video/x11/*.h",
             ]
         )
+    })
 )
 
 filegroup(
@@ -80,12 +91,22 @@ filegroup(
 
 filegroup(
     name = "timer_sources",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/timer/*.c",
+                "SDL2-2.0.12/src/timer/windows/*.c"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/timer/*.c",
                 "SDL2-2.0.12/src/timer/unix/*.c"
             ]
         )
+    })
 )
 
 filegroup(
@@ -99,15 +120,24 @@ filegroup(
 
 filegroup(
     name = "thread_sources",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/thread/*.c",
+                "SDL2-2.0.12/src/thread/windows/*.c",
+                "SDL2-2.0.12/src/thread/windows/*.h",
+            ]
+        )
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/thread/*.c",
                 "SDL2-2.0.12/src/thread/pthread/*.c",
                 "SDL2-2.0.12/src/thread/pthread/*.h",
-
-                #"SDL2-2.0.12/src/thread/generic/*.c"
             ]
         )
+    })
 )
 
 filegroup(
@@ -140,12 +170,23 @@ filegroup(
 
 filegroup(
     name = "haptic_sources",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/haptic/*.c",
+                "SDL2-2.0.12/src/haptic/windows/*.c",
+                "SDL2-2.0.12/src/haptic/windows/*.h"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/haptic/*.c",
                 "SDL2-2.0.12/src/haptic/linux/*.c"
             ]
         )
+    })
 )
 
 filegroup(
@@ -159,7 +200,20 @@ filegroup(
 
 filegroup(
     name = "joystick_sources",
-    srcs = glob(
+    srcs = select({
+      "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/joystick/*.c",
+                "SDL2-2.0.12/src/joystick/windows/*.c",
+                "SDL2-2.0.12/src/joystick/windows/*.h",
+
+                # hidapi
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
+                ]
+            ),
+
+      # Linux
+      "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/joystick/*.c",
                 "SDL2-2.0.12/src/joystick/linux/*.c",
@@ -167,8 +221,11 @@ filegroup(
 
                 # hidapi
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
-            ]
-        )
+                ]
+            )
+    }),
+
+
 )
 
 filegroup(
@@ -184,20 +241,38 @@ filegroup(
 
 filegroup(
     name = "core_sources",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/core/windows/*.c"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/core/linux/*.c"
             ]
         )
+    })
 )
 
 filegroup(
     name = "core_headers",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/core/windows/*.h"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/core/linux/*.h"
             ]
         )
+    })
 )
 
 filegroup(
@@ -228,14 +303,27 @@ filegroup(
         )
 )
 
+
+
+
 filegroup(
     name = "hidapi_includes",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/hidapi/hidapi/*.h",
+                "SDL2-2.0.12/src/hidapi/windows/hid.c"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/hidapi/hidapi/*.h",
                 "SDL2-2.0.12/src/hidapi/linux/hid.c"
             ]
         )
+    })
 )
 
 filegroup(
