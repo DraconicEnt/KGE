@@ -11,52 +11,298 @@ def sdl2():
         ],
         sha256 = "349268f695c02efbc9b9148a70b85e58cefbbf704abd3e91be654db7f1e2c863",
         build_file_content = """
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
-cmake_external(
-name = "library",
-lib_source = "@sdl2//:SDL2-2.0.12",
+filegroup(
+    name = "common_headers",
+    srcs = glob(
+        include = [
+            "SDL2-2.0.12/src/*.h"
+        ]
+    )
+)
 
-static_libraries = [
-   "libSDL2.a",
-   "libSDL2main.a"
-#   "SDL2.lib",
- #  "SDL2main.lib"
-],
-#shared_libraries = [
- #  "libSDL2-2.0.so"
-#],
+filegroup(
+    name = "common_sources",
+    srcs = glob(
+        include = [
+            "SDL2-2.0.12/src/*.c"
+        ]
+    )
+)
 
-cache_entries = {
-   "LIBC": "YES",
-   "SDL_TEST": "NO",
-   "SDL_SHARED": "NO",
-   "SDL_STATIC": "YES",
-},
+filegroup(
+    name = "dynapi_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/dynapi/*.h"
+            ]
+        )
+)
 
-# Windows only
-generate_crosstool_file = select({
-    "@bazel_tools//src/conditions:windows": True,
-    "//conditions:default": False
-}),
+filegroup(
+    name = "dynapi_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/dynapi/*.c"
+            ]
+        )
+)
 
-cmake_options = select({
-   "@bazel_tools//src/conditions:windows": ["-GNinja"],
-   "//conditions:default": None
-}),
+filegroup(
+    name = "video_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/video/*.h"
+            ]
+        )
+)
 
-make_commands = select({
-   "@bazel_tools//src/conditions:windows": [
-       "ninja",
-       "ninja install"
-   ],
-   "//conditions:default": [
-       "make -j$(nproc)",
-       "make install"
-   ]
-}),
+filegroup(
+    name = "video_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/video/*.c",
+                "SDL2-2.0.12/src/video/x11/*.c",
+                "SDL2-2.0.12/src/video/x11/*.h",
+            ]
+        )
+)
 
-visibility = ["//visibility:public"]
+filegroup(
+    name = "events",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/events/*.h",
+                "SDL2-2.0.12/src/events/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "timer_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/timer/*.c",
+                "SDL2-2.0.12/src/timer/unix/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "timer_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/timer/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "thread_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/thread/*.c",
+                "SDL2-2.0.12/src/thread/pthread/*.c",
+                "SDL2-2.0.12/src/thread/pthread/*.h",
+
+                #"SDL2-2.0.12/src/thread/generic/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "thread_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/thread/*.h",
+                "SDL2-2.0.12/src/thread/generic/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "yuv2grb_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/video/yuv2rgb/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "yuv2grb_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/video/yuv2rgb/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "haptic_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/haptic/*.c",
+                "SDL2-2.0.12/src/haptic/linux/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "haptic_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/haptic/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "joystick_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/joystick/*.c",
+                "SDL2-2.0.12/src/joystick/linux/*.c",
+                "SDL2-2.0.12/src/joystick/linux/*.h",
+
+                # hidapi
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
+            ]
+        )
+)
+
+filegroup(
+    name = "joystick_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/joystick/*.h",
+                # hidapi
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick_c.h",
+            ]
+        )
+)
+
+filegroup(
+    name = "core_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/core/linux/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "core_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/core/linux/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "sensor_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/sensor/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "sensor_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/sensor/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "hidapi_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/hidapi/*.c",
+                # "SDL2-2.0.12/src/hidapi/linux/*.cpp"
+            ]
+        )
+)
+
+filegroup(
+    name = "hidapi_includes",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/hidapi/hidapi/*.h",
+                "SDL2-2.0.12/src/hidapi/linux/hid.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "includes",
+    srcs = glob(
+        include = [
+            "SDL2-2.0.12/include/*.h"
+        ]
+    )
+)
+
+cc_library(
+    name = "library",
+    srcs = [
+        ":includes",
+
+        ":events",
+
+        ":thread_headers",
+        ":thread_sources",
+
+        ":yuv2grb_headers",
+        ":yuv2grb_sources",
+
+        ":video_headers",
+        ":video_sources",
+
+        ":timer_headers",
+        ":timer_sources",
+
+        ":common_sources",
+        ":common_headers",
+
+        # ":dynapi_sources",
+        ":dynapi_headers",
+
+        ":haptic_sources",
+        ":haptic_headers",
+
+        ":joystick_headers",
+        ":joystick_sources",
+
+        ":core_sources",
+        ":core_headers",
+
+        ":sensor_headers",
+        ":sensor_sources",
+
+        ":hidapi_sources",
+        ":hidapi_includes"
+    ],
+    hdrs = [
+        ":yuv2grb_headers",
+        ":common_headers",
+        ":video_headers",
+        ":haptic_headers",
+        ":dynapi_headers",
+        ":core_headers",
+        ":joystick_headers",
+        ":sensor_headers",
+        ":hidapi_includes",
+        ":includes"
+    ],
+    includes = [
+        "SDL2-2.0.12/include",
+        "SDL2-2.0.12/src/joystick",
+    ]
 )
     """
     )

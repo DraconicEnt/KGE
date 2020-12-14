@@ -38,7 +38,8 @@ cc_library(
     ],
 
     deps = [
-        "@sdl2//:library"
+        "@sdl2//:library",
+        "@png//:png"
     ]
 )
         """
