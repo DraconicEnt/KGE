@@ -19,5 +19,6 @@ cc_binary(
     ],
     copts = [
         "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
-    ]
+    ],
+    visibility = ["//visibility:public"]
 )
