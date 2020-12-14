@@ -50,11 +50,21 @@ filegroup(
 
 filegroup(
     name = "video_headers",
-    srcs = glob(
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/video/*.h",
+                "SDL2-2.0.12/src/video/khronos/vulkan/*.h"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/video/*.h"
             ]
         )
+    })
 )
 
 filegroup(
@@ -127,7 +137,7 @@ filegroup(
                 "SDL2-2.0.12/src/thread/windows/*.c",
                 "SDL2-2.0.12/src/thread/windows/*.h",
             ]
-        )
+        ),
 
         # Linux
         "//conditions:default": glob(
@@ -303,9 +313,6 @@ filegroup(
         )
 )
 
-
-
-
 filegroup(
     name = "hidapi_includes",
     srcs = select({
@@ -390,6 +397,7 @@ cc_library(
     includes = [
         "SDL2-2.0.12/include",
         "SDL2-2.0.12/src/joystick",
+        "SDL2-2.0.12/src/hidapi/hidapi",
     ]
 )
     """
