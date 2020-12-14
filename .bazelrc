@@ -1,0 +1,2 @@
+build --host_force_python=PY3 --workspace_status_command "python3 workspace_status.py"
+test --host_force_python=PY3 --keep_going --test_output=errors
