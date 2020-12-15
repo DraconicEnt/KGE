@@ -398,7 +398,8 @@ cc_library(
         "SDL2-2.0.12/include",
         "SDL2-2.0.12/src/joystick",
         "SDL2-2.0.12/src/hidapi/hidapi",
-    ]
+    ],
+    visibility = ["//visibility:public"]
 )
     """
     )
