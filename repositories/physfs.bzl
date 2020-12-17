@@ -17,16 +17,35 @@ cmake_external(
 name = "physfs",
 lib_source = "@physfs//:physfs-3.0.2",
 
+
 static_libraries = [
    "libphysfs.a",
 ],
 shared_libraries = [
-   "libphysfs.so"
+   "libphysfs.so",
+   "libphysfs.so.1"
 ],
-make_commands = [
-   "make -j$(nproc)",
-   "make install",
-],
+
+generate_crosstool_file = select({
+    "@bazel_tools//src/conditions:windows": True,
+    "//conditions:default": False
+}),
+
+cmake_options = select({
+   "@bazel_tools//src/conditions:windows": ["-GNinja"],
+   "//conditions:default": None
+}),
+
+make_commands = select({
+   "@bazel_tools//src/conditions:windows": [
+       "ninja",
+       "ninja install"
+   ],
+   "//conditions:default": [
+       "make -j$(nproc)",
+       "make install"
+   ]
+}),
 visibility = ["//visibility:public"]
 )
         """

@@ -43,12 +43,27 @@ cache_entries = {
 },
 
 # Windows only
-generate_crosstool_file = True,
-cmake_options = ["-GNinja"],
-make_commands = [
-   "ninja",
-   "ninja install",
-],
+
+generate_crosstool_file = select({
+    "@bazel_tools//src/conditions:windows": True,
+    "//conditions:default": False
+}),
+
+cmake_options = select({
+   "@bazel_tools//src/conditions:windows": ["-GNinja"],
+   "//conditions:default": None
+}),
+
+make_commands = select({
+   "@bazel_tools//src/conditions:windows": [
+       "ninja",
+       "ninja install"
+   ],
+   "//conditions:default": [
+       "make -j$(nproc)",
+       "make install"
+   ]
+}),
 
 static_libraries = [
    "libBulletDynamics.a",
