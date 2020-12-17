@@ -1,5 +1,11 @@
-def generate_dependencies(target, dependencies, name):
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
 
+def dependencies():
+    rules_foreign_cc_dependencies()
+    rules_pkg_dependencies()
+
+def generate_dependencies(target, dependencies, name):
     for index, dependency in enumerate(dependencies):
         rule_name = dependency.replace(".", "_")
 
