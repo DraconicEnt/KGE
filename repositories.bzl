@@ -17,6 +17,9 @@ load("//repositories:sdl2.bzl", "sdl2")
 load("//repositories:mygui.bzl", "mygui")
 load("//repositories:bullet.bzl", "bullet")
 load("//repositories:physfs.bzl", "physfs")
+load("//repositories:xml2.bzl", "xml2")
+load("//repositories:iconv.bzl", "iconv")
+load("//repositories:lzma.bzl", "lzma")
 
 def repositories():
     # Foreign CC
@@ -52,7 +55,9 @@ def repositories():
     png()
     tiff()
     enet()
+    iconv()
     freetype()
+    lzma()
 
     # Load rules_pkg
     maybe(
@@ -78,6 +83,7 @@ def repositories():
     sdl2()
     mygui()
     bullet()
+    xml2()
 
     sdl2_image_prebuilt()
 

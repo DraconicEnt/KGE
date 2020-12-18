@@ -17,14 +17,30 @@ cmake_external(
 name = "physfs",
 lib_source = "@physfs//:physfs-3.0.2",
 
+static_libraries = select({
+   "@bazel_tools//src/conditions:windows": [
+       "physfs.lib",
+       "physfs-static.lib"
+   ],
 
-static_libraries = [
-   "libphysfs.a",
-],
-shared_libraries = [
-   "libphysfs.so",
-   "libphysfs.so.1"
-],
+   # Linux
+   "//conditions:default": [
+      "libphysfs.a",
+   ]
+}),
+
+shared_libraries = select({
+   "@bazel_tools//src/conditions:windows": [
+        "physfs.dll"
+   ],
+
+   # Linux
+   "//conditions:default":[
+      "libphysfs.so",
+      "libphysfs.so.1"
+   ]
+}),
+
 
 generate_crosstool_file = select({
     "@bazel_tools//src/conditions:windows": True,
@@ -37,9 +53,13 @@ cmake_options = select({
 }),
 
 make_commands = select({
-   "@bazel_tools//src/conditions:windows": [
-       "ninja",
-       "ninja install"
+    "@bazel_tools//src/conditions:windows": [
+        "ninja",
+        # Ninja install is broken
+        "mkdir -p physfs/lib",
+        "cp physfs.dll physfs/lib",
+        "cp physfs.lib physfs/lib",
+        "cp physfs-static.lib physfs/lib",
    ],
    "//conditions:default": [
        "make -j$(nproc)",

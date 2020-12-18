@@ -16,45 +16,90 @@ load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 cmake_external(
 name = "osg",
 lib_source = "@osg//:.",
-shared_libraries = [
-    "libosgUI.so",
-    "libosgParticle.so",
-    "libosgGA.so",
-    "libosgManipulator.so",
-    "libosgShadow.so",
-    "libosgWidget.so",
-    "libosgPresentation.so",
-    "libosgText.so",
-    "libosgFX.so",
-    "libosgTerrain.so",
-    "libosgViewer.so",
-    "libOpenThreads.so",
-    "libosgVolume.so",
-    "libosgUtil.so",
-    "libosgSim.so",
-    "libosgAnimation.so",
-    "libosgDB.so",
-    "libosg.so",
 
-    "libosgUI.so.161",
-    "libosgParticle.so.161",
-    "libosgGA.so.161",
-    "libosgManipulator.so.161",
-    "libosgShadow.so.161",
-    "libosgWidget.so.161",
-    "libosgPresentation.so.161",
-    "libosgText.so.161",
-    "libosgFX.so.161",
-    "libosgTerrain.so.161",
-    "libosgViewer.so.161",
-    "libOpenThreads.so.21",
-    "libosgVolume.so.161",
-    "libosgUtil.so.161",
-    "libosgSim.so.161",
-    "libosgAnimation.so.161",
-    "libosgDB.so.161",
-    "libosg.so.161"
+# DCMTK_DIR
+cache_entries = {
+    "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.lib",
+    "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include"
+},
+
+deps = [
+    "@sdl2//:library",
+    "@xml2//:xml2",
+    "@zlib//:zlib"
 ],
+
+static_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+        "osgUI.lib",
+        "osgParticle.lib",
+        "osgGA.lib",
+        "osgManipulator.lib",
+        "osgShadow.lib",
+        "osgWidget.lib",
+        "osgPresentation.lib",
+        "osgText.lib",
+        "osgFX.lib",
+        "osgTerrain.lib",
+        "osgViewer.lib",
+        "OpenThreads.lib",
+        "osgVolume.lib",
+        "osgUtil.lib",
+        "osgSim.lib",
+        "osgAnimation.lib",
+        "osgDB.lib",
+        "osg.lib"
+    ],
+
+    "//conditions:default": []
+}),
+
+shared_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+
+    ],
+
+    # Linux
+    "//conditions:default":[
+        "libosgUI.so",
+        "libosgParticle.so",
+        "libosgGA.so",
+        "libosgManipulator.so",
+        "libosgShadow.so",
+        "libosgWidget.so",
+        "libosgPresentation.so",
+        "libosgText.so",
+        "libosgFX.so",
+        "libosgTerrain.so",
+        "libosgViewer.so",
+        "libOpenThreads.so",
+        "libosgVolume.so",
+        "libosgUtil.so",
+        "libosgSim.so",
+        "libosgAnimation.so",
+        "libosgDB.so",
+        "libosg.so",
+
+        "libosgUI.so.161",
+        "libosgParticle.so.161",
+        "libosgGA.so.161",
+        "libosgManipulator.so.161",
+        "libosgShadow.so.161",
+        "libosgWidget.so.161",
+        "libosgPresentation.so.161",
+        "libosgText.so.161",
+        "libosgFX.so.161",
+        "libosgTerrain.so.161",
+        "libosgViewer.so.161",
+        "libOpenThreads.so.21",
+        "libosgVolume.so.161",
+        "libosgUtil.so.161",
+        "libosgSim.so.161",
+        "libosgAnimation.so.161",
+        "libosgDB.so.161",
+        "libosg.so.161"
+    ]
+}),
 
 generate_crosstool_file = select({
     "@bazel_tools//src/conditions:windows": True,

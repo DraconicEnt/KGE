@@ -309,6 +309,9 @@ filegroup(
             include = [
                 "SDL2-2.0.12/src/hidapi/*.c",
                 # "SDL2-2.0.12/src/hidapi/linux/*.cpp"
+            ],
+            exclude = [
+                "SDL2-2.0.12/src/hidapi/SDL_hidapi.c",
             ]
         )
 )
@@ -379,7 +382,7 @@ cc_library(
         ":sensor_headers",
         ":sensor_sources",
 
-        ":hidapi_sources",
+        # ":hidapi_sources",
         ":hidapi_includes"
     ],
     hdrs = [
