@@ -55,6 +55,8 @@ filegroup(
             include = [
                 "SDL2-2.0.12/src/video/*.h",
                 "SDL2-2.0.12/src/video/dummy/*.h",
+                "SDL2-2.0.12/src/video/offscreen/*.h",
+                "SDL2-2.0.12/src/video/windows/*.h",
                 "SDL2-2.0.12/src/video/khronos/vulkan/*.h"
             ]
         ),
@@ -76,8 +78,8 @@ filegroup(
             include = [
                 "SDL2-2.0.12/src/video/*.c",
                 "SDL2-2.0.12/src/video/dummy/*.c",
-                "SDL2-2.0.12/src/video/windows/*.c",
-                "SDL2-2.0.12/src/video/windows/*.h",
+                "SDL2-2.0.12/src/video/offscreen/*.c",
+                "SDL2-2.0.12/src/video/windows/*.c"
             ]
         ),
 
@@ -138,6 +140,8 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/thread/*.c",
+                # "SDL2-2.0.12/src/thread/generic/*.c",
+                "SDL2-2.0.12/src/thread/generic/SDL_syscond.c",
                 "SDL2-2.0.12/src/thread/windows/*.c",
                 "SDL2-2.0.12/src/thread/windows/*.h",
             ]
@@ -147,6 +151,7 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/thread/*.c",
+                # "SDL2-2.0.12/src/thread/generic/*.c",
                 "SDL2-2.0.12/src/thread/pthread/*.c",
                 "SDL2-2.0.12/src/thread/pthread/*.h",
             ]
@@ -159,7 +164,7 @@ filegroup(
     srcs = glob(
             include = [
                 "SDL2-2.0.12/src/thread/*.h",
-                "SDL2-2.0.12/src/thread/generic/*.h"
+                # "SDL2-2.0.12/src/thread/generic/*.h"
             ]
         )
 )
@@ -224,8 +229,12 @@ filegroup(
                 # hidapi
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_ps4.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_switch.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_gamecube.c",
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_steam.c",
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xbox360.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_rumble.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xboxone.c",
                 ]
             ),
 
@@ -297,6 +306,13 @@ filegroup(
 )
 
 filegroup(
+    name = "stdlib_sources",
+    srcs =  glob(
+        include = ["SDL2-2.0.12/src/stdlib/*.c"]
+    )
+)
+
+filegroup(
     name = "core_sources",
     srcs = select({
         "@bazel_tools//src/conditions:windows": glob(
@@ -338,7 +354,11 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/audio/*.c",
-                "SDL2-2.0.12/src/audio/winmm/*.c"
+                "SDL2-2.0.12/src/audio/winmm/*.c",
+                "SDL2-2.0.12/src/audio/directsound/*.c",
+                "SDL2-2.0.12/src/audio/wasapi/*.c",
+                "SDL2-2.0.12/src/audio/disk/*.c",
+                "SDL2-2.0.12/src/audio/dummy/*.c"
             ]
         ),
 
@@ -358,7 +378,11 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/audio/*.h",
-                "SDL2-2.0.12/src/audio/winmm/*.h"
+                "SDL2-2.0.12/src/audio/winmm/*.h",
+                "SDL2-2.0.12/src/audio/directsound/*.h",
+                "SDL2-2.0.12/src/audio/wasapi/*.h",
+                "SDL2-2.0.12/src/audio/disk/*.h",
+                "SDL2-2.0.12/src/audio/dummy/*.h"
             ]
         ),
 
@@ -402,10 +426,54 @@ filegroup(
 )
 
 filegroup(
-    name = "atomic_sources",
+    name = "render_headers",
+    srcs =  select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/render/*.h",
+                "SDL2-2.0.12/src/render/software/*.h",
+                "SDL2-2.0.12/src/render/direct3d/*.h",
+                "SDL2-2.0.12/src/render/direct3d11/*.h",
+                "SDL2-2.0.12/src/render/opengl/*.h",
+                "SDL2-2.0.12/src/render/opengles2/*.h"
+            ]
+        ),
+        "//conditions:default":glob(
+            include = [
+                "SDL2-2.0.12/src/render/*.h",
+                "SDL2-2.0.12/src/render/software/*.h"
+            ]
+        )
+     })
+)
+
+filegroup(
+    name = "render_sources",
+    srcs =  select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/render/*.c",
+                "SDL2-2.0.12/src/render/software/*.c",
+                "SDL2-2.0.12/src/render/direct3d/*.c",
+                "SDL2-2.0.12/src/render/direct3d11/*.c",
+                "SDL2-2.0.12/src/render/opengl/*.c",
+                "SDL2-2.0.12/src/render/opengles2/*.c"
+            ]
+        ),
+        "//conditions:default":glob(
+            include = [
+                "SDL2-2.0.12/src/render/*.c",
+                "SDL2-2.0.12/src/render/software/*.c"
+            ]
+        )
+     })
+)
+
+filegroup(
+    name = "file_sources",
     srcs = glob(
             include = [
-                "SDL2-2.0.12/src/atomic/*.c"
+                "SDL2-2.0.12/src/file/*.c"
             ]
         )
 )
@@ -420,13 +488,22 @@ filegroup(
 )
 
 filegroup(
+    name = "atomic_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/atomic/*.c"
+            ]
+        )
+)
+
+filegroup(
     name = "hidapi_sources",
     srcs = glob(
             include = [
                 "SDL2-2.0.12/src/hidapi/*.c",
                 "SDL2-2.0.12/src/hidapi/windows/*.c",
-                "SDL2-2.0.12/src/hidapi/libusb/*.c",
-                "SDL2-2.0.12/src/hidapi/libusb/*.cpp"
+                #"SDL2-2.0.12/src/hidapi/libusb/*.c",
+                #"SDL2-2.0.12/src/hidapi/libusb/*.cpp"
             ],
             exclude = [
                 "SDL2-2.0.12/src/hidapi/SDL_hidapi.c",
@@ -464,6 +541,37 @@ filegroup(
 )
 
 filegroup(
+    name = "main_sources",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include=[
+                "SDL2-2.0.12/src/main/windows/*.c"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
+            include=["SDL2-2.0.12/src/main/dummy/*.c"]
+        )
+    })
+)
+
+filegroup(
+    name = "loadso_sources",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include=["SDL2-2.0.12/src/loadso/windows/*.c"]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
+            include=["SDL2-2.0.12/src/loadso/dlopen/*.c"]
+        )
+    })
+)
+
+
+filegroup(
     name = "includes",
     srcs = glob(
         include = [
@@ -482,6 +590,7 @@ cc_library(
             "RENDER_D3D=OFF",
             "VIDEO_VULKAN=OFF",
             "WIN32=1",
+            "HID_SKIP_LIBUSB=1",
             "_WINDOWS=1",
             "SDL2_EXPORTS=1"
         ],
@@ -510,7 +619,8 @@ cc_library(
             "oleaut32.lib",
             "shell32.lib",
             "version.lib",
-            "uuid.lib"
+            "uuid.lib",
+            "Setupapi.lib"
         ],
 
         # Linux
@@ -531,17 +641,11 @@ cc_library(
         ":yuv2grb_headers",
         ":yuv2grb_sources",
 
-        ":video_headers",
-        ":video_sources",
-
         ":power_sources",
         ":power_headers",
 
         ":timer_headers",
         ":timer_sources",
-
-        ":common_sources",
-        ":common_headers",
 
         # ":dynapi_sources",
         ":dynapi_headers",
@@ -563,10 +667,26 @@ cc_library(
 
         ":atomic_sources",
 
-        ":cpuinfo_sources"
+        ":cpuinfo_sources",
 
-        # ":hidapi_sources",
-        # ":hidapi_includes"
+        ":stdlib_sources",
+        ":loadso_sources",
+
+        ":render_sources",
+        ":render_headers",
+
+        ":file_sources",
+
+        # ":main_sources",
+
+        ":video_headers",
+        ":video_sources",
+
+        ":common_sources",
+        ":common_headers",
+
+        ":hidapi_sources",
+        #":hidapi_includes"
     ],
     hdrs = [
         ":yuv2grb_headers",
@@ -575,6 +695,7 @@ cc_library(
         ":haptic_headers",
         ":dynapi_headers",
         ":core_headers",
+        ":render_headers",
         ":power_headers",
         ":libm_headers",
         ":audio_headers",
