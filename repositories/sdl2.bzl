@@ -54,6 +54,7 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/video/*.h",
+                "SDL2-2.0.12/src/video/dummy/*.h",
                 "SDL2-2.0.12/src/video/khronos/vulkan/*.h"
             ]
         ),
@@ -61,7 +62,8 @@ filegroup(
         # Linux
         "//conditions:default": glob(
             include = [
-                "SDL2-2.0.12/src/video/*.h"
+                "SDL2-2.0.12/src/video/*.h",
+                "SDL2-2.0.12/src/video/dummy/*.h"
             ]
         )
     })
@@ -73,6 +75,7 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/video/*.c",
+                "SDL2-2.0.12/src/video/dummy/*.c",
                 "SDL2-2.0.12/src/video/windows/*.c",
                 "SDL2-2.0.12/src/video/windows/*.h",
             ]
@@ -82,6 +85,7 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/video/*.c",
+                "SDL2-2.0.12/src/video/dummy/*.c",
                 "SDL2-2.0.12/src/video/x11/*.c",
                 "SDL2-2.0.12/src/video/x11/*.h",
             ]
@@ -219,6 +223,9 @@ filegroup(
 
                 # hidapi
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_ps4.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_steam.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xbox360.c",
                 ]
             ),
 
@@ -247,6 +254,46 @@ filegroup(
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick_c.h",
             ]
         )
+)
+
+filegroup(
+    name = "power_sources",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/power/*.c",
+                "SDL2-2.0.12/src/power/windows/*.c"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
+            include = [
+                "SDL2-2.0.12/src/power/*.c",
+                "SDL2-2.0.12/src/power/linux/*.c"
+            ]
+        )
+    })
+)
+
+filegroup(
+    name = "power_headers",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/power/*.h",
+                "SDL2-2.0.12/src/power/windows/*.h"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
+            include = [
+                "SDL2-2.0.12/src/power/*.h",
+                "SDL2-2.0.12/src/power/linux/*.h"
+            ]
+        )
+    })
 )
 
 filegroup(
@@ -286,10 +333,51 @@ filegroup(
 )
 
 filegroup(
+    name = "audio_sources",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/audio/*.c",
+                "SDL2-2.0.12/src/audio/winmm/*.c"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
+            include = [
+                "SDL2-2.0.12/src/audio/*.c",
+                "SDL2-2.0.12/src/audio/alsa/*.c"
+            ]
+        )
+    })
+)
+
+filegroup(
+    name = "audio_headers",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": glob(
+            include = [
+                "SDL2-2.0.12/src/audio/*.h",
+                "SDL2-2.0.12/src/audio/winmm/*.h"
+            ]
+        ),
+
+        # Linux
+        "//conditions:default": glob(
+            include = [
+                "SDL2-2.0.12/src/audio/*.h",
+                "SDL2-2.0.12/src/audio/alsa/*.h"
+            ]
+        )
+    })
+)
+
+filegroup(
     name = "sensor_sources",
     srcs = glob(
             include = [
-                "SDL2-2.0.12/src/sensor/*.c"
+                "SDL2-2.0.12/src/sensor/*.c",
+                "SDL2-2.0.12/src/sensor/dummy/*.c"
             ]
         )
 )
@@ -298,7 +386,35 @@ filegroup(
     name = "sensor_headers",
     srcs = glob(
             include = [
-                "SDL2-2.0.12/src/sensor/*.h"
+                "SDL2-2.0.12/src/sensor/*.h",
+                "SDL2-2.0.12/src/sensor/dummy/*.h"
+            ]
+        )
+)
+
+filegroup(
+    name = "libm_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/libm/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "atomic_sources",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/atomic/*.c"
+            ]
+        )
+)
+
+filegroup(
+    name = "libm_headers",
+    srcs = glob(
+            include = [
+                "SDL2-2.0.12/src/libm/*.h"
             ]
         )
 )
@@ -308,7 +424,9 @@ filegroup(
     srcs = glob(
             include = [
                 "SDL2-2.0.12/src/hidapi/*.c",
-                # "SDL2-2.0.12/src/hidapi/linux/*.cpp"
+                "SDL2-2.0.12/src/hidapi/windows/*.c",
+                "SDL2-2.0.12/src/hidapi/libusb/*.c",
+                "SDL2-2.0.12/src/hidapi/libusb/*.cpp"
             ],
             exclude = [
                 "SDL2-2.0.12/src/hidapi/SDL_hidapi.c",
@@ -322,6 +440,7 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/hidapi/hidapi/*.h",
+                "SDL2-2.0.12/src/hidapi/libusb/*.h",
                 "SDL2-2.0.12/src/hidapi/windows/hid.c"
             ]
         ),
@@ -330,10 +449,18 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/hidapi/hidapi/*.h",
+                "SDL2-2.0.12/src/hidapi/libusb/*.h",
                 "SDL2-2.0.12/src/hidapi/linux/hid.c"
             ]
         )
     })
+)
+
+filegroup(
+    name = "cpuinfo_sources",
+    srcs = [
+        "SDL2-2.0.12/src/cpuinfo/SDL_cpuinfo.c"
+    ]
 )
 
 filegroup(
@@ -347,10 +474,44 @@ filegroup(
 
 cc_library(
     name = "library",
+    defines = [
+        "LIBC=ON",
+        "HIDAPI=OFF",
+        "DIRECTX=OFF",
+        "RENDER_D3D=OFF",
+        "VIDEO_VULKAN=OFF",
+        "WIN32=1",
+        "_WINDOWS=1",
+        "SDL2_EXPORTS=1"
+    ],
+    linkopts = [
+        "gdi32.lib",
+        "user32.lib",
+        "kernel32.lib",
+        "ole32.lib",
+        "Imm32.lib",
+        "odbc32.lib",
+        "odbccp32.lib",
+        "winspool.lib",
+        "comdlg32.lib",
+        "advapi32.lib",
+        "winmm.lib",
+        # "dxerr8.lib",
+        "dxguid.lib",
+        "dinput8.lib",
+        "imagehlp.lib",
+        "oleaut32.lib",
+        "shell32.lib",
+        "version.lib",
+        "uuid.lib"
+    ],
     srcs = [
         ":includes",
 
         ":events",
+
+        ":audio_sources",
+        ":audio_headers",
 
         ":thread_headers",
         ":thread_sources",
@@ -360,6 +521,9 @@ cc_library(
 
         ":video_headers",
         ":video_sources",
+
+        ":power_sources",
+        ":power_headers",
 
         ":timer_headers",
         ":timer_sources",
@@ -382,8 +546,15 @@ cc_library(
         ":sensor_headers",
         ":sensor_sources",
 
+        ":libm_headers",
+        ":libm_sources",
+
+        ":atomic_sources",
+
+        ":cpuinfo_sources"
+
         # ":hidapi_sources",
-        ":hidapi_includes"
+        # ":hidapi_includes"
     ],
     hdrs = [
         ":yuv2grb_headers",
@@ -392,6 +563,9 @@ cc_library(
         ":haptic_headers",
         ":dynapi_headers",
         ":core_headers",
+        ":power_headers",
+        ":libm_headers",
+        ":audio_headers",
         ":joystick_headers",
         ":sensor_headers",
         ":hidapi_includes",
