@@ -474,37 +474,49 @@ filegroup(
 
 cc_library(
     name = "library",
-    defines = [
-        "LIBC=ON",
-        "HIDAPI=OFF",
-        "DIRECTX=OFF",
-        "RENDER_D3D=OFF",
-        "VIDEO_VULKAN=OFF",
-        "WIN32=1",
-        "_WINDOWS=1",
-        "SDL2_EXPORTS=1"
-    ],
-    linkopts = [
-        "gdi32.lib",
-        "user32.lib",
-        "kernel32.lib",
-        "ole32.lib",
-        "Imm32.lib",
-        "odbc32.lib",
-        "odbccp32.lib",
-        "winspool.lib",
-        "comdlg32.lib",
-        "advapi32.lib",
-        "winmm.lib",
-        # "dxerr8.lib",
-        "dxguid.lib",
-        "dinput8.lib",
-        "imagehlp.lib",
-        "oleaut32.lib",
-        "shell32.lib",
-        "version.lib",
-        "uuid.lib"
-    ],
+    defines = select({
+        "@bazel_tools//src/conditions:windows": [
+            "LIBC=ON",
+            "HIDAPI=OFF",
+            "DIRECTX=OFF",
+            "RENDER_D3D=OFF",
+            "VIDEO_VULKAN=OFF",
+            "WIN32=1",
+            "_WINDOWS=1",
+            "SDL2_EXPORTS=1"
+        ],
+
+        # Linux
+        "//conditions:default": []
+    }),
+
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [
+            "gdi32.lib",
+            "user32.lib",
+            "kernel32.lib",
+            "ole32.lib",
+            "Imm32.lib",
+            "odbc32.lib",
+            "odbccp32.lib",
+            "winspool.lib",
+            "comdlg32.lib",
+            "advapi32.lib",
+            "winmm.lib",
+            # "dxerr8.lib",
+            "dxguid.lib",
+            "dinput8.lib",
+            "imagehlp.lib",
+            "oleaut32.lib",
+            "shell32.lib",
+            "version.lib",
+            "uuid.lib"
+        ],
+
+        # Linux
+        "//conditions:default": []
+    }),
+
     srcs = [
         ":includes",
 

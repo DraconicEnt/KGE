@@ -18,10 +18,16 @@ name = "osg",
 lib_source = "@osg//:.",
 
 # DCMTK_DIR
-cache_entries = {
-    "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.lib",
-    "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include"
-},
+cache_entries = select({
+    "@bazel_tools//src/conditions:windows": {
+        "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.lib",
+        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include"
+    },
+    "//conditions:default": {
+        "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.so",
+        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include"
+    }
+}),
 
 deps = [
     "@sdl2//:library",

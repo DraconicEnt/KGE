@@ -56,13 +56,21 @@ make_commands = select({
 }),
 
 deps = [
-    "@zlib//:zlib",
-    # "@iconv//:iconv"
+    "@zlib//:zlib"
 ],
 
-static_libraries = [
-    "libxml2.lib"
-],
+shared_libraries = select({
+    "@bazel_tools//src/conditions:windows": [],
+    "//conditions:default": [
+        "libxml2.so"
+    ]
+}),
+
+static_libraries = select({
+    "@bazel_tools//src/conditions:windows": ["libxml2.lib"],
+    "//conditions:default": []
+}),
+
 visibility = ["//visibility:public"]
 )
         """
