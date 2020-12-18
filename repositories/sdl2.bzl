@@ -164,7 +164,7 @@ filegroup(
     srcs = glob(
             include = [
                 "SDL2-2.0.12/src/thread/*.h",
-                # "SDL2-2.0.12/src/thread/generic/*.h"
+                "SDL2-2.0.12/src/thread/generic/*.h"
             ]
         )
 )
