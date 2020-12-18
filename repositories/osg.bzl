@@ -20,19 +20,27 @@ lib_source = "@osg//:.",
 # DCMTK_DIR
 cache_entries = select({
     "@bazel_tools//src/conditions:windows": {
+    #    "FREETYPE_LIBRARY": "$EXT_BUILD_DEPS/freetype/lib/freetype.lib",
+#        "FREETYPE_INCLUDE_DIRS": "$EXT_BUILD_DEPS/freetype/include",
         "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.lib",
-        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include"
+        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include",
+        "_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED_EXITCODE": "0",
+        "_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED_EXITCODE__TRYRUN_OUTPUT": "0"
     },
     "//conditions:default": {
         "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.so",
-        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include"
+        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include",
+        "FREETYPE_LIBRARY": "$EXT_BUILD_DEPS/freetype/lib/libfreetype.a",
+        "FREETYPE_INCLUDE_DIRS": "$EXT_BUILD_DEPS/freetype/include",
     }
 }),
 
 deps = [
     "@sdl2//:library",
     "@xml2//:xml2",
-    "@zlib//:zlib"
+    "@zlib//:zlib",
+    # "@curl//:curl",
+    # "@freetype//:freetype"
 ],
 
 static_libraries = select({

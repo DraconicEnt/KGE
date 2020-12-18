@@ -55,11 +55,8 @@ cmake_options = select({
 make_commands = select({
     "@bazel_tools//src/conditions:windows": [
         "ninja",
-        # Ninja install is broken
-        "mkdir -p physfs/lib",
+        "ninja install",
         "cp physfs.dll physfs/lib",
-        "cp physfs.lib physfs/lib",
-        "cp physfs-static.lib physfs/lib",
    ],
    "//conditions:default": [
        "make -j$(nproc)",

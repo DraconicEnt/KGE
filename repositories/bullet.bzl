@@ -65,19 +65,25 @@ make_commands = select({
    ]
 }),
 
-static_libraries = [
-   "libBulletDynamics.a",
-   "libBulletCollision.a",
-   "libBullet3Collision.a",
-   "libLinearMath.a",
-   "libBullet3Common.a",
+static_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+        "BulletDynamics.lib",
+        "BulletCollision.lib",
+        "Bullet3Collision.lib",
+        "LinearMath.lib",
+        "Bullet3Common.lib",
+    ],
 
-   #"BulletDynamics.lib",
-   #"BulletCollision.lib",
-   #"Bullet3Collision.lib",
-   #"LinearMath.lib",
-   #"Bullet3Common.lib",
-],
+    # Linux
+    "//conditions:default": [
+        "libBulletDynamics.a",
+        "libBulletCollision.a",
+        "libBullet3Collision.a",
+        "libLinearMath.a",
+        "libBullet3Common.a",
+    ]
+}),
+
 visibility = ["//visibility:public"]
 )
         """

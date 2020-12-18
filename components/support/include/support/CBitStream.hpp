@@ -15,8 +15,6 @@
 #include <type_traits>  // std::is_pointer
 #include <exception>
 
-#include <physfs.h>
-
 #include <support/Console.hpp>
 #include <support/FEndian.hpp>
 #include <support/common.hpp>

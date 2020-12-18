@@ -16,17 +16,22 @@ load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 cmake_external(
 name = "curl",
 lib_source = "@curl//:curl-7.73.0",
-# shared_libraries = [
-   #"libcurl.so"
-#   "curl.lib"
-#],
 
-#static_libraries = [
-   #"libcurl_imp.lib"
-#],
-shared_libraries = [
-    "libcurl.so"
-],
+static_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+       "libcurl_imp.lib"
+    ],
+
+    # Linux
+    "//conditions:default": []
+}),
+
+shared_libraries = select({
+    "@bazel_tools//src/conditions:windows": [],
+
+    # Linux
+    "//conditions:default": ["libcurl.so"]
+}),
 
 generate_crosstool_file = select({
     "@bazel_tools//src/conditions:windows": True,

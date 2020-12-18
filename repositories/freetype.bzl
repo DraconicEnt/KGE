@@ -23,9 +23,7 @@ deps = [
 ],
 
 cache_entries = {
-   "SKIP_INSTALL_HEADERS": "NO",
-   "ZLIB_LIBRARY": "$EXT_BUILD_DEPS/zlib/lib/zlibstatic.lib",
-   "ZLIB_INCLUDE_DIR": "$EXT_BUILD_DEPS/zlib/include"
+   "SKIP_INSTALL_HEADERS": "NO"
 },
 
 # Windows only
@@ -33,7 +31,9 @@ generate_crosstool_file = True,
 cmake_options = ["-GNinja"],
 make_commands = [
    "ninja",
-   "ninja install",
+   # Ninja install is broken
+   "mkdir -p freetype/lib",
+   "cp freetype.lib freetype/lib"
 ],
 
 

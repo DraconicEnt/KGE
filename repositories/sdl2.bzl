@@ -249,9 +249,7 @@ filegroup(
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
                 ]
             )
-    }),
-
-
+    })
 )
 
 filegroup(
@@ -589,6 +587,7 @@ cc_library(
             "DIRECTX=OFF",
             "RENDER_D3D=OFF",
             "VIDEO_VULKAN=OFF",
+            "SDL_SENSOR_DISABLED=1",
             "WIN32=1",
             "HID_SKIP_LIBUSB=1",
             "_WINDOWS=1",
@@ -659,8 +658,8 @@ cc_library(
         ":core_sources",
         ":core_headers",
 
-        ":sensor_headers",
-        ":sensor_sources",
+        #":sensor_headers",
+        #":sensor_sources",
 
         ":libm_headers",
         ":libm_sources",
@@ -682,11 +681,11 @@ cc_library(
         ":video_headers",
         ":video_sources",
 
-        ":common_sources",
-        ":common_headers",
-
         ":hidapi_sources",
         #":hidapi_includes"
+
+        ":common_sources",
+        ":common_headers"
     ],
     hdrs = [
         ":yuv2grb_headers",

@@ -1,14 +1,27 @@
 cc_library(
     name = "engine",
-    srcs = glob(
-        include = [
-            "include/**/*.h",
-            "include/**/*.hpp",
-            "platform/unix/**/*.cpp",
+    srcs = select({
+       "@bazel_tools//src/conditions:windows": glob(
+           include = [
+               "include/**/*.h",
+               "include/**/*.hpp",
+               "platform/windows/**/*.cpp",
 
-            "source/**/*.cpp"
-        ]
-    ),
+               "source/**/*.cpp"
+           ]
+       ),
+
+       # Linux
+       "//conditions:default": glob(
+           include = [
+               "include/**/*.h",
+               "include/**/*.hpp",
+               "platform/unix/**/*.cpp",
+
+               "source/**/*.cpp"
+           ]
+       )
+    }),
     includes = [
         "include"
     ],
