@@ -24,10 +24,14 @@ cc_library(
     defines = [
         "HAS_SOCKLEN_T=1"
     ],
-    linkopts = [
-        "Winmm.lib",
-        "Ws2_32.lib"
-    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [
+            "Winmm.lib",
+            "Ws2_32.lib"
+        ],
+
+        "//conditions:default": []
+    }),
     alwayslink = True,
     hdrs = glob(
         include = [

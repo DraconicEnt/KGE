@@ -27,11 +27,15 @@ cc_library(
     includes = [
         "physfs-3.0.2/src"
     ],
-    linkopts = [
-        "Advapi32.lib",
-        "User32.lib",
-        "Shell32.lib"
-    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [
+            "Advapi32.lib",
+            "User32.lib",
+            "Shell32.lib"
+        ],
+
+        "//conditions:default": []
+    }),
     visibility = ["//visibility:public"]
 )
         """
