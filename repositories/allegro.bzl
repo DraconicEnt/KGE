@@ -29,8 +29,8 @@ cmake_options = select({
 
 cache_entries = select({
     "@bazel_tools//src/conditions:windows": {
-        "PHYSFS_INCLUDE_DIR": "$EXT_BUILD_DEPS/physfs/include",
-        "PHYSFS_LIBRARY": "$EXT_BUILD_DEPS/physfs/lib/physfs-static.lib",
+    #    "PHYSFS_INCLUDE_DIR": "$EXT_BUILD_DEPS/physfs/include",
+#        "PHYSFS_LIBRARY": "$EXT_BUILD_DEPS/physfs/lib/physfs-static.lib",
     },
 
     "//conditions:default": {
@@ -38,6 +38,10 @@ cache_entries = select({
         "PHYSFS_LIBRARY": "$EXT_BUILD_DEPS/physfs/lib/libphysfs.a"
     }
 }),
+
+linkopts = [
+
+],
 
 make_commands = select({
     "@bazel_tools//src/conditions:windows": [
@@ -51,12 +55,14 @@ make_commands = select({
 }),
 
 deps = [
+    "@enet//:enet",
+    "@zlib//:zlib",
     "@physfs//:physfs"
 ],
 
 static_libraries = select({
     "@bazel_tools//src/conditions:windows": [
-        # "allegro_physfs.lib",
+        "allegro_physfs.lib",
         "allegro_acodec.lib",
         "allegro_color.lib",
         # "allegro_ttf.lib",
@@ -70,6 +76,16 @@ static_libraries = select({
     ],
 
     "//conditions:default": []
+}),
+
+binaries = select({
+    "@bazel_tools//src/conditions:windows": [
+        "allegro-5.2.dll",
+        "allegro_physfs-5.2.dll"
+    ],
+
+    "//conditions:default": [
+    ]
 }),
 
 shared_libraries = select({

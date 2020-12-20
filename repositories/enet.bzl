@@ -24,6 +24,11 @@ cc_library(
     defines = [
         "HAS_SOCKLEN_T=1"
     ],
+    linkopts = [
+        "Winmm.lib",
+        "Ws2_32.lib"
+    ],
+    alwayslink = True,
     hdrs = glob(
         include = [
             "enet-1.3.17/include/enet/*.h"

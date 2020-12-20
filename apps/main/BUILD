@@ -15,7 +15,7 @@ cc_binary(
         "@enet//:enet"
     ],
     linkopts = [
-        "-lpthread"
+        # "-lpthread"
     ],
     copts = [
         "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"

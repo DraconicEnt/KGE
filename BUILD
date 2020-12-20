@@ -2,8 +2,17 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 load("//:dependencies.bzl", "generate_dependencies")
 
-# TODO: Alternative for Windows deps
-generate_dependencies(name="osg_dependencies", target="@osg//:osg", dependencies=[
+generate_dependencies(name="osg_dependencies_windows", target="@osg//:osg", dependencies=[
+    "osg161-osgViewer.dll",
+    "osg161-osg.dll",
+    "osg161-osgText.dll",
+    "osg161-osgUtil.dll",
+    "osg161-osgGA.dll",
+    "osg161-osgDB.dll",
+    "ot21-OpenThreads.dll"
+])
+
+generate_dependencies(name="osg_dependencies_linux", target="@osg//:osg", dependencies=[
     "libOpenThreads.so.21",
     "libosg.so.161",
     "libosgAnimation.so.161",
@@ -24,7 +33,12 @@ generate_dependencies(name="osg_dependencies", target="@osg//:osg", dependencies
     "libosgVolume.so.161"
 ])
 
-generate_dependencies(name="allegro_dependencies", target="@allegro//:allegro", dependencies=[
+generate_dependencies(name="allegro_dependencies_windows", target="@allegro//:allegro", dependencies=[
+    "allegro-5.2.dll",
+    "allegro_physfs-5.2.dll"
+])
+
+generate_dependencies(name="allegro_dependencies_linux", target="@allegro//:allegro", dependencies=[
     "liballegro.so.5.2",
     "liballegro_ttf.so.5.2",
     "liballegro_main.so.5.2",
@@ -40,19 +54,37 @@ generate_dependencies(name="allegro_dependencies", target="@allegro//:allegro", 
 
 pkg_tar(
     name = "dependencies_packaged",
-    srcs = [
-        ":osg_dependencies",
-        ":allegro_dependencies"
-    ],
-    package_dir = "lib",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": [
+            ":osg_dependencies_windows",
+            ":allegro_dependencies_windows"
+        ],
+        "//conditions:default": [
+            ":osg_dependencies_linux",
+            ":allegro_dependencies_linux"
+        ]
+    }),
+
+    package_dir = select({
+       "@bazel_tools//src/conditions:windows": ".",
+
+       # Linux
+       "//conditions:default": "lib"
+    })
 )
 
 pkg_tar(
     name = "kge_binary",
     srcs = [
-        "run.sh",
         "//apps/main:main"
-    ],
+    ] + select({
+        "@bazel_tools//src/conditions:windows": [
+
+        ],
+        "//conditions:default": [
+            "run.sh"
+        ]
+    }),
     deps = [
         ":dependencies_packaged"
     ],

@@ -30,6 +30,8 @@ def generate_dependencies(target, dependencies, name):
                 "done",
 
                 "echo !!! COULD NOT FIND $@",
+                "echo SEARCH LIST: ",
+                "echo $${LOCATIONS[@]}",
                 "exit 1"
             ]),
             outs = [

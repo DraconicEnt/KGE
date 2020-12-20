@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_PHYS_CWORLD_HPP_
 #define _INCLUDE_PHYS_CWORLD_HPP_
 
-#include <btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 
 #include <support/common.hpp>
 

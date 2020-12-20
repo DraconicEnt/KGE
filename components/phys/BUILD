@@ -1,6 +1,6 @@
 genrule(
     name = "test",
-    cmd = "ls bazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet",
+    cmd = "ls bazel-out/x64_windows-fastbuild/bin/external/bullet/bullet/include/bullet",
     srcs = [
         "@bullet//:bullet"
     ],
@@ -23,9 +23,10 @@ cc_library(
         "include"
     ],
     copts = [
-        "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
+        # "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet",
+        # "/Ibazel-out/x64_windows-fastbuild/bin/external/bullet/bullet/include/bullet"
     ],
-    include_prefix = "bullet",
+    #include_prefix = "bullet",
     deps = [
         "@bullet//:bullet",
 

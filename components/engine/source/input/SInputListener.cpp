@@ -350,7 +350,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_KEY_DOWN:
                         {
                             if (!mTyping)
-                                this->dispatchInputResponse(event.keyboard.keycode, INPUT_KEYBOARD, 0, event);
+                                this->dispatchInputResponse(event.keyboard.keycode, INPUT_KEYBOARD_INPUT, 0, event);
 
                             // We'll just shove keyboard input into CEGUI, then.
                           //  if (event.keyboard.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -365,7 +365,7 @@ namespace Kiaro
                         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
                         case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
                         {
-                            this->dispatchInputResponse(event.mouse.button, INPUT_MOUSE, 0, event);
+                            this->dispatchInputResponse(event.mouse.button, INPUT_MOUSE_INPUT, 0, event);
 
                            // if (event.mouse.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
                            //     guiContext.injectMouseButtonDown(CEGUI::MouseButton::LeftButton);
@@ -390,7 +390,7 @@ namespace Kiaro
                             auto joystickIDSearch = mJoystickIDs.find(event.joystick.id);
                             assert(joystickIDSearch != mJoystickIDs.end());
 
-                            this->dispatchInputResponse(event.joystick.button, INPUT_GAMEPAD, (*joystickIDSearch).second, event);
+                            this->dispatchInputResponse(event.joystick.button, INPUT_GAMEPAD_INPUT, (*joystickIDSearch).second, event);
                             break;
                         }
 
@@ -400,7 +400,7 @@ namespace Kiaro
                             assert(joystickIDSearch != mJoystickIDs.end());
 
                             const Common::U32 inputID = event.joystick.stick + al_get_joystick_num_buttons(event.joystick.id);
-                            this->dispatchInputResponse(inputID, INPUT_GAMEPAD, (*joystickIDSearch).second, event);
+                            this->dispatchInputResponse(inputID, INPUT_GAMEPAD_INPUT, (*joystickIDSearch).second, event);
                             break;
                         }
                     }
@@ -431,8 +431,8 @@ namespace Kiaro
             // We do a check on mouse and keyboard input types, the deviceID should be 0 because we don't individually identify these devices.
             switch(deviceType)
             {
-                case INPUT_MOUSE:
-                case INPUT_KEYBOARD:
+                case INPUT_MOUSE_INPUT:
+                case INPUT_KEYBOARD_INPUT:
                 {
                     if (deviceID != 0)
                         throw std::runtime_error("When binding mouse and keybord devices, the device ID must be 0!");

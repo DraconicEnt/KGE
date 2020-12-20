@@ -32,6 +32,7 @@ lib_source = ":bullet_files",
 #],
 cache_entries = {
   "BUILD_BULLET3": "ON",
+  "USE_MSVC_RUNTIME_LIBRARY_DLL": "ON",
   "BUILD_PYBULLET": "OFF",
   "BUILD_EXTRAS": "OFF",
   "BUILD_EGL": "OFF",

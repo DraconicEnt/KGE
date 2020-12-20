@@ -68,6 +68,22 @@ static_libraries = select({
     "//conditions:default": []
 }),
 
+binaries = select({
+    "@bazel_tools//src/conditions:windows": [
+        "osg161-osg.dll",
+        "osg161-osgViewer.dll",
+        "ot21-OpenThreads.dll",
+        "osg161-osgText.dll",
+        "osg161-osgUtil.dll",
+        "osg161-osgGA.dll",
+        "osg161-osgDB.dll"
+    ],
+
+    # Linux
+    "//conditions:default": [
+    ]
+}),
+
 shared_libraries = select({
     "@bazel_tools//src/conditions:windows": [
 

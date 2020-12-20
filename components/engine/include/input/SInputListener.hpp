@@ -26,6 +26,22 @@ namespace Kiaro
 {
     namespace Input
     {
+        //! An enumeration used to identify input device types when binding input responders.
+        enum INPUT_DEVICE
+        {
+            //! NULL device.
+            INPUT_NULL = 0,
+
+            //! Mouse.
+            INPUT_MOUSE_INPUT = 1,
+
+            //! Keyboard.
+            INPUT_KEYBOARD_INPUT = 2,
+
+            //! Gamepad/controller/joystick/etc
+            INPUT_GAMEPAD_INPUT = 3,
+        };
+
         /**
          *  @brief The SInputListener is the central class used for processing input events from the users physically at the machine
          *  running the game. It supports bind schemas as well as binding input events to script functions.
@@ -36,21 +52,7 @@ namespace Kiaro
             public:
                 typedef EasyDelegate::ITypedDelegate<void, ALLEGRO_EVENT&> InputEventResponderDelegate;
 
-                //! An enumeration used to identify input device types when binding input responders.
-                enum INPUT_DEVICE
-                {
-                    //! NULL device.
-                    INPUT_NULL = 0,
 
-                    //! Mouse.
-                    INPUT_MOUSE = 1,
-
-                    //! Keyboard.
-                    INPUT_KEYBOARD = 2,
-
-                    //! Gamepad/controller/joystick/etc
-                    INPUT_GAMEPAD = 3,
-                };
 
                 //! A struct representing a binary input responder.
                 struct InputResponder

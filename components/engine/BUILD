@@ -34,6 +34,9 @@ cc_library(
         "//conditions:default": []
     }),
     deps = [
+        "@physfs//:physfs",
+        "@allegro//:allegro",
+
         "//components/phys:phys",
         "//components/net:net",
         "//components/sound:sound",
