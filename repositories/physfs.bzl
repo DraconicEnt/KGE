@@ -19,6 +19,9 @@ cc_library(
             "physfs-3.0.2/src/*.h",
         ]
     ),
+    defines = [
+        "PHYSFS_SUPPORTS_ZIP=1"
+    ],
     hdrs = glob(
         include = [
             "physfs-3.0.2/src/*.h",

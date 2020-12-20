@@ -28,10 +28,11 @@ cache_entries = select({
         "_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED_EXITCODE__TRYRUN_OUTPUT": "0"
     },
     "//conditions:default": {
+        "LUA_LIBRARIES": "OFF",
         "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.so",
-        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include",
-        "FREETYPE_LIBRARY": "$EXT_BUILD_DEPS/freetype/lib/libfreetype.a",
-        "FREETYPE_INCLUDE_DIRS": "$EXT_BUILD_DEPS/freetype/include",
+        "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include/libxml2",
+        #"FREETYPE_LIBRARY": "$EXT_BUILD_DEPS/freetype/lib/libfreetype.a",
+        #"FREETYPE_INCLUDE_DIRS": "$EXT_BUILD_DEPS/freetype/include",
     }
 }),
 
@@ -40,7 +41,7 @@ deps = [
     "@xml2//:xml2",
     "@zlib//:zlib",
     # "@curl//:curl",
-    # "@freetype//:freetype"
+    #"@freetype//:freetype"
 ],
 
 static_libraries = select({
@@ -147,8 +148,8 @@ make_commands = select({
        "ninja install"
    ],
    "//conditions:default": [
-       "make -j$(nproc)",
-       "make install"
+        "make -j$(nproc)",
+        "make install"
    ]
 }),
 

@@ -22,10 +22,15 @@ cc_library(
     includes = [
         "include"
     ],
-    copts = [
-        # "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet",
-        # "/Ibazel-out/x64_windows-fastbuild/bin/external/bullet/bullet/include/bullet"
-    ],
+    copts =  select({
+        "@bazel_tools//src/conditions:windows": [
+
+        ],
+        "//conditions:default": [
+            "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
+        ],
+    }),
+
     #include_prefix = "bullet",
     deps = [
         "@bullet//:bullet",

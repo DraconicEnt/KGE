@@ -34,8 +34,8 @@ cache_entries = select({
     },
 
     "//conditions:default": {
-        "PHYSFS_INCLUDE_DIR": "$EXT_BUILD_DEPS/physfs/include",
-        "PHYSFS_LIBRARY": "$EXT_BUILD_DEPS/physfs/lib/libphysfs.a"
+        "PHYSFS_INCLUDE_DIR": "$EXT_BUILD_DEPS/include",
+        "PHYSFS_LIBRARY": "$EXT_BUILD_DEPS/lib/libphysfs.a"
     }
 }),
 

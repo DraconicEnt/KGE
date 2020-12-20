@@ -19,12 +19,15 @@ cc_library(
         "include"
     ],
 
-    # "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
-
     defines = select({
         "//conditions:default": [],
         "//.bazel:intrinsics": [],
         "//.bazel:no-intrinsics": ["NO_INTRINSICS=1"]
+    }),
+
+    linkopts = select({
+        "@platforms//os:windows": [],
+        "//conditions:default": ["-pthread"]
     }),
 
     hdrs = glob(
