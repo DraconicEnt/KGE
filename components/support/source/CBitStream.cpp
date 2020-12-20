@@ -169,6 +169,7 @@ namespace Kiaro
             mTotalSize = newSize;
         }
 
+        /*
         template <>
         void CBitStream::write(const Support::Vector3DF& input)
         {
@@ -179,6 +180,7 @@ namespace Kiaro
             this->write(input.y());
             this->write(input.z());
         }
+        */
 
         bool CBitStream::isFull(void) const
         {

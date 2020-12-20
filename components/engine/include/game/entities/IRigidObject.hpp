@@ -13,7 +13,7 @@
 #define _INCLUDE_KIARO_GAME_ENTITIES_RIGIDOBJECTBASE_HPP_
 
 #include <osg/Node>
-#include <btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 
 #include <support/types.hpp>
 #include <game/entities/types.hpp>

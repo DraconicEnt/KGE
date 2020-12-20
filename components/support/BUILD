@@ -8,6 +8,9 @@ cc_library(
             "include/**/*.hpp",
 
             "platform/common/**/*.cpp"
+        ],
+        exclude =[
+            "source/SSignalHandler.cpp"
         ]) + select({
             "@platforms//os:windows": glob(include=["platform/windows/**/*.cpp"]),
             "//conditions:default": glob(include=["platform/unix/**/*.cpp"])
@@ -22,7 +25,19 @@ cc_library(
         "//.bazel:no-intrinsics": ["NO_INTRINSICS=1"]
     }),
 
+    linkopts = select({
+        "@platforms//os:windows": [],
+        "//conditions:default": ["-pthread"]
+    }),
+
+    hdrs = glob(
+        include = [
+            "external/physfs/physfs-3.0.2/src/*.h"
+        ]
+    ),
+
     deps = [
+        "@physfs//:physfs",
         "@easydelegate//:easydelegate",
         "@allegro//:allegro",
         "@osg//:osg"

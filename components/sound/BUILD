@@ -21,6 +21,7 @@ cc_library(
     ],
 
     deps = [
+        "@physfs//:physfs",
         "//components/support:support"
     ],
     visibility = ["//visibility:public"]

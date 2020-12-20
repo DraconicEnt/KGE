@@ -187,7 +187,9 @@ namespace Kiaro
                     EXPECT_NE(nullptr, ThirdGameStateValue);
 
                     if (ThirdGameStateValue)
+                    {
                         EXPECT_EQ(0, strcmp(ThirdGameStateValue, "Test String"));
+                    }
 
                     // Restart the values for the next iteration
                     FirstGameStateValue = false;

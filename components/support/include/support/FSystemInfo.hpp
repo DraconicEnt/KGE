@@ -30,34 +30,8 @@ namespace Kiaro
             Common::U32& outEdx = *reinterpret_cast<Common::U32*>(&result[4]);
             Common::U32& outEcx = *reinterpret_cast<Common::U32*>(&result[8]);
 
-            #if defined(_MSC_VER)
-                __asm
-                {
-                    push eax;
-                    push ebx;
-                    push edx;
-                    push ecx;
 
-                    mov eax, 0;
-                    cpuid;
-
-                    mov outEbx, ebx;
-                    mov outEdx, edx;
-                    mov outEcx, ecx;
-
-                    pop eax;
-                    pop ebx;
-                    pop edx;
-                    pop ecx;
-                }
-            #else
-                asm ("movl $0, %%eax; cpuid; movl %%ebx, %0; movl %%edx, %1; movl %%ecx, %2;"
-                 :"=r"(outEbx), "=r"(outEdx), "=r"(outEcx)
-                 :
-                 : "%eax", "%ebx", "%edx", "%ecx");
-            #endif
-
-            output = result;
+            output = "<UNKNOWN>";
         }
 
         static void getCPUBrand(Support::String& output)
@@ -65,74 +39,7 @@ namespace Kiaro
             char result[16];
             result[15] = 0x00;
 
-            Common::U32& outEax = *reinterpret_cast<Common::U32*>(&result[0]);
-            Common::U32& outEbx = *reinterpret_cast<Common::U32*>(&result[4]);
-            Common::U32& outEcx = *reinterpret_cast<Common::U32*>(&result[8]);
-            Common::U32& outEdx = *reinterpret_cast<Common::U32*>(&result[12]);
-
-            #if defined(_MSC_VER)
-                __asm
-                {
-                    push eax;
-                    push ebx;
-                    push edx;
-                    push ecx;
-
-                    movl 0x80000000, eax;
-                    cpuid;
-                    cmp eax, 0x80000004;
-                    je supported;
-
-                    unsupported:
-                    mov outEax, 0;
-                    mov outEbx, 0;
-                    mov outEcx, 0;
-                    mov outEdx, 0;
-                    jmp done;
-
-                    supported:
-                    mov eax, 0x80000002;
-                    cpuid;
-                    mov eax, outEax;
-                    mov ebx, outEbx;
-                    mov ecx, outEcx;
-                    mov edx, outEdx;
-
-                    pop eax;
-                    pop ebx;
-                    pop edx;
-                    pop ecx;
-                }
-            #else
-                asm ("movl $0x80000000, %%eax;"
-                "cpuid;"
-                "cmp $0x80000004, %%eax;"
-                "je supported;"
-
-                // If the functionality isn't supported, just dump null bytes and we'll produce a blank string
-                "unsupported:"
-                "movl $0, %0;"
-                "movl $0, %1;"
-                "movl $0, %2;"
-                "movl $0, %3;"
-                "jmp done;"
-
-                // If the functionality is supported, copy the register values after another cpuid call
-                "supported:"
-                "movl $0x80000002, %%eax;"
-                "cpuid;"
-                "movl %%eax, %0;"
-                "movl %%ebx, %1;"
-                "movl %%ecx, %2;"
-                "movl %%edx, %3;"
-
-                "done: "
-                 :"=r"(outEax), "=r"(outEbx), "=r"(outEcx), "=r"(outEdx)
-                 :
-                 : "%eax", "%ebx", "%edx", "%ecx");
-            #endif
-
-            output = result;
+            output = "<UNKNOWN>";
         }
 
         //! A struct representing general CPU information.
@@ -161,56 +68,6 @@ namespace Kiaro
         static void getCPUInfo(CPUInfo& output)
         {
             Common::U32 outputBits = 0;
-
-            #if defined(_MSC_VER)
-                __asm
-                {
-                    push eax;
-                    push ecx;
-                    push edx;
-
-                    mov eax, 1;
-                    cpuid;
-                    mov outputBits, eax;
-
-                    pop eax;
-                    pop ecx;
-                    pop edx;
-                }
-            #else
-                asm ("movl $1, %%eax;"
-                "cpuid;"
-                "movl %%eax, %0;"
-
-                 :"=r"(outputBits)
-                 :
-                 : "%eax", "%ecx", "%edx");
-            #endif
-
-            // Interpret the CPU info bits
-            output.mStepping = 0xFF & outputBits;
-            output.mModel = 0xFF00 & outputBits;
-            output.mFamily = 0xFF0000 & outputBits;
-
-            output.mType = ((1 << 13) | (1 << 12)) & outputBits;
-            output.mExtendedModel = 0xFF00000000 & outputBits;
-            output.mExtendedFamily = 0xFF000000000 & outputBits;
-
-            // On Linux we have /proc/cpuinfo to determine the number of online cores
-            // FIXME: Is there any Linux kernel calls we can use specifically for this?
-            FILE* handle = popen("cat /proc/cpuinfo | grep \"processor\" | wc -l", "r");
-
-            if (!handle)
-                output.mCoreCount = 0;
-            else
-            {
-                char buffer[32];
-                fgets(buffer, 32, handle);
-                buffer[31] = 0x00;
-
-                output.mCoreCount = atoi(buffer);
-                pclose(handle);
-            }
         }
 
         /**
@@ -274,8 +131,10 @@ namespace Kiaro
 
         static Common::F32 getSystemMemoryTotal(void)
         {
+            return 8000.0f;
             // On Linux we have /proc/cpuinfo to determine the number of online cores
             // FIXME: Is there any Linux kernel calls we can use specifically for this?
+            /*
             FILE* handle = popen("cat /proc/meminfo | grep MemTotal | awk '{print $2}'", "r");
 
             if (!handle)
@@ -293,51 +152,13 @@ namespace Kiaro
             }
 
             return 0.0f;
+            */
         }
 
         static void getCPUSupportedFeatures(CPUSupportedFeatures& output)
         {
             Common::U32 outputEdx = 0;
             Common::U32 outputEcx = 0;
-
-            #if defined(_MSC_VER)
-                __asm
-                {
-                    push eax;
-                    push ecx;
-                    push edx;
-
-                    mov eax, 1;
-                    cpuid;
-                    mov outputEdx, edx;
-                    mov outputEcx, ecx;
-
-                    pop eax;
-                    pop ecx;
-                    pop edx;
-                }
-            #else
-                asm ("movl $1, %%eax;"
-                "cpuid;"
-                "movl %%edx, %0;"
-                "movl %%ecx, %1;"
-
-                 :"=r"(outputEdx), "=r"(outputEcx)
-                 :
-                 : "%eax", "%edx", "%ecx");
-            #endif
-
-            // Interpret the bits
-            output.mSSE = outputEdx & CPUFeature_SSE;
-            output.mSSE2 = outputEdx & CPUFeature_SSE2;
-            output.mClfsh = outputEdx & CPUFeature_Clfsh;
-            output.mHTT = outputEdx & CPUFeature_HTT;
-
-            output.mSSSE3 = outputEdx & CPUFeature_SSSE3;
-            output.mSSE41 = outputEdx & CPUFeature_SSE41;
-            output.mSSE42 = outputEdx & CPUFeature_SSE42;
-            output.mAVX = outputEdx & CPUFeature_AVX;
-            output.mSSE3 = outputEdx & CPUFeature_SSE3;
         }
 
         //! Static instance of CPU info.

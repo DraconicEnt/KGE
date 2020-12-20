@@ -55,6 +55,7 @@ namespace Kiaro
                 mWindowEventQueue = al_create_event_queue();
                 CONSOLE_ASSERT(mWindowEventQueue, "Failed to initialize window event queue.");
                 al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
+                return true;
             }
 
             void CGraphicsWindow::setActiveOpenGLContext(void)

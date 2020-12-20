@@ -12,6 +12,8 @@
 #ifndef _INCLUDE_SUPPORT_FILEBITSTREAM_HPP_
 #define _INCLUDE_SUPPORT_FILEBITSTREAM_HPP_
 
+#include <physfs.h>
+
 #include <support/CBitStream.hpp>
 
 namespace Kiaro

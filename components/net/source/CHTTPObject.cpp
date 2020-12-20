@@ -52,6 +52,7 @@ namespace Kiaro
 
             memcpy(outputPointer, inputPointer, bytesWritten);
             context->mResponseLength = newSize;
+            return 0;
         }
 
         CHTTPObject::CHTTPObject(void)

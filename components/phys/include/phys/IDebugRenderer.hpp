@@ -16,7 +16,7 @@
 #include <support/String.hpp>
 #include <support/types.hpp>
 
-#include <LinearMath/btIDebugDraw.h>
+#include <bullet/LinearMath/btIDebugDraw.h>
 
 namespace Kiaro
 {

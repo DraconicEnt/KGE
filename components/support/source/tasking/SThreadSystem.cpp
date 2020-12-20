@@ -24,7 +24,9 @@ namespace Kiaro
             {
                 // TODO (Robert MacGregor #9): Detect thread error?
                 if (!threadContext)
+                {
                     return;
+                }
 
                 // Keep running, wait for tasks
                 while (!threadContext->mShouldTerminate)
@@ -85,7 +87,9 @@ namespace Kiaro
                     for (CThreadContext* context: currentGroup)
                     {
                         if (context->mIsComplete)
+                        {
                             ++completedThreadCount;
+                        }
                     }
 
                     // If everything in the group has completed, we process all the transactions
@@ -124,7 +128,9 @@ namespace Kiaro
                         {
                             auto contextIter = doneContexts.find(context);
                             if (contextIter != doneContexts.end())
+                            {
                                 doneContexts.erase(contextIter);
+                            }
                         }
                     }
                 }
@@ -148,9 +154,13 @@ namespace Kiaro
                     if (mPendingAddTasks.size() != 0 || mPendingRemoveTasks.size() != 0)
                     {
                         for (IThreadedTask* task: mPendingRemoveTasks)
+                        {
                             mTasks.erase(task);
+                        }
                         for (IThreadedTask* task: mPendingAddTasks)
+                        {
                             mTasks.insert(task);
+                        }
 
                         mPendingAddTasks.clear();
                         mPendingRemoveTasks.clear();
@@ -178,8 +188,6 @@ namespace Kiaro
                     {
                         mPhaseProcessing.insert(mPhaseProcessing.end(), Support::Vector<CThreadContext*>());
                     }
-
-                    Common::U8 availableThreadCount = mInactiveThreads.size();
 
                     // We map all thread actions across the available threads
                     Common::U8 maxThreadIndex = 0;
@@ -224,7 +232,9 @@ namespace Kiaro
             bool SThreadSystem::addTask(IThreadedTask* task)
             {
                 if (mTasks.find(task) != mTasks.end() || mPendingAddTasks.find(task) != mPendingAddTasks.end())
+                {
                     return false;
+                }
                 mPendingAddTasks.insert(task);
                 return true;
             }
@@ -232,7 +242,9 @@ namespace Kiaro
             bool SThreadSystem::removeTask(IThreadedTask* task)
             {
                 if (mTasks.find(task) == mTasks.end() || mPendingRemoveTasks.find(task) != mPendingRemoveTasks.end())
+                {
                     return false;
+                }
                 mPendingRemoveTasks.insert(task);
                 return true;
             }
@@ -266,29 +278,43 @@ namespace Kiaro
                     // to determine when data can finally be written to memory safely for this frame via the transaction API
                     Support::UnorderedMap<Common::U32, Support::UnorderedSet<IThreadedTask*>> sharedResources;
                     for (IThreadedTask* currentTask: indexGroups[index])
+                    {
                         for (const Common::U32 currentResource: currentTask->getResources())
+                        {
                             for (IThreadedTask* testedTask: indexGroups[index])
                             {
                                 if (testedTask == currentTask)
-                                        continue;
+                                {
+                                    continue;
+                                }
 
                                 const Support::UnorderedSet<Common::U32>& testedResources = testedTask->getResources();
                                 for (const Common::U32 testedResource: testedResources)
+                                {
                                     if (testedResource == currentResource)
                                     {
                                         if (sharedResources.find(testedResource) == sharedResources.end())
+                                        {
                                             sharedResources[testedResource] = Support::UnorderedSet<IThreadedTask*>();
+                                        }
 
                                         sharedResources[testedResource].insert(testedTask);
                                         sharedResources[testedResource].insert(currentTask);
                                     }
+                                }
                             }
+                        }
+                    }
 
                     // Once we know where the resource conflicts are, we use this to generate groups that are as small as possible.
                     Support::UnorderedSet<IThreadedTask*> conflictedTasks;
                     for (auto resourceIDTasks: sharedResources)
+                    {
                         for (IThreadedTask* task: resourceIDTasks.second)
+                        {
                             conflictedTasks.insert(task);
+                        }
+                    }
 
                     CONSOLE_DEBUGF("Found %u resource conflicts in phase %u.", conflictedTasks.size(), index);
                     Support::UnorderedSet<IThreadedTask*> remainingTasks = Support::UnorderedSet<IThreadedTask*>(indexGroups[index]);
@@ -296,15 +322,21 @@ namespace Kiaro
                     // Generate groups on resource conflicts
                     Support::Vector<IThreadedTask*> conflictedGroup;
                     for (auto resourceIDTasks: sharedResources)
+                    {
                         for (IThreadedTask* task: resourceIDTasks.second)
+                        {
                             if (remainingTasks.find(task) != remainingTasks.end())
                             {
                                 remainingTasks.erase(task);
                                 conflictedGroup.push_back(task);
                             }
+                        }
+                    }
 
                     if (conflictedGroup.size() != 0)
+                    {
                         generatedPhase.push_back(conflictedGroup);
+                    }
 
                     // FIXME: We should unify types so we can reduce some code here
                     // FIXME: We always put everything into the same group at the moment. We need to perform grouping such that tasks

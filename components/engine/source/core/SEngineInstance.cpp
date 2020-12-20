@@ -39,7 +39,7 @@
 #include <support/SSignalHandler.hpp>
 #include <support/tasking/SThreadSystem.hpp>
 
-#include <execinfo.h>
+//#include <execinfo.h>
 
 namespace Kiaro
 {
@@ -72,6 +72,7 @@ namespace Kiaro
             {
                 CONSOLE_ERROR("!!! Received a crash signal! Generating a crash dump !!!");
 
+                /*
                 void* stackFrames[256];
                 const Common::S32 backtraceSize = backtrace(stackFrames, 256);
                 char** symbolNames = backtrace_symbols(stackFrames, 256);
@@ -102,6 +103,7 @@ namespace Kiaro
                 for (Common::U32 iteration = 0; iteration < backtraceSize; ++iteration)
                     CONSOLE_ERRORF("Frame %u: %s", iteration, symbolNames[iteration]);
                 free(symbolNames);
+                */
             }
 
             void SEngineInstance::handleThrottleRequest(void)
@@ -115,10 +117,10 @@ namespace Kiaro
                 Support::getCPUInformation();
 
                 // Install signal handlers.
-                Support::SSignalHandler* signalHandler = Support::SSignalHandler::getInstance();
-                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Termination] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::kill, this);
-                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Crash] = new Support::SSignalHandler::SignalHandlerType::StaticDelegateType(handleProcessCrash);
-                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::CPUUsage] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::handleThrottleRequest, this);
+                //Support::SSignalHandler* signalHandler = Support::SSignalHandler::getInstance();
+                //signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Termination] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::kill, this);
+                //signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Crash] = new Support::SSignalHandler::SignalHandlerType::StaticDelegateType(handleProcessCrash);
+                //signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::CPUUsage] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::handleThrottleRequest, this);
 
                 mRunning = false;
                 al_init();

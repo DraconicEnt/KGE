@@ -12,7 +12,7 @@
 #ifndef _INCLUDE_ENGINE_VIDEO_CBULLETDEBUGDRAWER_HPP_
 #define _INCLUDE_ENGINE_VIDEO_CBULLETDEBUGDRAWER_HPP_
 
-#include <LinearMath/btIDebugDraw.h>
+#include <bullet/LinearMath/btIDebugDraw.h>
 
 #include <support/common.hpp>
 #include <support/types.hpp>
