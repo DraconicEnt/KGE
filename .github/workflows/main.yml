@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the develop branch
   push:
@@ -30,8 +30,12 @@ jobs:
 
       - name: Install Ubuntu Dependencies
         run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxcursor-dev
-  
-      # Runs a set of commands using the runners shell
+
+      # Main Build
       - name: Build Main
         run: |
           bazel build //apps/main:main
+
+      - name: Test All
+        run: |
+          bazel test //:test_all

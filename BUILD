@@ -103,3 +103,12 @@ sh_binary(
         "@doxygen//:doxygen"
     ]
 )
+
+test_suite(
+    name = "test_all",
+    tests = [
+        "//components/support/tests:tests",
+        "//components/net/tests:tests",
+        "//components/sound/tests:tests"
+    ]
+)
