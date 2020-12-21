@@ -139,7 +139,7 @@ namespace Kiaro
                     if (PHYSFS_mount(directory.c_str(), nullptr, 1) == 0)
                     {
                         mRunning = false;
-                        CONSOLE_ERRORF("'%s'. Reason: '%s'", directory.c_str(), PHYSFS_getLastError());
+                        CONSOLE_ERRORF("'%s'. Reason: '%s'", directory.c_str(),  PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
                         return -1;
                     }
 
@@ -153,14 +153,20 @@ namespace Kiaro
                 Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getInstance();
 
                 if (this->initializeRenderer() != 0)
+                {
                     return 2;
+                }
 
                 if (!this->isDedicated() && this->initializeGUI() != 0)
+                {
                     return 3;
+                }
 
                 // Only init sound if we're not a dedicated server.
                 if (mEngineMode != MODE_DEDICATED)
+                {
                     this->initializeSound();
+                }
 
                 this->initializeNetwork();
                 this->initializeManagementConsole();
@@ -181,7 +187,9 @@ namespace Kiaro
             void SEngineInstance::kill(void)
             {
                 if (!mRunning)
+                {
                     return;
+                }
 
                 CONSOLE_INFO("Killed via kill()");
                 mRunning = false;
@@ -197,7 +205,9 @@ namespace Kiaro
                 CONSOLE_INFO("Deinitializing ...");
 
                 if (mPerfStatSchedule)
+                {
                     mPerfStatSchedule->cancel();
+                }
 
                 mPerfStatSchedule = nullptr;
                 // TODO: Check the destroy order
@@ -276,7 +286,9 @@ namespace Kiaro
                 Support::SSettingsRegistry* settings = Support::SSettingsRegistry::getInstance();
 
                 if (!settings->getValue<bool>("System::ManagementConsoleEnabled"))
+                {
                     return 0;
+                }
 
                 mManagementConsole = new Support::CManagementConsole();
 
@@ -335,7 +347,9 @@ namespace Kiaro
 
                         // Something is probably up, we should leave if we have an active client.
                         if (mActiveClient)
+                        {
                             mActiveClient->disconnect();
+                        }
 
                         // Servers just drop off the client that it last processed
                         Game::SGameServer* server = Game::SGameServer::getPointer();
@@ -370,7 +384,7 @@ namespace Kiaro
                 // TODO (Robert MacGregor#9): Research this.
                 Common::C8** searchPaths = PHYSFS_getSearchPath();
                 Common::C8* searchPath = searchPaths[1];
-                PHYSFS_removeFromSearchPath(searchPath);
+                PHYSFS_unmount(searchPath);
                 PHYSFS_freeList(searchPaths);
 
                 // TODO (Robert MacGregor#9): Initialize Allegro with PhysFS
@@ -395,7 +409,9 @@ namespace Kiaro
                 Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getInstance();
 
                 if (mPerfStatSchedule && enabled)
+                {
                     return;
+                }
                 else if (!mPerfStatSchedule && enabled)
                 {
                     mPerfStatSchedule = syncScheduler->schedule(4000, true, this, &SEngineInstance::printPerfStat);
@@ -416,7 +432,9 @@ namespace Kiaro
                 CONSOLE_INFO("Performance Statistics---------------------------");
 
                 for (auto average: averages)
+                {
                     CONSOLE_INFOF("%s: %f sec", average.first.data(), average.second);
+                }
             }
         } // End Namespace Engine
     }

@@ -26,7 +26,9 @@ namespace Kiaro
                 void* handle = dlopen(filename.data(), RTLD_LAZY);
 
                 if (!handle)
+                {
                     return symbols;
+                }
 
                 symbols.mHandle = handle;
                 symbols.mInitialize = reinterpret_cast<ExtensionSymbols::extensionInitializePointer>(dlsym(handle, "extensionInitialize"));
@@ -49,4 +51,3 @@ namespace Kiaro
         }
     }
 }
-

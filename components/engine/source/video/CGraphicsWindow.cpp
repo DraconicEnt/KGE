@@ -43,9 +43,13 @@ namespace Kiaro
                 Common::S32 displayFlags = ALLEGRO_RESIZABLE | ALLEGRO_OPENGL | ALLEGRO_OPENGL_3_0 | ALLEGRO_GENERATE_EXPOSE_EVENTS;
 
                 if (mWindowParameters.mFullscreen)
+                {
                     displayFlags |= ALLEGRO_FULLSCREEN;
+                }
                 else
+                {
                     displayFlags |= ALLEGRO_WINDOWED;
+                }
 
                 al_set_new_display_flags(displayFlags);
                 mDisplay = al_create_display(mWindowParameters.mResolution.x(), mWindowParameters.mResolution.y());
@@ -86,6 +90,7 @@ namespace Kiaro
                 ALLEGRO_EVENT windowEvent;
 
                 if (al_get_next_event(mWindowEventQueue, &windowEvent))
+                {
                     switch (windowEvent.type)
                     {
                         default:
@@ -134,6 +139,7 @@ namespace Kiaro
                             break;
                         }
                     }
+                }
             }
         }
     }

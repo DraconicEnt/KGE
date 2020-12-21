@@ -23,28 +23,42 @@ namespace Kiaro
                 for (IComponent* component: mChildren)
                 {
                     for (IComponent* trailComponent: trail)
+                    {
                         if (trailComponent == component)
+                        {
                             throw std::runtime_error("Children components cannot occur as an eventual parent!");
+                        }
+                    }
 
                     trail.insert(trail.end(), component);
                 }
 
                 // Recurse
                 for (IComponent* component: mChildren)
+                {
                     component->internalValidate(trail);
+                }
             }
 
             bool IComponent::evaluateChildren(const Support::UnorderedSet<CModelInstance*>& entities, const Support::Vector<IComponent*>& children)
             {
                 // Evaluate each top level first
                 for (IComponent* component: children)
+                {
                     if (!component->evaluateComponent(entities, mRoot->mChildren))
+                    {
                         return false;
+                    }
+                }
 
                 // Then recurse
                 for (IComponent* component: children)
+                {
                     if (!component->evaluateChildren(entities, component->mChildren))
+                    {
                         return false;
+                    }
+                }
 
                 return true;
             }
@@ -54,14 +68,18 @@ namespace Kiaro
             IComponent::~IComponent(void)
             {
                 for (IComponent* component: mChildren)
+                {
                     delete component;
+                }
             }
 
             void IComponent::setEvaluationStrategy(EVALUATION_STRATEGY strategy)
             {
                 // Nothing to be done
                 if (strategy == mEvaluationStrategy)
+                {
                     return;
+                }
 
                 // Perform cleanup for our current evaluation strategy
                 switch (mEvaluationStrategy)
@@ -91,17 +109,23 @@ namespace Kiaro
                     mSerialArray = new IComponent*[children.size()];
 
                     for (IComponent* component: children)
+                    {
                         mSerialArray[index++] = component;
+                    }
                 }
             }
 
             void IComponent::getChildrenInternal(Support::Vector<IComponent*>& output)
             {
                 for (IComponent* component: mChildren)
+                {
                     output.push_back(component);
+                }
 
                 for (IComponent* component: mChildren)
+                {
                     component->getChildrenInternal(output);
+                }
             }
 
             void IComponent::getChildren(bool recursive, Support::Vector<IComponent*>& output)
@@ -109,10 +133,14 @@ namespace Kiaro
                 output = mChildren;
 
                 if (!recursive)
+                {
                     return;
+                }
 
                 for (IComponent* component: mChildren)
+                {
                     component->getChildrenInternal(output);
+                }
             }
 
             Support::Vector<IComponent*>::iterator IComponent::begin(void)
@@ -148,7 +176,9 @@ namespace Kiaro
             void IComponent::evaluate(const Support::UnorderedSet<CModelInstance*>& entities)
             {
                 if (mEvaluationStrategy == EVALUATION_RECURSE && this->evaluateComponent(entities, mRoot->mChildren))
+                {
                     this->evaluateChildren(entities, mChildren);
+                }
                 else if (mEvaluationStrategy == EVALUATION_SERIAL)
                 {
                     assert(mSerialArray);
@@ -157,9 +187,13 @@ namespace Kiaro
                         mSerialArray[iteration]->evaluateComponent(entities, mRoot->mChildren);
                 }
                 else if (mEvaluationStrategy == EVALUATION_JIT)
+                {
                     throw std::runtime_error("JIT evaluation type not implemented.");
+                }
                 else
+                {
                     throw std::out_of_range("Unknown evaluation type!");
+                }
             }
 
             void IComponent::attachComponent(IComponent* component)

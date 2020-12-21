@@ -38,7 +38,9 @@ namespace Kiaro
             void CSceneGraph::add(Game::Entities::IEntity* entity)
             {
                 for (osg::Node* node: entity->mSceneNodes)
+                {
                     this->add(node);
+                }
             }
 
             bool CSceneGraph::isVisible(void)

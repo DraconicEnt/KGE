@@ -105,12 +105,16 @@ namespace Kiaro
             void SRenderer::setSceneGraph(CSceneGraph* graph)
             {
                 if (mCurrentScene)
+                {
                     mCurrentScene->setVisible(false);
+                }
 
                 mCurrentScene = graph;
 
                 if (mCurrentScene)
+                {
                     mCurrentScene->setVisible(true);
+                }
             }
 
             void SRenderer::setResolution(const Support::Dimension2DU& resolution)

@@ -16,7 +16,9 @@ namespace Kiaro
         {
             SSignalHandler* handler = SSignalHandler::getPointer();
             if (handler->mSignalHandlers.find(SSignalHandler::SignalType::Crash) != handler->mSignalHandlers.end())
+            {
                 handler->mSignalHandlers[SSignalHandler::SignalType::Crash]->invoke();
+            }
 
             signal(SIGBUS, SIG_DFL);
             signal(SIGSEGV, SIG_DFL);
@@ -28,14 +30,18 @@ namespace Kiaro
         {
             SSignalHandler* handler = SSignalHandler::getPointer();
             if (handler->mSignalHandlers.find(SSignalHandler::SignalType::Termination) != handler->mSignalHandlers.end())
+            {
                 handler->mSignalHandlers[SSignalHandler::SignalType::Termination]->invoke();
+            }
         }
 
         static void handleCPUOverload(int signal)
         {
             SSignalHandler* handler = SSignalHandler::getPointer();
             if (handler->mSignalHandlers.find(SSignalHandler::SignalType::CPUUsage) != handler->mSignalHandlers.end())
+            {
                 handler->mSignalHandlers[SSignalHandler::SignalType::CPUUsage]->invoke();
+            }
         }
 
         SSignalHandler::SSignalHandler(void)

@@ -55,7 +55,9 @@ namespace Kiaro
             ALLEGRO_CONFIG* config = al_load_config_file("config.cfg");
 
             if (!config)
+            {
                 CONSOLE_ERROR("Failed to load config.cfg, using default values.");
+            }
             else
             {
                 // Blow through each config section
@@ -204,7 +206,9 @@ namespace Kiaro
 
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); ++it)
+            {
                 free(it->second.first);
+            }
         }
 
         void SSettingsRegistry::dumpSettings(void)

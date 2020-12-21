@@ -37,7 +37,9 @@ namespace Kiaro
                 const Common::U32& identifier = object->mID;
 
                 if (object->mID == mObjects.size())
+                {
                     mObjects.insert(mObjects.end(), object);
+                }
                 else
                 {
                     // Don't overwrite existing objects
@@ -51,7 +53,9 @@ namespace Kiaro
             bool SObjectRegistry::removeObject(const Common::U32 identifier)
             {
                 if (identifier >= mObjects.size())
+                {
                     return false;
+                }
 
                 mObjects[identifier] = nullptr;
                 mAvailableIDs.push(identifier);
@@ -106,7 +110,9 @@ namespace Kiaro
                 for (Game::IEngineObject*& object : mObjects)
                 {
                     if (object)
+                    {
                         delete object;
+                    }
 
                     object = nullptr;
                 }

@@ -34,9 +34,13 @@ namespace Kiaro
         void IIncomingClient::send(const IMessage* packet, const bool reliable)
         {
             if (reliable)
+            {
                 packet->packEverything(mReliableStream);
+            }
             else
+            {
                 packet->packEverything(mUnreliableStream);
+            }
         }
 
         void IIncomingClient::send(const IMessage& message, const bool reliable)

@@ -32,12 +32,16 @@ namespace Kiaro
         CSoundSource::~CSoundSource(void)
         {
             if (mSound)
+            {
                 mSound->release();
+            }
 
             mSound = nullptr;
 
             for (CVoice* voice: mVoices)
+            {
                 delete voice;
+            }
         }
 
         CVoice* CSoundSource::play(void)

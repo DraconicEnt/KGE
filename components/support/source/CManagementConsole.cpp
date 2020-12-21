@@ -23,7 +23,9 @@ namespace Kiaro
         CManagementConsole::~CManagementConsole(void)
         {
             for (auto entry : mCallmap)
+            {
                 delete entry.second;
+            }
         }
 
         //! A regular expression representing valid call signatures.
@@ -38,6 +40,7 @@ namespace Kiaro
             Support::String commandString;
 
             while (std::getline(commandStream, commandString, ';'))
+            {
                 if (commandString.length() > 0)
                 {
                     // Loop for command components
@@ -46,8 +49,12 @@ namespace Kiaro
                     Support::Vector<Support::String> params;
 
                     while (std::getline(componentStream, componentString, ' '))
+                    {
                         if (componentString.length() > 0)
+                        {
                             params.push_back(componentString);
+                        }
+                    }
 
                     // Evaluate
                     Support::String commandName = params[0];
@@ -67,6 +74,7 @@ namespace Kiaro
                         success = false;
                     }
                 }
+            }
 
             return success;
         }
@@ -79,7 +87,9 @@ namespace Kiaro
                 auto it = mCallmap.find(name);
 
                 if (it != mCallmap.end())
+                {
                     mCallmap.erase(it);
+                }
 
                 return;
             }

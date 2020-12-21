@@ -31,7 +31,9 @@ namespace Kiaro
                     Game::Entities::IEntity* entity = *it;
 
                     if (entity && entity->mFlags & Entities::FLAG_UPDATING)
+                    {
                         entity->update(deltaTimeSeconds);
+                    }
                 }
             }
 
@@ -44,7 +46,9 @@ namespace Kiaro
             {
                 // Destroy any existing entities and reset the ID tracker
                 for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                {
                     delete *it;
+                }
 
                 mEntities.clear();
             }
@@ -93,7 +97,9 @@ namespace Kiaro
             void SGameWorld::packEverything(Support::CBitStream& out) const
             {
                 for (Support::UnorderedSet<Game::Entities::IEntity*>::const_iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                {
                     (*it)->packEverything(out);
+                }
             }
 
             void SGameWorld::unpack(Support::CBitStream& in)
@@ -103,12 +109,16 @@ namespace Kiaro
             void SGameWorld::setGameMode(IGameMode* game)
             {
                 if (mGameMode)
+                {
                     mGameMode->tearDown();
+                }
 
                 mGameMode = game;
 
                 if (mGameMode)
+                {
                     mGameMode->setup();
+                }
             }
 
             IGameMode* SGameWorld::getGameMode(void)

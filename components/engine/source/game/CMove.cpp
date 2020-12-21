@@ -29,7 +29,9 @@ namespace Kiaro
                 mZ = 0;
 
                 for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
+                {
                     mTriggers[iteration] = false;
+                }
             }
 
             void CMove::packEverything(Support::CBitStream& out) const
@@ -37,7 +39,9 @@ namespace Kiaro
                 out << mX << mY << mZ;
 
                 for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
+                {
                     out << mTriggers[iteration];
+                }
             }
 
             void CMove::unpack(Support::CBitStream& in)
@@ -45,7 +49,9 @@ namespace Kiaro
                 in >> mX >> mY >> mZ;
 
                 for (Common::U32 iteration = 0; iteration < sizeof(mTriggers) / sizeof(bool); iteration++)
+                {
                     in >> mTriggers[iteration];
+                }
             }
 
             size_t CMove::getRequiredMemory(void) const
@@ -55,4 +61,3 @@ namespace Kiaro
         }
     }
 }
-

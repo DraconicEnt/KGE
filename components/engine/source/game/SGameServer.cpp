@@ -104,7 +104,9 @@ namespace Kiaro
                     Entities::IEntity* entity = *it;
 
                     if (entity->mFlags & Entities::FLAG_SCOPING || entity->mFlags & Entities::FLAG_STATIC)
+                    {
                         scope.add(entity);
+                    }
                 }
 
                 client->send(&scope, true);
@@ -121,7 +123,9 @@ namespace Kiaro
                 mCurrentGamemode = game;
 
                 if (mCurrentGamemode)
+                {
                     mCurrentGamemode->setup();
+                }
             }
 
             void SGameServer::update(void)
@@ -132,7 +136,9 @@ namespace Kiaro
 
                 // Dispatch everything we have queued
                 for (Net::IIncomingClient* client: mConnectedClientSet)
+                {
                     client->dispatchQueuedMessages();
+                }
             }
 
             void SGameServer::onClientDisconnected(Net::IIncomingClient* client)
@@ -179,7 +185,9 @@ namespace Kiaro
 
                         // If the queued stream list isn't empty, we process the first one first
                         if (mQueuedStreams[sender].size() != 0)
+                        {
                             processedStream = *mQueuedStreams[sender].front();
+                        }
                     }
                 }
 
@@ -216,7 +224,9 @@ namespace Kiaro
                     auto searchResult = mQueuedStreams.find(sender);
 
                     if (searchResult == mQueuedStreams.end())
+                    {
                         mQueuedStreams[sender] = Support::Queue<Support::CBitStream*>();
+                    }
 
                     Support::CBitStream* streamCopy = new Support::CBitStream(incomingStream);
                     mQueuedStreams[sender].push(streamCopy);
@@ -236,7 +246,9 @@ namespace Kiaro
                 assert(mDataBlocks.find(datablock) == mDataBlocks.end());
 
                 if (!datablock->validate())
+                {
                     return false;
+                }
 
                 mDataBlocks.insert(mDataBlocks.end(), datablock);
                 return true;

@@ -40,7 +40,9 @@ namespace Kiaro
                 void HandShake::unpack(Support::CBitStream& in)
                 {
                     if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
+                    {
                         Support::throwException<std::underflow_error>("Unable to unpack HandShake packet; too small of a payload!");
+                    }
 
                     in >> mDataBlockCount >> mVersionMajor >> mVersionMinor >> mVersionRevision >> mVersionBuild >> mProtocolVersion;
                 }
@@ -58,4 +60,3 @@ namespace Kiaro
         } // End NameSpace Game
     }
 } // End NameSpace Kiaro
-

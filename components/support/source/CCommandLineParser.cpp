@@ -21,7 +21,8 @@ namespace Kiaro
             size_t currentFlagHash = 0;
             const Common::C8* currentFlagName = nullptr;
 
-            for (size_t iteration = 1; iteration < argc; ++iteration)
+            for (Common::S32 iteration = 1; iteration < argc; ++iteration)
+            {
                 if (argv[iteration][0] == '-')
                 {
                     currentFlagName = argv[iteration];
@@ -29,7 +30,10 @@ namespace Kiaro
                     mFlags.insert(std::make_pair(currentFlagHash, Support::Vector<Support::String>()));
                 }
                 else if (currentFlagName != nullptr)
+                {
                     mFlags[currentFlagHash].push_back(argv[iteration]);
+                }
+            }
         }
 
         CommandLineParser::~CommandLineParser(void) { }
@@ -43,7 +47,9 @@ namespace Kiaro
         Support::Vector<Support::String> CommandLineParser::getFlagArguments(const Common::C8* targetFlag)
         {
             if (!this->hasFlag(targetFlag))
+            {
                 return Support::Vector<Support::String>();
+            }
 
             size_t flagHash = Support::getHashCode(targetFlag);
             return mFlags[flagHash];
@@ -52,7 +58,9 @@ namespace Kiaro
         size_t CommandLineParser::getFlagArgumentCount(const Common::C8* targetFlag)
         {
             if (!hasFlag(targetFlag))
+            {
                 return 0;
+            }
 
             size_t flagHash = Support::getHashCode(targetFlag);
             return mFlags[flagHash].size();
@@ -61,7 +69,9 @@ namespace Kiaro
         void CommandLineParser::setFlagDescription(const Support::String& flagName, const Support::String& description)
         {
             if (flagName.length() >= mCurrentLongestFlagLength)
+            {
                 mCurrentLongestFlagLength = flagName.length();
+            }
 
             const size_t flagNameHash = Support::getHashCode(flagName);
             mFlagDescriptions.insert({flagNameHash, {flagName, description}});
@@ -77,7 +87,9 @@ namespace Kiaro
                 std::cout << "  " << currentEntry.first;
 
                 for (size_t iteration = 0; iteration < (mCurrentLongestFlagLength + 1) - currentEntry.first.length(); ++iteration)
+                {
                     std::cout << " ";
+                }
 
                 std::cout << currentEntry.second << std::endl;
             }

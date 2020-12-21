@@ -27,7 +27,9 @@ namespace Kiaro
                 auto search = mEntityTypeMap.find(id);
 
                 if (search == mEntityTypeMap.end())
+                {
                     return nullptr;
+                }
 
                 return (*search).second(payload);
             }
@@ -51,7 +53,9 @@ namespace Kiaro
                 auto searchResult = mServerStageMap[stage].find(id);
 
                 if (searchResult == mServerStageMap[stage].end())
+                {
                     return nullptr;
+                }
 
                 return (*searchResult).second.second;
             }
@@ -61,7 +65,9 @@ namespace Kiaro
                 auto searchResult = mClientStageMap[stage].find(id);
 
                 if (searchResult == mClientStageMap[stage].end())
+                {
                     return nullptr;
+                }
 
                 return (*searchResult).second.second;
             }

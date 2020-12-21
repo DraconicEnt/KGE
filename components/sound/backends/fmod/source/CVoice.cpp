@@ -30,7 +30,9 @@ namespace Kiaro
             FMOD_RESULT result;
 
             if ((result = mChannel->setPosition(ms, FMOD_TIMEUNIT_MS)) != FMOD_OK)
+            {
                 CONSOLE_ERRORF("Failed to set voice playback time! Code: %u", result);
+            }
         }
 
         void CVoice::setPositionVelocity(const Support::Vector3DF& position, const Support::Vector3DF& velocity)
@@ -41,7 +43,9 @@ namespace Kiaro
             FMOD_RESULT result;
 
             if ((result = mChannel->set3DAttributes(&fmodPosition, &fmodVelocity)) != FMOD_OK)
+            {
                 CONSOLE_ERRORF("Failed to set voice position & velocity! Code: %u", result);
+            }
         }
 
         Support::Vector3DF CVoice::getPosition(void)
@@ -52,7 +56,9 @@ namespace Kiaro
             FMOD_RESULT result;
 
             if ((result = mChannel->get3DAttributes(&position, &velocity)) != FMOD_OK)
+            {
                 CONSOLE_ERRORF("Failed to get voice position! Code: %u", result);
+            }
 
             return Support::Vector3DF(position.x, position.y, position.z);
         }
@@ -65,7 +71,9 @@ namespace Kiaro
             FMOD_RESULT result;
 
             if ((result = mChannel->get3DAttributes(&position, &velocity)) != FMOD_OK)
+            {
                 CONSOLE_ERRORF("Failed to get voice velocity! Code: %u", result);
+            }
 
             return Support::Vector3DF(velocity.x, velocity.y, velocity.z);
         }

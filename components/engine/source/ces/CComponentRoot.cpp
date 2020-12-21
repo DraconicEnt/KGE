@@ -26,8 +26,12 @@ namespace Kiaro
             void CComponentRoot::internalValidate(std::set<IComponent*> trail)
             {
                 for (IComponent* component: mChildren)
+                {
                     if (component->getComponentType() != COMPONENT_RENDERABLE)
+                    {
                         throw std::runtime_error("Attached component must be a renderable!");
+                    }
+                }
 
                 IComponent::internalValidate(trail);
             }
@@ -36,7 +40,9 @@ namespace Kiaro
             void CComponentRoot::attachComponent(IComponent* component)
             {
                 if (component->getComponentType() != COMPONENT_RENDERABLE)
+                {
                     throw std::out_of_range("Attached component must be a renderable!");
+                }
 
                 IComponent::attachComponent(component);
             }

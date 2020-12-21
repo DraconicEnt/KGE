@@ -46,13 +46,17 @@ namespace Kiaro
                     out << static_cast<Common::U32>(mScoped.size());
 
                     for (const Net::INetworkPersistable* currentPersistable : mScoped)
+                    {
                         currentPersistable->packEverything(out);
+                    }
                 }
 
                 void Scope::unpack(Support::CBitStream& in)
                 {
                     if (in.getSize() - in.getPointer() < this->getMinimumPacketPayloadLength())
+                    {
                         throw std::underflow_error("Unable to unpack Scope packet; too small of a payload!");
+                    }
 
                     in >> mScopedCount;
                     CONSOLE_DEBUGF("Scope: Unpacking %u entities.", mScopedCount);

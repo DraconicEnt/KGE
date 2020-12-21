@@ -25,11 +25,15 @@ namespace Kiaro
                 const Common::C8* basePath = PHYSFS_getRealDir(filename.data());
 
                 if (!basePath)
+                {
                     return false;
+                }
 
                 // If its already loaded
                 if (this->findExtension(filename))
+                {
                     return false;
+                }
 
                 // FIXME: Concat these paths correctly
                 Support::String absolutePath = basePath;
@@ -39,7 +43,9 @@ namespace Kiaro
                 ExtensionSymbols symbols = this->internalLoadExtension(absolutePath);
 
                 if (!symbols.mHandle)
+                {
                     return false;
+                }
 
                 // Register into the extension map and return
                 mExtensionMap[filename] = symbols;
@@ -52,7 +58,9 @@ namespace Kiaro
             {
                 ExtensionSymbols* symbols = this->findExtension(filename);
                 if (!symbols)
+                {
                     return false;
+                }
 
                 this->internalUnloadExtension(symbols);
                 this->deleteExtension(filename);
@@ -65,7 +73,9 @@ namespace Kiaro
                 ExtensionSymbols* symbols = this->findExtension(filename);
 
                 if (!symbols)
+                {
                     return;
+                }
 
                 mExtensionMap.erase(filename);
             }
@@ -75,7 +85,9 @@ namespace Kiaro
                 auto search = mExtensionMap.find(filename);
 
                 if (search == mExtensionMap.end())
+                {
                     return nullptr;
+                }
 
                 return &(*search).second;
             }

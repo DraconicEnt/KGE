@@ -47,7 +47,9 @@ namespace Kiaro
 
             // Disconnect everyone
             for (IIncomingClient* currentClient : mConnectedClientSet)
+            {
                 currentClient->disconnect("Server Shutdown");
+            }
 
             // Game::SGameWorld::destroy();
 
@@ -75,6 +77,7 @@ namespace Kiaro
             ENetEvent event;
 
             while (enet_host_service(mInternalHost, &event, 0) > 0)
+            {
                 switch(event.type)
                 {
                     case ENET_EVENT_TYPE_CONNECT:
@@ -122,6 +125,7 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_NONE:
                         break;
                 }
+            }
         }
 
         void IServer::processPacket(Support::CBitStream& incomingStream, Net::IIncomingClient* sender)
@@ -171,7 +175,9 @@ namespace Kiaro
         void IServer::dispatch(void)
         {
             if (mRunning)
+            {
                 enet_host_flush(mInternalHost);
+            }
         }
     } // End Namespace Game
 } // End Namespace Kiaro

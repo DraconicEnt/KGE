@@ -56,7 +56,9 @@ namespace Kiaro
             Common::U32 packetFlag = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT;
 
             if (reliable)
+            {
                 packetFlag = ENET_PACKET_FLAG_RELIABLE;
+            }
 
             packet->packEverything(mOutgoingStream);
             ENetPacket* enetPacket = enet_packet_create(mOutgoingStream.getBlock(), mOutgoingStream.getPointer(), packetFlag);
@@ -127,12 +129,16 @@ namespace Kiaro
         void IOutgoingClient::disconnect(void)
         {
             if (mUpdatePulse)
+            {
                 mUpdatePulse->cancel();
+            }
 
             mUpdatePulse = nullptr;
 
             if (!mConnected)
+            {
                 return;
+            }
 
             mConnected = false;
             enet_peer_disconnect_later(mInternalPeer, 0);
@@ -146,6 +152,7 @@ namespace Kiaro
             ENetEvent event;
 
             while (mInternalHost && enet_host_service(mInternalHost, &event, 0) > 0)
+            {
                 switch(event.type)
                 {
                     case ENET_EVENT_TYPE_DISCONNECT:
@@ -184,6 +191,7 @@ namespace Kiaro
                     case ENET_EVENT_TYPE_CONNECT:
                         break;
                 }
+            }
         }
 
         bool IOutgoingClient::isConnected(void)
@@ -194,7 +202,9 @@ namespace Kiaro
         void IOutgoingClient::dispatch(void)
         {
             if (mInternalHost)
+            {
                 enet_host_flush(mInternalHost);
+            }
         }
     } // End Namespace Network
 } // End Namespace Kiaro

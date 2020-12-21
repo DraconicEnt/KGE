@@ -37,7 +37,9 @@ namespace Kiaro
             memset(mMemoryBlock, 0x00, sizeInBytes);
 
             if (initializer && !initializerLength)
+            {
                 initializerLength = sizeInBytes;
+            }
 
             // Are we initializing from some existing memory block?
             if (initializer && initializerLength)
@@ -55,7 +57,9 @@ namespace Kiaro
         CBitStream::~CBitStream(void)
         {
             if (mOwnsMemoryBlock)
+            {
                 free(mMemoryBlock);
+            }
         }
 
         void CBitStream::writeString(const Common::C8* string, const size_t length)
@@ -67,25 +71,35 @@ namespace Kiaro
 
             // Is it properly NULL terminated?
             if (string[length] != 0x00)
+            {
                 throw std::runtime_error("Attempted to write bad string (null terminator isn't where it should be)!");
+            }
 
             const size_t stringLength = strlen(string);
             const size_t totalLength = stringLength + sizeof(Common::U32) + 1; // Account for the NULL as well
 
             if (stringLength != length)
+            {
                 throw std::runtime_error("Attempted to write a bad string (Lengths do not match)!");
+            }
 
             // Will the string fit?
             if (mTotalSize - mPointer < totalLength && mResizeLength == 0)
+            {
                 throw std::runtime_error("Cannot fit string into buffer!");
+            }
             else if (mTotalSize - mPointer < totalLength)
+            {
                 this->resize(mTotalSize + mResizeLength);
+            }
 
             // Write off the string length so we can properly unpack later
             this->write<Common::U32>(static_cast<Common::U32>(stringLength));
 
             if (mPointer >= mTotalSize || mTotalSize - mPointer < totalLength)
+            {
                 throw std::overflow_error("Stack Overflow");
+            }
 
             memcpy(&mMemoryBlock[mPointer], string, stringLength + 1);
             mPointer += stringLength + 1; // NULL byte again
@@ -113,12 +127,16 @@ namespace Kiaro
 
             // First off, is there enough memory in the buffer?
             if (stringLength > mTotalSize - mPointer)
+            {
                 throw std::underflow_error("Stack Underflow in String Read");
+            }
 
             // Ensure that the string is properly terminated
             const Common::U32 nullIndex = mPointer + stringLength + sizeof(Common::U32);
             if (mMemoryBlock[nullIndex] != 0x00)
+            {
                 throw std::logic_error("Attempted to unpack an improperly terminated string");
+            }
 
             // Return the result
             return reinterpret_cast<const Common::C8*>(&mMemoryBlock[mPointer + sizeof(Common::U32)]);
@@ -137,7 +155,9 @@ namespace Kiaro
         void CBitStream::setPointer(const size_t pointer)
         {
             if (pointer < 0 || pointer >= mTotalSize)
+            {
                 throw std::out_of_range("Attempted to index out of bounds in BitStream");
+            }
 
             mPointer = pointer;
         }
@@ -148,7 +168,9 @@ namespace Kiaro
             CONSOLE_ASSERTF(newSize > mTotalSize, "newSize=%u,mTotalSize=%u", newSize, mTotalSize);
 
             if (mOwnsMemoryBlock)
+            {
                 mMemoryBlock = reinterpret_cast<Common::U8*>(realloc(mMemoryBlock, newSize));
+            }
             else
             {
                 Common::U8* newBlock = reinterpret_cast<Common::U8*>(malloc(newSize));

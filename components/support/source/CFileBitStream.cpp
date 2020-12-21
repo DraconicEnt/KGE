@@ -20,11 +20,17 @@ namespace Kiaro
         CFileBitStream::CFileBitStream(const Support::String& fileName, const BITSTREAM_MODE& fileMode) : mFileHandle(nullptr)
         {
             if (fileMode == BITSTREAM_READ)
+            {
                 mFileHandle = PHYSFS_openRead(fileName.c_str());
+            }
             else if (fileMode == BITSTREAM_WRITE)
+            {
                 mFileHandle = PHYSFS_openWrite(fileName.c_str());
+            }
             else
+            {
                 mFileHandle = PHYSFS_openAppend(fileName.c_str());
+            }
 
             //if (!mFileHandle)
             //    throw std::not_
@@ -33,7 +39,9 @@ namespace Kiaro
         CFileBitStream::~CFileBitStream(void)
         {
             if (mFileHandle)
+            {
                 PHYSFS_close(mFileHandle);
+            }
 
             mFileHandle = nullptr;
         }

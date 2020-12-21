@@ -37,9 +37,13 @@ namespace Kiaro
             Common::F32 stopTimer(const Support::FTime::timer& timerIdentifier)
             {
                 if (sTimerStack.size() == 0)
+                {
                     throw std::runtime_error("FTime: No timers to stop!");
+                }
                 else if (sTimerStack.size() >= std::numeric_limits<Common::U8>::max())
+                {
                     throw std::runtime_error("FTime: Too many timers on stack!");
+                }
                 else if (timerIdentifier != sTimerStack.size())
                 {
                     Support::String errorString = "FTime: Mismatched timer identifier in stopTimer! Current: ";
@@ -55,7 +59,9 @@ namespace Kiaro
 
                 // Only add deltas if we're the upper most timer
                 if(timerIdentifier == 1)
+                {
                     sCurrentSimTime += deltaTimePoint.count() * 1000000;
+                }
 
                 sTimerStack.pop();
                 return deltaTimePoint.count();

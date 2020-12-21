@@ -46,7 +46,9 @@ namespace Kiaro
             mWaitTimeMS = waitTimeMS;
 
             if (refresh)
+            {
                 mTriggerTimeMS = Support::FTime::getSimTimeMilliseconds() + waitTimeMS;
+            }
         }
 
         void CScheduledEvent::dispatch(void)
@@ -103,15 +105,23 @@ namespace Kiaro
                     currentEvent->dispatch();
 
                     if (currentEvent->isRecurring())
+                    {
                         currentEvent->setTriggerTimeMS(Support::FTime::getSimTimeMilliseconds() + currentEvent->getWaitTimeMS());
+                    }
                     else
+                    {
                         shouldRemoveCurrentEvent = true;
+                    }
                 }
                 else if (currentEvent->isCancelled())
+                {
                     shouldRemoveCurrentEvent = true;
+                }
 
                 if (shouldRemoveCurrentEvent)
+                {
                     removedEvents.insert(currentEvent);
+                }
             }
 
             for (CScheduledEvent* currentEvent : removedEvents)

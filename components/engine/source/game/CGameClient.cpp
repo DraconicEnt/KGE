@@ -30,7 +30,9 @@ namespace Kiaro
                 mControlObject = object;
 
                 if (object)
+                {
                     object->mController = this;
+                }
             }
 
             IControllable* CGameClient::getControlObject(void) const

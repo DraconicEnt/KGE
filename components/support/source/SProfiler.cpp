@@ -20,7 +20,9 @@ namespace Kiaro
         SProfiler* SProfiler::getPointer(const size_t sampleCount)
         {
             if (!sInstance)
+            {
                 sInstance = new SProfiler(sampleCount);
+            }
 
             return sInstance;
         }
@@ -35,7 +37,9 @@ namespace Kiaro
         {
             // Populate the set
             for (size_t iteration = 0; iteration < mSampleCount; ++iteration)
+            {
                 mSamples.insert(mSamples.end(), Support::UnorderedMap<Support::String, Common::F32>());
+            }
         }
 
         SProfiler::~SProfiler(void)
@@ -49,7 +53,9 @@ namespace Kiaro
 
             // If there's already a timer, we're in a bad situation
             if (mTimers.find(name) != mTimers.end())
+            {
                 throw std::runtime_error("Broken profiler scope!");
+            }
 
             mTimers[name] = FTime::startTimer();
         }
@@ -64,13 +70,17 @@ namespace Kiaro
                 mTimers.erase(name);
             }
             else // If we don't find anything here, we've got broken code somewhere
+            {
                 throw std::runtime_error("No such profiler context!");
+            }
         }
 
         Common::F32 SProfiler::getSample(const Support::String& name, const size_t sample)
         {
             if (sample >= mSampleCount || mSamples[sample].find(name) == mSamples[sample].end())
+            {
                 throw std::out_of_range("No such sample!");
+            }
 
             return mSamples[sample][name];
         }
@@ -82,7 +92,9 @@ namespace Kiaro
 
             Common::F32 sampleSum = 0;
             for (size_t iteration = 0; iteration < mSampleCount; iteration++)
+            {
                 sampleSum += mSamples[iteration][name];
+            }
 
             return sampleSum / mSampleCount;
         }
@@ -97,7 +109,9 @@ namespace Kiaro
             Support::Set<std::pair<Support::String, Common::F32>> result;
 
             for (const std::string& name: mSampleNames)
+            {
                 result.insert(std::make_pair(name, this->getAverage(name)));
+            }
 
             return result;
         }
@@ -108,5 +122,3 @@ namespace Kiaro
         }
     } // End NameSpace Support
 } // End nameSpace Kiaro
-
-
