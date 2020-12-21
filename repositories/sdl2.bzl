@@ -111,7 +111,8 @@ filegroup(
         "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/timer/*.c",
-                "SDL2-2.0.12/src/timer/windows/*.c"
+                "SDL2-2.0.12/src/timer/windows/*.c",
+                "SDL2-2.0.12/src/timer/dummy/*.c"
             ]
         ),
 
@@ -119,7 +120,8 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/timer/*.c",
-                "SDL2-2.0.12/src/timer/unix/*.c"
+                "SDL2-2.0.12/src/timer/unix/*.c",
+                "SDL2-2.0.12/src/timer/dummy/*.c"
             ]
         )
     })
@@ -129,7 +131,8 @@ filegroup(
     name = "timer_headers",
     srcs = glob(
             include = [
-                "SDL2-2.0.12/src/timer/*.h"
+                "SDL2-2.0.12/src/timer/*.h",
+                "SDL2-2.0.12/src/timer/dummy/*.h"
             ]
         )
 )
@@ -194,6 +197,7 @@ filegroup(
             include = [
                 "SDL2-2.0.12/src/haptic/*.c",
                 "SDL2-2.0.12/src/haptic/windows/*.c",
+                "SDL2-2.0.12/src/haptic/dummy/*.c",
                 "SDL2-2.0.12/src/haptic/windows/*.h"
             ]
         ),
@@ -202,6 +206,7 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/haptic/*.c",
+                "SDL2-2.0.12/src/haptic/dummy/*.c",
                 "SDL2-2.0.12/src/haptic/linux/*.c"
             ]
         )
@@ -212,7 +217,8 @@ filegroup(
     name = "haptic_headers",
     srcs = glob(
             include = [
-                "SDL2-2.0.12/src/haptic/*.h"
+                "SDL2-2.0.12/src/haptic/*.h",
+                "SDL2-2.0.12/src/haptic/dummy/*.h",
             ]
         )
 )
@@ -220,11 +226,12 @@ filegroup(
 filegroup(
     name = "joystick_sources",
     srcs = select({
-      "@bazel_tools//src/conditions:windows": glob(
+        "@bazel_tools//src/conditions:windows": glob(
             include = [
                 "SDL2-2.0.12/src/joystick/*.c",
                 "SDL2-2.0.12/src/joystick/windows/*.c",
                 "SDL2-2.0.12/src/joystick/windows/*.h",
+                "SDL2-2.0.12/src/joystick/dummy/*.c",
 
                 # hidapi
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
@@ -235,20 +242,28 @@ filegroup(
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xbox360.c",
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_rumble.c",
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xboxone.c",
-                ]
-            ),
+            ]
+        ),
 
-      # Linux
-      "//conditions:default": glob(
+        # Linux
+        "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/joystick/*.c",
                 "SDL2-2.0.12/src/joystick/linux/*.c",
                 "SDL2-2.0.12/src/joystick/linux/*.h",
+                "SDL2-2.0.12/src/joystick/dummy/*.c",
 
                 # hidapi
                 "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapijoystick.c",
-                ]
-            )
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_ps4.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_switch.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_gamecube.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_steam.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xbox360.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_rumble.c",
+                "SDL2-2.0.12/src/joystick/hidapi/SDL_hidapi_xboxone.c",
+            ]
+        )
     })
 )
 
@@ -364,7 +379,9 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/audio/*.c",
-                "SDL2-2.0.12/src/audio/alsa/*.c"
+                "SDL2-2.0.12/src/audio/alsa/*.c",
+                "SDL2-2.0.12/src/audio/disk/*.c",
+                "SDL2-2.0.12/src/audio/dummy/*.c"
             ]
         )
     })
@@ -388,7 +405,9 @@ filegroup(
         "//conditions:default": glob(
             include = [
                 "SDL2-2.0.12/src/audio/*.h",
-                "SDL2-2.0.12/src/audio/alsa/*.h"
+                "SDL2-2.0.12/src/audio/alsa/*.h",
+                "SDL2-2.0.12/src/audio/disk/*.h",
+                "SDL2-2.0.12/src/audio/dummy/*.h"
             ]
         )
     })
@@ -568,7 +587,6 @@ filegroup(
     })
 )
 
-
 filegroup(
     name = "includes",
     srcs = glob(
@@ -595,7 +613,16 @@ cc_library(
         ],
 
         # Linux
-        "//conditions:default": []
+        "//conditions:default": [
+            "LIBC=ON",
+            "HIDAPI=OFF",
+            "DIRECTX=OFF",
+            "RENDER_D3D=OFF",
+            "VIDEO_VULKAN=OFF",
+            "SDL_SENSOR_DISABLED=1",
+            "HID_SKIP_LIBUSB=1",
+            "SDL2_EXPORTS=1"
+        ]
     }),
 
     linkopts = select({

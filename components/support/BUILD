@@ -27,7 +27,7 @@ cc_library(
 
     linkopts = select({
         "@platforms//os:windows": [],
-        "//conditions:default": ["-pthread"]
+        "//conditions:default": ["-lpthread", "-ldl"]
     }),
 
     hdrs = glob(
