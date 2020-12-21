@@ -28,6 +28,9 @@ jobs:
       - name: actions-bazelisk
         uses: suyash/actions-bazelisk@v1
 
+      - name: Install Ubuntu Dependencies
+        run: sudo apt-get install libgl-dev
+  
       # Runs a set of commands using the runners shell
       - name: Build Main
         run: |
