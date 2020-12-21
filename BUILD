@@ -90,3 +90,16 @@ pkg_tar(
     ],
     mode = "0755",
 )
+
+sh_binary(
+    name = "doxygen",
+    srcs = [
+        "doxygen.sh"
+    ],
+    args = [
+        "$(locations @doxygen//:doxygen)"
+    ],
+    data = [
+        "@doxygen//:doxygen"
+    ]
+)

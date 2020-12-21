@@ -20,6 +20,7 @@ load("//repositories:physfs.bzl", "physfs")
 load("//repositories:xml2.bzl", "xml2")
 load("//repositories:iconv.bzl", "iconv")
 load("//repositories:lzma.bzl", "lzma")
+load("//repositories:doxygen.bzl", "doxygen")
 
 def repositories():
     # Foreign CC
@@ -79,6 +80,7 @@ def repositories():
 
     allegro()
     curl()
+    doxygen()
     sdl2_image()
     sdl2()
     mygui()
