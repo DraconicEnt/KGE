@@ -62,7 +62,8 @@ deps = [
 shared_libraries = select({
     "@bazel_tools//src/conditions:windows": [],
     "//conditions:default": [
-        "libxml2.so"
+        "libxml2.so",
+        "libxml2.so.2.9.10"
     ]
 }),
 
