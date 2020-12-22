@@ -97,10 +97,13 @@ sh_binary(
         "doxygen.sh"
     ],
     args = [
-        "$(locations @doxygen//:doxygen)"
+        "$(locations @doxygen//:doxygen)",
+        "$(locations @graphviz//:graphviz)"
     ],
     data = [
-        "@doxygen//:doxygen"
+        "@doxygen//:doxygen",
+        "@graphviz//:graphviz",
+        "doxyfile"
     ]
 )
 
