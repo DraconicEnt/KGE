@@ -21,6 +21,8 @@ load("//repositories:xml2.bzl", "xml2")
 load("//repositories:iconv.bzl", "iconv")
 load("//repositories:lzma.bzl", "lzma")
 load("//repositories:doxygen.bzl", "doxygen")
+load("//repositories:graphviz.bzl", "graphviz")
+load("//repositories:harfbuzz.bzl", "harfbuzz")
 
 def repositories():
     # Foreign CC
@@ -59,6 +61,8 @@ def repositories():
     iconv()
     freetype()
     lzma()
+    graphviz()
+    harfbuzz()
 
     # Load rules_pkg
     maybe(
