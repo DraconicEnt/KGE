@@ -7,9 +7,9 @@ def enet():
         http_archive,
         name = "enet",
         urls = [
-            "http://enet.bespin.org/download/enet-1.3.17.tar.gz"
+            "https://github.com/lsalzman/enet/archive/v1.3.17.tar.gz"
         ],
-        sha256 = "a38f0f194555d558533b8b15c0c478e946310022d0ec7b34334e19e4574dcedc",
+        sha256 = "1e0b4bc0b7127a2d779dd7928f0b31830f5b3dcb7ec9588c5de70033e8d2434a",
         build_file_content = """
 cc_library(
     name = "enet",
