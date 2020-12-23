@@ -36,11 +36,15 @@ jobs:
               run: |
                 bazel build //apps/main:main
 
-            # Ensure doxygen is available
+            # Ensure doxygen & graphviz is available
             # FIXME: This should be automatically built by the run command below?
             - name: Build Doxygen
               run: |
                 bazel build @doxygen//:doxygen
+
+            - name: Build Graphviz
+              run: |
+                bazel build @graphviz//:graphviz
 
             # Build Documentation
             - name: Build Documentation
