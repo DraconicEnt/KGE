@@ -12,7 +12,8 @@
 #ifndef _INCLUDE_SUPPORT_MANAGEMENTCONSOLE_HPP_
 #define _INCLUDE_SUPPORT_MANAGEMENTCONSOLE_HPP_
 
-#include <support/Regex.hpp>
+#include <regex>
+
 #include <support/String.hpp>
 #include <support/Vector.hpp>
 #include <support/UnorderedMap.hpp>

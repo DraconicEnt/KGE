@@ -273,9 +273,9 @@ namespace Kiaro
                 return;
             }
 
-            static const Support::Regex numberRegex("[0-9]+", Support::RegexConstants::Extended);
-            static const Support::Regex resolutionRegex("[0-9]+x[0-9]+", Support::RegexConstants::Extended);
-            static const Support::Regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", Support::RegexConstants::Extended);
+            static const std::regex numberRegex("[0-9]+", std::regex_constants::extended);
+            static const std::regex resolutionRegex("[0-9]+x[0-9]+", std::regex_constants::extended);
+            static const std::regex addressRegex("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", std::regex_constants::extended);
 
             // What is the type of the existing entry?
             const Support::PROPERTY_TYPE typeID = (*searchResult).second.second;
@@ -284,7 +284,7 @@ namespace Kiaro
             {
                 case Support::PROPERTY_BOOL:
                 {
-                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    if (!std::regex_match(value.data(), numberRegex))
                     {
                         CONSOLE_ERRORF("Failed to read config value as bool: '%s'. Using default value.", name.data());
                         break;
@@ -296,7 +296,7 @@ namespace Kiaro
 
                 case Support::PROPERTY_U64:
                 {
-                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    if (!std::regex_match(value.data(), numberRegex))
                     {
                         CONSOLE_ERRORF("Failed to read config value as U64: '%s'. Using default value.", name.data());
                         break;
@@ -308,7 +308,7 @@ namespace Kiaro
 
                 case Support::PROPERTY_U32:
                 {
-                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    if (!std::regex_match(value.data(), numberRegex))
                     {
                         CONSOLE_ERRORF("Failed to read config value as U32: '%s'. Using default value.", name.data());
                         break;
@@ -320,7 +320,7 @@ namespace Kiaro
 
                 case Support::PROPERTY_U8:
                 {
-                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    if (!std::regex_match(value.data(), numberRegex))
                     {
                         CONSOLE_ERRORF("Failed to read config value as U8: '%s'. Using default value.", name.data());
                         break;
@@ -332,7 +332,7 @@ namespace Kiaro
 
                 case Support::PROPERTY_U16:
                 {
-                    if (!Support::RegexMatch(value.data(), numberRegex))
+                    if (!std::regex_match(value.data(), numberRegex))
                     {
                         CONSOLE_ERRORF("Failed to read config value as U16: '%s'. Using default value.", name.data());
                         break;
@@ -344,7 +344,7 @@ namespace Kiaro
 
                 case Support::PROPERTY_DIMENSION:
                 {
-                    if (!Support::RegexMatch(value.data(), resolutionRegex))
+                    if (!std::regex_match(value.data(), resolutionRegex))
                     {
                         CONSOLE_ERRORF("Failed to read config value as dimensions: '%s'. Using default value.", name.data());
                         break;
