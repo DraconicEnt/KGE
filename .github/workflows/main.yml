@@ -29,7 +29,7 @@ jobs:
               uses: suyash/actions-bazelisk@v1
 
             - name: Install Ubuntu Dependencies
-              run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxcursor-dev
+              run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxcursor-dev libpangocairo-1.0-0
 
             # Main Build
             - name: Build Main
