@@ -59,7 +59,9 @@ namespace Kiaro
 
                 Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
                 if (it == mEntities.end())
+                {
                     mEntities.insert(mEntities.end(), entity);
+                }
 
                 Core::SObjectRegistry::getInstance()->addObject(entity);
             }

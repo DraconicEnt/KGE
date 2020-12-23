@@ -22,6 +22,7 @@ cache_entries = select({
     "@bazel_tools//src/conditions:windows": {
     #    "FREETYPE_LIBRARY": "$EXT_BUILD_DEPS/freetype/lib/freetype.lib",
 #        "FREETYPE_INCLUDE_DIRS": "$EXT_BUILD_DEPS/freetype/include",
+        "BUILD_PRESENT3D_WITH_SDL": "OFF",
         "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.lib",
         "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include",
         "_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED_EXITCODE": "0",
@@ -29,6 +30,7 @@ cache_entries = select({
     },
     "//conditions:default": {
         "LUA_LIBRARIES": "OFF",
+        "BUILD_PRESENT3D_WITH_SDL": "OFF",
         "LIBXML2_LIBRARY": "$EXT_BUILD_DEPS/xml2/lib/libxml2.so",
         "LIBXML2_INCLUDE_DIR": "$EXT_BUILD_DEPS/xml2/include/libxml2",
         #"FREETYPE_LIBRARY": "$EXT_BUILD_DEPS/freetype/lib/libfreetype.a",
@@ -37,7 +39,6 @@ cache_entries = select({
 }),
 
 deps = [
-    "@sdl2//:library",
     "@xml2//:xml2",
     "@zlib//:zlib",
     # "@curl//:curl",

@@ -105,7 +105,9 @@ namespace Kiaro
                         case ALLEGRO_EVENT_DISPLAY_RESIZE:
                         {
                             if (!al_acknowledge_resize(mDisplay))
+                            {
                                 CONSOLE_WARNING("Failed to resize display!");
+                            }
                             else
                             {
                                 // FIXME: Properly process the resize events

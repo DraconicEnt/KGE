@@ -32,7 +32,9 @@ cc_library(
         "//.bazel:mem-arena": ["ENGINE_ENTITY_ARENA_ALLOCATIONS=1"],
         "//.bazel:mem-malloc": [],
         "//conditions:default": []
-    }),
+    }) + [
+        "_ENGINE_USE_GLOBAL_EXCEPTION_CATCH_=1"
+    ],
     deps = [
         "@physfs//:physfs",
         "@allegro//:allegro",
