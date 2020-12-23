@@ -22,6 +22,11 @@ namespace Kiaro
 
             }
 
+            ITask::~ITask()
+            {
+
+            }
+
             Common::U32 ITask::getProcessingIndex(void)
             {
                 return mProcessingIndex;

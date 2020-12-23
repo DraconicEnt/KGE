@@ -288,13 +288,13 @@ namespace Kiaro
                 CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
                 CONSOLE_DEBUGF("  Button Count: %u", buttonCount);
 
-                for (Common::U32 buttonID = 0; buttonID < buttonCount; ++buttonID)
+                for (Common::S32 buttonID = 0; buttonID < buttonCount; ++buttonID)
                 {
                     CONSOLE_DEBUGF("  Button %u -----------", buttonID);
                     CONSOLE_DEBUGF("    Name: %s", al_get_joystick_button_name(joystick, buttonID));
                 }
 
-                for (Common::U32 stickID = 0; stickID < stickCount; ++stickID)
+                for (Common::S32 stickID = 0; stickID < stickCount; ++stickID)
                 {
                     CONSOLE_DEBUGF("  Stick %u -----------", stickID);
                     CONSOLE_DEBUGF("    Name: %s", al_get_joystick_stick_name(joystick, stickID));
@@ -438,6 +438,10 @@ namespace Kiaro
                         throw std::runtime_error("When binding mouse and keybord devices, the device ID must be 0!");
                     break;
                 }
+                case INPUT_GAMEPAD_INPUT:
+                    break;
+                case INPUT_NULL:
+                    break;
             }
 
             // Initialize the scheme if not found

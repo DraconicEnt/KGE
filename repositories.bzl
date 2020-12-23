@@ -40,7 +40,7 @@ def repositories():
         name = "easydelegate",
         shallow_since = "1607857580 -0800",
         remote = "https://github.com/Ragora/EasyDelegate.git",
-        commit = "ce7a7450849bc93f0fce049a9b3abf4e6c08cc26"
+        commit = "68f60feb91025bc354ae67271f5e671800f782cd"
     )
 
     # Load rules_python

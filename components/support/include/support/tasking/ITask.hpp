@@ -49,6 +49,9 @@ namespace Kiaro
                     //! Parameter-less constructor.
                     ITask(void);
 
+                    //! Virtual destructor.
+                    virtual ~ITask();
+
                     //! Initializes the task, allocating any necessary resources.
                     virtual void initialize(void) = 0;
 
