@@ -23,6 +23,9 @@ load("//repositories:lzma.bzl", "lzma")
 load("//repositories:doxygen.bzl", "doxygen")
 load("//repositories:graphviz.bzl", "graphviz")
 load("//repositories:harfbuzz.bzl", "harfbuzz")
+load("//repositories:irrlicht.bzl", "irrlicht")
+load("//repositories:jpeg.bzl", "jpeg")
+load("//repositories:bzip2.bzl", "bzip2")
 
 def repositories():
     # Foreign CC
@@ -57,10 +60,13 @@ def repositories():
     zlib()
     png()
     tiff()
+    jpeg()
     enet()
     iconv()
+    bzip2()
     freetype()
     lzma()
+    irrlicht()
     graphviz()
     harfbuzz()
 

@@ -19,7 +19,9 @@ cc_library(
             "xz-5.2.5/src/liblzma/check/**/*.c",
             "xz-5.2.5/src/liblzma/common/filter_encoder.c",
             #"xz-5.2.5/src/liblzma/common/filter_decoder.c",
-            #"xz-5.2.5/src/liblzma/common/stream_encoder_mt.c"
+            "xz-5.2.5/src/liblzma/common/stream_encoder_mt.c",
+            "xz-5.2.5/src/liblzma/lzma/price_tablegen.c",
+            "xz-5.2.5/src/liblzma/lzma/fastpos_tablegen.c"
         ]
     ),
     hdrs = glob(
