@@ -10,7 +10,7 @@ cc_test(
         "//components/sound:sound",
         "//components/engine:engine",
 
-        "@sdl2//:library",
+        # "@sdl2//:library",
         "@osg//:osg",
         "@physfs//:physfs",
         "@bullet//:bullet",
