@@ -1,4 +1,4 @@
-load("//repositories:graphviz.bzl", "run_graphviz")
+load("@rules_third_party//applications:graphviz.bzl", "run_graphviz")
 
 cc_library(
     name = "engine",
