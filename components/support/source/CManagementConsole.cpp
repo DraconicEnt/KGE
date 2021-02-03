@@ -29,7 +29,7 @@ namespace Kiaro
         }
 
         //! A regular expression representing valid call signatures.
-        static const Support::Regex mCallSignature("[A-z]( +[A-z]+)*", Support::RegexConstants::Extended);
+        static const std::regex mCallSignature("[A-z]( +[A-z]+)*", std::regex_constants::extended);
 
         bool CManagementConsole::eval(const Support::String& input)
         {

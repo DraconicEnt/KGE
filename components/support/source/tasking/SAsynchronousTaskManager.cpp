@@ -68,11 +68,15 @@ namespace Kiaro
             {
                 // Kill any active workers
                 for (WorkerContext* worker : mActiveWorkers)
+                {
                     delete worker;
+                }
 
                 // Kill inactive workers
                 for (WorkerContext* worker : mIdleWorkers)
+                {
                     delete worker;
+                }
             }
 
             void SAsynchronousTaskManager::tick(void)
@@ -92,6 +96,7 @@ namespace Kiaro
 
                 // Do we have any tasks that have completed?
                 for (WorkerContext* currentWorker : mActiveWorkers)
+                {
                     if (currentWorker->mIsComplete)
                     {
                         // TODO (Robert MacGregor#9): Task completion notice?
@@ -100,6 +105,7 @@ namespace Kiaro
                         mActiveWorkers.erase(currentWorker);
                         mIdleWorkers.insert(mIdleWorkers.end(), currentWorker);
                     }
+                }
             }
 
             size_t SAsynchronousTaskManager::getIdleWorkerCount(void)
@@ -115,7 +121,9 @@ namespace Kiaro
             bool SAsynchronousTaskManager::addTask(ITask* task)
             {
                 if (!task)
+                {
                     throw std::runtime_error("SAsynchronousTaskManager: Cannot add a NULL task.");
+                }
 
                 // Config demands that we don't do anything asynchronously, so we delegate to the synchronous tasker
                 if (mPoolSize == 0)
@@ -131,15 +139,19 @@ namespace Kiaro
             bool SAsynchronousTaskManager::removeTask(ITask* task)
             {
                 if (!task)
+                {
                     throw std::runtime_error("SAsynchronousTaskManager: Cannot remove a NULL task.");
+                }
 
                 for (WorkerContext* currentWorker: mActiveWorkers)
+                {
                     if (currentWorker->mTask == task)
                     {
                         currentWorker->mIsComplete = true;
                         currentWorker->mTask = nullptr;
                         return true;
                     }
+                }
 
                 return false;
             }

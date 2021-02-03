@@ -66,7 +66,7 @@ namespace Kiaro
                     Core::SObjectRegistry::getInstance()->addObject(this);
 
                     // Also register the entity with our current scene graph
-                    Engine::Video::SRenderer::getInstance()->getCurrentScene()->add(this);
+                    //Engine::Video::SRenderer::getInstance()->getCurrentScene()->add(this);
                 }
             } // End Namespace Entities
         } // End Namespace Game

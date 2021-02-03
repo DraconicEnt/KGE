@@ -28,7 +28,9 @@ namespace Kiaro
         IIncomingClient::~IIncomingClient(void)
         {
             if (mIsConnected)
+            {
                 this->disconnect("Destroyed net handle.");
+            }
         }
 
         void IIncomingClient::send(const IMessage* packet, const bool reliable)

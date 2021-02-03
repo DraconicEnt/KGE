@@ -34,6 +34,8 @@ namespace Kiaro
                 public:
                     IGameMode(const Support::String& name = "Unnamed") : mName(name) { }
 
+                    virtual ~IGameMode() { }
+
                     virtual void setup(void)
                     {
                         CONSOLE_ERROR("Gamemode setup not implemented!");

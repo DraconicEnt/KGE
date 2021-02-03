@@ -2,9 +2,6 @@ cc_test(
     name = "tests",
     srcs = glob(
         include=["source/**/*.cpp"],
-
-        # FIXME: SGameState tests cause a crash
-        exclude=["source/**/game/*.cpp"]
     ),
     deps = [
         "//components/phys:phys",
@@ -13,7 +10,7 @@ cc_test(
         "//components/sound:sound",
         "//components/engine:engine",
 
-        "@sdl2//:library",
+        # "@sdl2//:library",
         "@osg//:osg",
         "@physfs//:physfs",
         "@bullet//:bullet",

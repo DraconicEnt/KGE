@@ -288,13 +288,13 @@ namespace Kiaro
                 CONSOLE_DEBUGF("  Stick Count: %u", stickCount);
                 CONSOLE_DEBUGF("  Button Count: %u", buttonCount);
 
-                for (Common::U32 buttonID = 0; buttonID < buttonCount; ++buttonID)
+                for (Common::S32 buttonID = 0; buttonID < buttonCount; ++buttonID)
                 {
                     CONSOLE_DEBUGF("  Button %u -----------", buttonID);
                     CONSOLE_DEBUGF("    Name: %s", al_get_joystick_button_name(joystick, buttonID));
                 }
 
-                for (Common::U32 stickID = 0; stickID < stickCount; ++stickID)
+                for (Common::S32 stickID = 0; stickID < stickCount; ++stickID)
                 {
                     CONSOLE_DEBUGF("  Stick %u -----------", stickID);
                     CONSOLE_DEBUGF("    Name: %s", al_get_joystick_stick_name(joystick, stickID));
@@ -394,6 +394,13 @@ namespace Kiaro
                             break;
                         }
 
+                        // Primarily used for Android and iOS
+                        case ALLEGRO_EVENT_DISPLAY_HALT_DRAWING:
+                        {
+                            al_acknowledge_drawing_halt(event.display.source);
+                            break;
+                        }
+
                         case ALLEGRO_EVENT_JOYSTICK_AXIS:
                         {
                             auto joystickIDSearch = mJoystickIDs.find(event.joystick.id);
@@ -415,7 +422,9 @@ namespace Kiaro
             auto search = mInputSchemes.find(name);
 
             if (search == mInputSchemes.end())
+            {
                 return false;
+            }
 
             mInputScheme = name;
             return true;
@@ -435,29 +444,41 @@ namespace Kiaro
                 case INPUT_KEYBOARD_INPUT:
                 {
                     if (deviceID != 0)
+                    {
                         throw std::runtime_error("When binding mouse and keybord devices, the device ID must be 0!");
+                    }
                     break;
                 }
+                case INPUT_GAMEPAD_INPUT:
+                    break;
+                case INPUT_NULL:
+                    break;
             }
 
             // Initialize the scheme if not found
             auto schemeSearch = mInputSchemes.find(scheme);
             if (schemeSearch == mInputSchemes.end())
+            {
                 mInputSchemes[scheme] =  Support::UnorderedMap<Common::U8, Support::UnorderedMap<Common::U32, Support::UnorderedMap<Common::U32, InputEventResponderDelegate*>>>();
+            }
 
             auto& schemeData = mInputSchemes[scheme];
 
             // Initialize the input device data if not found
             auto deviceTypeSearch = schemeData.find(deviceType);
             if (deviceTypeSearch == schemeData.end())
+            {
                 schemeData[deviceType] = Support::UnorderedMap<Common::U32, Support::UnorderedMap<Common::U32, InputEventResponderDelegate*>>();
+            }
 
             auto& inputDeviceTypeData = schemeData[deviceType];
 
             // Initialize the device ID data if not found
             auto deviceSearch = inputDeviceTypeData.find(deviceID);
             if (deviceSearch == inputDeviceTypeData.end())
+            {
                 inputDeviceTypeData[deviceID] = Support::UnorderedMap<Common::U32, InputEventResponderDelegate*>();
+            }
 
             auto& responderData = inputDeviceTypeData[deviceID];
 
@@ -469,22 +490,30 @@ namespace Kiaro
         {
             auto schemeSearch = mInputSchemes.find(mInputScheme);
             if (schemeSearch == mInputSchemes.end())
+            {
                 return;
+            }
 
             auto& schemeData = (*schemeSearch).second;
             auto deviceTypeSearch = schemeData.find(deviceType);
             if (deviceTypeSearch == schemeData.end())
+            {
                 return;
+            }
 
             auto& deviceTypeData = (*deviceTypeSearch).second;
             auto deviceIDSearch = deviceTypeData.find(deviceID);
             if (deviceIDSearch == deviceTypeData.end())
+            {
                 return;
+            }
 
             auto& deviceIDData = (*deviceIDSearch).second;
             auto inputCodeSearch = deviceIDData.find(inputCode);
             if (inputCodeSearch == deviceIDData.end())
+            {
                 return;
+            }
 
             (*inputCodeSearch).second->invoke(event);
         }

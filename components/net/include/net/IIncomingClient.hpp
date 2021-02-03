@@ -73,7 +73,7 @@ namespace Kiaro
                 IIncomingClient(ENetPeer* connecting, Net::IServer* server);
 
                 //! Standard destructor.
-                ~IIncomingClient(void);
+                virtual ~IIncomingClient(void);
 
                 /**
                  *  @brief Sends a message to the given IIncomingClient.

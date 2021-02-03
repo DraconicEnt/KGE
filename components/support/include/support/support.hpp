@@ -19,8 +19,6 @@
 #include <support/FEndian.hpp>
 #include <support/FTime.hpp>
 
-#include <support/Regex.hpp>
-
 #include <support/Math.hpp>
 #include <support/Tuple.hpp>
 #include <support/UnorderedMap.hpp>
