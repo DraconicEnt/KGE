@@ -202,7 +202,9 @@ namespace Kiaro
                 CONSOLE_INFO("Wrote new configuration file.");
             }
             else
+            {
                 CONSOLE_ERROR("Failed to acquire Allegro config handle!");
+            }
 
             // Make sure we clear the heap elements
             for (auto it = mStoredProperties.begin(); it != mStoredProperties.end(); ++it)

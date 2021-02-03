@@ -176,7 +176,9 @@ namespace Kiaro
 
                     // If the current phase is the last phase, then we're done processing this frame
                     completedFrame = mCurrentPhase == mThreadPhases.size() - 1;
-                    ++mCurrentPhase = mCurrentPhase >= mThreadPhases.size() ? 0 : mCurrentPhase;
+
+                    ++mCurrentPhase;
+                    mCurrentPhase = mCurrentPhase >= mThreadPhases.size() ? 0 : mCurrentPhase;
 
                     // Now we assign the threads for the next phase
                     Support::Vector<Support::Vector<IThreadedTask*>>& currentPhase = mThreadPhases[mCurrentPhase];
@@ -211,7 +213,9 @@ namespace Kiaro
                             context->mDebugMutex.unlock();
 
                             ++currentThreadIndex %= mInactiveThreads.size();
-                            ++maxThreadIndex = maxThreadIndex >= mInactiveThreads.size() ? mInactiveThreads.size() - 1 : maxThreadIndex;
+
+                            ++maxThreadIndex;
+                            maxThreadIndex = maxThreadIndex >= mInactiveThreads.size() ? mInactiveThreads.size() - 1 : maxThreadIndex;
                         }
                     }
 

@@ -44,7 +44,9 @@ namespace Kiaro
                     currentLOD.push_back(currentYAxis);
 
                     for (Common::U32 iterationY = 0; iterationY < currentLODDivision; iterationY++)
+                    {
                         currentYAxis.push_back(CMapDivisionSquare());
+                    }
                 }
 
                 // Push the last element to the vector again to prevent out of bounds access under certain improbable circumstances

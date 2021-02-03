@@ -88,7 +88,9 @@ namespace Kiaro
         Common::F32 SProfiler::getAverage(const Support::String& name)
         {
             if(mSampleNames.find(name) == mSampleNames.end())
+            {
                 throw std::out_of_range("No such sample!");
+            }
 
             Common::F32 sampleSum = 0;
             for (size_t iteration = 0; iteration < mSampleCount; iteration++)
