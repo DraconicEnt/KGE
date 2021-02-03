@@ -1,3 +1,10 @@
+"""
+    This software is licensed under the Draconic Free License version 1. Please refer
+    to LICENSE.txt for more information.
+
+    Copyright (c) 2021 Robert MacGregor
+"""
+
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 load("//:dependencies.bzl", "generate_dependencies")
