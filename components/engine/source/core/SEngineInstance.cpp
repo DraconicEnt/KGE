@@ -9,7 +9,6 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-// FIXME: Caused include issues with Python.h
 #include <chrono>
 #include <thread>
 

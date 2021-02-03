@@ -21,17 +21,25 @@ namespace Kiaro
             void SSynchronousTaskManager::tick(const Common::F32 deltaTime)
             {
                 for (auto it = mTaskList.begin(); it != mTaskList.end(); it++)
+                {
                     if ((*it)->tick(deltaTime))
+                    {
                         mTaskList.erase(it);
+                    }
+                }
             }
 
             bool SSynchronousTaskManager::addTask(ITask* task)
             {
                 if (!task)
+                {
                     throw std::runtime_error("SSynchronousTaskManager: Cannot add a NULL task.");
+                }
 
                 if (mTaskList.count(task) != 0)
+                {
                     return false;
+                }
 
                 mTaskList.insert(mTaskList.end(), task);
                 return true;
@@ -40,7 +48,9 @@ namespace Kiaro
             bool SSynchronousTaskManager::removeTask(ITask* task)
             {
                 if (!task)
+                {
                     throw std::runtime_error("SSynchronousTaskManager: Cannot remove a NULL task.");
+                }
 
                 return mTaskList.erase(task) != 0;
             }

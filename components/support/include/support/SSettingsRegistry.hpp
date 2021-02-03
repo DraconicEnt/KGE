@@ -12,6 +12,8 @@
 #ifndef _INCLUDE_CORE_SETTINGSREGISTRY_HPP_
 #define _INCLUDE_CORE_SETTINGSREGISTRY_HPP_
 
+#include <regex>
+
 #include <support/common.hpp>
 
 #include <support/String.hpp>

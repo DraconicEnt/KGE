@@ -83,7 +83,9 @@ namespace Kiaro
         {
             // TODO: Report Error
             if (mInternalPeer || mInternalHost)
+            {
                 return;
+            }
 
             // FIXME (Robert MacGregor#9): IP Octets >= 256
             // FIXME (Robert MacGregor#9): DNS Names (host.host.net)
@@ -147,7 +149,9 @@ namespace Kiaro
         void IOutgoingClient::update(void)
         {
             if (!mConnected && !mInternalPeer)
+            {
                 return;
+            }
 
             ENetEvent event;
 
