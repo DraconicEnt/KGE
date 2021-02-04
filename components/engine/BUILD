@@ -1,3 +1,11 @@
+"""
+    This software is licensed under the Draconic Free License version 1. Please refer
+    to LICENSE.txt for more information.
+
+    Copyright (c) 2021 Robert MacGregor
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_third_party//applications:graphviz.bzl", "run_graphviz")
 
 cc_library(
@@ -43,6 +51,7 @@ cc_library(
 
         "//components/phys:phys",
         "//components/net:net",
+        "//components/script:script",
         "//components/sound:sound",
         "//components/support:support"
     ],

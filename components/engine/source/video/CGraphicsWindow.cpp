@@ -36,7 +36,7 @@ namespace Kiaro
 
             bool CGraphicsWindow::initialize(void)
             {
-                CONSOLE_INFOF("Using %ux%u resolution.", mWindowParameters.mResolution.x(), mWindowParameters.mResolution.y());
+                CONSOLE_INFOF("Using %ux%u resolution.", mWindowParameters.mResolution.x, mWindowParameters.mResolution.y);
 
                 al_set_new_window_title(mWindowParameters.mTitle.data());
 
@@ -52,7 +52,7 @@ namespace Kiaro
                 }
 
                 al_set_new_display_flags(displayFlags);
-                mDisplay = al_create_display(mWindowParameters.mResolution.x(), mWindowParameters.mResolution.y());
+                mDisplay = al_create_display(mWindowParameters.mResolution.x, mWindowParameters.mResolution.y);
 
                 CONSOLE_ASSERT(mDisplay, "Failed to initialize Allegro display.");
 

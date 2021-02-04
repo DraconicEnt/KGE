@@ -155,7 +155,7 @@ namespace Kiaro
                 al_add_config_comment(config, "Video", "Resolution controls the window resolution of the engine");
                 Support::Dimension2DU resolution = this->getValue<Support::Dimension2DU>("Video::Resolution");
 
-                sprintf(tempBuffer, "%ux%u", resolution.x(), resolution.y());
+                sprintf(tempBuffer, "%ux%u", resolution.x, resolution.y);
                 al_set_config_value(config, "Video", "Resolution", tempBuffer);
                 al_add_config_comment(config, "Video", "Fullscreen controls whether or not the engine will run full screen");
                 al_set_config_value(config, "Video", "Fullscreen", this->getValue<bool>("Video::Fullscreen") ? "1" : "0");

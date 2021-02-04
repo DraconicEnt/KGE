@@ -114,6 +114,18 @@ sh_binary(
     ]
 )
 
+sh_binary(
+    name = "setup_autocomplete",
+    srcs = [
+        "setupAutocomplete.sh"
+    ],
+    data = [
+        "@enet//:enet",
+        "@osg//:osg",
+        "@easydelegate//:easydelegate"
+    ]
+)
+
 test_suite(
     name = "test_all",
     tests = [

@@ -20,8 +20,8 @@ namespace Kiaro
             COSGWindow::COSGWindow(CGraphicsWindow* window) : mWindow(window)
             {
                 _traits = new osg::GraphicsContext::Traits;
-                _traits->width = window->mWindowParameters.mResolution.x();
-                _traits->height = window->mWindowParameters.mResolution.y();
+                _traits->width = window->mWindowParameters.mResolution.x;
+                _traits->height = window->mWindowParameters.mResolution.y;
                 _traits->x = 0;
                 _traits->y = 0;
                 _traits->vsync = false;

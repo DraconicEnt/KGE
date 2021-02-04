@@ -38,6 +38,8 @@
 #include <support/SSignalHandler.hpp>
 #include <support/tasking/SThreadSystem.hpp>
 
+#include <script/CScriptManager.hpp>
+
 //#include <execinfo.h>
 
 namespace Kiaro
@@ -144,6 +146,10 @@ namespace Kiaro
 
                     CONSOLE_INFOF("Mounted game directory '%s' successfully.", directory.c_str());
                 }
+
+                // Once all game directories are mounted, have a script manager run initialization
+                Script::CScriptManager* scriptManager = new Script::CScriptManager();
+                scriptManager->loadMainScript();
 
                 // TODO (Robert MacGregor#9): Return error codes for the netcode
                 // Init the taskers

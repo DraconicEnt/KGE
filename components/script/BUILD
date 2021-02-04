@@ -8,30 +8,29 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "sound",
+    name = "script",
     srcs = glob(
-        include = [
-            "include/**/*.h",
+        include=[
             "include/**/*.hpp",
 
-            "source/**/*.cpp",
-
-            # Set backend
-            "backends/null/**/*.h",
-            "backends/null/**/*.hpp",
-            "backends/null/**/*.cpp",
-        ]
+            # For now we force lua bindings
+            "bindings/lua/**/*.cpp",
+            "bindings/lua/**/*.hpp"
+        ],
     ),
+
     includes = [
         "include",
-
-        # Set backend
-        "backends/null/include"
+        "bindings/lua/include",
     ],
 
     deps = [
+        "//components/support:support",
+
         "@physfs//:physfs",
-        "//components/support:support"
+        "@lua//:lua",
+        "@easylua//:easylua"
     ],
+
     visibility = ["//visibility:public"]
 )

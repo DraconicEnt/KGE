@@ -79,7 +79,7 @@ namespace Kiaro
                     COSGWindow* osgWindow = new COSGWindow(mPrimaryWindow);
                     osg::ref_ptr<osg::Camera> camera = mViewer->getCamera();
                     camera->setGraphicsContext(osgWindow);
-                    camera->setViewport(0, 0, resolution.x(), resolution.y());
+                    camera->setViewport(0, 0, resolution.x, resolution.y);
 
                     mViewer->realize();
                 }

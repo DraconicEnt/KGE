@@ -43,7 +43,7 @@ namespace Kiaro
                  *  scene graph.
                  *  @param node A pointer to the node to add to this scene graph.
                  */
-                void add(osg::Node* node);
+              //  void add(osg::Node* node);
 
                 void add(Game::Entities::IEntity* entity);
 
@@ -56,7 +56,7 @@ namespace Kiaro
 
             private:
                 //! A pointer to the root scene node.
-                osg::ref_ptr<osg::Group> mGroup;
+               //  osg::ref_ptr<osg::Group> mGroup;
             };
         }
     } // End NameSpace Engine

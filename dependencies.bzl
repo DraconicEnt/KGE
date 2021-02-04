@@ -25,7 +25,9 @@ load("@rules_third_party//libraries:harfbuzz.bzl", "harfbuzz")
 load("@rules_third_party//libraries:irrlicht.bzl", "irrlicht")
 load("@rules_third_party//libraries:jpeg.bzl", "jpeg")
 load("@rules_third_party//libraries:bzip2.bzl", "bzip2")
-
+load("@rules_third_party//libraries:python3.bzl", "python3")
+load("@rules_third_party//libraries:lua.bzl", "lua")
+load("@easylua//:dependencies.bzl", easylua_dependencies="dependencies")
 
 def dependencies():
     rules_foreign_cc_dependencies()
@@ -58,7 +60,10 @@ def dependencies():
 
     bullet()
     osg()
+    python3()
     physfs()
+    lua()
+    easylua_dependencies()
 
 def generate_dependencies(target, dependencies, name):
     for index, dependency in enumerate(dependencies):
