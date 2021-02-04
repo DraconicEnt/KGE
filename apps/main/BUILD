@@ -16,7 +16,6 @@ cc_binary(
         "//components/engine:engine",
 
         "@allegro//:allegro",
-        "@osg//:osg",
         "@physfs//:physfs",
         "@bullet//:bullet",
         "@enet//:enet"

@@ -9,12 +9,15 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
+#include <allegro5/allegro_x.h>
+#include <allegro5/allegro_opengl.h>
+
 #include <video/CGraphicsWindow.hpp>
+#include <core/SEngineInstance.hpp>
 
 #include <support/Console.hpp>
 #include <core/SEngineInstance.hpp>
 #include <support/SSettingsRegistry.hpp>
-#include <allegro5/allegro_opengl.h>
 
 namespace Kiaro
 {
@@ -59,6 +62,25 @@ namespace Kiaro
                 mWindowEventQueue = al_create_event_queue();
                 CONSOLE_ASSERT(mWindowEventQueue, "Failed to initialize window event queue.");
                 al_register_event_source(mWindowEventQueue, al_get_display_event_source(mDisplay));
+
+                // Setup Irrlicht Renderer
+                irr::video::E_DRIVER_TYPE videoDriver = irr::video::EDT_OPENGL;
+                irr::SIrrlichtCreationParameters creationParameters;
+
+                XID windowID = al_get_x_window_id(mDisplay);
+                creationParameters.WindowId = reinterpret_cast<void*>(windowID);
+                creationParameters.Bits = 32;
+                creationParameters.IgnoreInput = true; // We will use Allegro for this
+                creationParameters.DriverType = videoDriver;
+                creationParameters.WindowSize.Width = mWindowParameters.mResolution.x;
+                creationParameters.WindowSize.Height = mWindowParameters.mResolution.y;
+
+                mIrrlichtDevice = irr::createDeviceEx(creationParameters);
+                mSceneManager = mIrrlichtDevice->getSceneManager();
+                mVideo = mIrrlichtDevice->getVideoDriver();
+
+                Core::SEngineInstance* engine = Core::SEngineInstance::getInstance();
+                engine->addWindow(this);
                 return true;
             }
 
@@ -75,6 +97,15 @@ namespace Kiaro
 
                 al_set_current_opengl_context(mDisplay);
                 al_flip_display();
+            }
+
+            void CGraphicsWindow::renderFrame(void)
+            {
+                mVideo->beginScene(true, true, irr::video::SColor(255, 100, 101, 140));
+
+                mSceneManager->drawAll();
+
+                mVideo->endScene();
             }
 
             void CGraphicsWindow::setTitle(const Support::String& title)

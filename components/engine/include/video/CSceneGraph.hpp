@@ -13,9 +13,6 @@
 #define _INCLUDE_VIDEO_CSCENEGRAPH_HPP_
 
 #include <support/common.hpp>
-#include <video/SRenderer.hpp>
-
-#include <osgViewer/Viewer>
 
 #include <game/entities/IEntity.hpp>
 
@@ -33,7 +30,7 @@ namespace Kiaro
             {
             public:
                 //! Parameterless constructor.
-                CSceneGraph(Engine::Video::SRenderer* renderer);
+                CSceneGraph();
 
                 //! Standard destructor.
                 ~CSceneGraph(void);

@@ -18,8 +18,11 @@ extern "C"
 
 namespace Kiaro
 {
-    namespace Script
+    namespace Engine
     {
-        bool lua_initFileSystem(lua_State* lua);
-    } // End Namespace Script
+        namespace Script
+        {
+            bool lua_initFileSystem(lua_State* lua);
+        } // End Namespace Script
+    } // End Namespace Engine
 } // End NameSpace Kiaro

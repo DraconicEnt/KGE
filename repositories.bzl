@@ -7,7 +7,7 @@ def repositories():
         git_repository,
         name = "rules_third_party",
         remote = "https://github.com/DraconicEnt/rules_third_party.git",
-        commit = "ad57b1e73c8990b63cea0abbac30bbbf4fb74e84"
+        commit = "ac695d3d2e09f4a2cd1d6e4ed625339255499ba0"
     )
 
     # Foreign CC

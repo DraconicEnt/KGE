@@ -22,19 +22,22 @@ extern "C"{
 
 namespace Kiaro
 {
-    namespace Script
+    namespace Engine
     {
-        class CScriptManager : public IScriptManager
+        namespace Script
         {
-            private:
-                //! The lua virtual machine instance.
-                lua_State* luaState;
+            class CScriptManager : public IScriptManager
+            {
+                private:
+                    //! The lua virtual machine instance.
+                    lua_State* luaState;
 
-            public:
-                CScriptManager(void);
+                public:
+                    CScriptManager(void);
 
-                virtual bool loadMainScript(void);
-        };
-    } // End Namespace Script
+                    virtual bool loadMainScript(void);
+            };
+        } // End Namespace Script
+    } // End Namespace Engine
 } // End NameSpace Kiaro
 #endif // _INCLUDE_SCRIPT_CSCRIPTMANAGER_HPP_

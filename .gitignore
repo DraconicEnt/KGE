@@ -20,3 +20,4 @@ bin/
 apps/tests/config.cfg
 apps/tests/existingFile.dat
 apps/tests/writeNew.dat
+*.gch

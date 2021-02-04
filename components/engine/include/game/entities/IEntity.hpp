@@ -15,8 +15,6 @@
 #include <set>
 #include <stdexcept>
 
-#include <ces/IComponent.hpp>
-
 #include <support/common.hpp>
 
 #include <game/IEngineObject.hpp>

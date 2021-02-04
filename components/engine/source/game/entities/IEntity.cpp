@@ -16,7 +16,6 @@
 #include <game/SGameWorld.hpp>
 
 #include <video/CSceneGraph.hpp>
-#include <video/SRenderer.hpp>
 
 namespace Kiaro
 {

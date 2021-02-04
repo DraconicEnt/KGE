@@ -20,8 +20,6 @@
 
 #include <filesystem/CFileReader.hpp>
 
-#include <video/SRenderer.hpp>
-
 namespace Kiaro
 {
     namespace Engine

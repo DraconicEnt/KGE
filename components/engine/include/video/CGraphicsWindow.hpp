@@ -12,6 +12,8 @@
 #ifndef _INCLUDE_VIDEO_CGRAPHICSWINDOW_HPP_
 #define _INCLUDE_VIDEO_CGRAPHICSWINDOW_HPP_
 
+#include <irrlicht.h>
+
 #include <allegro5/allegro.h>
 #include <support/types.hpp>
 
@@ -41,6 +43,12 @@ namespace Kiaro
                     };
 
                 private:
+                    irr::IrrlichtDevice* mIrrlichtDevice;
+
+                    irr::video::IVideoDriver* mVideo;
+
+                    irr::scene::ISceneManager* mSceneManager;
+
                     //! The allegro display in use with this window.
                     ALLEGRO_DISPLAY* mDisplay;
 
@@ -60,6 +68,8 @@ namespace Kiaro
 
                     //! Initializes the CGraphicsWindow, displaying it.
                     bool initialize(void);
+
+                    void renderFrame(void);
 
                     //! Sets the OpenGL context associated with this display as the active context.
                     void setActiveOpenGLContext(void);

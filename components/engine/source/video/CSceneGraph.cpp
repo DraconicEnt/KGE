@@ -20,7 +20,7 @@ namespace Kiaro
     {
         namespace Video
         {
-            CSceneGraph::CSceneGraph(Engine::Video::SRenderer* renderer)
+            CSceneGraph::CSceneGraph()
             {
                 //mGroup = new osg::Group();
             }

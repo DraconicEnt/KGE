@@ -32,9 +32,18 @@ cc_library(
            ]
        )
     }),
+
     includes = [
-        "include"
+        "include",
+        "include/script/lua"
     ],
+
+    linkopts = [
+        "-lGL",
+        "-lX11",
+        "-lXxf86vm"
+    ],
+
     copts = [
         "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
     ],
@@ -48,10 +57,11 @@ cc_library(
     deps = [
         "@physfs//:physfs",
         "@allegro//:allegro",
+        "@easylua//:easylua",
+        "@irrlicht//:irrlicht",
 
         "//components/phys:phys",
         "//components/net:net",
-        "//components/script:script",
         "//components/sound:sound",
         "//components/support:support"
     ],

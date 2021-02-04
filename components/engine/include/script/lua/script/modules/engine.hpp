@@ -9,13 +9,20 @@
  *  @copyright (c) 2021 Draconic Entity
  */
 
-#include <physfs.h>
-#include <python3.9/Python.h>
+extern "C"
+{
+    #include <lua5.2/lualib.h>
+    #include <lua5.2/lauxlib.h>
+    #include <lua5.2/lua.h>
+}
 
 namespace Kiaro
 {
-    namespace Script
+    namespace Engine
     {
-
-    } // End Namespace Script
+        namespace Script
+        {
+            bool lua_initEngine(lua_State* lua);
+        } // End Namespace Script
+    } // End Namespace Engine
 } // End NameSpace Kiaro

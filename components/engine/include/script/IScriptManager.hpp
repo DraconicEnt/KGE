@@ -14,13 +14,16 @@
 
 namespace Kiaro
 {
-    namespace Script
+    namespace Engine
     {
-        class IScriptManager
+        namespace Script
         {
-            public:
-                virtual bool loadMainScript(void) = 0;
-        };
-    } // End Namespace Script
+            class IScriptManager
+            {
+                public:
+                    virtual bool loadMainScript(void) = 0;
+            };
+        } // End Namespace Script
+    } // End Namespace Engine
 } // End NameSpace Kiaro
 #endif // _INCLUDE_SCRIPT_ISCRIPTMANAGER_HPP_

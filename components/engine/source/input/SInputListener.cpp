@@ -13,7 +13,6 @@
 
 #include <input/SInputListener.hpp>
 
-#include <video/SRenderer.hpp>
 #include <support/Console.hpp>
 
 #include <support/SProfiler.hpp>
@@ -304,6 +303,7 @@ namespace Kiaro
 
         void SInputListener::setMouseCaptureEnabled(const bool enabled)
         {
+            /*
             Engine::Video::SRenderer* renderer = Engine::Video::SRenderer::getInstance();
 
             if (renderer->mHasDisplay)
@@ -314,6 +314,7 @@ namespace Kiaro
                // if (!result)
                //     CONSOLE_ERROR("Failed to change mouse capture status.");
             }
+            */
         }
 
         void SInputListener::update(void)

@@ -19,7 +19,7 @@ cc_library(
             "platform/common/**/*.cpp"
         ],
         exclude =[
-            "source/SSignalHandler.cpp"
+
         ]) + select({
             "@platforms//os:windows": glob(include=["platform/windows/**/*.cpp"]),
             "//conditions:default": glob(include=["platform/unix/**/*.cpp"])

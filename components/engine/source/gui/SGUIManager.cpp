@@ -13,7 +13,6 @@
 #include <gui/CGUIContext.hpp>
 
 #include <support/Console.hpp>
-#include <video/SRenderer.hpp>
 #include <filesystem/SResourceProvider.hpp>
 #include <support/SSettingsRegistry.hpp>
 
