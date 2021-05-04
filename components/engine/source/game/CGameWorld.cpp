@@ -1,5 +1,5 @@
 /**
- *  @file SGameWorld.cpp
+ *  @file CGameWorld.cpp
  *  @brief Source code associated with the Kiaro::EngineInstance singleton class.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -10,11 +10,10 @@
  */
 
 #include <support/Console.hpp>
-#include <game/entities/types.hpp>
-#include <game/entities/IEntity.hpp>
+#include <game/IEntity.hpp>
 
 #include <game/IGameMode.hpp>
-#include <game/SGameWorld.hpp>
+#include <game/CGameWorld.hpp>
 #include <core/SObjectRegistry.hpp>
 
 namespace Kiaro
@@ -23,29 +22,24 @@ namespace Kiaro
     {
         namespace Game
         {
-            void SGameWorld::update(const Common::F32 deltaTimeSeconds)
+            void CGameWorld::update(const Common::F32 deltaTimeSeconds)
             {
                 // FIXME: Implement bitmask checking for updated entities
-                for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                for (Support::UnorderedSet<Game::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
                 {
-                    Game::Entities::IEntity* entity = *it;
+                    Game::IEntity* entity = *it;
 
-                    if (entity && entity->mFlags & Entities::FLAG_UPDATING)
+                    if (entity && entity->mFlags & Game::FLAG_UPDATING)
                     {
                         entity->update(deltaTimeSeconds);
                     }
                 }
             }
 
-            Entities::CSky* SGameWorld::getSky(void)
-            {
-                return mSky;
-            }
-
-            void SGameWorld::clear(void)
+            void CGameWorld::clear(void)
             {
                 // Destroy any existing entities and reset the ID tracker
-                for (Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                for (Support::UnorderedSet<Game::IEntity*>::iterator it = mEntities.begin(); it != mEntities.end(); it++)
                 {
                     delete *it;
                 }
@@ -53,11 +47,11 @@ namespace Kiaro
                 mEntities.clear();
             }
 
-            void SGameWorld::addEntity(Entities::IEntity* entity)
+            void CGameWorld::addEntity(IEntity* entity)
             {
                 assert(entity);
 
-                Support::UnorderedSet<Game::Entities::IEntity*>::iterator it = mEntities.find(entity);
+                Support::UnorderedSet<Game::IEntity*>::iterator it = mEntities.find(entity);
                 if (it == mEntities.end())
                 {
                     mEntities.insert(mEntities.end(), entity);
@@ -66,7 +60,7 @@ namespace Kiaro
                 Core::SObjectRegistry::getInstance()->addObject(entity);
             }
 
-            void SGameWorld::removeEntity(Entities::IEntity* entity)
+            void CGameWorld::removeEntity(IEntity* entity)
             {
                 assert(entity);
 
@@ -74,41 +68,41 @@ namespace Kiaro
                 Core::SObjectRegistry::getInstance()->removeObject(entity);
             }
 
-            Entities::IEntity* SGameWorld::removeEntity(const Common::U32 id)
+            IEntity* CGameWorld::removeEntity(const Common::U32 id)
             {
-                Entities::IEntity* erased = reinterpret_cast<Entities::IEntity*>(Core::SObjectRegistry::getInstance()->getObject(id));
+                IEntity* erased = reinterpret_cast<IEntity*>(Core::SObjectRegistry::getInstance()->getObject(id));
                 mEntities.erase(erased);
 
                 return erased;
             }
 
-            Entities::IEntity* SGameWorld::getEntity(const Common::U32 id) const
+            IEntity* CGameWorld::getEntity(const Common::U32 id) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getInstance()->getObject(id));
+                IEntity* result = dynamic_cast<IEntity*>(Core::SObjectRegistry::getInstance()->getObject(id));
                 return result;
             }
 
-            Entities::IEntity* SGameWorld::getEntity(const Support::String& name) const
+            IEntity* CGameWorld::getEntity(const Support::String& name) const
             {
                 // FIXME: Type Check without using dynamic_cast
-                Entities::IEntity* result = dynamic_cast<Entities::IEntity*>(Core::SObjectRegistry::getInstance()->getObject(name));
+                IEntity* result = dynamic_cast<IEntity*>(Core::SObjectRegistry::getInstance()->getObject(name));
                 return result;
             }
 
-            void SGameWorld::packEverything(Support::CBitStream& out) const
+            void CGameWorld::packEverything(Support::CBitStream& out) const
             {
-                for (Support::UnorderedSet<Game::Entities::IEntity*>::const_iterator it = mEntities.begin(); it != mEntities.end(); it++)
+                for (Support::UnorderedSet<Game::IEntity*>::const_iterator it = mEntities.begin(); it != mEntities.end(); it++)
                 {
                     (*it)->packEverything(out);
                 }
             }
 
-            void SGameWorld::unpack(Support::CBitStream& in)
+            void CGameWorld::unpack(Support::CBitStream& in)
             {
             }
 
-            void SGameWorld::setGameMode(IGameMode* game)
+            void CGameWorld::setGameMode(IGameMode* game)
             {
                 if (mGameMode)
                 {
@@ -123,28 +117,28 @@ namespace Kiaro
                 }
             }
 
-            IGameMode* SGameWorld::getGameMode(void)
+            IGameMode* CGameWorld::getGameMode(void)
             {
                 return mGameMode;
             }
 
-            SGameWorld::SGameWorld(void) : mSky(nullptr), mGameMode(nullptr)
+            CGameWorld::CGameWorld(void) : mGameMode(nullptr)
             {
             }
 
-            SGameWorld::~SGameWorld(void) { }
+            CGameWorld::~CGameWorld(void) { }
 
-            SGameWorld::iterator SGameWorld::begin(void)
+            CGameWorld::iterator CGameWorld::begin(void)
             {
                 return mEntities.begin();
             }
 
-            SGameWorld::const_iterator SGameWorld::end(void)
+            CGameWorld::const_iterator CGameWorld::end(void)
             {
                 return mEntities.end();
             }
 
-            size_t SGameWorld::getRequiredMemory(void) const
+            size_t CGameWorld::getRequiredMemory(void) const
             {
                 return 0;
             }

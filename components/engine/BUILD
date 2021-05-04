@@ -15,7 +15,6 @@ cc_library(
            include = [
                "include/**/*.h",
                "include/**/*.hpp",
-               "platform/windows/**/*.cpp",
 
                "source/**/*.cpp"
            ]
@@ -26,7 +25,6 @@ cc_library(
            include = [
                "include/**/*.h",
                "include/**/*.hpp",
-               "platform/unix/**/*.cpp",
 
                "source/**/*.cpp"
            ]

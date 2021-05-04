@@ -14,10 +14,9 @@
 
 #include <support/ISingleton.hpp>
 
+#include <game/IEntity.hpp>
 #include <game/SGameServer.hpp>
 #include <core/COutgoingClient.hpp>
-#include <game/entities/datablocks/IDataBlock.hpp>
-#include <game/entities/entities.hpp>
 
 namespace Kiaro
 {
@@ -26,8 +25,8 @@ namespace Kiaro
         namespace Core
         {
             /**
-             *  @brief A singleton class representing the central type registrations for messages and datablocks.
-             *  @details This is used heavily by the netcode to do message & datablock lookups to find the appropriate constructor methods. These constructor
+             *  @brief A singleton class representing the central type registrations for messages.
+             *  @details This is used heavily by the netcode to do message lookups to find the appropriate constructor methods. These constructor
              *  methods would then be on their own devices to make sense of the current state of the incoming bitstream.
              */
             class SCoreRegistry : public Support::ISingleton<SCoreRegistry>
@@ -35,18 +34,14 @@ namespace Kiaro
                 public:
                     //! A typedef representing a pointer to a message constructor.
                     typedef EasyDelegate::DelegateSet<Net::IMessage*, Support::CBitStream&>::StaticDelegateFuncPtr MessageConstructorPointer;
-                    //! A typedef representing a pointer to a network datablock constructor.
-                    typedef EasyDelegate::DelegateSet<Game::Entities::DataBlocks::IDataBlock*, Support::CBitStream&>::StaticDelegateFuncPtr NetworkDataBlockConstructorPointer;
                     //! A typedef representing a pointer to a entity constructor.
-                    typedef EasyDelegate::DelegateSet<Game::Entities::IEntity*, Support::CBitStream&>::StaticDelegateFuncPtr NetworkEntityConstructorPointer;
+                    typedef EasyDelegate::DelegateSet<Game::IEntity*, Support::CBitStream&>::StaticDelegateFuncPtr NetworkEntityConstructorPointer;
                     //! A typedef representing a pointer to a delegate set of message handlers.
                     typedef EasyDelegate::DelegateSet<void, Net::IIncomingClient*, Support::CBitStream&> MessageHandlerSet;
 
                 private:
                     //! The current counter value for message types.
                     Common::U32 mMessageTypeCounter;
-                    //! The current counter value for datablock types.
-                    Common::U32 mDataBlockTypeCounter;
                     //! The current counter value for network entity types.
                     Common::U32 mEntityTypeCounter;
 
@@ -58,8 +53,6 @@ namespace Kiaro
                     //! The general message map mapping message type ID's to their constructors.
                     Support::UnorderedMap<Common::U32, MessageConstructorPointer> mMessageMap;
                     //! A mapping of datablock ID's to their constructors.
-                    Support::UnorderedMap<Common::U32, NetworkDataBlockConstructorPointer> mDatablockTypeMap;
-                    //! A mapping of datablock ID's to their constructors.
                     Support::UnorderedMap<Common::U32, NetworkEntityConstructorPointer> mEntityTypeMap;
 
                     /**
@@ -68,17 +61,12 @@ namespace Kiaro
                     void registerMessages(void);
 
                     /**
-                     *  @brief Helper method to register all the known datablock types to the registry.
-                     */
-                    void registerDatablockTypes(void);
-
-                    /**
                      *  @brief Helper method to register all of the known entity types to the registry.
                      */
                     void registerEntityTypes(void);
 
                 public:
-                    Game::Entities::IEntity* constructEntity(const Common::U32 id, Support::CBitStream& payload);
+                    Game::IEntity* constructEntity(const Common::U32 id, Support::CBitStream& payload);
 
                     /**
                      *  @brief Registers a networked message type to be instantiated indirectly across a network.
@@ -106,32 +94,16 @@ namespace Kiaro
                     }
 
                     /**
-                     *  @brief Registers a networked datablock type to be instantiated indirectly across a network.
-                     */
-                    template <typename datablockClass>
-                    void registerDataBlockType(void)
-                    {
-                        NetworkDataBlockConstructorPointer datablockConstructor = Game::Entities::DataBlocks::IDataBlock::constructNetworkDataBlock<datablockClass>;
-
-                        assert(Game::Entities::DataBlocks::IDataBlock::SharedStatics<datablockClass>::sDataBlockID == -1);
-
-                        Game::Entities::DataBlocks::IDataBlock::SharedStatics<datablockClass>::sDataBlockID = mDataBlockTypeCounter;
-                        mDatablockTypeMap[mDataBlockTypeCounter] = datablockConstructor;
-
-                        ++mDataBlockTypeCounter;
-                    }
-
-                    /**
                      *  @brief Registers a networked entity type to be instantiated indirectly across a network.
                      */
                     template <typename entityClass>
                     void registerEntityType(void)
                     {
-                        NetworkEntityConstructorPointer entityConstructor = Game::Entities::IEntity::constructNetworkEntity<entityClass>;
+                        NetworkEntityConstructorPointer entityConstructor = Game::IEntity::constructNetworkEntity<entityClass>;
 
-                        assert(Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID == -1);
+                        // assert(Game::IEntity::SharedStatics<entityClass>::sEntityTypeID == -1);
 
-                        Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID  = mEntityTypeCounter;
+                        Game::IEntity::SharedStatics<entityClass>::sEntityTypeID  = mEntityTypeCounter;
                         mEntityTypeMap[mEntityTypeCounter] = entityConstructor;
 
                         ++mEntityTypeCounter;
@@ -144,8 +116,8 @@ namespace Kiaro
                     template <typename entityClass>
                     Common::S32 getEntityTypeID(void)
                     {
-                        assert(Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID != -1);
-                        return Game::Entities::IEntity::SharedStatics<entityClass>::sEntityTypeID;
+                        assert(Game::IEntity::SharedStatics<entityClass>::sEntityTypeID != -1);
+                        return Game::IEntity::SharedStatics<entityClass>::sEntityTypeID;
                     }
 
                     /**

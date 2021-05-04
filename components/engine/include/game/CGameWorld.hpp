@@ -1,5 +1,5 @@
 /**
- *  @file SGameWorld.hpp
+ *  @file CGameWorld.hpp
  *  @brief The common include file for the Kiaro application defining things such as error values.
  *
  *  This software is licensed under the Draconic Free License version 1. Please refer
@@ -9,8 +9,8 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#ifndef _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
-#define _INCLUDE_KIARO_ENGINE_SGAMEWORLD_HPP_
+#ifndef _INCLUDE_KIARO_ENGINE_CGameWorld_HPP_
+#define _INCLUDE_KIARO_ENGINE_CGameWorld_HPP_
 
 #include <support/ISingleton.hpp>
 #include <support/CBitStream.hpp>
@@ -27,60 +27,53 @@ namespace Kiaro
         {
             class IGameMode;
 
-            namespace Entities
-            {
-                class IEntity;
-                class CSky;
-            } // End NameSpace Entities
+            class IEntity;
 
             /**
-             *  @brief The SGameWorld is the registry at which all entities will be tracked. This is utilized on both the client and server
+             *  @brief The CGameWorld is the registry at which all entities will be tracked. This is utilized on both the client and server
              *  ends to track clientside and serverside entities accordingly.
              */
-            class SGameWorld : public Support::ISingleton<SGameWorld>, public Support::ISerializable
+            class CGameWorld
             {
-                friend class Entities::IEntity;
+                friend class IEntity;
 
                 // Private Members
                 private:
                     //! A set of all entities registered to the game world for updates.
-                    Support::UnorderedSet<Entities::IEntity*> mEntities;
-
-                    //! Pointer to the sky entity.
-                    Entities::CSky* mSky;
+                    Support::UnorderedSet<IEntity*> mEntities;
 
                     //! Pointer to the gamemode programming that is currently running.
                     IGameMode* mGameMode;
 
                 // Public Members
                 public:
-                    //! An iterator used to iterate over all entities in the SGameWorld.
-                    typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
-                    //! A const iterator used to iterate over all entities in the SGameWorld.
-                    typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
+                    //! An iterator used to iterate over all entities in the CGameWorld.
+                    typedef Support::UnorderedSet<IEntity*>::iterator iterator;
+                    //! A const iterator used to iterate over all entities in the CGameWorld.
+                    typedef Support::UnorderedSet<IEntity*>::const_iterator const_iterator;
 
                 // Public Methods
                 public:
                     /**
-                     *  @brief Registers an entity with the SGameWorld.
+                     *  @brief Registers an entity with the CGameWorld.
                      *  @param entity A pointer to the entity to register.
                      */
-                    void addEntity(Entities::IEntity* entity);
+                    void addEntity(IEntity* entity);
 
                     /**
-                     *  @brief Removes an entity from the SGameWorld. This does not delete it, therefore the entity must be
+                     *  @brief Removes an entity from the CGameWorld. This does not delete it, therefore the entity must be
                      *  destructed independently of this call.
                      *  @param A pointer to the entity to remove.
                      */
-                    void removeEntity(Entities::IEntity* entity);
+                    void removeEntity(IEntity* entity);
 
                     /**
-                     *  @brief Removes an entity from the SGameWorld. This does not delete it, therefore the entity must be
+                     *  @brief Removes an entity from the CGameWorld. This does not delete it, therefore the entity must be
                      *  destructed independently of this call.
                      *  @param The ID of the entity to remove.
                      *  @return A pointer to the entity that was removed.
                      */
-                    Entities::IEntity* removeEntity(const Common::U32 id);
+                    IEntity* removeEntity(const Common::U32 id);
 
                     /**
                      *  @brief Looks up an entity with the given identifier.
@@ -88,7 +81,7 @@ namespace Kiaro
                      *  @return The pointer to the entity that was looked up.
                      *  @retval nullptr No entity with the specified ID was found.
                      */
-                    Entities::IEntity* getEntity(const Common::U32 id) const;
+                    IEntity* getEntity(const Common::U32 id) const;
 
                     /**
                      *  @brief Looks up an entity with the given name.
@@ -96,10 +89,10 @@ namespace Kiaro
                      *  @return The pointer to the entity that was looked up.
                      *  @retval nullptr No entity with the specified name was found.
                      */
-                    Entities::IEntity* getEntity(const Support::String& name) const;
+                    IEntity* getEntity(const Support::String& name) const;
 
                     /**
-                     *  @brief Pushes an empty to the SGameWorld, triggering all entities to be updated.
+                     *  @brief Pushes an empty to the CGameWorld, triggering all entities to be updated.
                      *  @param deltaTimeSeconds The delta time in seconds that has passed since the last call.
                      */
                     void update(const Common::F32 deltaTimeSeconds);
@@ -110,31 +103,25 @@ namespace Kiaro
                     void clear(void);
 
                     /**
-                     *  @brief Retries the sky associated with this game world.
-                     *  @return A pointer to the sky entity associated with this game world.
-                     */
-                    Entities::CSky* getSky(void);
-
-                    /**
-                     *  @brief Returns the amount of memory required to pack the SGameWorld into a CBitStream.
-                     *  @return The amount of bytes required to pack the SGameWorld into a CBitStream.
+                     *  @brief Returns the amount of memory required to pack the CGameWorld into a CBitStream.
+                     *  @return The amount of bytes required to pack the CGameWorld into a CBitStream.
                      */
                     size_t getRequiredMemory(void) const;
 
                     /**
-                     *  @brief Packs the entirety of the SGameWorld into a CBitStream.
+                     *  @brief Packs the entirety of the CGameWorld into a CBitStream.
                      *  @param out A reference to the CBitStream to pack into.
                      */
                     void packEverything(Support::CBitStream& out) const;
 
                     /**
-                     *  @brief Unpacks updates to the SGameWorld from an input CBitStream.
+                     *  @brief Unpacks updates to the CGameWorld from an input CBitStream.
                      *  @param in A reference to the CBitStream to unpack from.
                      */
                     void unpack(Support::CBitStream& in);
 
                     /**
-                     *  @brief Sets a new game mode for the SGameWorld to run.
+                     *  @brief Sets a new game mode for the CGameWorld to run.
                      *  @param game A pointer to the new game mode to run. The setup method will be called once the teardown method on the
                      *  previous gamemode has been called.
                      *  @note Ensure that all game modes have their setup and teardown methods implemented correctly, otherwise undefined
@@ -143,20 +130,20 @@ namespace Kiaro
                     void setGameMode(IGameMode* game);
 
                     /**
-                     *  @brief Returns the current game mode in use by the SGameWorld.
-                     *  @return A pointer to the current game mmode in use by the SGameWorld.
+                     *  @brief Returns the current game mode in use by the CGameWorld.
+                     *  @return A pointer to the current game mmode in use by the CGameWorld.
                      */
                     IGameMode* getGameMode(void);
 
                     /**
-                     *  @brief Returns an iterator pointing to the first entity in the SGameWorld.
-                     *  @return An iterator pointing to the first entity in the SGameWorld.
+                     *  @brief Returns an iterator pointing to the first entity in the CGameWorld.
+                     *  @return An iterator pointing to the first entity in the CGameWorld.
                      */
                     iterator begin(void);
 
                     /**
-                     *  @brief Returns an iterator pointing to the end of the SGameWorld.
-                     *  @return An iterator pointing to the last entity in the SGameWorld.
+                     *  @brief Returns an iterator pointing to the end of the CGameWorld.
+                     *  @return An iterator pointing to the last entity in the CGameWorld.
                      */
                     const_iterator end(void);
 
@@ -176,11 +163,11 @@ namespace Kiaro
                             result = new className(params...);
 
                             #ifdef ENGINE_ENTITY_TRACKER
-                                Entities::IEntity::SharedStatics<className>::sEntities.insert(Entities::IEntity::SharedStatics<className>::sEntities.end(), result);
+                                IEntity::SharedStatics<className>::sEntities.insert(Entities::IEntity::SharedStatics<className>::sEntities.end(), result);
                             #endif
                         #else
                             // Allocate the arena
-                            if (!Entities::IEntity::SharedStatics<className>::sEntityArena)
+                            if (!IEntity::SharedStatics<className>::sEntityArena)
                             {
                                 #ifndef ENGINE_ENTITY_ARENA_ALLOCATION_SIZE
                                     Support::SSettingsRegistry* settings = Support::SSettingsRegistry::instantiate();
@@ -189,23 +176,23 @@ namespace Kiaro
                                     const Common::U32 arenaAllocationSize = ENGINE_ENTITY_ARENA_ALLOCATION_SIZE;
                                 #endif
 
-                                Entities::IEntity::SharedStatics<className>::sEntityArena = reinterpret_cast<className*>(malloc(sizeof(className) * arenaAllocationSize));
-                                Entities::IEntity::SharedStatics<className>::sArenaSize = arenaAllocationSize;
+                                IEntity::SharedStatics<className>::sEntityArena = reinterpret_cast<className*>(malloc(sizeof(className) * arenaAllocationSize));
+                                IEntity::SharedStatics<className>::sArenaSize = arenaAllocationSize;
 
                                 CONSOLE_DEBUGF("Allocated arena buffer for %s", typeid(className).name());
                             }
 
                             // If we exceed the arena buffer size, we are screwed beyond belief since we can't simply resize and invalidate pointers by moving our buffer
                             // FIXME: Unless we allocate new arenas to "extend" our buffer with, at the cost of some efficiency
-                            assert(Entities::IEntity::SharedStatics<className>::sEntityCount < Entities::IEntity::SharedStatics<className>::sArenaSize);
+                            assert(IEntity::SharedStatics<className>::sEntityCount < IEntity::SharedStatics<className>::sArenaSize);
 
-                            if (!Entities::IEntity::SharedStatics<className>::sFreedIndices.size())
-                                result = &Entities::IEntity::SharedStatics<className>::sEntityArena[Entities::IEntity::SharedStatics<className>::sEntityCount++];
+                            if (!IEntity::SharedStatics<className>::sFreedIndices.size())
+                                result = &IEntity::SharedStatics<className>::sEntityArena[IEntity::SharedStatics<className>::sEntityCount++];
                             else
                             {
-                                size_t index = Entities::IEntity::SharedStatics<className>::sFreedIndices.top();
-                                result = &Entities::IEntity::SharedStatics<className>::sEntityArena[index];
-                                Entities::IEntity::SharedStatics<className>::sFreedIndices.pop();
+                                size_t index = IEntity::SharedStatics<className>::sFreedIndices.top();
+                                result = &IEntity::SharedStatics<className>::sEntityArena[index];
+                                IEntity::SharedStatics<className>::sFreedIndices.pop();
                             }
 
                             new (result) className(params...);
@@ -228,7 +215,7 @@ namespace Kiaro
                         #else
                             for (size_t iteration = 0; iteration < Entities::IEntity::SharedStatics<className>::sEntityCount; ++iteration)
                             {
-                                className& entity = Entities::IEntity::SharedStatics<className>::sEntityArena[iteration];
+                                className& entity = IEntity::SharedStatics<className>::sEntityArena[iteration];
 
                                 // The flags should never be NULL
                                 if (!entity.mFlags)
@@ -242,12 +229,12 @@ namespace Kiaro
                 // Protected Methods
                 protected:
                     //! Standard constructor
-                    SGameWorld(void);
+                    CGameWorld(void);
 
                     //! Standard destructor
-                    ~SGameWorld(void);
+                    ~CGameWorld(void);
             };
         } // End Namespace Game
     } // End NameSpace Engine
 } // End Namespace Kiaro
-#endif // _INCLUDE_GAME_SGAMEWORLD_HPP_
+#endif // _INCLUDE_GAME_CGameWorld_HPP_

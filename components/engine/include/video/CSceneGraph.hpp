@@ -14,7 +14,7 @@
 
 #include <support/common.hpp>
 
-#include <game/entities/IEntity.hpp>
+#include <game/IEntity.hpp>
 
 namespace Kiaro
 {
@@ -42,7 +42,7 @@ namespace Kiaro
                  */
               //  void add(osg::Node* node);
 
-                void add(Game::Entities::IEntity* entity);
+                void add(Game::IEntity* entity);
 
                 bool isVisible(void);
 

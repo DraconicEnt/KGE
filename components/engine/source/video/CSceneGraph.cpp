@@ -35,7 +35,7 @@ namespace Kiaro
                 // mGroup->addChild(node);
            // }
 
-            void CSceneGraph::add(Game::Entities::IEntity* entity)
+            void CSceneGraph::add(Game::IEntity* entity)
             {
                // for (osg::Node* node: entity->mSceneNodes)
                // {

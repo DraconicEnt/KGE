@@ -15,10 +15,8 @@
 
 #include <game/IGameMode.hpp>
 
-#include <game/entities/entities.hpp>
-
 #include <game/CGameClient.hpp>
-#include <game/SGameWorld.hpp>
+#include <game/CGameWorld.hpp>
 
 #include <game/messages/messages.hpp>
 
@@ -62,7 +60,6 @@ namespace Kiaro
                               receivedHandshake.mVersionMinor, receivedHandshake.mVersionRevision, receivedHandshake.mVersionBuild);
 
                 Game::Messages::HandShake handShake;
-                handShake.mDataBlockCount = mDataBlocks.size();
                 sender->send(&handShake, true);
 
                 // At this point, the client has passed initial authentication
@@ -97,7 +94,8 @@ namespace Kiaro
             void SGameServer::initialScope(Net::IIncomingClient* client)
             {
                 Game::Messages::Scope scope;
-                Game::SGameWorld* world = Game::SGameWorld::getInstance();
+                /*
+                Game::CGameWorld* world = Game::CGameWorld::getInstance();
 
                 for (auto it = world->begin(); it != world->end(); it++)
                 {
@@ -110,6 +108,7 @@ namespace Kiaro
                 }
 
                 client->send(&scope, true);
+                */
             }
 
             void SGameServer::setGamemode(IGameMode* game)
@@ -236,22 +235,6 @@ namespace Kiaro
                     mQueuedStreams[sender].pop();
                     delete &processedStream;
                 }
-            }
-
-            bool SGameServer::addDataBlock(Game::Entities::DataBlocks::IDataBlock* datablock)
-            {
-                // Must be not null
-                assert(datablock);
-                // Must not already be registered
-                assert(mDataBlocks.find(datablock) == mDataBlocks.end());
-
-                if (!datablock->validate())
-                {
-                    return false;
-                }
-
-                mDataBlocks.insert(mDataBlocks.end(), datablock);
-                return true;
             }
         } // End NameSpace Game
     }
