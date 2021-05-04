@@ -2,11 +2,11 @@
  *  @file CBitStream.cpp
  *  @brief Source file containing coding for the BitStream tests.
  *
- *  This software is licensed under the Draconic Free License version 1. Please refer
+ *  This software is licensed under the Draconic Free License version 1. Refer
  *  to LICENSE.txt for more information.
  *
  *  @author Robert MacGregor
- *  @copyright (c) 2016 Draconic Entity
+ *  @copyright (c) 2021 Draconic Entity
  */
 
 #include <gtest/gtest.h>
@@ -38,13 +38,17 @@ namespace Kiaro
         inline void PackFloats(Support::CBitStream& out)
         {
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
+            {
                 out.write(sFloatList[iteration]);
+            }
         }
 
         inline void PackStrings(Support::CBitStream& out)
         {
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
+            {
                 out.writeString(sStringList[iteration].data());
+            }
         }
 
         TEST(BitStream, Floats)
@@ -59,7 +63,9 @@ namespace Kiaro
 
             // Now make sure we can unpack the data correctly
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
+            {
                 EXPECT_EQ(sFloatList[iteration], floatStream.pop<Common::F32>());
+            }
         }
 
         TEST(BitStream, MemoryBlock)
@@ -72,7 +78,9 @@ namespace Kiaro
             CBitStream blockStream(floatStream.getBlock(), floatStream.getPointer());
 
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
+            {
                 EXPECT_EQ(sFloatList[iteration], blockStream.pop<Common::F32>());
+            }
         }
 
         TEST(BitStream, BufferOverflow)
@@ -100,13 +108,17 @@ namespace Kiaro
             size_t writtenBytes = 0;
 
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
+            {
                 writtenBytes += sStringList[iteration].length() + sizeof(Common::U32) + 1;
+            }
 
             EXPECT_EQ(stream.getPointer(), writtenBytes);
             stream.setPointer(0);
 
             for (Common::U32 iteration = 0; iteration < sStringCount; iteration++)
+            {
                 EXPECT_FALSE(strcmp(sStringList[iteration].data(), stream.popString()));
+            }
         }
 
         TEST(BitStream, InvalidString)
@@ -152,7 +164,9 @@ namespace Kiaro
             stream.setPointer(0);
 
             for (Common::U32 iteration = 0; iteration < sFloatCount; iteration++)
+            {
                 EXPECT_EQ(sFloatList[iteration], stream.pop<Common::F32>());
+            }
         }
 
         TEST(BitStream, EndianSwapping)

@@ -20,7 +20,6 @@ cc_test(
         "//components/engine:engine",
 
         # "@sdl2//:library",
-        "@osg//:osg",
         "@physfs//:physfs",
         "@bullet//:bullet",
         "@allegro//:allegro",

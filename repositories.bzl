@@ -7,16 +7,16 @@ def repositories():
         git_repository,
         name = "rules_third_party",
         remote = "https://github.com/DraconicEnt/rules_third_party.git",
-        commit = "ac695d3d2e09f4a2cd1d6e4ed625339255499ba0"
+        commit = "c420260becd3c31c145af386025d51d06287ab9c"
     )
 
     # Foreign CC
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        strip_prefix = "rules_foreign_cc-master",
-        # sha256 = "3e6b0691fc57db8217d535393dcc2cf7c1d39fc87e9adb6e7d7bab1483915110",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+        sha256 = "d54742ffbdc6924f222d2179f0e10e911c5c659c4ae74158e9fe827aad862ac6",
+        strip_prefix = "rules_foreign_cc-0.2.0",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.2.0.tar.gz"
     )
 
     # Load EasyDelegate
@@ -27,16 +27,6 @@ def repositories():
         remote = "https://github.com/Ragora/EasyDelegate.git",
         commit = "68f60feb91025bc354ae67271f5e671800f782cd"
     )
-
-    # Load rules_python
-    #http_archive(
-    #    name = "rules_python",
-    #    url = "https://github.com/bazelbuild/rules_python/releases/download/0.1.0/rules_python-0.1.0.tar.gz",
-    #    sha256 = "b6d46438523a3ec0f3cead544190ee13223a52f6a6765a29eae7b7cc24cc83a0",
-    #)
-
-    #load("@rules_python//python:pip.bzl", "pip_repositories")
-    #pip_repositories()
 
     # Load rules_pkg
     maybe(
@@ -54,11 +44,4 @@ def repositories():
         # 1.10.0
         commit = "703bd9caab50b139428cea1aaff9974ebee5742e",
         shallow_since = "1570114335 -0400"
-    )
-
-    maybe(
-        git_repository,
-        name = "easylua",
-        remote = "https://github.com/Ragora/EasyLua.git",
-        commit = "18381fc5ba4416067117dd162afda63dc6b7951c"
     )

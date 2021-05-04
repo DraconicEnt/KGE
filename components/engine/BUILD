@@ -32,8 +32,7 @@ cc_library(
     }),
 
     includes = [
-        "include",
-        "include/script/lua"
+        "include"
     ],
 
     linkopts = [
@@ -55,7 +54,6 @@ cc_library(
     deps = [
         "@physfs//:physfs",
         "@allegro//:allegro",
-        "@easylua//:easylua",
         "@irrlicht//:irrlicht",
 
         "//components/phys:phys",

@@ -1,8 +1,8 @@
 """
-    This software is licensed under the Draconic Free License version 1. Please refer
+    This software is licensed under the Draconic Free License version 1. Refer
     to LICENSE.txt for more information.
 
-    Copyright (c) 2021 Robert MacGregor
+    Copyright (c) 2021 Draconic Entity
 """
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
@@ -48,8 +48,7 @@ cc_library(
     deps = [
         "@physfs//:physfs",
         "@easydelegate//:easydelegate",
-        "@allegro//:allegro",
-        "@osg//:osg"
+        "@allegro//:allegro"
     ],
 
     visibility = ["//visibility:public"]

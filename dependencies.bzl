@@ -1,5 +1,5 @@
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
-load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
 # Load all external repositories - these are split up for readability
 load("@rules_third_party//libraries:enet.bzl", "enet")
@@ -27,7 +27,6 @@ load("@rules_third_party//libraries:jpeg.bzl", "jpeg")
 load("@rules_third_party//libraries:bzip2.bzl", "bzip2")
 load("@rules_third_party//libraries:python3.bzl", "python3")
 load("@rules_third_party//libraries:lua.bzl", "lua")
-load("@easylua//:dependencies.bzl", easylua_dependencies="dependencies")
 
 def dependencies():
     rules_foreign_cc_dependencies()
@@ -63,7 +62,6 @@ def dependencies():
     python3()
     physfs()
     lua()
-    easylua_dependencies()
 
 def generate_dependencies(target, dependencies, name):
     for index, dependency in enumerate(dependencies):

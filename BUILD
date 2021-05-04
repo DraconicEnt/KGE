@@ -1,8 +1,8 @@
 """
-    This software is licensed under the Draconic Free License version 1. Please refer
+    This software is licensed under the Draconic Free License version 1. Refer
     to LICENSE.txt for more information.
 
-    Copyright (c) 2021 Robert MacGregor
+    Copyright (c) 2021 Draconic Entity
 """
 
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
@@ -95,22 +95,6 @@ pkg_tar(
         ":dependencies_packaged"
     ],
     mode = "0755",
-)
-
-sh_binary(
-    name = "doxygen",
-    srcs = [
-        "doxygen.sh"
-    ],
-    args = [
-        "$(locations @doxygen//:doxygen)",
-        "$(locations @graphviz//:graphviz)"
-    ],
-    data = [
-        "@doxygen//:doxygen",
-        "@graphviz//:graphviz",
-        "doxyfile"
-    ]
 )
 
 sh_binary(
