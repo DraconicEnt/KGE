@@ -1,3 +1,12 @@
+"""
+    This software is licensed under the Draconic Free License version 1. Please refer
+    to LICENSE.txt for more information.
+
+    Copyright (c) 2021 Robert MacGregor
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "support",
     srcs = glob(
@@ -10,7 +19,7 @@ cc_library(
             "platform/common/**/*.cpp"
         ],
         exclude =[
-            "source/SSignalHandler.cpp"
+
         ]) + select({
             "@platforms//os:windows": glob(include=["platform/windows/**/*.cpp"]),
             "//conditions:default": glob(include=["platform/unix/**/*.cpp"])

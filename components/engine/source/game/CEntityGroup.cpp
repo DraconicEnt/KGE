@@ -27,12 +27,12 @@ namespace Kiaro
                 return mEntities.end();
             }
 
-            void CEntityGroup::add(Entities::IEntity* entity)
+            void CEntityGroup::add(IEntity* entity)
             {
                 mEntities.insert(mEntities.end(), entity);
             }
 
-            void CEntityGroup::remove(Entities::IEntity* entity)
+            void CEntityGroup::remove(IEntity* entity)
             {
                 mEntities.erase(entity);
             }

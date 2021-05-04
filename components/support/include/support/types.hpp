@@ -12,12 +12,6 @@
 #ifndef _INCLUDE_SUPPORT_TYPES_HPP_
 #define _INCLUDE_SUPPORT_TYPES_HPP_
 
-#include <osg/Vec3f>
-#include <osg/Vec2f>
-#include <osg/Vec2i>
-#include <osg/Vec4>
-#include <osg/ColorMask>
-
 #include <atomic>
 #include <iostream>
 #include <unordered_set>
@@ -64,16 +58,79 @@ namespace Kiaro
         //! A typedef to an std::wstring.
         typedef std::wstring WString;
 
-        //! 3D vector typedef.
-        typedef osg::Vec3f Vector3DF;
 
-        //! 2D vector typedef.
-        typedef osg::Vec2f Vector2DF;
+        class Vector3DF 
+        {
+            public:
+                float x;
+                float y;
+                float z;
 
-        //! A typedef to a 2D vector that represents dimensions using an unsigned int.
-        typedef osg::Vec2i Dimension2DU;
+                Vector3DF(float x, float y, float z)
+                {
+                    this->x = x;
+                    this->y = y;
+                    this->z = z;
+                }
+                
+                Vector3DF(const Vector3DF& rhs)
+                {
+                    this->x = rhs.x;
+                    this->y = rhs.y;
+                    this->z = rhs.z;
+                }
 
-        typedef osg::Vec4 ColorRGBA;
+                Vector3DF(void)
+                {
+                    this->x = this->y = this->z = 0;
+                }
+        };
+
+        class Vector2DF 
+        {
+
+        };
+
+        class Dimension2DU 
+        {
+            public:
+                unsigned int x;
+                unsigned int y;
+
+                Dimension2DU(unsigned int x, unsigned int y)
+                {
+                    this->x = x;
+                    this->y = y;
+                }
+
+                Dimension2DU(const Dimension2DU& rhs)
+                {
+                    this->x = rhs.x;
+                    this->y = rhs.y;
+                }
+
+                Dimension2DU(void)
+                {
+                    this->x = this->y = 0;
+                }
+        };
+
+        class ColorRGBA 
+        {
+            public:
+                unsigned int r;
+                unsigned int g;
+                unsigned int b;
+                unsigned int a;
+
+                ColorRGBA(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+                {
+                    this->r = r;
+                    this->g = g;
+                    this->b = b;
+                    this->a = a;
+                }
+        };
     }
 }
 #endif // _INCLUDE_SUPPORT_TYPES_HPP_

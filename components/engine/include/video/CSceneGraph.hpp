@@ -13,11 +13,8 @@
 #define _INCLUDE_VIDEO_CSCENEGRAPH_HPP_
 
 #include <support/common.hpp>
-#include <video/SRenderer.hpp>
 
-#include <osgViewer/Viewer>
-
-#include <game/entities/IEntity.hpp>
+#include <game/IEntity.hpp>
 
 namespace Kiaro
 {
@@ -33,7 +30,7 @@ namespace Kiaro
             {
             public:
                 //! Parameterless constructor.
-                CSceneGraph(Engine::Video::SRenderer* renderer);
+                CSceneGraph();
 
                 //! Standard destructor.
                 ~CSceneGraph(void);
@@ -43,9 +40,9 @@ namespace Kiaro
                  *  scene graph.
                  *  @param node A pointer to the node to add to this scene graph.
                  */
-                void add(osg::Node* node);
+              //  void add(osg::Node* node);
 
-                void add(Game::Entities::IEntity* entity);
+                void add(Game::IEntity* entity);
 
                 bool isVisible(void);
 
@@ -56,7 +53,7 @@ namespace Kiaro
 
             private:
                 //! A pointer to the root scene node.
-                osg::ref_ptr<osg::Group> mGroup;
+               //  osg::ref_ptr<osg::Group> mGroup;
             };
         }
     } // End NameSpace Engine

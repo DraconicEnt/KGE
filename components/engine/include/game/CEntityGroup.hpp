@@ -15,7 +15,7 @@
 #include <support/common.hpp>
 #include <support/UnorderedSet.hpp>
 
-#include <game/entities/IEntity.hpp>
+#include <game/IEntity.hpp>
 
 namespace Kiaro
 {
@@ -27,20 +27,20 @@ namespace Kiaro
             {
                 // Private Members
                 private:
-                    Support::UnorderedSet<Entities::IEntity*> mEntities;
+                    Support::UnorderedSet<IEntity*> mEntities;
 
                 // Public Members
                 public:
-                    typedef Support::UnorderedSet<Entities::IEntity*>::iterator iterator;
-                    typedef Support::UnorderedSet<Entities::IEntity*>::const_iterator const_iterator;
+                    typedef Support::UnorderedSet<IEntity*>::iterator iterator;
+                    typedef Support::UnorderedSet<IEntity*>::const_iterator const_iterator;
 
                 // Public Methods
                 public:
                     iterator begin(void);
                     const_iterator end(void);
 
-                    void add(Entities::IEntity* entity);
-                    void remove(Entities::IEntity* entity);
+                    void add(IEntity* entity);
+                    void remove(IEntity* entity);
             };
         }
     }

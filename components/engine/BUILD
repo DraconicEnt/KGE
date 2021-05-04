@@ -1,3 +1,11 @@
+"""
+    This software is licensed under the Draconic Free License version 1. Please refer
+    to LICENSE.txt for more information.
+
+    Copyright (c) 2021 Robert MacGregor
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_third_party//applications:graphviz.bzl", "run_graphviz")
 
 cc_library(
@@ -7,7 +15,6 @@ cc_library(
            include = [
                "include/**/*.h",
                "include/**/*.hpp",
-               "platform/windows/**/*.cpp",
 
                "source/**/*.cpp"
            ]
@@ -18,15 +25,23 @@ cc_library(
            include = [
                "include/**/*.h",
                "include/**/*.hpp",
-               "platform/unix/**/*.cpp",
 
                "source/**/*.cpp"
            ]
        )
     }),
+
     includes = [
-        "include"
+        "include",
+        "include/script/lua"
     ],
+
+    linkopts = [
+        "-lGL",
+        "-lX11",
+        "-lXxf86vm"
+    ],
+
     copts = [
         "-Ibazel-out/k8-fastbuild/bin/external/bullet/bullet/include/bullet"
     ],
@@ -40,6 +55,8 @@ cc_library(
     deps = [
         "@physfs//:physfs",
         "@allegro//:allegro",
+        "@easylua//:easylua",
+        "@irrlicht//:irrlicht",
 
         "//components/phys:phys",
         "//components/net:net",

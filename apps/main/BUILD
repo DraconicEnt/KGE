@@ -1,4 +1,11 @@
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+"""
+    This software is licensed under the Draconic Free License version 1. Please refer
+    to LICENSE.txt for more information.
+
+    Copyright (c) 2021 Robert MacGregor
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 cc_binary(
     name = "main",
@@ -9,7 +16,6 @@ cc_binary(
         "//components/engine:engine",
 
         "@allegro//:allegro",
-        "@osg//:osg",
         "@physfs//:physfs",
         "@bullet//:bullet",
         "@enet//:enet"

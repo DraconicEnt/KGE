@@ -21,7 +21,7 @@ namespace Kiaro
          *  types, but unless some runaway code managed to stomp literally all over program memory, then this extra overhead *shouldn't* be a problem when they
          *  are thrown.
          */
-        class SSignalHandler //: public ISingleton<SSignalHandler>
+        class SSignalHandler : public ISingleton<SSignalHandler>
         {
             //! Public Members
             public:

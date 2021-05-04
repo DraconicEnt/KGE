@@ -25,6 +25,7 @@
 
 #include <net/IMessage.hpp>
 
+#include <video/CGraphicsWindow.hpp>
 #include <support/CManagementConsole.hpp>
 
 namespace Kiaro
@@ -95,6 +96,9 @@ namespace Kiaro
                     //! The management console associated with the engine. If not enabled, this this a nullptr.
                     Support::CManagementConsole* mManagementConsole;
 
+                    //! All currently active graphics windows.
+                    Support::Vector<Video::CGraphicsWindow*> mActiveWindows;
+
                 // Public Methods
                 public:
                     /**
@@ -163,6 +167,8 @@ namespace Kiaro
                      *  @param enabled Whether or not the performance statistic reporting should occur.
                      */
                     void setPerfStatEnabled(const bool enabled);
+
+                    void addWindow(Video::CGraphicsWindow* window);
 
                 // Private Methods
                 private:

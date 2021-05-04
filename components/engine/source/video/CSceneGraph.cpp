@@ -20,9 +20,9 @@ namespace Kiaro
     {
         namespace Video
         {
-            CSceneGraph::CSceneGraph(Engine::Video::SRenderer* renderer)
+            CSceneGraph::CSceneGraph()
             {
-                mGroup = new osg::Group();
+                //mGroup = new osg::Group();
             }
 
             CSceneGraph::~CSceneGraph(void)
@@ -30,17 +30,17 @@ namespace Kiaro
                 CONSOLE_INFO("Destroyed a scene graph.");
             }
 
-            void CSceneGraph::add(osg::Node* node)
-            {
-                mGroup->addChild(node);
-            }
+            //void CSceneGraph::add(osg::Node* node)
+          //  {
+                // mGroup->addChild(node);
+           // }
 
-            void CSceneGraph::add(Game::Entities::IEntity* entity)
+            void CSceneGraph::add(Game::IEntity* entity)
             {
-                for (osg::Node* node: entity->mSceneNodes)
-                {
-                    this->add(node);
-                }
+               // for (osg::Node* node: entity->mSceneNodes)
+               // {
+               //     this->add(node);
+               // }
             }
 
             bool CSceneGraph::isVisible(void)

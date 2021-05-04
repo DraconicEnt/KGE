@@ -14,15 +14,13 @@
 
 #include <support/Console.hpp>
 
-#include <game/entities/datablocks/datablocks.hpp>
-
 namespace Kiaro
 {
     namespace Engine
     {
         namespace Core
         {
-            Game::Entities::IEntity* SCoreRegistry::constructEntity(const Common::U32 id, Support::CBitStream& payload)
+            Game::IEntity* SCoreRegistry::constructEntity(const Common::U32 id, Support::CBitStream& payload)
             {
                 auto search = mEntityTypeMap.find(id);
 
@@ -34,13 +32,12 @@ namespace Kiaro
                 return (*search).second(payload);
             }
 
-            SCoreRegistry::SCoreRegistry(void) : mMessageTypeCounter(0), mDataBlockTypeCounter(0), mEntityTypeCounter(0)
+            SCoreRegistry::SCoreRegistry(void) : mMessageTypeCounter(0), mEntityTypeCounter(0)
             {
                 this->registerMessages();
                 this->registerEntityTypes();
-                this->registerDatablockTypes();
 
-                CONSOLE_INFOF("Initialized with %u network message types, %u datablock types, %u entity types.", mMessageMap.size(), mDatablockTypeMap.size(), mEntityTypeMap.size());
+                CONSOLE_INFOF("Initialized with %u network message types, %u entity types.", mMessageMap.size(), mEntityTypeMap.size());
             }
 
             SCoreRegistry::~SCoreRegistry(void)
@@ -82,15 +79,9 @@ namespace Kiaro
                 this->registerMessage<Game::Messages::SimCommit>(nullptr, &Core::COutgoingClient::simCommitHandler, Net::STAGE_LOADING);
             }
 
-            void SCoreRegistry::registerDatablockTypes(void)
-            {
-                this->registerDataBlockType<Game::Entities::DataBlocks::CPlayerData>();
-            }
-
             void SCoreRegistry::registerEntityTypes(void)
             {
-                this->registerEntityType<Game::Entities::CTerrain>();
-                this->registerEntityType<Game::Entities::CPlayer>();
+
             }
         } // End NameSpace Core
     } // End NameSpace Engine

@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/components/net/include",
+                "${workspaceFolder}/components/phys/include",
+                "${workspaceFolder}/components/engine/include",
+                "${workspaceFolder}/components/support/include",
+                "${workspaceFolder}/components/sound/include",
+                "${workspaceFolder}/components/script/include",
+                "${workspaceFolder/components/script/bindings/python/include",
+
+                "${workspaceFolder}/autocomplete/enet-1.3.17/include",
+                "${workspaceFolder}/autocomplete/easydelegate/include",
+                "${workspaceFolder}/autocomplete/osg/include",
+
+                "/usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0",
+                "/usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/x86_64-pc-linux-gnu",
+                "/usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/backward",
+                "/usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include",
+                "/usr/local/include",
+                "/usr/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include-fixed",
+                "/usr/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

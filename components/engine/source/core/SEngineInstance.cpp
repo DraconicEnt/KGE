@@ -13,7 +13,6 @@
 #include <thread>
 
 #include <core/SEngineInstance.hpp>
-#include <video/SRenderer.hpp>
 
 #include <allegro5/allegro_physfs.h>
 
@@ -38,7 +37,9 @@
 #include <support/SSignalHandler.hpp>
 #include <support/tasking/SThreadSystem.hpp>
 
-//#include <execinfo.h>
+#include <script/CScriptManager.hpp>
+
+#include <execinfo.h>
 
 namespace Kiaro
 {
@@ -71,7 +72,6 @@ namespace Kiaro
             {
                 CONSOLE_ERROR("!!! Received a crash signal! Generating a crash dump !!!");
 
-                /*
                 void* stackFrames[256];
                 const Common::S32 backtraceSize = backtrace(stackFrames, 256);
                 char** symbolNames = backtrace_symbols(stackFrames, 256);
@@ -81,6 +81,13 @@ namespace Kiaro
                 #else
                 CONSOLE_ERROR("System Type: Windows");
                 #endif // ENGINE_UNIX
+
+                // Dump a back trace
+                CONSOLE_ERRORF("Thread ID: 0x%x", std::this_thread::get_id());
+                CONSOLE_ERRORF("Trace Depth: %u", backtraceSize);
+                for (Common::U32 iteration = 0; iteration < backtraceSize; ++iteration)
+                    CONSOLE_ERRORF("Frame %u: %s", iteration, symbolNames[iteration]);
+                free(symbolNames);
 
                 // Dump the current settings info
                 CONSOLE_ERROR("Settings Begin -------------------------------------------");
@@ -95,14 +102,11 @@ namespace Kiaro
                 CONSOLE_ERRORF("Entity Arena Allocations Size: %u", ENGINE_ENTITY_ARENA_ALLOCATION_SIZE);
                 CONSOLE_ERROR("Build Settings End ---------------------------------------");
                 #endif // ENGINE_ENTITY_ARENA_ALLOCATIONS
+            }
 
-                // Dump a back trace
-                CONSOLE_ERRORF("Thread ID: 0x%x", std::this_thread::get_id());
-                CONSOLE_ERRORF("Trace Depth: %u", backtraceSize);
-                for (Common::U32 iteration = 0; iteration < backtraceSize; ++iteration)
-                    CONSOLE_ERRORF("Frame %u: %s", iteration, symbolNames[iteration]);
-                free(symbolNames);
-                */
+            void SEngineInstance::addWindow(Video::CGraphicsWindow* window)
+            {
+                mActiveWindows.push_back(window);
             }
 
             void SEngineInstance::handleThrottleRequest(void)
@@ -116,10 +120,10 @@ namespace Kiaro
                 Support::getCPUInformation();
 
                 // Install signal handlers.
-                //Support::SSignalHandler* signalHandler = Support::SSignalHandler::getInstance();
-                //signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Termination] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::kill, this);
-                //signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Crash] = new Support::SSignalHandler::SignalHandlerType::StaticDelegateType(handleProcessCrash);
-                //signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::CPUUsage] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::handleThrottleRequest, this);
+                Support::SSignalHandler* signalHandler = Support::SSignalHandler::getInstance();
+                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Termination] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::kill, this);
+                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::Crash] = new Support::SSignalHandler::SignalHandlerType::StaticDelegateType(handleProcessCrash);
+                signalHandler->mSignalHandlers[Support::SSignalHandler::SignalType::CPUUsage] = new Support::SSignalHandler::SignalHandlerType::MemberDelegateType<SEngineInstance>(&SEngineInstance::handleThrottleRequest, this);
 
                 mRunning = false;
                 al_init();
@@ -145,29 +149,16 @@ namespace Kiaro
                     CONSOLE_INFOF("Mounted game directory '%s' successfully.", directory.c_str());
                 }
 
+                // Once all game directories are mounted, have a script manager run initialization
+                Script::CScriptManager* scriptManager = new Script::CScriptManager();
+                scriptManager->loadMainScript();
+
                 // TODO (Robert MacGregor#9): Return error codes for the netcode
                 // Init the taskers
                 Support::Tasking::SThreadSystem* threadSystem = Support::Tasking::SThreadSystem::getInstance();
                 Support::SSynchronousScheduler* syncScheduler = Support::SSynchronousScheduler::getInstance();
                 Support::Tasking::SAsynchronousTaskManager* asyncTaskManager = Support::Tasking::SAsynchronousTaskManager::getInstance();
 
-                if (this->initializeRenderer() != 0)
-                {
-                    return 2;
-                }
-
-                if (!this->isDedicated() && this->initializeGUI() != 0)
-                {
-                    return 3;
-                }
-
-                // Only init sound if we're not a dedicated server.
-                if (mEngineMode != MODE_DEDICATED)
-                {
-                    this->initializeSound();
-                }
-
-                this->initializeNetwork();
                 this->initializeManagementConsole();
 
                 // Initialize the time pulses
@@ -221,7 +212,6 @@ namespace Kiaro
                 PHYSFS_deinit();
                 enet_deinitialize();
 
-                Engine::Video::SRenderer::destroy();
                 al_uninstall_system();
             }
 
@@ -229,54 +219,6 @@ namespace Kiaro
             {
                 Engine::GUI::SGUIManager::getInstance();
 
-                return 0;
-            }
-
-            Common::U32 SEngineInstance::initializeRenderer(void)
-            {
-                Engine::Video::SRenderer::getInstance();
-
-                return 0;
-            }
-
-            Common::U32 SEngineInstance::initializeNetwork(void)
-            {
-                // Catch if the netcode somehow doesn't initialize correctly.
-                if (enet_initialize() < 0)
-                {
-                    CONSOLE_ERROR("Failed to initialize the network!");
-                    return 1;
-                }
-
-                SCoreRegistry* registry = SCoreRegistry::getInstance();
-
-                // Initialize the client or server ends
-                switch (mEngineMode)
-                {
-                    case MODE_CLIENT:
-                    {
-                        mActiveClient = new COutgoingClient();
-                        break;
-                    }
-
-                    case MODE_CLIENTCONNECT:
-                    {
-                        mActiveClient = new COutgoingClient();
-                        mActiveClient->connect(mTargetServerAddress, mTargetServerPort, 5000);
-                        // FIXME (Robert MacGregor#9): Move error check elsewhere since the connection isn't acknowledged until the handshakes occur
-                        // if (!mActiveClient->isConnected())
-                        //     Support::Logging::write(Support::Logging::MESSAGE_FATAL, "SEngineInstance: Failed to connect to remote host with server flag!");
-                        break;
-                    }
-
-                    case MODE_DEDICATED:
-                    {
-                        Game::SGameServer::initialize();
-                        break;
-                    }
-                }
-
-                CONSOLE_INFO("Initialized network.");
                 return 0;
             }
 
@@ -290,10 +232,6 @@ namespace Kiaro
                 }
 
                 mManagementConsole = new Support::CManagementConsole();
-
-              //  <void, &
-               // auto glambda = [](auto a, auto&& b) { return a < b; };
-
 
                 // Initialize the base capabilities
                 mManagementConsole->registerFunction("test", [](const Support::Vector<Support::String>)
@@ -329,6 +267,17 @@ namespace Kiaro
                         // Pump a time pulse at the scheduler
                         Support::SSynchronousScheduler::getInstance()->update();
 
+                        // Update all active windows
+                        for (auto iterator = mActiveWindows.begin(); iterator != mActiveWindows.end(); ++iterator)
+                        {
+                            Video::CGraphicsWindow* currentWindow = *iterator;
+
+                            currentWindow->setActiveOpenGLContext();
+                            currentWindow->renderFrame();
+                            currentWindow->swapBuffers();
+                            currentWindow->processWindowEvents();
+                        }
+
                         // The GUI, video and sound systems run independently of our network time pulse
                         if (mEngineMode == MODE_CLIENT || mEngineMode == MODE_CLIENTCONNECT)
                         {
@@ -359,18 +308,14 @@ namespace Kiaro
 
                             // TODO (Robert MacGregor#9): Handle for if an exception is thrown AND we are running as a listen server.
                             if (lastClient)
+                            {
                                 lastClient->disconnect("Internal Exception");
+                            }
                         }
                     }
 
                     #endif
                 }
-            }
-
-            Common::U32 SEngineInstance::initializeSound(void)
-            {
-                Sound::SSoundManager::getInstance();
-                return 0;
             }
 
             void SEngineInstance::initializeFileSystem(const Common::S32 argc, Common::C8* argv[])

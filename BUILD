@@ -6,7 +6,6 @@
 """
 
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-
 load("//:dependencies.bzl", "generate_dependencies")
 
 generate_dependencies(name="osg_dependencies_windows", target="@osg//:osg", dependencies=[
@@ -114,11 +113,24 @@ sh_binary(
     ]
 )
 
+sh_binary(
+    name = "setup_autocomplete",
+    srcs = [
+        "setupAutocomplete.sh"
+    ],
+    data = [
+        "@enet//:enet",
+        "@osg//:osg",
+        "@easydelegate//:easydelegate"
+    ]
+)
+
 test_suite(
     name = "test_all",
     tests = [
-        "//components/support/tests:tests",
         "//components/net/tests:tests",
-        "//components/sound/tests:tests"
+        "//components/sound/tests:tests",
+        "//components/engine/tests:tests",
+        "//components/support/tests:tests"
     ]
 )

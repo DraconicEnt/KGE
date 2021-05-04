@@ -18,8 +18,6 @@
 
 #include <support/Console.hpp>
 
-#include <game/entities/entities.hpp>
-
 #include <core/SCoreRegistry.hpp>
 
 namespace Kiaro
