@@ -35,17 +35,6 @@ namespace Kiaro
 
     namespace Net
     {
-        //! An enumeration containing the entity identifiers for networked objects.
-        enum NETWORKED_ENTITY_NAME
-        {
-            //! NULL Entity, shouldn't occur.
-            NETWORKED_ENTITY_NULL = 0,
-            //! Any component.
-            NETWORKED_ENTITY_COMPONENT = 1,
-            //! A BehaviorModel.
-            NETWORKED_ENTITY_BEHAVIORMODEL = 2,
-        }; // End Enum NETWORKED_ENTITY_NAME
-
         /**
          *  @brief An interface class representing an object that is serializable to and from
          *  a Support::CBitStream while also implementing property tracking semantics for differential
@@ -99,7 +88,9 @@ namespace Kiaro
 
                     // Is it the same type?
                     if (networkedPropertyInfo.second != Support::TypeIDResolver<propertyType>::value)
+                    {
                         throw std::runtime_error("INetworkPersistable: Networked property type mismatch!");
+                    }
 
                     // Assign it
                     propertyType& oldPropertyValue = *(reinterpret_cast<propertyType*>(networkedPropertyInfo.first));
@@ -122,7 +113,9 @@ namespace Kiaro
 
                     // Is it the same type?
                     if (networkedPropertyInfo.second != Support::TypeIDResolver<propertyType>::value)
+                    {
                         throw std::runtime_error("INetworkPersistable: Networked property type mismatch!");
+                    }
 
                     propertyType& returnValue = *((propertyType*)networkedPropertyInfo.first);
                     return returnValue;

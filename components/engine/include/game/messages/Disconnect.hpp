@@ -46,7 +46,9 @@ namespace Kiaro
                         void unpack(Support::CBitStream& in)
                         {
                             if (in.getSize() - in.getPointer() < getMinimumPacketPayloadLength())
+                            {
                                 throw std::underflow_error("Unable to unpack Disconnect packet; too small of a payload!");
+                            }
 
                             mReason = in.popString();
                         }
@@ -61,7 +63,7 @@ namespace Kiaro
                             return mReason.length();
                         }
 
-                        // Public Members
+                    // Public Members
                     public:
                         Support::String mReason;
                 };

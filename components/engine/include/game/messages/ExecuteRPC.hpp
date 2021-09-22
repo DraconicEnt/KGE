@@ -29,8 +29,9 @@ namespace Kiaro
         {
             class ExecuteRPC : public Net::IMessage
             {
-                    // Public Methods
                 public:
+                    Support::String mName;
+
                     ExecuteRPC(Support::CBitStream* in = nullptr, Net::IIncomingClient* sender = nullptr) : IMessage(in, sender)
                     {
                     }
@@ -44,7 +45,9 @@ namespace Kiaro
                     void unpack(Support::CBitStream& in)
                     {
                         if (in.getPointer() <= getMinimumPacketPayloadLength())
+                        {
                             throw std::underflow_error("Unable to unpack ExecuteRPC packet; too small of a payload!");
+                        }
 
                         in >> mName;
                     }
@@ -58,13 +61,8 @@ namespace Kiaro
                     {
                         return mName.length();
                     }
-
-                    // Public Members
-                public:
-                    Support::String mName;
             };
         } // End NameSpace Packets
     } // End NameSpace Game
 } // End NameSpace Kiaro
 #endif // _INCLUDE_KIARO_GAME_MESSAGES_DISCONNECT_HPP_
-

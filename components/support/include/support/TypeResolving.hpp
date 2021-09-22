@@ -26,11 +26,11 @@ namespace Kiaro
             PROPERTY_U64,
             //! A Common::U8
             PROPERTY_U8,
-
+            //! A boolean value.
             PROPERTY_BOOL,
-
+            //! String value.
             PROPERTY_STRING,
-
+            //! A Common::U16.
             PROPERTY_U16,
 
             PROPERTY_DIMENSION,

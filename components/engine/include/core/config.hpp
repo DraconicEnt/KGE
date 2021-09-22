@@ -27,7 +27,6 @@
 
 #ifndef CMAKE_CONFIG
 #define MAXIMUM_DELTATIME
-#define ENGINE_TESTS 1
 #endif
 
 // If defined, the engine will use an arena allocation model for all entities in the engine. This offers a large speed boost at the
@@ -35,7 +34,7 @@
 // #define ENGINE_ENTITY_ARENA_ALLOCATIONS
 
 // If defined and ENGINE_ENTITY_ARENA_ALLOCATIONS is defined, the engine will use this value for arena size allocations instead of
-// loading it fromt he configuration. This is useful for final distributions.
+// loading it from the configuration. This is useful for final distributions.
 #define ENGINE_ENTITY_ARENA_ALLOCATION_SIZE 256
 
 #endif

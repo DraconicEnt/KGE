@@ -20,13 +20,12 @@
 #include <support/common.hpp>
 #include <support/String.hpp>
 #include <support/types.hpp>
+#include <support/ISerializable.hpp>
 
 namespace Kiaro
 {
     namespace Support
     {
-        class ISerializable;
-
         /**
          *  @brief A CBitStream is a class type with which you can use to stream sequences of data to memory blocks
          *  and back. This is mostly used by the netcode which is used to pack data in a system agnostic manner
@@ -34,7 +33,6 @@ namespace Kiaro
          */
         class CBitStream
         {
-            // Private members
             private:
                 //! A pointer to the start of the contiguous memory block this bit stream is working with.
                 Common::U8* mMemoryBlock;
@@ -51,12 +49,10 @@ namespace Kiaro
                 //! When a resize is necessary, this is the number of bytes we will extend the buffer length by.
                 size_t mResizeLength;
 
-            // Public Members
             public:
                 //! Whether or not the endianness of written and read data should be reversed. This is useful for bit streams that are writing to the network.
                 bool mInverseEndian;
 
-            // Public methods
             public:
                 /**
                  *  @brief A constructor accepting a pointer to an ISerializable object to pack into this
@@ -257,40 +253,6 @@ namespace Kiaro
                 void setPointer(const size_t pointer);
 
                 size_t getSize(void) const;
-        };
-
-        /**
-         *  @brief An interface class representing a non-primitive type that may be packed and unpacked from an arbitrary
-         *  bit stream.
-         */
-        class ISerializable
-        {
-            // Public methods
-            public:
-                //! Parameter-less constructor.
-                ISerializable(void);
-
-                /**
-                 *  @brief Packs all data about this ISerializable into the CBitStream. This is usually required for
-                 *  new instantiations of objects.
-                 *  @param out The CBitStream to write into.
-                 */
-                virtual void packEverything(Support::CBitStream& out) const = 0;
-
-                /**
-                 *  @brief Unpacks a payload from the current position in the input bit stream for this
-                 *  ISerializable object.
-                 *  @param in The input CBitStream to unpack from.
-                 */
-                virtual void unpack(Support::CBitStream& in) = 0;
-
-                /**
-                 *  @brief Returns the total number of bytes required to pack this ISerializable object
-                 *  into a CBitStream.
-                 *  @return The number of bytes required to have left in a CBitStream to be able to pack
-                 *  this ISerializable.
-                 */
-                virtual size_t getRequiredMemory(void) const = 0;
         };
     } // End NameSpace Support
 } // End nameSpace Kiaro

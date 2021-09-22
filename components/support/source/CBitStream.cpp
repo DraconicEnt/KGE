@@ -9,10 +9,6 @@
  *  @copyright (c) 2016 Draconic Entity
  */
 
-#if ENGINE_TESTS>0
-#include <gtest/gtest.h>
-#endif // ENGINE_TESTS
-
 #include <support/CBitStream.hpp>
 
 namespace Kiaro
@@ -223,7 +219,5 @@ namespace Kiaro
         {
             return mTotalSize;
         }
-
-        ISerializable::ISerializable(void) { }
     } // End Namespace Support
 } // End namespace Kiaro
